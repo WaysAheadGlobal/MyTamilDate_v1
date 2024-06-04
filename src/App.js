@@ -23,6 +23,7 @@ import ApprovalUserDetails from "./scenes/Approval/Approvaldetails";
 import AdminSignIn from "./scenes/adminLogin/adminlogin";
 import { useAppContext } from "./Context/UseContext";
 import ShowphoneAndEmail from "./scenes/showPhoneandEmail/showPhoneandEmail";
+import Landingpage from "./components/Landingpage";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -39,6 +40,7 @@ console.log(isAdmin)
             {isAdmin? <Topbar setIsSidebar={setIsSidebar} /> : "" }
             
             <Routes>
+            <Route path="/" element={< Landingpage/>} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/team" element={<Team />} />
               <Route path="/contacts" element={<Contacts />} />
