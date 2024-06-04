@@ -3,7 +3,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 
-import { Header} from './header';
+import {  Headerlp} from './header';
 import { Pictext} from './pic-text';
 import { Stories} from './stories';
 import {Join} from './join';
@@ -14,7 +14,7 @@ export const LP=()=>{
     return(
         <>
 
-        <Header/>
+        <Headerlp/>
         <Pictext/>
         <Stories/>
         <Video/>
