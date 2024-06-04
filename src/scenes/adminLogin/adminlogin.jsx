@@ -3,7 +3,7 @@ import { Box, Button, TextField, Typography, Snackbar, Alert, LinearProgress } f
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useAppContext } from '../../Context/UseContext';
 import { useNavigate } from 'react-router-dom';
-
+import { useCookies } from '../../hooks/useCookies';
 const themeSettings = {
   typography: {
     fontFamily: ['Poppins', 'sans-serif'].join(','),
@@ -45,6 +45,7 @@ const AdminSignIn = () => {
   const [otpSentSnackbar, setOtpSentSnackbar] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showLoginButton, setShowLoginButton] = useState(false);
+  const { setCookie, getCookie } = useCookies();
   const {isAdmin,
     loginAsAdmin,
     logout} = useAppContext();
@@ -57,6 +58,7 @@ const AdminSignIn = () => {
       setLoading(false);
       setOtpSentSnackbar(true);
       setShowLoginButton(true);
+      setCookie('userId', "adminlogin", 365);
     }, 1000);
   };
 
@@ -73,6 +75,7 @@ const AdminSignIn = () => {
     // Handle login logic here
     alert('Logged in successfully!');
     loginAsAdmin();
+
     Navigate("/dashboard")
   };
 

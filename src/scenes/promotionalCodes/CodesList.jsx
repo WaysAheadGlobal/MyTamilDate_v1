@@ -5,9 +5,10 @@ import { tokens } from '../../theme';
 import { mockDataContacts } from '../../data/mockData';
 import Header from '../../components/Header';
 import { useTheme } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Contacts = () => {
+  const Navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -99,6 +100,9 @@ const Contacts = () => {
       ),
     },
   ];
+  const handleAddPromoCode = () => {
+    Navigate("/addpromotionalcode"); // Replace with your actual route path
+  };
 
   return (
     <Box m="20px">
@@ -106,6 +110,24 @@ const Contacts = () => {
         title="Promotional Codes "
         subtitle="List of Promotional Codes "
       />
+      <Box
+        display="flex"
+        justifyContent="flex-end"
+        sx={{ mt: { lg: '-70px' } }}
+      >
+        <Button
+          sx={{
+            backgroundColor: colors.blueAccent[700],
+            color: colors.grey[100],
+            fontSize: '14px',
+            fontWeight: 'bold',
+            padding: '10px 20px',
+          }}
+          onClick={handleAddPromoCode}
+        >
+          Add new Code
+        </Button>
+      </Box>
       <Box
         m="40px 0 0 0"
         height="75vh"

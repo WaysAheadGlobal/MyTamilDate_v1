@@ -24,6 +24,7 @@ import AdminSignIn from "./scenes/adminLogin/adminlogin";
 import { useAppContext } from "./Context/UseContext";
 import ShowphoneAndEmail from "./scenes/showPhoneandEmail/showPhoneandEmail";
 import Landingpage from "./components/Landingpage";
+import AddPromotioncode from "./scenes/promotionalCodes/AddPromotionalcode";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -59,6 +60,7 @@ console.log(isAdmin)
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/geography" element={<Geography />} />
               <Route path="/adminlogin" element={<AdminSignIn/>}></Route>
+              <Route path="/addpromotionalcode" element={<AddPromotioncode/>}></Route>
             </Routes>
           </main>
         </div>
