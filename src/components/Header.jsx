@@ -13,8 +13,6 @@ import bgr from '../assets/images/r-bg.png'
 import logo2 from "../assets/images/logo2.png";
 import { useNavigate } from 'react-router-dom';
 
-
-
 export const Header = () => {
   const navigate = useNavigate();
   const goToSignup = () => {
