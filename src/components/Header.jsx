@@ -1,14 +1,17 @@
 
-import React, {  } from 'react';
+import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './header.css';
 
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Container, Image } from 'react-bootstrap';
+
 import heartlogo from '../assets/images/heart-logo.png'
+
 import bgl from '../assets/images/l-bg.png'
 import bgr from '../assets/images/r-bg.png'
+
 
 import logo2 from "../assets/images/logo2.png";
 import { useNavigate } from 'react-router-dom';
