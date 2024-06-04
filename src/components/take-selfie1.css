@@ -1,0 +1,235 @@
+.selfie-container
+{
+display: flex;
+width: 100%;
+height:auto;
+justify-content: flex-start;
+
+}
+.selfie-bg
+{
+    background-image:url("../assets/images/signup-bg.jpg") ;
+    width: 100%;
+  
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    
+}
+
+
+
+
+
+.selfie-main
+{
+    background: #FFFFFF;
+
+    display: flex;
+    flex-direction: column;
+/* justify-content: space-evenly; */
+gap:24px;
+align-items: center;
+height: 100dvh;
+position: relative;
+
+
+}
+.logo{
+
+position: absolute;
+left: 50%;
+  transform: translate(-50%);
+
+}
+.logo-progressbar5
+{
+    margin-top: 50px;
+    gap: 16px;
+    display: flex;
+    flex-direction: column;
+}
+.logo-arrow5
+{
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0px;
+    margin: 0px;
+   
+    height: 57px;
+    position: relative;
+
+
+}
+
+
+.track-btn5
+{
+    width: 100%;
+    height: 6px;
+    background: #D9D9D9;
+border-radius: 4px;
+padding: 0px;
+
+}
+.track-btn5 div
+{
+    width: 50%;
+    background: linear-gradient(90deg, #9663BF 0%, #4B164C 100%);
+    box-shadow: 0px 4px 4px 0px #82828240;
+    height: 100%;
+border-radius: 4px;
+   
+
+}
+.selfie-text
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* padding-bottom: 5px; */
+    
+}
+
+
+.selfie-text p:first-child {
+    font-family: Work Sans;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 28.15px;
+    text-align: center;
+    
+    color: #515151;
+
+  }
+  .selfie-text p:last-child {
+    font-family: Work Sans;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    text-align: center;
+     margin: 0px;
+    color: #515151;
+
+  }
+  .selfie-text a
+  {
+
+
+    font-family: Poppins;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: -0.02em;
+    text-align: center;
+    color:#8457A8;
+    
+
+
+  }
+  .selfie-box
+  {
+    max-width: 223px;
+    height: 313px;
+    width: 100%;
+    padding: 5px;
+    border: 1.3px dashed #6C6C6C;
+    border-radius: 88px;
+    border-spacing: 2px;
+    border-collapse: separate;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+
+
+    
+  }
+  .added-selfie
+  {
+    max-width: 223px;
+   max-height: 313px;
+   height:100%;
+    width: 100%;
+    border-radius: 85px;
+  }
+  .add-selfie-box
+  {
+    display: flex;
+    align-items:center;
+    justify-content: center;
+  }
+
+
+  .selfie-next-btn
+{
+    height:48px;
+    width:250%;
+    max-width:250px;
+    position: absolute;
+    bottom:35px;
+    margin-top:20px ;
+    /* background: #E5E5E5; */
+
+
+    color:#6C6C6C;
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0.06em;
+    text-align: center;
+    
+align-items: center;
+border: none;
+border-radius: 42px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  @media only screen and (max-width:650px){
+    .selfie-bg
+    {
+        display:none;
+    }
+    }
+    @media only screen and (max-height:666px){
+      .selfie-box
+      {
+        height: 260px;
+      
+    
+    
+        
+      }
+      }

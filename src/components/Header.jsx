@@ -1,24 +1,111 @@
-import { Typography, Box, useTheme } from "@mui/material";
-import { tokens } from "../theme";
 
-const Header = ({ title, subtitle }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+import React, { useState, useRef } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './header.css';
+
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import { Container, Image, Form, Button } from 'react-bootstrap';
+import heartlogo from '../assets/images/heart-logo.png'
+import bgl from '../assets/images/l-bg.png'
+import bgr from '../assets/images/r-bg.png'
+// import logo from "../assets/images/MTDlogo.png";
+import logo2 from "../assets/images/logo2.png";
+import { useNavigate } from 'react-router-dom';
+
+
+
+export const Header = () => {
+  const navigate = useNavigate();
+  const goToSignup = () => {
+    navigate("/signup");
+  };
   return (
-    <Box mb="30px">
-      <Typography
-        variant="h2"
-        color={colors.grey[100]}
-        fontWeight="bold"
-        sx={{ m: "0 0 5px 0" }}
-      >
-        {title}
-      </Typography>
-      <Typography variant="h5" color={colors.greenAccent[400]}>
-        {subtitle}
-      </Typography>
-    </Box>
-  );
-};
 
-export default Header;
+    <div className='header-main'>
+      <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary Navbar-container">
+        <Container>
+          <Navbar.Brand href="#home" ><Image src={heartlogo} style={{ height: '70px', width: '70px' }}></Image></Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="me-auto">
+
+            </Nav>
+            <Nav className='nav-link-container'>
+              <Nav.Link href="#deets">Success Stories</Nav.Link>
+              <Nav.Link href="#deets">About Us</Nav.Link>
+              <Nav.Link href="#deets">Blogs</Nav.Link>
+              <Nav.Link href="#deets">FAQs</Nav.Link>
+
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+      <div className='header-content'>
+
+        <div className='bg-l'>
+          <Image src={bgl} style={{ height: '100%', width: '100%' }} ></Image>
+        </div>
+
+        <div className='header-text'>
+          <Image src={logo2} className='main-logo'></Image>
+          <span>Meet Tamil Singles</span>
+          <Container className='header-btn'>
+            <button className='header-btn1' onClick={goToSignup}>
+            Get Started
+            </button>
+            <button className='header-btn2'>
+            Returning? Login
+            </button>
+          </Container>
+
+        </div>
+        <div className='bg-r'>
+          <Image src={bgr} style={{ height: '100%', width: '100%' }} ></Image>
+        </div>
+
+
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  );
+}

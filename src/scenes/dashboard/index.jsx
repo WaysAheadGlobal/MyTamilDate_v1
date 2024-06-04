@@ -6,7 +6,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import TrafficIcon from "@mui/icons-material/Traffic";
-import Header from "../../components/Header";
+import Header from "../../components/Header1";
 import LineChart from "../../components/LineChart";
 import GeographyChart from "../../components/GeographyChart";
 import BarChart from "../../components/BarChart";
@@ -356,7 +356,7 @@ const Dashboard = () => {
       <CardContent style={{ padding: '16px' }}>
         <Box style={{ backgroundColor: '#FC8C66', padding: '8px', borderRadius: '4px 4px 0 0' }}>
           <Typography variant="h6" style={{ color: 'white', textAlign: 'center' }}>
-          Total # of new Paid members
+          Total Number of new Paid members
           </Typography>
         </Box>
         <Box style={{ padding: '8px' }}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Grid, Typography, Button, Avatar } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import Header from '../../components/Header'; // Adjust path as per your project structure
+import Header from '../../components/Header1'; // Adjust path as per your project structure
 import { tokens } from '../../theme'; // Adjust path as per your project structure
 
 const UserDetails = () => {

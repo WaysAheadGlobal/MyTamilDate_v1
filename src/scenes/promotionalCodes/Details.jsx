@@ -1,6 +1,6 @@
 import { Box, Button, Grid, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import Header from "../../components/Header";
+import Header from "../../components/Header1";
 
 const Details = () => {
   const theme = useTheme();

@@ -3,7 +3,7 @@ import { Box, Button, Typography } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
 import { mockDataContacts } from '../../data/mockData';
-import Header from '../../components/Header';
+import Header from '../../components/Header1';
 import { useTheme } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 

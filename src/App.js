@@ -25,6 +25,15 @@ import { useAppContext } from "./Context/UseContext";
 import ShowphoneAndEmail from "./scenes/showPhoneandEmail/showPhoneandEmail";
 import Landingpage from "./components/Landingpage";
 import AddPromotioncode from "./scenes/promotionalCodes/AddPromotionalcode";
+import { Entercode } from './components/entercode';
+import { SignupPhone } from './components/signup-verifyphone';
+import {BasicDetails } from './components/basic-details';
+import { EmailVerify} from './components/email-verify';
+import { Birthday} from './components/birthday';
+import { Selfie} from './components/take-selfie1';
+import {LP} from './components/LP';
+import { Stories } from "./components/stories";
+import { Pictext } from "./components/pic-text";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -41,7 +50,7 @@ console.log(isAdmin)
             {isAdmin? <Topbar setIsSidebar={setIsSidebar} /> : "" }
             
             <Routes>
-            <Route path="/" element={< Landingpage/>} />
+            {/* <Route path="" element={< Landingpage/>} /> */}
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/team" element={<Team />} />
               <Route path="/contacts" element={<Contacts />} />
@@ -61,7 +70,29 @@ console.log(isAdmin)
               <Route path="/geography" element={<Geography />} />
               <Route path="/adminlogin" element={<AdminSignIn/>}></Route>
               <Route path="/addpromotionalcode" element={<AddPromotioncode/>}></Route>
+                <Route path="/" element={<LP/>}></Route>
+                <Route path="/signup" element={<SignupPhone/>}></Route>
+                <Route path="/entercode" element={<Entercode/>}></Route>
+                <Route path="/BasicDetails" element={<BasicDetails/>}></Route>
+                <Route path="/EmailVerify" element={<EmailVerify/>}></Route>
+                <Route path="/Birthday" element={<Birthday/>}></Route>
+                <Route path="/Selfie" element={<Selfie/>}></Route>
             </Routes>
+
+            {/* <SignupPhone /> */}
+        {/* <Entercode/> */}
+        {/* <BasicDetails/> */}
+        {/* <EmailVerify/> */}
+        {/* <Birthday/> */}
+        {/* <Selfie/> */}
+        {/* <Header/>
+        <Pictext/>
+        <Stories/>
+        <Video/>
+        <Join/>
+        <Footer/> */}
+
+        {/* <LP/> */}
           </main>
         </div>
       </ThemeProvider>

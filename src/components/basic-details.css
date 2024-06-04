@@ -1,0 +1,374 @@
+.basicdetails-container
+{
+display: flex;
+width: 100%;
+height:auto;
+justify-content: flex-start;
+
+}
+.basic-details-bg
+{
+    background-image:url("../assets/images/signup-bg.jpg") ;
+    width: 100%;
+  
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+
+
+
+
+.basicdetails-main
+{
+    background: #FFFFFF;
+
+    display: flex;
+    flex-direction: column;
+/* justify-content: space-evenly; */
+gap:24px;
+align-items: center;
+height: 100dvh;
+
+
+}
+.logo{
+
+position: absolute;
+left: 50%;
+  transform: translate(-50%);
+
+}
+.logo-progressbar3
+{
+    margin-top: 50px;
+    gap: 16px;
+    display: flex;
+    flex-direction: column;
+}
+.logo-arrow3
+{
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0px;
+    margin: 0px;
+   
+    height: 57px;
+    position: relative;
+
+
+}
+
+
+.track-btn3
+{
+    width: 100%;
+    height: 6px;
+    background: #D9D9D9;
+border-radius: 4px;
+padding: 0px;
+
+}
+.track-btn3 div
+{
+    width: 30%;
+    background: linear-gradient(90deg, #9663BF 0%, #4B164C 100%);
+    box-shadow: 0px 4px 4px 0px #82828240;
+    height: 100%;
+border-radius: 4px;
+   
+
+}
+.basic-details-text
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+}
+.basic-details-details
+{
+    display: flex;
+    flex-direction: column;
+    /* padding: 0px; */
+
+}
+.basic-details-form
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction:column ;
+    padding-bottom: 15px;
+    z-index: 9;
+}
+.basic-details-group
+{
+    width: 100%;
+}
+
+.basic-details-text p:first-child {
+    font-family: Work Sans;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 28.15px;
+    text-align: center;
+    
+    color: #515151;
+
+  }
+  .basic-details-text p:last-child {
+    font-family: Work Sans;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    text-align: center;
+     margin: 0px;
+    color: #515151;
+
+  }
+
+  .basic-details-label
+  {
+    font-family: Work Sans;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 23.46px;
+    text-align: left;
+    margin-bottom: 12px;
+
+    
+
+
+    
+  }
+  .custom-input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color:#6C6C6C !important;
+    box-sizing: border-box;
+  }
+
+
+  .basic-details-input
+  {
+    border: 1px solid #6C6C6C;
+    color: #6C6C6C;
+    height:52px;
+    border-radius: 8px;
+    background: #FFFFFF;
+/* transition: none; */
+box-sizing: border-box;
+
+  
+  }
+  
+  .basic-details-input-verify
+  {
+    border-left:1px solid #6C6C6C ;
+    border-top: 1px solid #6C6C6C;
+    border-bottom: 1px solid #6C6C6C;
+    color: #6C6C6C;
+    height:52px;
+   
+    background: #FFFFFF;
+    border-top-left-radius:8px ;
+    border-bottom-left-radius:8px ;
+    border-bottom-right-radius:0px ;
+    border-top-right-radius:0px ;
+    outline: none !important;
+border-right:none ;
+box-sizing: border-box;
+
+  }
+
+  .basic-details-input.error
+  {
+   border-color: red;
+
+
+
+  }
+  .basic-details-input-verify.error
+  {
+   border-color: red;
+
+
+  }
+  .last-name-why
+  {
+    width: 20px;
+height: 20px;
+
+font-family: Poppins;
+font-size: 16px;
+font-weight: 500;
+line-height: 24px;
+letter-spacing: 0.04em;
+text-align: center;
+border: 2px solid #6C6C6C;
+color: #6C6C6C;
+background-color: transparent;
+border-radius: 14px;
+
+padding:0px;
+display: flex;
+align-items: center;
+justify-content: center;
+  }
+  .last-name-why:active .why-info
+  {
+display:block;
+  }
+
+
+  .last-name-why-div
+  {
+    height: 52px;
+    border-right:1px solid #6C6C6C ;
+    border-top: 1px solid #6C6C6C;
+    border-bottom: 1px solid #6C6C6C;
+    padding:7px;
+    margin-top: 12px;
+    border-top-right-radius:8px ;
+    border-bottom-right-radius:8px ;
+align-items: center;
+display:flex;
+box-sizing: border-box;
+   
+  }
+
+  .why-info
+  {
+    max-width: 286px;
+    width: 100%;
+height: 100px;
+top: 0.34px;
+gap: 0px;
+border-radius: 8px 8px 8px 8px;
+opacity: 0px;
+background: #9663BF;
+z-index: 12;
+position: absolute;
+top:85%;
+right:5%;
+padding: 10px;
+
+transition: opacity 0.3s ease-in-out;
+opacity: 1;
+ }
+ .last-name-why:hover
+ {
+    background:#9663BF !important;
+    color:#FFFFFF;
+ }
+
+ .why-info-hidden
+ {
+    opacity: 0;
+  height: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease-in-out, height 0s ease-in-out 0.3s;
+ }
+
+
+  .why-info span
+  {
+    font-family: Poppins;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 22px;
+    text-align: left;
+    color: #FFFFFF;
+
+    
+  }
+  .why-info p
+  {
+    font-family: Poppins;
+    font-size: 10px;
+    font-weight: lighter;
+    line-height: 14px;
+    text-align: left;
+    color:#FFFFFF;
+    text-align: justify;
+    text-justify: inter-word;
+
+    
+  }
+  .purplebox
+  {
+    position: relative;
+  }
+  .verify-btn-div
+  {
+    height: 52px;
+    border-right:1px solid #6C6C6C ;
+    border-top: 1px solid #6C6C6C;
+    border-bottom: 1px solid #6C6C6C;
+    padding:7px;
+    border-top-right-radius:8px ;
+    border-bottom-right-radius:8px ;
+    box-sizing: border-box;
+   
+  }
+  .verify-btn-div.error
+  {
+   border-color: red;
+
+
+  }
+  .verify-btn
+  {
+    background: #E5E5E5;
+    font-family: Poppins;
+font-size: 16px;
+font-weight: 500;
+line-height: 24px;
+letter-spacing: 0.04em;
+text-align: center;
+color:
+#515151;
+height:36px;
+width:74px;
+padding:0px;
+box-sizing: border-box;
+border: none;
+border-radius: 6px;
+
+
+
+
+  }
+.basic-details-btn
+{
+    height:48px;
+    width:100%;
+    max-width:250px;
+    position: absolute;
+    bottom:35px;
+    margin-top:20px ;
+    background: linear-gradient(90deg, #9663BF 0%, #4B164C 100%);
+    box-shadow: 0px 4px 10px 0px #00000029;
+    color:#FFFFFF;
+    font-family: Work Sans;
+font-size: 14px;
+font-weight: 400;
+line-height: 22px;
+letter-spacing: 0.04em;
+text-align: center;
+align-items: center;
+border: none;
+border-radius: 42px;
+}
+
+@media only screen and (max-width:650px){
+.basic-details-bg
+{
+    display:none;
+}
+}
