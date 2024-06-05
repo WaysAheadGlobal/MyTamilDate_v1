@@ -33,7 +33,7 @@ export const Pictext = () => {
                         color:
                             '#4E1173 '
                     }} className='abi-john'>Abi & John</span> Bonded Over Faith & Their Tamil-German-British Connection.</p>
-                    <Button className='view-success-btn'>View Success Story</Button>
+                    <a href='https://tamilculture.com/mytamildate-success-abi-john-bonded-over-faith-their-tamil-german-british-connection' target="_blank" className='view-success-btn'>View Success Story</a>
                 </div>
             </div>
 
@@ -41,7 +41,7 @@ export const Pictext = () => {
 
 
 
-            <div className='pic1-text1'>
+            <div className='pic3-text3'>
                
                 <div className='text1'>
                     <h4> 

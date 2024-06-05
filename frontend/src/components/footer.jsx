@@ -33,10 +33,10 @@ export const Footer= () => {
                 <div class='flinks'>
                     {/* <span class="link-heading">Links</span> */}
 
-                    <a href="#" class='linkf'>Success Stories </a>
-                    <a href="#" class='linkf'> Blogs</a>
-                    <a href="#" class='linkf'> About Us</a>
-                    <a href="#" class='linkf'> Contact Us</a>
+                    <a target="_blank" href="#" class='linkf'>Success Stories </a>
+                    <a target="_blank" href="https://tamilculture.com/user/mytamildatecom" class='linkf'> Blogs</a>
+                    <a target="_blank" href="#" class='linkf'> About Us</a>
+                    <a target="_blank" href="#" class='linkf'> Contact Us</a>
       
 
 
@@ -45,9 +45,9 @@ export const Footer= () => {
 
                     {/* <span class="link-heading">Links</span> */}
 
-                    <a href="#" class='linkf'> FAQs</a>
-                    <a href="#" class='linkf'> Terms & Conditions </a>
-                    <a href="#" class='linkf'> Privacy Policy</a>
+                    <a  target="_blank" href="#" class='linkf'> FAQs</a>
+                    <a target="_blank" href="#" class='linkf'> Terms & Conditions </a>
+                    <a target="_blank" href="#" class='linkf'> Privacy Policy</a>
             
 
                 </div>
@@ -56,13 +56,13 @@ export const Footer= () => {
                     <span class="link-heading">Social Links</span>
 
                     <div class='social '>
-                        <a href="https://www.linkedin.com/company/5349365/admin/feed/posts/" target="_blank"  class='linkf'>
+                        <a  target="_blank" href="https://www.linkedin.com/company/5349365/admin/feed/posts/" target="_blank"  class='linkf'>
                          <Image className="socio" src={lin}></Image>
                         </a>
-                        <a href="https://www.instagram.com/mytamildate/" target="_blank"  class='linkf'>
+                        <a  target="_blank" href="https://www.instagram.com/mytamildate/" target="_blank"  class='linkf'>
                         <Image className="socio" src={gram}></Image>
                         </a>
-                        <a href="https://www.tiktok.com/@mytamildate?lang=en" target="_blank"  class='linkf'>
+                        <a target="_blank" href="https://www.tiktok.com/@mytamildate?lang=en" target="_blank"  class='linkf'>
                         <Image className="socio" src={tiktok}></Image>
                         </a>
 

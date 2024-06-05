@@ -9,11 +9,12 @@ import { Stories} from './stories';
 import {Join} from './join';
 import {Footer} from './footer';
 import {Video} from './video';
+import { NavBar } from './nav'; 
 
 export const LP=()=>{
     return(
         <>
-
+       <NavBar/>
         <Headerlp/>
         <Pictext/>
         <Stories/>

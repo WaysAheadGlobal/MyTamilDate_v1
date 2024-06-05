@@ -19,6 +19,21 @@ gap:61px;
 background-size: cover;
 /* background-image: url(../assets/images/pic-text-bg.png); */
 }
+
+.pic3-text3
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 87px;
+    padding-left: 100px;
+    padding-right: 100px;
+    padding-bottom: 87px;
+    background-position:center;
+    background-repeat: no-repeat;
+    gap:61px;
+    background-size: cover;
+}
 .pic1
 {
 width: 50%;
@@ -42,6 +57,9 @@ justify-content: flex-start;
     line-height: 60px;
     letter-spacing: 0.05em;
     text-align: left;
+
+    /* text-align: justify; */
+    /* text-justify: inter-word; */
     
 }
 .discover-love
@@ -81,25 +99,33 @@ color:
 #5E5E5E;
 margin-top: 30px;
 
+text-align: justify;
+text-justify: inter-word;
+
 }
 .view-success-btn
 {
-  background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
-  box-shadow: 3px 5px 10px 0px #00000033;
-  font-family: Poppins;
-  font-size: 22px;
-  font-weight: 600;
-  line-height: 24px;
-  letter-spacing: 0.02em;
-  text-align: center;
-  color:
-  #FFFFFF;
-  max-width:320px ;
-  width: 100%;
-  height:68px;
-  border-radius:36px ;
-border:none; 
-margin-top: 40px;
+ 
+    background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+    box-shadow: 3px 5px 10px 0px #00000033;
+    font-family: Poppins;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0.02em;
+    text-align: center;
+    color:
+    #FFFFFF;
+    max-width:320px ;
+    width: 100%;
+    height:68px;
+    border-radius:36px ;
+  border:none; 
+  margin-top: 40px;
+  text-decoration: none;
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }
 
 
@@ -124,15 +150,52 @@ margin-top: 40px;
     .pic1-text1
     {
         flex-direction: column;
-        padding-left: 30px;
-        padding-right:30px;
-        align-items: flex-start;
+        padding-left: 15px;
+        padding-right:15px;
+   
+        padding-top: 20px;
+        padding-bottom: 20px;
+        gap: 0px;
+    }
+    .pic3-text3
+    {
+        flex-direction:column-reverse;
+        padding-left: 15px;
+        padding-right:15px;
+      
+        padding-top: 20px;
+        padding-bottom: 20px;
+        gap: 0px;
     }
     .text1
     {
 width:100%;
 
     }
+    .text1 p
+    {
+margin-top: 0px;
+
+    }
+    .text1 h4
+    {
+font-size:30px;
+text-align: justify;
+/* text-justify: inter-word; */
+
+
+
+    }
+    .discover-love 
+    {
+        font-size:30px;
+    }
+
+    .view-success-btn
+    {
+
+    }
+    
     .pic1
     {
         margin: 0px;

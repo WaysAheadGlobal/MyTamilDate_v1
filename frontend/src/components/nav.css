@@ -1,0 +1,30 @@
+.Navbar-container
+{
+
+width: 100%;
+background-color: #FFFFFF !important;
+position: sticky;
+position: -webkit-sticky;
+top: 0;
+z-index: 50;
+display: block;   
+
+}
+
+
+  .nav-link-container
+  {
+gap:44px;
+  }
+
+  .nav-link-container .nav-link
+  {
+    font-family: Poppins;
+    font-size: 18px !important;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0.02em;
+    text-align: left;
+    color:#333333;
+    
+  }

@@ -7,7 +7,7 @@ align-items: center;
 justify-content: center;
 display: flex;
 flex-direction: column;
-padding-bottom: 80px;
+/* padding-bottom: 80px; */
 
 
 }
@@ -70,6 +70,7 @@ font-weight: 600;
 line-height: 50.4px;
 letter-spacing: 0.08em;
 text-align: justify;
+
 color:
 #515151;
 
@@ -122,7 +123,7 @@ color:
 }
 
 
-@media only screen and (max-width: 600px) 
+@media only screen and (max-width: 750px) 
 {
 
 .video-content{
@@ -133,5 +134,17 @@ color:
 .video-row{
     padding:0px;
 }
+.video-heading 
+{
+    padding-left:0px;
+    padding-right: 0px;
+}
+.video-sub {
 
+    
+        padding-left:0px;
+        padding-right: 0px;  
+    
+
+}
 }

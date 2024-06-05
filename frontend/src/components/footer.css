@@ -170,6 +170,12 @@ height: 49.07px;
     .flinks{
         margin-top:20px; ;
     }
+    .foot-logo-txt
+    {
+        padding: 0px;
+    }
+
+
    
   }
   @media only screen and (max-width: 1200px) {
@@ -193,7 +199,13 @@ height: 49.07px;
 }
    
   }
-
+  @media only screen and (max-width: 1050px) {
+  .socio
+  {
+    margin-top: 5px;
+  }
+   
+  }
 
 
 

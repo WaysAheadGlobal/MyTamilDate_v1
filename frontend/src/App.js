@@ -61,6 +61,7 @@ console.log(isAdmin)
               <Route path="/approvaluserdetails" element={<ApprovalUserDetails/>}></Route>
               <Route path="/promotionalcodes" element={<PromotionalCodes/>}></Route>
               <Route path="/invoices" element={<Invoices />} />
+          
               <Route path="/form" element={<Form />} />
               <Route path="/bar" element={<Bar />} />
               <Route path="/pie" element={<Pie />} />
@@ -85,7 +86,11 @@ console.log(isAdmin)
         {/* <EmailVerify/> */}
         {/* <Birthday/> */}
         {/* <Selfie/> */}
-        {/* <Header/>
+
+
+        {/*
+          <NavBar/>
+         <Header/>
         <Pictext/>
         <Stories/>
         <Video/>

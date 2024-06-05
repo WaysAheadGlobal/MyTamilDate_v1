@@ -7,7 +7,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Container, Image } from 'react-bootstrap';
 
-import heartlogo from '../assets/images/heart-logo.png'
+import heartlogo from '../assets/images/heart-logo.png';
 
 import bgl from '../assets/images/l-bg.png'
 import bgr from '../assets/images/r-bg.png'
@@ -24,24 +24,7 @@ export const Headerlp = () => {
   return (
 
     <div className='header-main'>
-      <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary Navbar-container">
-        <Container>
-          <Navbar.Brand href="#home" ><Image src={heartlogo} style={{ height: '70px', width: '70px' }}></Image></Navbar.Brand>
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-          <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="me-auto">
-
-            </Nav>
-            <Nav className='nav-link-container'>
-              <Nav.Link href="#deets">Success Stories</Nav.Link>
-              <Nav.Link href="#deets">About Us</Nav.Link>
-              <Nav.Link href="#deets">Blogs</Nav.Link>
-              <Nav.Link href="#deets">FAQs</Nav.Link>
-
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+ 
       <div className='header-content'>
 
         <div className='bg-l'>
