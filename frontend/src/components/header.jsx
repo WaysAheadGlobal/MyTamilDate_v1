@@ -59,7 +59,6 @@ export const Headerlp = () => {
             Returning? Login
             </button>
           </Container>
-
         </div>
         <div className='bg-r'>
           <Image src={bgr} style={{ height: '100%', width: '100%' }} ></Image>

@@ -14,7 +14,7 @@ export const LP=()=>{
     return(
         <>
 
-        {/* <Headerlp/> */}
+        <Headerlp/>
         <Pictext/>
         <Stories/>
         <Video/>
