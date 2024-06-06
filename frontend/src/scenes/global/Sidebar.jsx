@@ -9,6 +9,8 @@ import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import GroupsIcon from '@mui/icons-material/Groups';
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
@@ -136,7 +138,7 @@ const Sidebar = () => {
             <Item
               title="User List"
               to="/contacts"
-              icon={<ContactsOutlinedIcon />}
+              icon={<GroupsIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -144,7 +146,7 @@ const Sidebar = () => {
             <Item
               title="Approval"
               to="/approval"
-              icon={<ContactsOutlinedIcon />}
+              icon={<PendingActionsIcon />}
               selected={selected}
               setSelected={setSelected}
             />

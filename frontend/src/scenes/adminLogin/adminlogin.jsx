@@ -74,7 +74,7 @@ const AdminSignIn = () => {
         justifyContent="center"
         alignItems="center"
         minHeight="100vh"
-        sx={{ backgroundColor: '#EDE7F6' }}
+        sx={{ backgroundColor: '#fff' }} 
       >
         <Box
           display="flex"
@@ -82,43 +82,42 @@ const AdminSignIn = () => {
           alignItems="center"
           p={3}
           sx={{
-            width: { xs: '90%', sm: '70%', md: '50%', lg: '40%', xl: '30%' },
-            background: 'linear-gradient(135deg, #FC8C66 30%, #F76A7B 90%)',
+            width: { xs: '90%', sm: '70%', md: '50%', lg: '30%', xl: '30%' },
+            backgroundColor: '#F3E5F5', // Match the background color in the image
             borderRadius: 2,
             boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
           }}
         >
           <Typography variant="h4" sx={{ color: '#3A3A3A', mb: 2 }}>
-            Admin Sign In
+            Admin
           </Typography>
           <TextField
-            fullWidth
+             width="110%"
             label="Username"
             variant="outlined"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            sx={{ mb: 2, backgroundColor: '#FFF' }}
+            sx={{ mb: 2, width:"70%", backgroundColor: '#FFF' }}
           />
           <TextField
-            fullWidth
+            width="110%"
             label="Password"
             variant="outlined"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            sx={{ mb: 2, backgroundColor: '#FFF' }}
+            sx={{ mb: 2, width:"70%", backgroundColor: '#FFF' }}
           />
           <Button
             width="50px"
             variant="contained"
-            color="secondary"
             onClick={handleLogin}
             sx={{
               mb: 2,
-              background: 'linear-gradient(90deg, #9663BF, #4B164C)',
+              background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
               color: '#fff',
               '&:hover': {
-                background: 'linear-gradient(90deg, #7a4fa0, #3a123e)',
+                background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
               },
             }}
           >
