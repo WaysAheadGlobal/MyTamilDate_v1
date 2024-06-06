@@ -42,6 +42,8 @@ import {GetInTouch} from './components/get-in-touch';
 import {SignIn} from  "./components/signin";
 import {AboutUsPage}   from "./components/aboutus-pg"
 import TotalCount from "./components/totalcount";
+import {Video2} from "./components/video2";
+
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -69,7 +71,7 @@ console.log(isAdmin)
               <Route path="/approvaluserdetails" element={<ApprovalUserDetails/>}></Route>
               <Route path="/promotionalcodes" element={<PromotionalCodes/>}></Route>
               <Route path="/invoices" element={<Invoices />} />
-          <Route path="/count" element={<TotalCount/>}></Route>
+              <Route path="/count" element={<TotalCount/>}></Route>
               <Route path="/form" element={<Form />} />
               <Route path="/bar" element={<Bar />} />
               <Route path="/pie" element={<Pie />} />
@@ -96,6 +98,7 @@ console.log(isAdmin)
                 
                 <Route path="/signIn" element={<SignIn/>}></Route>
 
+                <Route path="/video2" element={<Video2/>}></Route>
 
 
 
