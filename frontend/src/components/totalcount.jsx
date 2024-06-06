@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-
+import vd3 from '../assets/images/vd3.png'
+import { Image } from 'react-bootstrap';
+import './video.css';
 const TotalCount = () => {
   const [totalCount, setTotalCount] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/v1/admin/users/paymentstatu');
+        const response = await fetch('https://mytamildate.waysdatalabs.com/api/v1/admin/users/paymentstatu');
         if (response.ok) {
           const data = await response.json();
           // Assuming the response contains an array and you want to count its length
@@ -34,6 +36,14 @@ const TotalCount = () => {
       ) : (
         <div>Loading...</div>
       )}
+
+      <div>
+      <a href='https://www.instagram.com/mytamildate/' target="_blank" className="video-item">
+                                <Image   src={vd3} />
+                                <div className='play-btn'></div>
+                            </a>
+      </div>
+      {/* <img src={vd3} alt="" /> */}
     </div>
   );
 };
