@@ -4,6 +4,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useAppContext } from '../../Context/UseContext';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from '../../hooks/useCookies';
+
 const themeSettings = {
   typography: {
     fontFamily: ['Poppins', 'sans-serif'].join(','),
@@ -38,45 +39,32 @@ const themeSettings = {
 const theme = createTheme(themeSettings);
 
 const AdminSignIn = () => {
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [otp, setOtp] = useState(['', '', '', '']);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [otpSentSnackbar, setOtpSentSnackbar] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showLoginButton, setShowLoginButton] = useState(false);
-  const { setCookie, getCookie } = useCookies();
-  const {isAdmin,
-    loginAsAdmin,
-    logout} = useAppContext();
-    const Navigate = useNavigate();
-  const generateOTP = () => {
-    const generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
-    setOtp(generatedOtp.split(''));
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setOtpSentSnackbar(true);
-      setShowLoginButton(true);
-      setCookie('userId', "adminlogin", 365);
-    }, 1000);
-  };
+  const { setCookie } = useCookies();
+  const { loginAsAdmin } = useAppContext();
+  const navigate = useNavigate();
 
-  const handleSendOTP = () => {
-    if (phoneNumber === '1234567890') { // Replace with the correct phone number check
-      generateOTP();
-    } else {
-      setSnackbarMessage('Phone number is incorrect');
-      setShowSnackbar(true);
-    }
+  const validateForm = () => {
+    return username === 'Admin' && password === '12345';
   };
 
   const handleLogin = () => {
-    // Handle login logic here
-    alert('Logged in successfully!');
-    loginAsAdmin();
-
-    Navigate("/dashboard")
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      if (validateForm()) {
+        loginAsAdmin();
+        setCookie('userId', 'adminlogin', 365);
+        navigate("/dashboard");
+      } else {
+        setSnackbarMessage('Username or password is incorrect');
+        setShowSnackbar(true);
+      }
+    }, 1000);
   };
 
   return (
@@ -105,18 +93,26 @@ const AdminSignIn = () => {
           </Typography>
           <TextField
             fullWidth
-            
-            label="Phone Number"
+            label="Username"
             variant="outlined"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            sx={{ mb: 2, backgroundColor: '#FFF' }}
+          />
+          <TextField
+            fullWidth
+            label="Password"
+            variant="outlined"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             sx={{ mb: 2, backgroundColor: '#FFF' }}
           />
           <Button
             width="50px"
             variant="contained"
             color="secondary"
-            onClick={handleSendOTP}
+            onClick={handleLogin}
             sx={{
               mb: 2,
               background: 'linear-gradient(90deg, #9663BF, #4B164C)',
@@ -126,40 +122,9 @@ const AdminSignIn = () => {
               },
             }}
           >
-            Send OTP
+            Login
           </Button>
           {loading && <LinearProgress sx={{ width: '100%', mb: 2 }} />}
-          {otp.some(o => o !== '') && (
-            <Box display="flex" justifyContent="center" mb={2}>
-              {otp.map((digit, index) => (
-                <TextField
-                  key={index}
-                  value={digit}
-                  variant="outlined"
-                  inputProps={{ readOnly: true, style: { textAlign: 'center' } }}
-                  sx={{ mx: 1, width: '3rem', backgroundColor: '#FFF' }}
-                />
-              ))}
-            </Box>
-          )}
-          {showLoginButton && (
-            <Button
-              width="50px"
-              variant="contained"
-              color="secondary"
-              onClick={handleLogin}
-              sx={{
-                mb: 2,
-                background: 'linear-gradient(90deg, #9663BF, #4B164C)',
-                color: '#fff',
-                '&:hover': {
-                  background: 'linear-gradient(90deg, #7a4fa0, #3a123e)',
-                },
-              }}
-            >
-              Login
-            </Button>
-          )}
         </Box>
         <Snackbar
           open={showSnackbar}
@@ -168,15 +133,6 @@ const AdminSignIn = () => {
         >
           <Alert onClose={() => setShowSnackbar(false)} severity="error">
             {snackbarMessage}
-          </Alert>
-        </Snackbar>
-        <Snackbar
-          open={otpSentSnackbar}
-          autoHideDuration={6000}
-          onClose={() => setOtpSentSnackbar(false)}
-        >
-          <Alert onClose={() => setOtpSentSnackbar(false)} severity="success">
-            OTP sent successfully!
           </Alert>
         </Snackbar>
       </Box>
