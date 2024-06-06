@@ -14,7 +14,7 @@ import { NavBar } from './nav';
 export const LP=()=>{
     return(
         <>
-       <NavBar/>
+        <NavBar/>
         <Headerlp/>
         <Pictext/>
         <Stories/>

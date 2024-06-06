@@ -28,3 +28,11 @@ gap:44px;
     color:#333333;
     
   }
+
+
+  /* @media (max-width: 750px) {
+    .nav-logo
+    {
+      display: none;
+    }
+    } */

@@ -1,0 +1,229 @@
+.getintouch-main
+{
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+gap:30px;
+padding-left: 10px;
+padding-right: 10px;
+padding-bottom: 10px;
+}
+
+.getintouch-main p
+{
+    font-family: Poppins;
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 60px;
+    letter-spacing: 0.05em;
+    text-align: center;
+    
+    
+    
+    color:
+    #3A3A3A;
+}
+.getintouch-form-container
+{
+    display: flex;
+gap:41px;
+flex-direction: column;
+}
+.getintouch-main span
+{font-family: Poppins;
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 48px;
+    letter-spacing: -0.02em;
+    text-align: left;
+    
+    color:
+    #3A3A3A;
+    /* padding-bottom: 20px; */
+}
+.getintouch-content
+{
+    padding:25px;
+    display: flex;
+    border-radius: 20px;
+    border: 2px solid #E3C1FF;
+    background: #F9F1FF;
+
+}
+.getintouch-form
+{
+    font-family: Poppins;
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 60px;
+    letter-spacing: 0.05em;
+    text-align: center;
+    gap:14px;
+    display: flex;
+    flex-direction: column;
+border: none;
+
+
+}
+.getintouch-group
+{
+    /* height:51px;
+    max-width:426px;
+    width: 100%; */
+}
+.getintouch-input
+{
+    border: none;
+    height:51px;
+/* max-width:426px;
+width: 100%; */
+}
+.getintouch-message
+{
+    border: none !important;
+    min-height:109px !important;
+    /* height: 100%; */
+/* max-width:426px;
+width: 100%; */
+}
+.getintouch-btn
+{
+    background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+
+    box-shadow: 0px 4px 4px 0px #00000040;
+border-radius: 30px;
+
+height:48px;
+max-width:266px;
+width: 100%;
+color:#FFFFFF;
+font-family: Poppins;
+font-size: 22px;
+font-weight: 600;
+line-height: 24px;
+letter-spacing: 0.006em;
+text-align: center;
+border: none;
+margin-top: 30px;
+
+
+}
+.with-icon{
+position: relative;
+
+}
+.arrow-icon
+{
+position: absolute;
+right:10px ;
+top:17px;
+color: #5E5E5E
+
+;
+height:20px;
+width:20px;
+
+}
+
+.getintouch-input::placeholder {
+    font-family: Poppins;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 27px;
+    letter-spacing: -0.01em;
+    text-align: left;
+   color: #5E5E5E;
+
+}
+
+
+
+
+.getintouch-input option
+{
+    font-family: Poppins;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 27px;
+    letter-spacing: -0.01em;
+    text-align: left;
+   color: #5E5E5E;
+
+   
+  
+}
+.getintouch-modal
+{
+    height: 400px;
+    height:100%;
+}
+.get-bg
+{
+    /* max-width: 516px; */
+    width: 100%;
+    max-height: 614.25px;
+    height:100%;
+    gap: 0px;
+    opacity: 0px;
+    border-radius: 10px;
+    
+}
+
+
+.verify-img
+{
+    width: 79px;
+    height: 79px;
+    
+     
+}
+.getintouch-model-content 
+{
+    font-family: Poppins;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 28px;
+    text-align: center;
+    color:
+    #3A3A3A;
+    display: flex;
+align-items: center;
+justify-content: center;
+gap:30px;
+flex-direction: column;
+height: 400px;
+height:100%;
+
+}
+
+.getintouch-model-content  span
+{
+    font-family: Poppins;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 28px;
+    text-align: center;
+    color:
+    #3A3A3A;
+    margin-bottom: 33px;
+  
+
+}
+.getetintouch-model-main
+{
+    height: 400px;
+height:100%;
+}
+
+
+@media (max-width: 750px) {
+  .get-bg-container
+  {
+    display: none;
+  }
+  }
+
+
+
+

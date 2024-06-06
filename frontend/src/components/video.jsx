@@ -21,18 +21,23 @@ export const Video = () => {
                     <p className='video-sub'>Check out the MTD community's tips & insights!</p>
                 </div>
                 <Container className='video-content'>
+                <p>jkfnjnf</p>
                 <Row  fluid className="video-row">
+                <p>nkjnskjfn</p>
                         <Col fluid className="video-col" xs={12} md={3}>
+                        <p>nfknkjfn</p>
                             <a  href="https://www.instagram.com/mytamildate/" target="_blank"  className="video-item">
-                                <Image fluid className='video-image' src={vd1} />
+                                <img fluid className='video-image' src={vd1} />
                                 <div className='play-btn'></div>
-                               
+                               <p>ndfkn</p>
                             </a>
                         </Col>
                         <Col className="video-col" xs={12} md={3}>
+                        <p>ndfkjns</p>
                             <a href='https://www.instagram.com/mytamildate/' target="_blank"  className="video-item">
                                 <Image fluid className='video-image' src={vd2} />
                                 <div className='play-btn'></div>
+                                <p>nkfnk</p>
                             </a>
                         </Col>
                         <Col className="video-col" xs={12} md={3}>

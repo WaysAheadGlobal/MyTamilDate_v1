@@ -10,9 +10,20 @@ import { Container, Image, Form, Button } from 'react-bootstrap';
 import st1 from '../assets/images/st1.png'
 import st2 from '../assets/images/st2.png'
 import st3 from '../assets/images/st3.png'
+import { useNavigate } from 'react-router-dom';
+
 
 
 export const Stories = () => {
+
+
+   
+    const navigate = useNavigate();
+
+
+    const goTomorestories = () => {
+        navigate("/SuccessPage");
+      };
     return (
         <>
             <Container fluid className='main-team'>
@@ -54,7 +65,7 @@ export const Stories = () => {
                         </Col>
                     </Row>
                 </Container>
-                <Button className='more-success-btn'>More success stories</Button>
+                <Button className='more-success-btn' onClick={goTomorestories}>More success stories</Button>
             </Container> 
 
         </>

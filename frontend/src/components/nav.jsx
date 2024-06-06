@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 import './nav.css';
-
+import { Link } from 'react-router-dom';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Container, Image } from 'react-bootstrap';
@@ -22,10 +22,9 @@ return(
 
 
 
-
 <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary Navbar-container">
 <Container>
-  <Navbar.Brand href="#home" ><Image src={heartlogo} style={{ height: '70px', width: '70px' }}></Image></Navbar.Brand>
+  <Navbar.Brand href="/" ><Image src={heartlogo} className='nav-logo' style={{ height: '70px', width: '70px' }}></Image></Navbar.Brand>
   <Navbar.Toggle aria-controls="responsive-navbar-nav" />
   <Navbar.Collapse id="responsive-navbar-nav">
     <Nav className="me-auto">
@@ -33,12 +32,11 @@ return(
     </Nav>
     <Nav className='nav-link-container'>
 
-      <Nav.Link  target="_blank" href="">Success Stories</Nav.Link>
-      <Nav.Link target="_blank" href="#deets">About Us</Nav.Link>
-      <Nav.Link  target="_blank"href="https://tamilculture.com/user/mytamildatecom
-">Blogs</Nav.Link>
-      <Nav.Link target="_blank" href="#deets">FAQs</Nav.Link>
-
+      <Nav.Link target="_blank"  as={Link} to="/SuccessPage" >Success Stories</Nav.Link>
+      <Nav.Link  target="_blank"  >About Us</Nav.Link>
+      <Nav.Link  target="_blank"  href="https://tamilculture.com/user/mytamildatecom">Blogs</Nav.Link>
+      <Nav.Link  target="_blank" as={Link} to="/FaqPage" >FAQs</Nav.Link>
+      <Nav.Link  target="_blank" as={Link} to="/GetInTouch" >Contact Us</Nav.Link>
     </Nav>
   </Navbar.Collapse>
 </Container>

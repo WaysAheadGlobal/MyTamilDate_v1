@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './signup-verifyphone.css';
 
-import logo from "../assets/images/MTDlogo.png";
+import logo2 from "../assets/images/logo2.png";
+
+import blank from "../assets/images/blank.png";
 import google from "../assets/images/google 1.jpg";
 import mail  from "../assets/images/Gmail.jpg";
 import Flag from 'react-world-flags';
 import { Container, Image, Form, Button, Dropdown } from 'react-bootstrap';
-
+import responsivebg from "../assets/images/responsive-bg.png";
 
 const countries = [
    { code: 'US', name: 'United States', dialCode: '+1' },
@@ -49,9 +51,9 @@ export const SignupPhone = () => {
       e.preventDefault();
      
       if (phoneNumber.length === 0) {
-         setErrorMessage('*Please enter phone number');
+         setErrorMessage('Please enter phone number');
        } else if (phoneNumber.length < 10) {
-         setErrorMessage('*Phone number must be at least 10 digits');
+         setErrorMessage('Phone number must be at least 10 digits');
        } else {
          setErrorMessage('');
          alert('Form submitted successfully');
@@ -67,26 +69,34 @@ export const SignupPhone = () => {
       console.log('Phone Number:', phoneNumber);
    };
 
+
+
+
    return (
       <div className='signupphone-container'>
-<div className='signup-phone-bg'></div>
+<div className='signup-phone-bg'>
+   {/* <Image src={responsivebg}></Image> */}
+ </div>
 
     
       <Container className='signupphone-main'>
+      <Container className='signupphone-content'>
          <Container className='logo-progressbar1'>
-            <Image src={logo} alt="Logo" style={{ backgroundColor: 'transparent', }} />
+            <Image src={logo2} className='signup-logo' alt="Logo" style={{ backgroundColor: 'transparent', }} />
             <div className='track-btn1'>
                <div></div>
             </div>
          </Container>
          <Container className='verify-phone-text'>
-            <p>Verify your Phone</p>
-            <p>By verifying your phone number, you’re helping us build a trusted and secure community</p>
+            {/* <p>Verify your Phone</p>
+            <p>By verifying your phone number, you’re helping us build a trusted and secure community</p> */
+            <Image src={blank}></Image>
+            }
          </Container>
          <Container className='verify-phone-details'>
             <Form onSubmit={handleSubmit} className='verify-phone-form'>
                <Form.Group controlId="formPhoneNumber" className='verify-form-group'>
-                  <Form.Label className='num-verify-lable'> Enter Phone Number *</Form.Label>
+                  <Form.Label className='num-verify-lable'> What's your phone number?</Form.Label>
                   <div style={{ display: 'flex', alignItems: 'center', width: '100%', margin: '' }}>
                      <Dropdown>
                         <Dropdown.Toggle as="div" id="dropdown-basic" className='flag-box' style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
@@ -129,13 +139,15 @@ export const SignupPhone = () => {
                <span>or</span>
                <div className='line'></div>
             </Container>
-            <p>Already have an account? <a href='' style={{ color: '#9663BF' }}>Sign in here</a></p>
-            <Container className='google-mail'>
+            <p>Already have an account? <a href='/SignIn' className='signup-signin' style={{ color: '#4E1173' }}>Sign in here</a></p>
+            {/* <Container className='google-mail'>
                <a href=''> <Image src={google}></Image>Sign Up using Google</a>
                <a href=''> <Image src={mail}></Image></a>
                
-            </Container>
+            </Container> */}
+            <p>By continuing you accept our <br/><a  className="signup-links " targrt="_blank" href="/PrivacyPolicy">Privacy Policy</a> and <a className="signup-links " targrt="_blank" href='/Tnc'>Terms of Use</a></p>
 
+         </Container>
          </Container>
       </Container>
       </div>

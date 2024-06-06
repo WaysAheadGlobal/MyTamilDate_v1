@@ -7,7 +7,7 @@ import lin from "../assets/images/lin.png";
 import tiktok from "../assets/images/tiktok.png";
 import gram from "../assets/images/gram.png";
 import logo2 from "../assets/images/logo2.png";
-
+import { Link } from 'react-router-dom';
 import { Container, Image, Form, Button } from 'react-bootstrap';
 
 
@@ -33,10 +33,10 @@ export const Footer= () => {
                 <div class='flinks'>
                     {/* <span class="link-heading">Links</span> */}
 
-                    <a target="_blank" href="#" class='linkf'>Success Stories </a>
+                    <a target="_blank"  href="#/SuccessPage" class='linkf'>Success Stories </a>
                     <a target="_blank" href="https://tamilculture.com/user/mytamildatecom" class='linkf'> Blogs</a>
                     <a target="_blank" href="#" class='linkf'> About Us</a>
-                    <a target="_blank" href="#" class='linkf'> Contact Us</a>
+                    <a target="_blank" href="/GetInTouch" class='linkf'> Contact Us</a>
       
 
 
@@ -45,9 +45,9 @@ export const Footer= () => {
 
                     {/* <span class="link-heading">Links</span> */}
 
-                    <a  target="_blank" href="#" class='linkf'> FAQs</a>
-                    <a target="_blank" href="#" class='linkf'> Terms & Conditions </a>
-                    <a target="_blank" href="#" class='linkf'> Privacy Policy</a>
+                    <a  target="_blank" href="/FaqPage"   class='linkf'> FAQs</a>
+                    <a target="_blank" href="/Tnc" class='linkf'> Terms & Conditions </a>
+                    <a target="_blank" href="/PrivacyPolicy" class='linkf'> Privacy Policy</a>
             
 
                 </div>

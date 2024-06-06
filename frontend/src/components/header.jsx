@@ -13,6 +13,9 @@ import bgl from '../assets/images/l-bg.png'
 import bgr from '../assets/images/r-bg.png'
 
 
+
+
+
 import logo2 from "../assets/images/logo2.png";
 import { useNavigate } from 'react-router-dom';
 
@@ -20,6 +23,10 @@ export const Headerlp = () => {
   const navigate = useNavigate();
   const goToSignup = () => {
     navigate("/signup");
+  };
+
+  const goToSignin = () => {
+    navigate("/SignIn");
   };
   return (
 
@@ -38,7 +45,7 @@ export const Headerlp = () => {
             <button className='header-btn1' onClick={goToSignup}>
             Get Started
             </button>
-            <button className='header-btn2'>
+            <button className='header-btn2'  onClick={goToSignin}>
             Returning? Login
             </button>
           </Container>

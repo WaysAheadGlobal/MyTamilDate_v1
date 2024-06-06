@@ -13,9 +13,7 @@ flex-direction: column;
 }
 .video-row{
     justify-content: center;
-    padding:0px;
-   
-    
+    padding:0px; 
 }
 .video-image{
   
@@ -95,7 +93,7 @@ color:
     height: auto;
     /* border-radius: 30px; */
     z-index: 9;
-    position: absolute;
+    /* position: absolute; */
     border:20px solid #FFFFFF;
     border-radius: 36px;
 

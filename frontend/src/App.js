@@ -32,9 +32,15 @@ import { EmailVerify} from './components/email-verify';
 import { Birthday} from './components/birthday';
 import { Selfie} from './components/take-selfie1';
 import {LP} from './components/LP';
+import {FaqPage} from './components/faq-pg';
+import {Tnc} from './components/tnc';
+import {PrivacyPolicy} from './components/privacy-policy';
 import { Stories } from "./components/stories";
 import { Pictext } from "./components/pic-text";
-
+import {SuccessPage} from "./components/success-stories-pg";
+import {GetInTouch} from './components/get-in-touch';
+import {SignIn} from  "./components/signin";
+import {AboutUsPage}   from "./components/aboutus-pg"
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -71,7 +77,28 @@ console.log(isAdmin)
               <Route path="/geography" element={<Geography />} />
               <Route path="/adminlogin" element={<AdminSignIn/>}></Route>
               <Route path="/addpromotionalcode" element={<AddPromotioncode/>}></Route>
+
+{/* landing page and its linked pages  stare*/}
                 <Route path="/" element={<LP/>}></Route>
+                <Route path="/SuccessPage" element={<SuccessPage/>}></Route>
+                <Route path="/FaqPage" element={<FaqPage/>}></Route>
+                <Route path="/GetInTouch" element={<GetInTouch/>}></Route>
+
+
+                <Route path="/aboutus" element={<AboutUsPage/>}></Route>
+
+                <Route path="/Tnc" element={<Tnc/>}></Route>
+                <Route path="/PrivacyPolicy" element={<PrivacyPolicy/>}></Route>
+
+                <Route path="/signup" element={<SignupPhone/>}></Route>
+                
+                <Route path="/signIn" element={<SignIn/>}></Route>
+
+
+
+
+
+{/* landing page and its linked pages end */}
                 <Route path="/signup" element={<SignupPhone/>}></Route>
                 <Route path="/entercode" element={<Entercode/>}></Route>
                 <Route path="/BasicDetails" element={<BasicDetails/>}></Route>
