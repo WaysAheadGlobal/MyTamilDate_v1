@@ -137,7 +137,7 @@ const UserDetails = () => {
             </Grid>
             <Grid item xs={6}>
               <Box mb={4}>
-                <Typography variant="h4" gutterBottom sx={{ color: colors.primary[500] }}>Personalities</Typography>
+                <Typography variant="h4" gutterBottom >Personalities</Typography>
                 <List>
                   {user.personalities.map((personality, index) => (
                     <ListItem key={index}>

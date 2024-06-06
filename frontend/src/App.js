@@ -34,6 +34,7 @@ import { Selfie} from './components/take-selfie1';
 import {LP} from './components/LP';
 import { Stories } from "./components/stories";
 import { Pictext } from "./components/pic-text";
+import TotalCount from "./components/totalcount";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -61,7 +62,7 @@ console.log(isAdmin)
               <Route path="/approvaluserdetails" element={<ApprovalUserDetails/>}></Route>
               <Route path="/promotionalcodes" element={<PromotionalCodes/>}></Route>
               <Route path="/invoices" element={<Invoices />} />
-          
+          <Route path="/count" element={<TotalCount/>}></Route>
               <Route path="/form" element={<Form />} />
               <Route path="/bar" element={<Bar />} />
               <Route path="/pie" element={<Pie />} />
