@@ -1,107 +1,75 @@
-import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, useTheme } from "@mui/material";
+import { Box, Button, Grid, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
+import Header from "../../components/Header1";
 
-const AddPromotionalCode = () => {
+const Details = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [formData, setFormData] = useState({
-    promotionCode: "",
-    amountOff: "",
-    percentOff: "",
-    availableFrom: "",
-    availableTo: "",
-    maxRedemptions: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch('YOUR_API_ENDPOINT', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // Add any additional headers you need
-        },
-        body: JSON.stringify(formData),
-      });
-      if (response.ok) {
-        // Handle success, maybe show a success message
-        console.log("Promotional code added successfully!");
-      } else {
-        // Handle error, maybe show an error message
-        console.error("Failed to add promotional code");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
+  // Example details (replace with actual data)
+  const details = {
+    promotionCode: "SUMMER21",
+    amountOff: "$10",
+    percentOff: "20%",
+    availableFrom: "2023-06-01",
+    availableTo: "2023-08-31",
+    maxRedemptions: "100",
+    subscriptionPeriod: "1 Month",
+    oncePerUser: "Yes",
   };
 
   return (
     <Box m="20px">
-      <Typography variant="h2">Add Promotional Code</Typography>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          name="promotionCode"
-          label="Promotion Code"
-          value={formData.promotionCode}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          name="amountOff"
-          label="Amount Off"
-          value={formData.amountOff}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          name="percentOff"
-          label="Percent Off"
-          value={formData.percentOff}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          name="availableFrom"
-          label="Available From"
-          value={formData.availableFrom}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          name="availableTo"
-          label="Available To"
-          value={formData.availableTo}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          name="maxRedemptions"
-          label="Max Redemptions"
-          value={formData.maxRedemptions}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-        />
-        <Button type="submit" variant="contained" color="primary">Add Code</Button>
-      </form>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: 2,
+          flexDirection: { xs: 'column', sm: 'row' },
+          mb: 3,
+        }}
+      >
+        <Header title="Promotional Codes Details" subtitle="" />
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 1,
+            width: { xs: '100%', sm: 'auto' },
+            justifyContent: { xs: 'space-between', sm: 'flex-start' },
+            mt: { xs: 1, sm: 0 },
+          }}
+        >
+          <Button variant="contained" color="secondary">Back</Button>
+          <Button variant="contained" color="error">Delete</Button>
+        </Box>
+      </Box>
+      <Grid container spacing={2}>
+        {Object.entries(details).map(([key, value], index) => (
+          <Grid item xs={12} sm={6} key={index}>
+            <Box mb={2}>
+              <Typography variant="h6" color={colors.primary[700]}>{formatLabel(key)}</Typography>
+              <Box
+                sx={{
+                  p: 2,
+                  border: `1px solid ${colors.grey[300]}`,
+                  borderRadius: '8px',
+                  backgroundColor: colors.primary[50],
+                }}
+              >
+                <Typography variant="body1">{value}</Typography>
+              </Box>
+            </Box>
+          </Grid>
+        ))}
+      </Grid>
     </Box>
   );
 };
 
-export default AddPromotionalCode;
+const formatLabel = (label) => {
+  // Convert camelCase or snake_case to Normal Case
+  return label.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+};
+
+export default Details;

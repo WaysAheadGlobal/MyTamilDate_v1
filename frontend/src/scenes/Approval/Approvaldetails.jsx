@@ -1,7 +1,14 @@
 import React from 'react';
-import { Box, Button, Typography, Avatar, Grid, Container, Paper } from '@mui/material';
+import { Box, Grid, Typography, Button, Avatar, List, ListItem, ListItemText } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import Header from '../../components/Header1'; // Adjust path as per your project structure
+import { tokens } from '../../theme'; // Adjust path as per your project structure
 
-const ApprovalUserDetails = () => {
+const UserDetails = () => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
+  // Example user details (replace with actual data)
   const user = {
     firstName: 'Ayoub',
     lastName: 'Rabidi',
@@ -22,115 +29,144 @@ const ApprovalUserDetails = () => {
     drinks: 'No',
     languages: 'English, French, Other',
     personalities: ['Communicative', 'Entrepreneurial', 'Husband Material'],
-    answers: {
-      question1: {
+    answers: [
+      {
         question: 'Two truths and a lie',
         answer: 'I hate dogs, I\'m a playboy, I love spaghetti',
       },
-      question2: {
+      {
         question: 'I get along best with people who',
         answer: 'Have good sarcasm',
       },
-    },
+    ],
     photos: [
       'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z2lybCUyMGluJTIwc2FyZWV8ZW58MHx8MHx8fDA%3D', 
-      "https://i.pinimg.com/originals/9b/a1/42/9ba142690b2d0bddbc31f3918792c878.jpg", 
-      'https://i.pinimg.com/736x/a5/87/64/a58764eb4e9b9a49845ba9d804e97339.jpg'
+      'https://i.pinimg.com/originals/9b/a1/42/9ba142690b2d0bddbc31f3918792c878.jpg', 
+      'https://i.pinimg.com/736x/a5/87/64/a58764eb4e9b9a49845ba9d804e97339.jpg',
     ],
   };
 
-  const handleApprove = () => {
-    // Handle approve logic
+  const handleRemoveFromList = () => {
+    // Implement logic for removing user from list
+    console.log('Removing user from list');
   };
 
-  const handleDelete = () => {
-    // Handle delete logic
+  const handleApproveRequest = () => {
+    // Implement logic for approving user request
+    console.log('Approving user request');
   };
 
-  const handleUserDeleteRequest = () => {
-    // Handle user delete request logic
-  };
-
-  const handleReject = () => {
-    // Handle reject logic
+  const handleRejectRequest = () => {
+    // Implement logic for rejecting user request
+    console.log('Rejecting user request');
   };
 
   return (
-    <Container>
-      <Paper elevation={3} sx={{ padding: 3, marginTop: 3 }}>
-        <Typography variant="h4" gutterBottom align="center">
-          User Details
-        </Typography>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
-            {user.photos.map((photo, index) => (
-              <Avatar
-                key={index}
-                src={photo}
-                alt={`User photo ${index + 1}`}
-                sx={{ 
-                  width: { xs: 100, sm: 150 }, 
-                  height: { xs: 100, sm: 150 }, 
-                  marginBottom: 2 
-                }}
-              />
-            ))}
-          </Grid>
-          <Grid item xs={12} md={8}>
-            {[
-              { label: 'First Name', value: user.firstName },
-              { label: 'Last Name', value: user.lastName },
-              { label: 'Status', value: user.status },
-              { label: 'Payment Status', value: user.paymentStatus },
-              { label: 'Email', value: user.email },
-              { label: 'Phone Number', value: user.phoneNumber },
-              { label: 'Birthday', value: user.birthday },
-              { label: 'Gender', value: user.gender },
-              { label: 'Location', value: user.location },
-              { label: 'Study', value: user.study },
-              { label: 'Job', value: user.job },
-              { label: 'Growth', value: user.growth },
-              { label: 'Religion', value: user.religion },
-              { label: 'Want Kids', value: user.wantKids },
-              { label: 'Have Kids', value: user.haveKids },
-              { label: 'Smokes', value: user.smokes },
-              { label: 'Drinks', value: user.drinks },
-              { label: 'Languages', value: user.languages },
-              { label: 'Personalities', value: user.personalities.join(', ') }
-            ].map((item, index) => (
-              <Typography key={index} variant="body1" sx={{ marginBottom: 1 }}>
-                <strong>{item.label}:</strong> {item.value}
-              </Typography>
-            ))}
-            {[
-              { question: user.answers.question1.question, answer: user.answers.question1.answer },
-              { question: user.answers.question2.question, answer: user.answers.question2.answer }
-            ].map((item, index) => (
-              <Box key={index} sx={{ marginTop: 2 }}>
-                <Typography variant="body1"><strong>Question:</strong> {item.question}</Typography>
-                <Typography variant="body2"> <strong>Answer:</strong>{item.answer}</Typography>
+    <Box m="20px">
+      <Header title="User Details" />
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={4}>
+          <Box display="flex" flexDirection="column" alignItems="center" mb={2} mt={2}>
+            <Box mb={2}>
+              {user.photos.map((photo, index) => (
+                <Avatar
+                  key={index}
+                  alt={`Photo ${index + 1}`}
+                  src={photo}
+                  variant="square"
+                  sx={{ width: '100%', height: '250px', borderRadius: '16px', mb: 4 }}
+                />
+              ))}
+            </Box>
+            <Typography variant="h5" align="center">{`${user.firstName} ${user.lastName}`}</Typography>
+            <Typography variant="subtitle1" color="textSecondary" align="center">{user.status}</Typography>
+            <Box display="flex" gap="5px" alignItems="center" justifyContent="center" mt={2}>
+              <Box mb={2} textAlign="center">
+                <Button variant="contained" sx={{ backgroundColor: colors.grey[600] }} onClick={handleRemoveFromList}>
+                  Remove
+                </Button>
               </Box>
-            ))}
+              <Box mb={2} textAlign="center">
+                <Button sx={{
+                  background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                  color: '#fff',
+                  '&:hover': {
+                    background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                  },
+                }} onClick={handleApproveRequest}>Approve</Button>
+              </Box>
+              <Box mb={2} textAlign="center">
+                <Button variant="contained" color="error" onClick={handleRejectRequest}>Delete</Button>
+              </Box>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={8}>
+          <Grid container spacing={2}>
+           
+            {Object.entries(user).map(([key, value]) => {
+              if (key !== 'answers' && key !== 'personalities' && key !== 'photos') {
+                return (
+                  <Grid item xs={6} key={key}>
+                    <Box mb={4}>
+                      <Typography variant="h4" gutterBottom sx={{ color: colors.primary[500] }}>{formatKey(key)}</Typography>
+                      <Typography variant="body1">{formatValue(value)}</Typography>
+                    </Box>
+                  </Grid>
+                );
+              }
+              return null;
+            })}
+             <Grid item xs={6}>
+              {Object.entries(user).map(([key, value]) => {
+                if (key === 'answers') {
+                  return (
+                    <Box key={key} mb={4}>
+                      <Typography variant="h4" gutterBottom sx={{ color: colors.primary[500] }}>Question & Answers</Typography>
+                      {value.map((ans, index) => (
+                        <Box key={index} mb={2}>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>{ans.question}</Typography>
+                          <Typography variant="body1">{ans.answer}</Typography>
+                        </Box>
+                      ))}
+                    </Box>
+                  );
+                }
+                return null;
+              })}
+            </Grid>
+            <Grid item xs={6}>
+              <Box mb={4}>
+                <Typography variant="h4" gutterBottom >Personalities</Typography>
+                <List>
+                  {user.personalities.map((personality, index) => (
+                    <ListItem key={index}>
+                      <ListItemText primary={personality} />
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            </Grid>
           </Grid>
         </Grid>
-        <Box mt={4} mb={2} textAlign="center">
-          <Button mb={2} variant="contained" color="primary" onClick={handleApprove} sx={{ marginBottom: 2, marginRight: 2 }}>
-            Approve
-          </Button>
-          <Button variant="contained" color="error" onClick={handleDelete} sx={{ marginBottom: 2, marginRight: 2 }}>
-  Delete
-</Button>
-
-          <Button mb={2} variant="contained" color="error" onClick={handleUserDeleteRequest} sx={{ marginBottom: 2, marginRight: 2 }}>
-            User Delete Request
-          </Button>
-          <Button  mb={2} variant="contained" color="secondary" sx={{ marginBottom: 2 }} onClick={handleReject}>
-            Reject
-          </Button>
-        </Box>
-      </Paper>
-    </Container>
+      </Grid>
+    </Box>
   );
 };
 
-export default ApprovalUserDetails;
+// Helper functions to format key and value
+const formatKey = (key) => {
+  return key.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); });
+};
+
+const formatValue = (value) => {
+  if (Array.isArray(value)) {
+    return value.join(', ');
+  } else if (typeof value === 'object') {
+    return Object.values(value).join(', ');
+  } else {
+    return value;
+  }
+};
+
+export default UserDetails;

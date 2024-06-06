@@ -1,134 +1,133 @@
-import { createContext, useState, useMemo } from "react";
-import { createTheme } from "@mui/material/styles";
+import { createTheme } from '@mui/material/styles';
+import { createContext, useState, useMemo } from 'react';
 
-// color design tokens export
+// Color design tokens export
 export const tokens = (mode) => ({
-  ...(mode === "dark"
+  ...(mode === 'dark'
     ? {
         grey: {
-          100: "#e0e0e0",
-          200: "#c2c2c2",
-          300: "#a3a3a3",
-          400: "#858585",
-          500: "#666666",
-          600: "#525252",
-          700: "#3d3d3d",
-          800: "#292929",
-          900: "#141414",
+          100: '#e0e0e0',
+          200: '#c2c2c2',
+          300: '#a3a3a3',
+          400: '#858585',
+          500: '#666666',
+          600: '#525252',
+          700: '#3d3d3d',
+          800: '#292929',
+          900: '#141414',
         },
         primary: {
-          100: "#d0d1d5",
-          200: "#a1a4ab",
-          300: "#727681",
-          400: "#1F2A40",
-          500: "#141b2d",
-          600: "#101624",
-          700: "#0c101b",
-          800: "#080b12",
-          900: "#040509",
+          100: '#d0d1d5',
+          200: '#a1a4ab',
+          300: '#727681',
+          400: '#1F2A40',
+          500: '#141b2d',
+          600: '#101624',
+          700: '#0c101b',
+          800: '#080b12',
+          900: '#040509',
         },
         greenAccent: {
-          100: "#FC8C66",
-          200: "#FC8C66",
-          300: "#FC8C66",
-          400: "#FC8C66",
-          500: "#FC8C66",
-          600: "#FC8C66",
-          700: "#FC8C66",
-          800: "#FC8C66",
-          900: "#FC8C66",
+          100: '#FC8C66',
+          200: '#FC8C66',
+          300: '#FC8C66',
+          400: '#FC8C66',
+          500: '#FC8C66',
+          600: '#FC8C66',
+          700: '#FC8C66',
+          800: '#FC8C66',
+          900: '#FC8C66',
         },
         redAccent: {
-          100: "#f8dcdb",
-          200: "#f1b9b7",
-          300: "#e99592",
-          400: "#e2726e",
-          500: "#db4f4a",
-          600: "#af3f3b",
-          700: "#832f2c",
-          800: "#58201e",
-          900: "#2c100f",
+          100: '#f8dcdb',
+          200: '#f1b9b7',
+          300: '#e99592',
+          400: '#e2726e',
+          500: '#db4f4a',
+          600: '#af3f3b',
+          700: '#832f2c',
+          800: '#58201e',
+          900: '#2c100f',
         },
         blueAccent: {
-          100: "#e1e2fe",
-          200: "#c3c6fd",
-          300: "#a4a9fc",
-          400: "#868dfb",
-          500: "#6870fa",
-          600: "#535ac8",
-          700: "#3e4396",
-          800: "#2a2d64",
-          900: "#151632",
+          100: '#e1e2fe',
+          200: '#c3c6fd',
+          300: '#a4a9fc',
+          400: '#868dfb',
+          500: '#6870fa',
+          600: '#535ac8',
+          700: '#3e4396',
+          800: '#2a2d64',
+          900: '#151632',
         },
       }
     : {
         grey: {
-          100: "#141414",
-          200: "#292929",
-          300: "#3d3d3d",
-          400: "#525252",
-          500: "#666666",
-          600: "#858585",
-          700: "#a3a3a3",
-          800: "#c2c2c2",
-          900: "#e0e0e0",
+          100: '#141414',
+          200: '#292929',
+          300: '#3d3d3d',
+          400: '#525252',
+          500: '#666666',
+          600: '#858585',
+          700: '#a3a3a3',
+          800: '#c2c2c2',
+          900: '#e0e0e0',
         },
         primary: {
-          100: "#040509",
-          200: "#080b12",
-          300: "#0c101b",
-          400: "#f2f0f0", // manually changed
-          500: "#141b2d",
-          600: "#1F2A40",
-          700: "#727681",
-          800: "#a1a4ab",
-          900: "#d0d1d5",
+          100: '#040509',
+          200: '#080b12',
+          300: '#0c101b',
+          400: '#f2f0f0', // Manually changed
+          500: '#141b2d',
+          600: '#1F2A40',
+          700: '#727681',
+          800: '#a1a4ab',
+          900: '#d0d1d5',
         },
         greenAccent: {
-          100: "#FC8C66",
-          200: "#FC8C66",
-          300: "#FC8C66",
-          400: "#FC8C66",
-          500: "#FC8C66",
-          600: "#FC8C66",
-          700: "#FC8C66",
-          800: "#FC8C66",
-          900: "#FC8C66",
+          100: '#FC8C66',
+          200: '#FC8C66',
+          300: '#FC8C66',
+          400: '#FC8C66',
+          500: '#FC8C66',
+          600: '#FC8C66',
+          700: '#FC8C66',
+          800: '#FC8C66',
+          900: '#FC8C66',
         },
         redAccent: {
-          100: "#2c100f",
-          200: "#58201e",
-          300: "#832f2c",
-          400: "#af3f3b",
-          500: "#db4f4a",
-          600: "#e2726e",
-          700: "#e99592",
-          800: "#f1b9b7",
-          900: "#f8dcdb",
+          100: '#2c100f',
+          200: '#58201e',
+          300: '#832f2c',
+          400: '#af3f3b',
+          500: '#db4f4a',
+          600: '#e2726e',
+          700: '#e99592',
+          800: '#f1b9b7',
+          900: '#f8dcdb',
         },
         blueAccent: {
-          100: "#151632",
-          200: "#2a2d64",
-          300: "#3e4396",
-          400: "#535ac8",
-          500: "#6870fa",
-          600: "#868dfb",
-          700: "#a4a9fc",
-          800: "#c3c6fd",
-          900: "#e1e2fe",
+          100: '#151632',
+          200: '#2a2d64',
+          300: '#3e4396',
+          400: '#535ac8',
+          500: '#6870fa',
+          600: '#868dfb',
+          700: '#a4a9fc',
+          800: '#c3c6fd',
+          900: '#e1e2fe',
         },
       }),
 });
 
-// mui theme settings
+// MUI theme settings
 export const themeSettings = (mode) => {
   const colors = tokens(mode);
   return {
     palette: {
       mode: mode,
-      ...(mode === "dark"
+      ...(mode === 'dark'
         ? {
-            // palette values for dark mode
             primary: {
               main: colors.primary[500],
             },
@@ -145,7 +144,6 @@ export const themeSettings = (mode) => {
             },
           }
         : {
-            // palette values for light mode
             primary: {
               main: colors.primary[100],
             },
@@ -158,59 +156,58 @@ export const themeSettings = (mode) => {
               light: colors.grey[100],
             },
             background: {
-              default: "#fcfcfc",
+              default: '#fcfcfc',
             },
           }),
     },
     typography: {
-      fontFamily: ["Poppins", "sans-serif"].join(","),
+      fontFamily: ['Poppins', 'sans-serif'].join(','),
       fontSize: 12,
       h1: {
-        fontFamily: ["Poppins", "sans-serif"].join(","),
+        fontFamily: ['Poppins', 'sans-serif'].join(','),
         fontSize: 40,
-        color: "#3A3A3A",
+        color: mode === 'dark' ? '#ffffff' : '#3A3A3A',
       },
       h2: {
-        fontFamily: ["Poppins", "sans-serif"].join(","),
+        fontFamily: ['Poppins', 'sans-serif'].join(','),
         fontSize: 32,
-        color: "#3A3A3A",
+        color: mode === 'dark' ? '#ffffff' : '#3A3A3A',
       },
       h3: {
-        fontFamily: ["Poppins", "sans-serif"].join(","),
+        fontFamily: ['Poppins', 'sans-serif'].join(','),
         fontSize: 24,
-        color: "#3A3A3A",
+        color: mode === 'dark' ? '#ffffff' : '#3A3A3A',
       },
       h4: {
-        fontFamily: ["Poppins", "sans-serif"].join(","),
+        fontFamily: ['Poppins', 'sans-serif'].join(','),
         fontSize: 20,
-        color: "#3A3A3A",
+        color: mode === 'dark' ? '#ffffff' : '#3A3A3A',
       },
       h5: {
-        fontFamily: ["Poppins", "sans-serif"].join(","),
+        fontFamily: ['Poppins', 'sans-serif'].join(','),
         fontSize: 16,
-        color: "#3A3A3A",
+        color: mode === 'dark' ? '#ffffff' : '#3A3A3A',
       },
       h6: {
-        fontFamily: ["Poppins", "sans-serif"].join(","),
+        fontFamily: ['Poppins', 'sans-serif'].join(','),
         fontSize: 14,
-        color: "#3A3A3A",
+        color: mode === 'dark' ? '#ffffff' : '#3A3A3A', // Adjust heading color here
       },
     },
   };
 };
 
-// context for color mode
+// Context for color mode
 export const ColorModeContext = createContext({
   toggleColorMode: () => {},
 });
 
 export const useMode = () => {
-  const [mode, setMode] = useState("light");
+  const [mode, setMode] = useState('light');
 
   const colorMode = useMemo(
     () => ({
-      toggleColorMode: () =>
-        setMode((prev) => (prev === "light" ? "dark" : "light")),
+      toggleColorMode: () => setMode((prev) => (prev === 'light' ? 'dark' : 'light')),
     }),
     []
   );

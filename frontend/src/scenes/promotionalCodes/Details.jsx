@@ -14,127 +14,62 @@ const Details = () => {
     availableFrom: "2023-06-01",
     availableTo: "2023-08-31",
     maxRedemptions: "100",
+    subscriptionPeriod: "1 Month",
+    oncePerUser: "Yes",
   };
 
   return (
     <Box m="20px">
-     <Box
-    sx={{
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: 2,
-      flexDirection: { xs: 'column', sm: 'row' },
-    }}
-  >
-    <Header title="Promotional Codes Details" subtitle="" />
-    <Box
-      sx={{
-        display: 'flex',
-        gap: 1,
-        width: { xs: '100%', sm: 'auto' },
-        justifyContent: { xs: 'space-between', sm: 'flex-start' },
-        marginTop: { xs: 1, sm: 0 },
-      }}
-    >
-      <Button variant="contained" color="secondary">List</Button>
-      <Button variant="contained" color="error">Delete</Button>
-    </Box>
-  </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: 2,
+          flexDirection: { xs: 'column', sm: 'row' },
+          mb: 3,
+        }}
+      >
+        <Header title="Promotional Codes Details" subtitle="" />
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 1,
+            width: { xs: '100%', sm: 'auto' },
+            justifyContent: { xs: 'space-between', sm: 'flex-start' },
+            mt: { xs: 1, sm: 0 },
+          }}
+        >
+          <Button variant="contained" color="secondary">List</Button>
+          <Button variant="contained" color="error">Delete</Button>
+        </Box>
+      </Box>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <Box mb={1}>
-            <Typography variant="h3" >Promotions Code</Typography>
-            <Box
-              sx={{
-                p: 1,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">{details.amountOff}</Typography>
+        {Object.entries(details).map(([key, value], index) => (
+          <Grid item xs={12} sm={6} key={index}>
+            <Box mb={2}>
+              <Typography variant="h6" color={colors.primary[700]}>{formatLabel(key)}</Typography>
+              <Box
+                sx={{
+                  p: 2,
+                  border: `1px solid ${colors.grey[300]}`,
+                  borderRadius: '8px',
+                  backgroundColor: colors.primary[50],
+                }}
+              >
+                <Typography variant="body1">{value}</Typography>
+              </Box>
             </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box mb={1}>
-            <Typography variant="h3">Amount Off</Typography>
-            <Box
-              sx={{
-                p: 1,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">{details.promotionCode}</Typography>
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box mb={1}>
-            <Typography variant="h3">Percent Off</Typography>
-            <Box
-              sx={{
-                p: 1,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">{details.percentOff}</Typography>
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box mb={1}>
-            <Typography variant="h3">Available From</Typography>
-            <Box
-              sx={{
-                p: 1,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">{details.availableFrom}</Typography>
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box mb={1}>
-            <Typography variant="h3">Available To</Typography>
-            <Box
-              sx={{
-                p: 1,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">{details.availableTo}</Typography>
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box mb={1}>
-            <Typography variant="h3">Max Redemptions</Typography>
-            <Box
-              sx={{
-                p: 1,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">{details.maxRedemptions}</Typography>
-            </Box>
-          </Box>
-        </Grid>
+          </Grid>
+        ))}
       </Grid>
     </Box>
   );
+};
+
+const formatLabel = (label) => {
+  // Convert camelCase or snake_case to Normal Case
+  return label.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 };
 
 export default Details;

@@ -45,7 +45,7 @@ const Contacts = () => {
       field: 'name',
       headerName: 'Name',
       flex: 1,
-      cellClassName: 'name-column--cell',
+      
     },
     {
       field: 'age',
@@ -94,7 +94,7 @@ const Contacts = () => {
       headerName: 'Link',
       flex: 1,
       renderCell: (params) => (
-        <Link to="/promotionalcodedetails" style={{ color: colors.greenAccent[200], textDecoration: 'none' }}>
+        <Link to="/promotionalcodedetails" style={{ color: colors.blueAccent[400], textDecoration: 'none' }}>
           Show
         </Link>
       ),
@@ -116,13 +116,14 @@ const Contacts = () => {
         sx={{ mt: { lg: '-70px' } }}
       >
         <Button
-          sx={{
-            backgroundColor: colors.blueAccent[700],
-            color: colors.grey[100],
-            fontSize: '14px',
-            fontWeight: 'bold',
-            padding: '10px 20px',
-          }}
+              sx={{
+                mb: 2,
+                background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                color: '#fff',
+                '&:hover': {
+                  background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                },
+              }}
           onClick={handleAddPromoCode}
         >
           Add new Code
@@ -142,7 +143,7 @@ const Contacts = () => {
             color: colors.greenAccent[300],
           },
           "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[700],
+            backgroundColor: colors.blueAccent[900],
             borderBottom: "none",
           },
           "& .MuiDataGrid-virtualScroller": {
@@ -150,7 +151,7 @@ const Contacts = () => {
           },
           "& .MuiDataGrid-footerContainer": {
             borderTop: "none",
-            backgroundColor: colors.blueAccent[700],
+            backgroundColor: colors.blueAccent[900],
           },
           "& .MuiCheckbox-root": {
             color: `${colors.greenAccent[200]} !important`,

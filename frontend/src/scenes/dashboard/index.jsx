@@ -10,7 +10,9 @@ import Header from "../../components/Header1";
 import LineChart from "../../components/LineChart";
 import GeographyChart from "../../components/GeographyChart";
 import BarChart from "../../components/BarChart";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import StatBox from "../../components/StatBox";
+import JoinInnerIcon from '@mui/icons-material/JoinInner';
 import ProgressCircle from "../../components/ProgressCircle";
 const data = [
   { country: 'Canada', value: 6 },
@@ -42,11 +44,12 @@ const Dashboard = () => {
         <Box>
           <Button
             sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
+              mb: 2,
+              background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+              color: '#fff',
+              '&:hover': {
+                background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+              },
             }}
           >
             <DownloadOutlinedIcon sx={{ mr: "10px" }} />
@@ -95,7 +98,7 @@ const Dashboard = () => {
             progress="0.50"
             increase="+21%"
             icon={
-              <PointOfSaleIcon
+              <FavoriteBorderIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
               />
             }
@@ -114,7 +117,7 @@ const Dashboard = () => {
             progress="0.30"
             increase="+5%"
             icon={
-              <PersonAddIcon
+              <JoinInnerIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
               />
             }

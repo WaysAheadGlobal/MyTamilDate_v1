@@ -2,33 +2,25 @@ import React from 'react';
 import { Box, Grid, Typography, Button, Avatar } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Header from '../../components/Header1'; // Adjust path as per your project structure
-import { tokens } from '../../theme'; // Adjust path as per your project structure
 
 const UserDetails = () => {
   const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
 
   // Example user details (replace with actual data)
   const userDetails = {
-    firstName: 'John',
-    lastName: 'Doe',
-    status: 'Old User',
-    email: 'johndoe@example.com',
-    paymentStatus: 'Paid',
-    phoneNumber: 'N/A',
-    birthday: '1990-10-21',
+    firstName: 'Thanu',
+    lastName: 'T_kanth',
+    status: 'Pending Approval',
+    email: 'M*****@gmail.com',
+    paymentStatus: 'Free',
+    phoneNumber: '+33****7573',
+    birthday: '1988-09-10',
     gender: 'Male',
-    location: 'N/A',
-    study: 'N/A',
-    job: 'N/A',
-    growth: 'N/A',
-    religion: 'N/A',
-    wantKids: 'N/A',
-    haveKids: 'N/A',
-    smokes: 'N/A',
-    drinks: 'N/A',
-    languages: 'English, Spanish',
-    imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Outdoors-man-portrait_%28cropped%29.jpg/330px-Outdoors-man-portrait_%28cropped%29.jpg', // Replace with actual path to image
+    location: 'Paris, France',
+    study: 'High School',
+    job: 'Non-profit',
+    growth: '5\'10" (177.80cm)',
+    imageSrc: 'https://i.pinimg.com/736x/56/ed/ee/56edee46de010b45ee0a1ac71feca7ad.jpg', // Replace with actual path to image
   };
 
   const handleRemoveFromList = () => {
@@ -56,51 +48,84 @@ const UserDetails = () => {
             <Typography variant="h5" align="center">{`${userDetails.firstName} ${userDetails.lastName}`}</Typography>
             <Typography variant="subtitle1" color="textSecondary" align="center">{userDetails.status}</Typography>
           </Box>
-          <Box>
-            <Box>
-
-            <Box display="flex" gap="5px"  alignItems="center" justifyContent="center">
-
-            
-          <Box mb={2} textAlign="center">
-            <Button variant="contained" color="primary" Width="40px" onClick={handleRemoveFromList}>Remove</Button>
-          </Box>
-          <Box mb={2} textAlign="center">
-            <Button variant="contained" color="secondary" Width="40px" onClick={handleApproveRequest}>Approve</Button>
-          </Box>
-          <Box mb={2} textAlign="center">
-            <Button variant="contained" color="error"Width="40px" onClick={handleRejectRequest}>Delete</Button>
-          </Box>
-          
-          </Box>
-          {/* <Box textAlign="center">
-            <Button variant="contained" color="error"Width="40px" onClick={handleRejectRequest}>User Delete Request</Button>
-          </Box> */}
-          </Box>
+          <Box display="flex" gap="5px" alignItems="center" justifyContent="center">
+            <Box mb={2} textAlign="center">
+              <Button variant="contained" sx={{ backgroundColor: theme.palette.grey[600] }} onClick={handleRemoveFromList}>
+                Remove
+              </Button>
+            </Box>
+            <Box mb={2} textAlign="center">
+              <Button 
+                sx={{
+                  background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                  color: '#fff',
+                  '&:hover': {
+                    background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                  },
+                }} 
+                onClick={handleApproveRequest}
+              >
+                Approve
+              </Button>
+            </Box>
+            <Box mb={2} textAlign="center">
+              <Button variant="contained" color="error" onClick={handleRejectRequest}>Delete</Button>
+            </Box>
           </Box>
         </Grid>
         <Grid item xs={12} md={8}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6" gutterBottom>Details</Typography>
-              <Typography variant="body1"><strong>Email:</strong> {userDetails.email}</Typography>
-              <Typography variant="body1"><strong>Payment Status:</strong> {userDetails.paymentStatus}</Typography>
-              <Typography variant="body1"><strong>Phone Number:</strong> {userDetails.phoneNumber}</Typography>
-              <Typography variant="body1"><strong>Birthday:</strong> {userDetails.birthday}</Typography>
-              <Typography variant="body1"><strong>Gender:</strong> {userDetails.gender}</Typography>
-              <Typography variant="body1"><strong>Location:</strong> {userDetails.location}</Typography>
-              <Typography variant="body1"><strong>Languages:</strong> {userDetails.languages}</Typography>
+            <Grid item xs={6}>
+              <Box mb={4}>
+                <Typography variant="h4" gutterBottom>First Name</Typography>
+                <Typography variant="body1">{userDetails.firstName}</Typography>
+              </Box>
+              <Box mb={4}>
+                <Typography variant="h4" gutterBottom>Status</Typography>
+                <Typography variant="body1">{userDetails.status}</Typography>
+              </Box>
+              <Box mb={4}>
+                <Typography variant="h4" gutterBottom>Email</Typography>
+                <Typography variant="body1">{userDetails.email}</Typography>
+              </Box>
+              <Box mb={4}>
+                <Typography variant="h4" gutterBottom>Birthday</Typography>
+                <Typography variant="body1">{userDetails.birthday}</Typography>
+              </Box>
+              <Box mb={4}>
+                <Typography variant="h4" gutterBottom>Location</Typography>
+                <Typography variant="body1">{userDetails.location}</Typography>
+              </Box>
+              <Box mb={4}>
+                <Typography variant="h4" gutterBottom>Job</Typography>
+                <Typography variant="body1">{userDetails.job}</Typography>
+              </Box>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6" gutterBottom>Additional Information</Typography>
-              <Typography variant="body1"><strong>Study:</strong> {userDetails.study}</Typography>
-              <Typography variant="body1"><strong>Job:</strong> {userDetails.job}</Typography>
-              <Typography variant="body1"><strong>Growth:</strong> {userDetails.growth}</Typography>
-              <Typography variant="body1"><strong>Religion:</strong> {userDetails.religion}</Typography>
-              <Typography variant="body1"><strong>Want Kids:</strong> {userDetails.wantKids}</Typography>
-              <Typography variant="body1"><strong>Have Kids:</strong> {userDetails.haveKids}</Typography>
-              <Typography variant="body1"><strong>Smokes:</strong> {userDetails.smokes}</Typography>
-              <Typography variant="body1"><strong>Drinks:</strong> {userDetails.drinks}</Typography>
+            <Grid item xs={6}>
+              <Box mb={4}>
+                <Typography variant="h4" gutterBottom>Last Name</Typography>
+                <Typography variant="body1">{userDetails.lastName}</Typography>
+              </Box>
+              <Box mb={4}>
+                <Typography variant="h4" gutterBottom>Payment Status</Typography>
+                <Typography variant="body1">{userDetails.paymentStatus}</Typography>
+              </Box>
+              <Box mb={4}>
+                <Typography variant="h4" gutterBottom>Phone Number</Typography>
+                <Typography variant="body1">{userDetails.phoneNumber}</Typography>
+              </Box>
+              <Box mb={4}>
+                <Typography variant="h4" gutterBottom>Gender</Typography>
+                <Typography variant="body1">{userDetails.gender}</Typography>
+              </Box>
+              <Box mb={4}>
+                <Typography variant="h4" gutterBottom>Study</Typography>
+                <Typography variant="body1">{userDetails.study}</Typography>
+              </Box>
+              <Box mb={4}>
+                <Typography variant="h4" gutterBottom>Growth</Typography>
+                <Typography variant="body1">{userDetails.growth}</Typography>
+              </Box>
             </Grid>
           </Grid>
         </Grid>
