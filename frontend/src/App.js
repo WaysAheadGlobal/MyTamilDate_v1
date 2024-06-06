@@ -37,15 +37,11 @@ import {Tnc} from './components/tnc';
 import {PrivacyPolicy} from './components/privacy-policy';
 import { Stories } from "./components/stories";
 import { Pictext } from "./components/pic-text";
-<<<<<<< HEAD
+import TotalCount from "./components/totalcount";
 import {SuccessPage} from "./components/success-stories-pg";
 import {GetInTouch} from './components/get-in-touch';
 import {SignIn} from  "./components/signin";
 import {AboutUsPage}   from "./components/aboutus-pg"
-=======
-import TotalCount from "./components/totalcount";
-
->>>>>>> 486bb75da92f5038c53e8297cb65280f969a6877
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
