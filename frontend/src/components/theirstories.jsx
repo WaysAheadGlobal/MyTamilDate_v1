@@ -31,7 +31,7 @@ export const TheirStories = () => {
                             <div className="story-detail">
                                 <span className='story-name'>Madhu & Niya</span>
                                 <span className='story-title'>It was love at first sight for Madhu and Niya...</span>
-                                <a href='' className='story-read-more'>Read more</a>
+                                <a  target='_blank' href='https://tamilculture.com/index.php/mytamildate-success-story-it-was-love-at-first-sight-for-madhu-niya' className='story-read-more'>Read more</a>
                             </div>
                         </div>
                     </div>
@@ -41,7 +41,7 @@ export const TheirStories = () => {
                             <div className="story-detail">
                                 <span className='story-name'>Abi & John</span>
                                 <span className='story-title'>Abi & John Bonded Over Faith & Connection...</span>
-                                <a href='' className='story-read-more'>Read more</a>
+                                <a  target='_blank' href='https://tamilculture.com/mytamildate-success-abi-john-bonded-over-faith-their-tamil-german-british-connection' className='story-read-more'>Read more</a>
                             </div>
                         </div>
                     </div>
@@ -51,7 +51,7 @@ export const TheirStories = () => {
                             <div className="story-detail">
                                 <span className='story-name'>Jenani & Nav</span>
                                 <span className='story-title'>Jenani & Nav Found Each Other At The Right Time...</span>
-                                <a href='' className='story-read-more'>Read more</a>
+                                <a target='_blank' href='https://tamilculture.com/mytamildate-love-story-jenani-nav-found-each-other-at-the-right-time-and-right-place-in-life' className='story-read-more'>Read more</a>
                             </div>
                         </div>
                     </div>

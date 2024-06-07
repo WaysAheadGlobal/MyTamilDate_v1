@@ -18,6 +18,7 @@ import agent from "../assets/images/AGENT.png";
 import moving from "../assets/images/MOVING HOME.png";
 import abtr from "../assets/images/abtr.png";
 import abtl from "../assets/images/abtl.png";
+import abt4vid from "../assets/images/abtus-video.png";
 export const AboutUsPage = () => {
     return (
         <>
@@ -106,7 +107,7 @@ export const AboutUsPage = () => {
                             <div className='abt3-bottom'>
                                 <img className="abt3-img" src={agent}></img>
                                 <div className='abt3-text'>
-                                    <span >Trust & Authenticity</span>
+                                    <span >Safety & Protection</span>
                                     <p>We prioritize creating a safe and trusted community, ensuring your platform experience
                                         and personal data protection.</p>
 
@@ -119,7 +120,7 @@ export const AboutUsPage = () => {
                             <div className='abt3-top'>
                                 <img className="abt3-img" src={property}></img>
                                 <div className='abt3-text'>
-                                    <span >Trust & Authenticity</span>
+                                    <span >Flexible Platform</span>
                                     <p>We’re built for mobile first and enhanced for desktop too! The best part? You don’t have to download yet another app.</p>
                                 </div>
                             </div>
@@ -128,7 +129,7 @@ export const AboutUsPage = () => {
                             <div className='abt3-bottom abt3-cus'>
                                 <img className="abt3-img" src={moving}></img>
                                 <div className='abt3-text'>
-                                    <span >Trust & Authenticity</span>
+                                    <span >Personalized Service</span>
                                     <p>We care about your dating life like a good friend, offering profile help, messaging tips, and date ideas!</p>
                                 </div>
                             </div>
@@ -147,6 +148,24 @@ export const AboutUsPage = () => {
                     </Container>
 
 
+
+
+
+                </Container>
+
+
+
+
+
+
+                <Container className='abt4-main'>
+              <a  target="_blank"href='https://www.instagram.com/reel/C4Bg5EWJZ8P/'>
+
+                      <img className='abt4-bg' src={abt4vid}></img>
+
+
+
+              </a>
 
 
 

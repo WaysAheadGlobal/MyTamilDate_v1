@@ -44,21 +44,21 @@ export const SuccessPage=()=>
                 <Row  fluid className="team-row">
                         <Col fluid className="team-col" xs={12} md={3}>
                             <div className="team-item">
-                                <Image fluid className='team-image' src={st2} />
+                                <Image fluid className='team-image' src={st1} />
                                 <div className="successpg-details">
                                     <span className='person-name'>Madhu & Niya</span>
                                     <span className='person-title'>It was love at first sight for Madhu and Niya....</span>
-                                    <a href='' className='read-more'>Read more</a>
+                                    <a target='_blank' href='https://tamilculture.com/index.php/mytamildate-success-story-it-was-love-at-first-sight-for-madhu-niya' className='read-more'>Read more</a>
                                 </div>
                             </div>
                         </Col>
                         <Col className="team-col" xs={12} md={3}>
                             <div className="team-item">
-                                <Image fluid className='team-image' src={st1} />
+                                <Image fluid className='team-image' src={st2} />
                                 <div className="successpg-details">
                                     <span className='person-name'>Abi & John</span>
                                     <span className='person-title'>Abi & John Bonded Over Faith & Connection...</span>
-                                    <a href='' className='read-more'>Read more</a>
+                                    <a target='_blank' href='https://tamilculture.com/mytamildate-success-abi-john-bonded-over-faith-their-tamil-german-british-connection' className='read-more'>Read more</a>
                                 </div>
                             </div>
                         </Col>
@@ -68,7 +68,7 @@ export const SuccessPage=()=>
                                 <div className="successpg-details">
                                     <span className='person-name'>Jenani & Nav</span>
                                     <span className='person-title'>Jenani & Nav Found Each Other At The Right Time...</span>
-                                    <a  href="" className='read-more'>Read more</a>
+                                    <a target='_blank' href="https://tamilculture.com/mytamildate-love-story-jenani-nav-found-each-other-at-the-right-time-and-right-place-in-life" className='read-more'>Read more</a>
                                 </div>
                             </div>
                         </Col>
@@ -83,7 +83,7 @@ export const SuccessPage=()=>
                                 <div className="successpg-details">
                                     <span className='person-name'>Agi & Ano</span>
                                     <span className='person-title'>Agi’s First Attempt With Online Dating Led Her To....</span>
-                                    <a href='' className='read-more'>Read more</a>
+                                    <a target='_blank' href='https://tamilculture.com/mytamildate-success-agis-first-attempt-with-online-dating-led-her-to-soulmate-ano' className='read-more'>Read more</a>
                                 </div>
                             </div>
                         </Col>
@@ -93,7 +93,7 @@ export const SuccessPage=()=>
                                 <div className="successpg-details">
                                     <span className='person-name'>Celine & Santhous</span>
                                     <span className='person-title'>A Gentle Push Towards Online Dating By Family Brought....</span>
-                                    <a href='' className='read-more'>Read more</a>
+                                    <a  target='_blank' href='https://tamilculture.com/mytamildate-success-a-gentle-push-towards-online-dating-by-family-brought-celine-santhous-together' className='read-more'>Read more</a>
                                 </div>
                             </div>
                         </Col>
@@ -103,7 +103,7 @@ export const SuccessPage=()=>
                                 <div className="successpg-details">
                                     <span className='person-name'>Suji & Sinthu</span>
                                     <span className='person-title'>Suji & Sinthu's journey is a heartwarming example....</span>
-                                    <a  href="" className='read-more'>Read more</a>
+                                    <a target='_blank' href="https://tamilculture.com/mytamildate-love-story-patience-and-taking-chances-brought-suji-sinthu-together" className='read-more'>Read more</a>
                                 </div>
                             </div>
                         </Col>

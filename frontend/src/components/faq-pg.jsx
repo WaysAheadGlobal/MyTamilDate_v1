@@ -61,12 +61,12 @@ export const FaqPage = () => {
                         <div className='faq-title-text'>Frequently Asked Questions</div>
                     </div>
                     {faqs.map((faq, index) => (
-                        <div className="faq-content" key={index}>
+                        <div className="faq-content" onClick={() => toggleAnswer(index)} key={index}>
                             <div className={`faq-question ${answersVisible[index] ? 'answer-visible' : ''}`}>
                                 <div className="question-text">
                                     {faq.question}
                                 </div>
-                                <button className="toggle-button" onClick={() => toggleAnswer(index)}>
+                                <button className="toggle-button" >
                                     <IoIosArrowDown />
                                 </button>
                             </div>
