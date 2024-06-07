@@ -41,8 +41,6 @@ justify-content: center;
 
 align-items: center;
 
-
-
 }
 .logo-progressbar1
 {
@@ -137,24 +135,22 @@ border-radius: 4px;
     
   }
 
-.flag-box
-{
-font-family: Manrope;
-font-size: 16px;
-font-weight: 500;
-line-height: 21.86px;
-text-align: center;
-background-color: #FFFFFF;
-height:52px;
-border: 1px solid #6C6C6C;
-
-padding: 10px;
-gap:px;
-border-radius: 8px;
-border: 1px 0px 0px 0px;
-
-
+  .flag-box {
+    font-family: Manrope;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 21.86px;
+    text-align: center;
+    background-color: #FFFFFF;
+    height: 52px;
+    border: 1px solid #6C6C6C;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
 }
+
 .flag-box span
 {
     font-family: Manrope;
@@ -165,27 +161,24 @@ text-align: center;
 color: #6C6C6C;
 
 }
-.flag-menu
-{
+.flag-menu {
     background: #FFFFFF;
-    /* width: 52px; */
     min-width: 5.5rem;
     margin-top: 8px;
     border: 1px solid #6C6C6C;
-padding: 10px;
+    padding: 10px;
+    z-index: 1050; /* Ensuring the dropdown is above other elements */
+    position: absolute; /* Position absolute to ensure it doesn't push content */
 }
-.flag-item
-{
-    width: 100%;
-    color:#6C6C6C;
+.flag-item {
+    color: #6C6C6C;
     font-family: Manrope;
-font-size: 16px;
-font-weight: 500;
-line-height: 21.86px;
-text-align: center;
-padding: 0px 0px 10px 0px;
-
-
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 21.86px;
+    text-align: center;
+    padding: 0px 0px 10px 0px;
+    cursor: pointer;
 }
 
 .custom-input:focus {
