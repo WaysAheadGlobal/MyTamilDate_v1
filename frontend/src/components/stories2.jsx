@@ -37,12 +37,12 @@ export const Stories2 = () => {
                             <div className="story-item">
                            
                                 <img className='story-image' src={st1} />
-                                {/* <div className="story-detail">
+                                <div className="story-detail">
                              
                                     <span className='story-name'>Madhu & Niya</span>
                                     <span className='story-title'>It was love at first sight for Madhu and Niya...</span>
                                     <a href='' className='story-read-more'>Read more</a>
-                                </div> */}
+                                </div>
                             </div>
                          
                         </div>
@@ -50,21 +50,21 @@ export const Stories2 = () => {
                         <div className="story-col" >
                             <div className="story-item">
                                 <img  className='story-image' src={st2} />
-                                {/* <div className="story-detail">
+                                <div className="story-detail">
                                     <span className='story-name'>Abi & John</span>
                                     <span className='story-title'>Abi & John Bonded Over Faith & Connection...</span>
                                     <a href='' className='story-read-more'>Read more</a>
-                                </div> */}
+                                </div>
                             </div>
                         </div>
                         <div className="story-col" >
                             <div className="story-item">
                                 <img  className='story-image' src={st3} />
-                                {/* <div className="story-detail">
+                                <div className="story-detail">
                                     <span className='story-name'>Jenani & Nav</span>
                                     <span className='story-title'>Jenani & Nav Found Each Other At The Right Time...</span>
                                     <a  href="" className='story-read-more'>Read more</a>
-                                </div> */}
+                                </div>
                             </div>
                         </div>
                     </div>

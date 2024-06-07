@@ -11,7 +11,7 @@ import heartlogo from '../assets/images/heart-logo.png';
 
 import bgl from '../assets/images/l-bg.png'
 import bgr from '../assets/images/r-bg.png'
-
+import st3 from '../assets/images/st3.png'
 
 
 
@@ -66,7 +66,16 @@ export const Headerlp = () => {
 
 
 
-
+      <div className="story-col" >
+                            <div className="story-item">
+                                <img  className='story-image' src={st3} />
+                                <div className="story-detail">
+                                    <span className='story-name'>Jenani & Nav</span>
+                                    <span className='story-title'>Jenani & Nav Found Each Other At The Right Time...</span>
+                                    <a  href="" className='story-read-more'>Read more</a>
+                                </div>
+                            </div>
+                        </div>
 
 
 
