@@ -5,13 +5,13 @@ import { Routes, Route } from 'react-router-dom';
 
 import {  Headerlp} from './header';
 import { Pictext} from './pic-text';
-import { Stories2} from './stories2';
+
 
 import {Join} from './join';
 import {Footer} from './footer';
 import {Video2} from './video2';
 import { NavBar } from './nav'; 
-
+import { TheirStories } from "./theirstories";
 
 
 export const LP=()=>{
@@ -20,7 +20,7 @@ export const LP=()=>{
         <NavBar/>
         <Headerlp/>
         <Pictext/>
-        <Stories2/>
+        <TheirStories/>
       
         <Video2/>
         <Join/>

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './storiess.css';
+import './theirstories.css';
 
 
 import { Container, Button } from 'react-bootstrap';
@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-export const Stories2 = () => {
+export const TheirStories = () => {
 
 
    
