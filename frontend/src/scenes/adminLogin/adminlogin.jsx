@@ -4,11 +4,12 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useAppContext } from '../../Context/UseContext';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from '../../hooks/useCookies';
+import adminbackground from '../../assets/images/adminbackground.png'
 
 const themeSettings = {
   typography: {
     fontFamily: ['Poppins', 'sans-serif'].join(','),
-    fontSize: 12,
+    fontSize: 14,
     h1: {
       fontFamily: ['Poppins', 'sans-serif'].join(','),
       fontSize: 40,
@@ -49,7 +50,7 @@ const AdminSignIn = () => {
   const navigate = useNavigate();
 
   const validateForm = () => {
-    return username === 'Admin' && password === '12345';
+    return username === 'admin' && password === '12345';
   };
 
   const handleLogin = () => {
@@ -69,55 +70,60 @@ const AdminSignIn = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="100vh"
-        sx={{ backgroundColor: 'rgb(222,222,222)' }} 
-      >
+   <Box
+  display="flex"
+  justifyContent="center"
+  alignItems="center"
+  minHeight="100vh"
+  sx={{
+    background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+    backgroundSize: 'cover',
+    backgroundColor: 'rgb(245, 245, 245)',
+  }}
+>
+
         <Box
           display="flex"
           flexDirection="column"
           alignItems="center"
-          p={3}
+          p={4}
           sx={{
-            width: { xs: '90%', sm: '70%', md: '50%', lg: '30%', xl: '30%' },
-            backgroundColor: '#F3E5F5', // Match the background color in the image
+            width: { xs: '90%', sm: '70%', md: '50%', lg: '30%', xl: '25%' },
+            backgroundColor: '#FFFFFF',
             borderRadius: 2,
-            boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
           }}
         >
-          <Typography variant="h4" sx={{ color: '#3A3A3A', mb: 2 }}>
-            Admin
+          <Typography variant="h4" sx={{ color: '#333333', mb: 3 }}>
+            Admin Login
           </Typography>
           <TextField
-             width="110%"
             label="Username"
             variant="outlined"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            sx={{ mb: 2, width:"70%", backgroundColor: '#FFF' }}
+            sx={{ mb: 2, width: '100%', backgroundColor: '#F9F9F9' }}
           />
           <TextField
-            width="110%"
             label="Password"
             variant="outlined"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            sx={{ mb: 2, width:"70%", backgroundColor: '#FFF' }}
+            sx={{ mb: 3, width: '100%', backgroundColor: '#F9F9F9' }}
           />
           <Button
-            width="50px"
             variant="contained"
             onClick={handleLogin}
             sx={{
+              width: '100%',
               mb: 2,
+              py: 1.5,
               background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-              color: '#fff',
+              color: '#FFF',
+              fontWeight: 'bold',
               '&:hover': {
-                background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                background: 'linear-gradient(90deg, #F76A7B, #FC8C66)',
               },
             }}
           >

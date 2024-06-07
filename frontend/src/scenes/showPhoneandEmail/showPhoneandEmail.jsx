@@ -3,34 +3,15 @@ import { Box, Button, TextField, Typography, Snackbar, Alert, LinearProgress } f
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useAppContext } from '../../Context/UseContext';
 import { useNavigate } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
 
 const themeSettings = {
   typography: {
     fontFamily: ['Poppins', 'sans-serif'].join(','),
-    fontSize: 12,
-    h1: {
-      fontFamily: ['Poppins', 'sans-serif'].join(','),
-      fontSize: 40,
-    },
-    h2: {
-      fontFamily: ['Poppins', 'sans-serif'].join(','),
-      fontSize: 32,
-    },
-    h3: {
-      fontFamily: ['Poppins', 'sans-serif'].join(','),
-      fontSize: 24,
-    },
+    fontSize: 14,
     h4: {
-      fontFamily: ['Poppins', 'sans-serif'].join(','),
-      fontSize: 20,
-    },
-    h5: {
-      fontFamily: ['Poppins', 'sans-serif'].join(','),
-      fontSize: 16,
-    },
-    h6: {
-      fontFamily: ['Poppins', 'sans-serif'].join(','),
-      fontSize: 14,
+      fontSize: 24,
+      fontWeight: 'bold',
     },
   },
 };
@@ -45,10 +26,9 @@ const ShowphoneAndEmail = () => {
   const [otpSentSnackbar, setOtpSentSnackbar] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showLoginButton, setShowLoginButton] = useState(false);
-  const {isAdmin,
-    loginAsAdmin,togglePhoneNumber,
-    logout} = useAppContext();
-    const Navigate = useNavigate();
+  const { loginAsAdmin, togglePhoneNumber } = useAppContext();
+  const navigate = useNavigate();
+
   const generateOTP = () => {
     const generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
     setOtp(generatedOtp.split(''));
@@ -73,9 +53,8 @@ const ShowphoneAndEmail = () => {
     // Handle login logic here
     alert('Your Able to See Phone And Email');
     loginAsAdmin();
-    Navigate("/dashboard");
+    navigate("/dashboard");
     togglePhoneNumber();
-    
   };
 
   return (
@@ -85,44 +64,44 @@ const ShowphoneAndEmail = () => {
         justifyContent="center"
         alignItems="center"
         minHeight="100vh"
-        sx={{ backgroundColor: '#EDE7F6' }}
+        sx={{
+          background: 'rgb(245, 245, 245)',
+          backgroundSize: 'cover',
+          backgroundColor: 'rgb(245, 245, 245)',
+        }}
       >
         <Box
           display="flex"
           flexDirection="column"
           alignItems="center"
           p={3}
-          sx={{
-            width: { xs: '90%', sm: '70%', md: '50%', lg: '40%', xl: '30%' },
-            background: 'linear-gradient(135deg, #FC8C66 30%, #F76A7B 90%)',
-            borderRadius: 2,
-            boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-          }}
+          bgcolor="#FFFFFF"
+          borderRadius={4}
+          boxShadow="0px 3px 15px rgba(0, 0, 0, 0.1)"
+          width={{ xs: '90%', sm: '70%', md: '50%', lg: '40%', xl: '30%' }}
         >
-          <Typography variant="h4" sx={{ color: '#3A3A3A', mb: 2 }}>
-          Verify First To See the Phone Number And Email
+          <Typography variant="h6" sx={{ color: '#3A3A3A', mb: 2 }}>
+            Frist Verify Your Phone Number
           </Typography>
+          
           <TextField
             fullWidth
-            
             label="Phone Number"
             variant="outlined"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
-            sx={{ mb: 2, backgroundColor: '#FFF' }}
+            sx={{ mb: 2, bgcolor: '#F9F9F9' }}
           />
           <Button
-            width="50px"
+            fullWidth
             variant="contained"
-            color="secondary"
+            color="primary"
             onClick={handleSendOTP}
             sx={{
-              mb: 2,
-              background: 'linear-gradient(90deg, #9663BF, #4B164C)',
-              color: '#fff',
-              '&:hover': {
-                background: 'linear-gradient(90deg, #7a4fa0, #3a123e)',
-              },
+              mb:2,
+              background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+              backgroundSize: 'cover',
+              backgroundColor: 'rgb(245, 245, 245)',
             }}
           >
             Send OTP
@@ -136,24 +115,22 @@ const ShowphoneAndEmail = () => {
                   value={digit}
                   variant="outlined"
                   inputProps={{ readOnly: true, style: { textAlign: 'center' } }}
-                  sx={{ mx: 1, width: '3rem', backgroundColor: '#FFF' }}
+                  sx={{ mx: 1, width: '3rem', bgcolor: '#F9F9F9' }}
                 />
               ))}
             </Box>
           )}
           {showLoginButton && (
             <Button
-              width="50px"
+              fullWidth
               variant="contained"
               color="secondary"
               onClick={handleLogin}
               sx={{
-                mb: 2,
-                background: 'linear-gradient(90deg, #9663BF, #4B164C)',
-                color: '#fff',
-                '&:hover': {
-                  background: 'linear-gradient(90deg, #7a4fa0, #3a123e)',
-                },
+                mb:2,
+                background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                backgroundSize: 'cover',
+                backgroundColor: 'rgb(245, 245, 245)',
               }}
             >
               Submit
