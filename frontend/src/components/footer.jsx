@@ -56,13 +56,13 @@ export const Footer= () => {
                     <span class="link-heading">Social Links</span>
 
                     <div class='social '>
-                        <a  target="_blank" href="https://www.linkedin.com/company/5349365/admin/feed/posts/" target="_blank"  class='linkf'>
+                        <a  target="_blank" href="https://www.linkedin.com/company/5349365/admin/feed/posts/"   class='linkf'>
                          <Image className="socio" src={lin}></Image>
                         </a>
-                        <a  target="_blank" href="https://www.instagram.com/mytamildate/" target="_blank"  class='linkf'>
+                        <a  target="_blank" href="https://www.instagram.com/mytamildate/"   class='linkf'>
                         <Image className="socio" src={gram}></Image>
                         </a>
-                        <a target="_blank" href="https://www.tiktok.com/@mytamildate?lang=en" target="_blank"  class='linkf'>
+                        <a target="_blank" href="https://www.tiktok.com/@mytamildate?lang=en"   class='linkf'>
                         <Image className="socio" src={tiktok}></Image>
                         </a>
 
@@ -75,7 +75,7 @@ export const Footer= () => {
             </div>
             <div class="copyrights">
                 <div class="copy-content">
-                    <span class="copy-text">© 2021 Waysaheadglobal All rights reserved.</span>
+                    <span class="copy-text">© 2024 myTamilDate | All Rights Reserved</span>
 
     
 

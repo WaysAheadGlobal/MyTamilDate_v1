@@ -170,25 +170,34 @@ text-justify: inter-word;
     .text1
     {
 width:100%;
+align-items: center;
 
     }
     .text1 p
     {
 margin-top: 0px;
+font-size: 16px;
 
     }
     .text1 h4
     {
-font-size:30px;
+font-size:18px;
 text-align: justify;
+line-height:30px ;
+margin-top: 15px;
 /* text-justify: inter-word; */
 
-
-
     }
+    .lineht .text1  h4
+{
+    margin-bottom: -10px;
+}
+
+
+
     .discover-love 
     {
-        font-size:30px;
+        font-size:21px;
     }
 
     .view-success-btn

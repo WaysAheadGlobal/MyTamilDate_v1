@@ -9,7 +9,7 @@
     flex-direction: column;
     padding-bottom: 30px;
     /* Add a border to debug visibility */
-    border: 1px solid red;
+    /* border: 1px solid red; */
 }
 
 .story-row {
@@ -147,6 +147,7 @@
     }
     .story-row {
         padding: 0px;
+        gap:0px;
     }
     .story-col {
         width: 80%;
@@ -155,6 +156,6 @@
 
 @media only screen and (max-width: 1000px) {
     .story-col {
-        width: 60%;
+        width: 90%;
     }
 }

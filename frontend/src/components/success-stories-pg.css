@@ -34,7 +34,7 @@ z-index: 12;
 height: 575px;
 gap: 0px;
 /* position: relative; */
-opacity: 0px;
+opacity: 1px;
 margin-top:25px;
 
 
@@ -136,7 +136,7 @@ padding-right:15px;
     padding: 12px;
     gap: 20px;
     border-radius: 10px;
-    opacity: 0px;
+    opacity: 1px;
     box-shadow: 5px 5px 15px 0px #00000033;
  
 

@@ -22,11 +22,11 @@ export const Pictext = () => {
         <div className='pic-text-main'>
 
 
-            <div className='pic1-text1'>
+            <div className='pic1-text1 lineht '>
                 <Container className='pic1'>
                     <Image src={c1} className='c1'></Image>
                 </Container>
-                <div className='text1'>
+                <div className='text1 '>
                     <h4> <span className='discover-love'>Discover Love </span>
                         with myTamilDate</h4>
                     <p>A surprise engagement at a myTamilDate couple's photoshoot! Find out how  <span style={{
