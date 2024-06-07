@@ -115,7 +115,7 @@ const Contacts = () => {
         justifyContent="flex-end"
         sx={{ mt: { lg: '-70px' } }}
       >
-        {/* <Button
+        <Button
               sx={{
                 mb: 2,
                 background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
@@ -127,7 +127,7 @@ const Contacts = () => {
           onClick={handleAddPromoCode}
         >
           Add new Code
-        </Button> */}
+        </Button>
       </Box>
       <Box
         m="40px 0 0 0"

@@ -35,7 +35,7 @@ import {LP} from './components/LP';
 import {FaqPage} from './components/faq-pg';
 import {Tnc} from './components/tnc';
 import {PrivacyPolicy} from './components/privacy-policy';
-import { TheirStories } from "./components/theirstories";
+import { Stories } from "./components/theirstories";
 import { Pictext } from "./components/pic-text";
 
 import {SuccessPage} from "./components/success-stories-pg";
@@ -100,7 +100,6 @@ console.log(isAdmin)
                 <Route path="/signIn" element={<SignIn/>}></Route>
 
                 <Route path="/video2" element={<Video2/>}></Route>
-                <Route path="/story" element={<Video2/>}></Route>
 
 
 

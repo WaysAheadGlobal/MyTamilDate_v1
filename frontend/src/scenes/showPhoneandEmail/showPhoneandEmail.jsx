@@ -56,6 +56,9 @@ const ShowphoneAndEmail = () => {
     navigate("/dashboard");
     togglePhoneNumber();
   };
+  const backtolist = ()=>{
+    navigate("/contact")
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -70,6 +73,9 @@ const ShowphoneAndEmail = () => {
           backgroundColor: 'rgb(245, 245, 245)',
         }}
       >
+        <Box onClick={backtolist}>
+          {CloseEvent}
+        </Box>
         <Box
           display="flex"
           flexDirection="column"
