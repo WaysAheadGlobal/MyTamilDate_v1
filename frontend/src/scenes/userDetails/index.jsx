@@ -20,9 +20,10 @@ const UserDetails = () => {
     study: 'High School',
     job: 'Non-profit',
     growth: '5\'10" (177.80cm)',
-    imageSrc: 'https://i.pinimg.com/736x/56/ed/ee/56edee46de010b45ee0a1ac71feca7ad.jpg', // Replace with actual path to image
+    imageSrc: 'https://img.freepik.com/free-photo/celebration-deity-navratri_23-2151220028.jpg?size=626&ext=jpg', // Replace with actual path to image
   };
 
+  
   const handleRemoveFromList = () => {
     // Implement logic for removing user from list
     console.log('Removing user from list');

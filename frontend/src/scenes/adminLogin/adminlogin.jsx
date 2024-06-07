@@ -74,7 +74,7 @@ const AdminSignIn = () => {
         justifyContent="center"
         alignItems="center"
         minHeight="100vh"
-        sx={{ backgroundColor: '#fff' }} 
+        sx={{ backgroundColor: 'rgb(222,222,222)' }} 
       >
         <Box
           display="flex"
