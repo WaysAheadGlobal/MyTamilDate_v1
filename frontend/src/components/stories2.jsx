@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './storiess.css';
 
@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-export const Stories = () => {
+export const Stories2 = () => {
 
 
    
@@ -32,10 +32,11 @@ export const Stories = () => {
                     <p className='story-heading' >They met their Match on <span style={{color:'#4E1173'}}>myTamilDate</span></p>
                 </div>
                 <Container className='story-content'>
+                <p>ftytffh</p>
                 <Row  fluid className="story-row">
                         <Col fluid className="story-col" xs={12} md={3}>
                             <div className="story-item">
-                                <Image fluid className='story-image' src={st1} />
+                                <img className='story-image' src={st1} />
                                 <div className="story-detail">
                                     <span className='story-name'>Madhu & Niya</span>
                                     <span className='story-title'>It was love at first sight for Madhu and Niya...</span>
@@ -43,9 +44,10 @@ export const Stories = () => {
                                 </div>
                             </div>
                         </Col>
+                        <p>ghjbjbj</p>
                         <Col className="story-col" xs={12} md={3}>
                             <div className="story-item">
-                                <Image fluid className='story-image' src={st2} />
+                                <img  className='story-image' src={st2} />
                                 <div className="story-detail">
                                     <span className='story-name'>Abi & John</span>
                                     <span className='story-title'>Abi & John Bonded Over Faith & Connection...</span>
@@ -55,7 +57,7 @@ export const Stories = () => {
                         </Col>
                         <Col className="story-col" xs={12} md={3}>
                             <div className="story-item">
-                                <Image fluid className='story-image' src={st3} />
+                                <img  className='story-image' src={st3} />
                                 <div className="story-details">
                                     <span className='story-name'>Jenani & Nav</span>
                                     <span className='story-title'>Jenani & Nav Found Each Other At The Right Time...</span>

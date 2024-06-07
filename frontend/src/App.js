@@ -35,7 +35,7 @@ import {LP} from './components/LP';
 import {FaqPage} from './components/faq-pg';
 import {Tnc} from './components/tnc';
 import {PrivacyPolicy} from './components/privacy-policy';
-import { Stories } from "./components/stories";
+import { Stories } from "./components/stories2";
 import { Pictext } from "./components/pic-text";
 
 import {SuccessPage} from "./components/success-stories-pg";
