@@ -3,8 +3,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './storiess.css';
 
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+
 import { Container, Image, Form, Button } from 'react-bootstrap';
 
 import st1 from '../assets/images/st1.png'
@@ -33,22 +32,22 @@ export const Stories2 = () => {
                 </div>
                 <Container className='story-content'>
             
-                <Row   className="story-row">
-                        <Col  className="story-col" xs={12} md={3}>
+                <div   className="story-row">
+                        <div  className="story-col" >
                             <div className="story-item">
-                            <p>ghgh</p>
+                           
                                 <img className='story-image' src={st1} />
                                 <div className="story-detail">
-                                <p>ghjj</p>
+                             
                                     <span className='story-name'>Madhu & Niya</span>
                                     <span className='story-title'>It was love at first sight for Madhu and Niya...</span>
                                     <a href='' className='story-read-more'>Read more</a>
                                 </div>
                             </div>
-                            <p>hjh</p>
-                        </Col>
+                         
+                        </div>
                       
-                        <Col className="story-col" xs={12} md={3}>
+                        <div className="story-col" >
                             <div className="story-item">
                                 <img  className='story-image' src={st2} />
                                 <div className="story-detail">
@@ -57,8 +56,8 @@ export const Stories2 = () => {
                                     <a href='' className='story-read-more'>Read more</a>
                                 </div>
                             </div>
-                        </Col>
-                        <Col className="story-col" xs={12} md={3}>
+                        </div>
+                        <div className="story-col" >
                             <div className="story-item">
                                 <img  className='story-image' src={st3} />
                                 <div className="story-details">
@@ -67,8 +66,8 @@ export const Stories2 = () => {
                                     <a  href="" className='story-read-more'>Read more</a>
                                 </div>
                             </div>
-                        </Col>
-                    </Row>
+                        </div>
+                    </div>
                 </Container>
                 <Button className='more-success-btn' onClick={goTomorestories}>More success stories</Button>
             </Container> 
