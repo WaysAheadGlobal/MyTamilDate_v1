@@ -61,7 +61,7 @@ flex-direction: column;
 
 }
 .story-item {
-    /* position: relative; */
+    position: relative;
     width: 100%;
     
     align-items: center;
