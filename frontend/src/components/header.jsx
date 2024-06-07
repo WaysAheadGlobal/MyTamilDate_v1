@@ -2,7 +2,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './header.css';
-import st1 from '../assets/images/st1.png'
+
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Container, Image } from 'react-bootstrap';
@@ -72,16 +72,7 @@ export const Headerlp = () => {
 
 
 
-      <div className="story-item">
-                           
-                           <img className='story-image' src={st1} />
-                           <div className="story-detail">
-                        
-                               <span className='story-name'>Madhu & Niya</span>
-                               <span className='story-title'>It was love at first sight for Madhu and Niya...</span>
-                               <a href='' className='story-read-more'>Read more</a>
-                           </div>
-                           </div>
+
 
     </div>
 

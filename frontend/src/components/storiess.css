@@ -91,27 +91,7 @@ flex-direction: column;
   flex-direction: column;
   justify-content: space-between;
 }
-.story-details {
-    position: absolute;
-    margin-top:-115px;
-    margin-left:18px;
-    z-index: 10;
-    /* width:300px; */
-    width: 90%;
-    height: 190px;
-    padding: 12px;
-    gap: 20px;
-    border-radius: 10px;
-    opacity: 0px;
-    box-shadow: 5px 5px 15px 0px #00000033;
 
-    background-color: #FFFFFF;
-  
-  align-items:flex-start;
-  display:flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
 
 
 
