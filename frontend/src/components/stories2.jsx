@@ -32,19 +32,22 @@ export const Stories2 = () => {
                     <p className='story-heading' >They met their Match on <span style={{color:'#4E1173'}}>myTamilDate</span></p>
                 </div>
                 <Container className='story-content'>
-                <p>ftytffh</p>
-                <Row  fluid className="story-row">
-                        <Col fluid className="story-col" xs={12} md={3}>
+            
+                <Row   className="story-row">
+                        <Col  className="story-col" xs={12} md={3}>
                             <div className="story-item">
+                            <p>ghgh</p>
                                 <img className='story-image' src={st1} />
                                 <div className="story-detail">
+                                <p>ghjj</p>
                                     <span className='story-name'>Madhu & Niya</span>
                                     <span className='story-title'>It was love at first sight for Madhu and Niya...</span>
                                     <a href='' className='story-read-more'>Read more</a>
                                 </div>
                             </div>
+                            <p>hjh</p>
                         </Col>
-                        <p>ghjbjbj</p>
+                      
                         <Col className="story-col" xs={12} md={3}>
                             <div className="story-item">
                                 <img  className='story-image' src={st2} />

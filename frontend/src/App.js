@@ -38,7 +38,7 @@ import {PrivacyPolicy} from './components/privacy-policy';
 import { Stories } from "./components/stories2";
 import { Pictext } from "./components/pic-text";
 
-import {SuccessPage} from "./components/success-stories-pg";
+// import {SuccessPage} from "./components/success-stories-pg";
 import {GetInTouch} from './components/get-in-touch';
 import {SignIn} from  "./components/signin";
 import {AboutUsPage}   from "./components/aboutus-pg"
@@ -85,7 +85,7 @@ console.log(isAdmin)
 
 {/* landing page and its linked pages  stare*/}
                 <Route path="/" element={<LP/>}></Route>
-                <Route path="/SuccessPage" element={<SuccessPage/>}></Route>
+                {/* <Route path="/SuccessPage" element={<SuccessPage/>}></Route> */}
                 <Route path="/FaqPage" element={<FaqPage/>}></Route>
                 <Route path="/GetInTouch" element={<GetInTouch/>}></Route>
 

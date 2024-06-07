@@ -1,0 +1,193 @@
+.main-team{
+    /* padding-left:117px; */
+    margin-top:80px;
+
+
+
+
+}
+.team-row{
+    justify-content: center;
+    padding:0px;
+   
+    
+}
+.team-image{
+  
+    border-radius: 30px;
+}
+.team-col{
+    justify-content: center;
+    display:flex;
+    width: 380.67px;
+    /* width: auto; */
+height: 575px;
+gap: 0px;
+/* position: relative; */
+opacity: 0px;
+margin-top:25px;
+
+
+}
+
+
+
+
+
+
+
+
+.team-title{
+display:flex;
+
+align-items: center;
+justify-content: center;
+width: fit-content;
+
+
+}
+.team-heading{
+    font-family: Sora;
+font-size: 38px;
+font-weight: 600;
+line-height: 59px;
+text-align: center;
+color:#000000;
+margin-top:40px;
+
+}
+.team-text{
+    display:flex;
+    align-items: center;
+justify-content: center;
+flex-direction: column;
+
+}
+.team-title-text{
+    font-family: Sora;
+font-size: 24px;
+font-weight: 600;
+line-height: 30.24px;
+align-items: center;
+text-align: center;
+color:#000000;
+padding-left:15px;
+padding-right:15px;
+
+
+
+}
+.team-content{
+    margin-top:60px;
+    padding: 0px;
+
+}
+/* .team-item{
+    height:fit-content;
+   
+
+} */
+/* .team-detail{
+    width:310.67px;
+height: 139px;
+padding: 35px 0px 0px 0px;
+gap: 20px;
+border-radius: 30px;
+opacity: 0px;
+box-shadow: 0px 10px 25px 0px #00000012;
+position: absolute;
+margin-top:-104;
+z-index:10;
+
+}
+.team-image{
+    
+    z-index:9;
+    position: absolute;
+    width: 380.67px;
+    height: 500px;
+} */
+.team-detail {
+    position: absolute;
+    margin-top:-40px;
+    margin-left:18px;
+    z-index: 10;
+    /* width:300px; */
+    width: 90%;
+    height: 139px;
+    padding: 35px 0px 0px 0px;
+    gap: 20px;
+    border-radius: 30px;
+    opacity: 0px;
+    box-shadow: 0px 10px 25px 0px #00000012;
+    background-color: #FFFFFF;
+  
+  align-items: center;
+  display:flex;
+  flex-direction: column;
+}
+
+.team-item {
+    position: relative;
+    width: 100%;
+    height: auto;
+}
+
+.team-image {
+    width: 100%;
+    height: auto;
+    border-radius: 30px;
+    z-index: 9;
+}
+
+.person-title{
+    font-family: Sora;
+font-size: 16px;
+font-weight: 600;
+line-height: 24px;
+text-align: center;
+color: #6E6E6E;
+
+
+
+}
+.person-name{
+    font-family: Sora;
+font-size: 25px;
+font-weight: 600;
+line-height: 35px;
+color: #1D4923;
+
+text-align: center;
+
+
+
+}
+@media only screen and (max-width: 600px) 
+{
+    
+.team-title-text{
+   
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 30.24px;
+   
+
+
+   
+}
+.team-heading{
+font-size: 30px;
+font-weight: 600;
+line-height: 50px;
+}
+.team-content{
+    padding:0px;
+   
+}
+
+.team-row{
+    padding:0px;
+}
+
+}
