@@ -126,6 +126,7 @@ export const SuccessPage=()=>
 
 
 
+
             <Join/>
         <Footer/>
 

@@ -109,8 +109,6 @@ export const SignupPhone = () => {
                               <Dropdown.Item key={country.code} onClick={() => handleCountrySelect(country.code)} className='flag-item'>
                                  <Flag code={country.code} style={{ width: '24px', height: '18px', marginRight: '10px' }} />
                                  {country.code}
-
-
                               </Dropdown.Item>
                            ))}
                         </Dropdown.Menu>
