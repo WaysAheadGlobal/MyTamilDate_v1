@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './storiess.css';
 
 
-import { Container, Image, Form, Button } from 'react-bootstrap';
+import { Container, Button } from 'react-bootstrap';
 
 import st1 from '../assets/images/st1.png'
 import st2 from '../assets/images/st2.png'
