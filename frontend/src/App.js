@@ -37,6 +37,7 @@ import {Tnc} from './components/tnc';
 import {PrivacyPolicy} from './components/privacy-policy';
 import { Stories } from "./components/stories";
 import { Pictext } from "./components/pic-text";
+
 import {SuccessPage} from "./components/success-stories-pg";
 import {GetInTouch} from './components/get-in-touch';
 import {SignIn} from  "./components/signin";
