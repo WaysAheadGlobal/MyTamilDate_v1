@@ -147,11 +147,11 @@ export const GetInTouch = () => {
                                     placeholder="Your topic"
 
                                 >
-{/* 
-                                    <option value="">Select Area of Concern</option>
+
+                                    {/* <option value="">Select Area of Concern</option>
                                     <option value="support">Support</option>
                                     <option value="sales">Sales</option>
-                                    <option value="general">General Inquiry</option> */}
+                                    <option value="general">General Inquiry</option>  */}
                                 </Form.Control>
                                 <SlArrowDown className="arrow-icon" />
                             </Form.Group>

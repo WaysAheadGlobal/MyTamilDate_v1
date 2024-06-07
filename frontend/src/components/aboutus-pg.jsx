@@ -66,7 +66,7 @@ export const AboutUsPage = () => {
                                 We’ve been helping single Tamils meet, date and marry for years. On their own terms & their own timelines.
                             </span>
                         </div>
-                        <a href="">Get Started</a>
+                        <a href="/signup" target='_blank'>Get Started</a>
 
 
                     </div>
