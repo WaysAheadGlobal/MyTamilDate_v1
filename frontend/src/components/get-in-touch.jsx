@@ -144,7 +144,7 @@ export const GetInTouch = () => {
                                     name="areaOfConcern"
                                     value={formData.areaOfConcern}
                                     onChange={handleChange}
-                                    placeholder="Your topic"
+                                    placeholder="Your Topic"
 
                                 >
 
