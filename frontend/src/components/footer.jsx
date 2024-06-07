@@ -33,9 +33,9 @@ export const Footer= () => {
                 <div class='flinks'>
                     {/* <span class="link-heading">Links</span> */}
 
-                    <a target="_blank"  href="#/SuccessPage" class='linkf'>Success Stories </a>
+                    <a target="_blank"  href="/SuccessPage" class='linkf'>Success Stories </a>
                     <a target="_blank" href="https://tamilculture.com/user/mytamildatecom" class='linkf'> Blogs</a>
-                    <a target="_blank" href="#" class='linkf'> About Us</a>
+                    <a target="_blank" href="/aboutus" class='linkf'> About Us</a>
                     <a target="_blank" href="/GetInTouch" class='linkf'> Contact Us</a>
       
 

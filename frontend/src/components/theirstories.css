@@ -152,6 +152,12 @@
     .story-col {
         width: 80%;
     }
+    .story-image {
+        height: auto;
+    }
+    .story-item {
+        height: 500px;
+    }
 }
 
 @media only screen and (max-width: 1000px) {

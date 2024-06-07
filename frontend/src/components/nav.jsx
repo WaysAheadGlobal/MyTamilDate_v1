@@ -33,7 +33,7 @@ return(
     <Nav className='nav-link-container'>
 
       <Nav.Link target="_blank"  as={Link} to="/SuccessPage" >Success Stories</Nav.Link>
-      <Nav.Link  target="_blank"  >About Us</Nav.Link>
+      <Nav.Link  target="_blank" as={Link} to="/aboutus" >About Us</Nav.Link>
       <Nav.Link  target="_blank"  href="https://tamilculture.com/user/mytamildatecom">Blogs</Nav.Link>
       <Nav.Link  target="_blank" as={Link} to="/FaqPage" >FAQs</Nav.Link>
       <Nav.Link  target="_blank" as={Link} to="/GetInTouch" >Contact Us</Nav.Link>

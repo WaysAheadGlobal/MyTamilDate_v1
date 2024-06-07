@@ -12,6 +12,10 @@ import { NavBar } from './nav';
 import { Join } from './join';
 import { Footer } from './footer';
 import abtbg from "../assets/images/abtus-bg.png";
+import survey from "../assets/images/SURVEY.png";
+import property from "../assets/images/PROPERTY.png";
+import agent from "../assets/images/AGENT.png";
+import moving from "../assets/images/MOVING HOME.png";
 import abtr from "../assets/images/abtr.png";
 import abtl from "../assets/images/abtl.png";
 export const AboutUsPage = () => {
@@ -41,15 +45,15 @@ export const AboutUsPage = () => {
                         </Col>
                     </Row>
 
-               </Container>
+                </Container>
 
 
                 <Container className='abt2-main'>
 
                     <div className='abt2-imgl'>
-                        <Image className='abt2-img'  src={abtl} ></Image>
+                        <Image className='abt2-img' src={abtl} ></Image>
                         <p>Sanjutha & Roban</p>
-                        <a href="">Read their story</a>
+                        <a href="https://tiethethali.com/sanjutha-roban/">Read their story</a>
 
                     </div>
                     <div className='abt2-mid'>
@@ -71,11 +75,79 @@ export const AboutUsPage = () => {
 
 
                     <div className='abt2-imgr'>
-                        <Image  className='abt2-img' src={abtr}></Image>
+                        <Image className='abt2-img' src={abtr}></Image>
                         <p>Abi & John</p>
-                        <a href="">Read their story</a>
+                        <a href="https://tamilculture.com/mytamildate-success-abi-john-bonded-over-faith-their-tamil-german-british-connection">Read their story</a>
 
                     </div>
+
+
+                </Container>
+
+
+
+
+
+                <Container className='abt3-main'>
+                    <p >Benefits of myTamilDate</p>
+                    <Container className='abt3-main-content'>
+                        <Container className='abt3-one'>
+
+                            <div className='abt3-top'>
+                                <img className="abt3-img" src={survey}></img>
+                                <div className='abt3-text'>
+                                    <span >Trust & Authenticity</span>
+                                    <p>We manually verify every profile to ensure authenticity. Phone verification
+                                        is also required for added security.</p>
+                                </div>
+                            </div>
+
+
+                            <div className='abt3-bottom'>
+                                <img className="abt3-img" src={agent}></img>
+                                <div className='abt3-text'>
+                                    <span >Trust & Authenticity</span>
+                                    <p>We prioritize creating a safe and trusted community, ensuring your platform experience
+                                        and personal data protection.</p>
+
+                                </div>
+                            </div>
+
+                        </Container>
+                        <Container className='abt3-one'>
+
+                            <div className='abt3-top'>
+                                <img className="abt3-img" src={property}></img>
+                                <div className='abt3-text'>
+                                    <span >Trust & Authenticity</span>
+                                    <p>We’re built for mobile first and enhanced for desktop too! The best part? You don’t have to download yet another app.</p>
+                                </div>
+                            </div>
+
+
+                            <div className='abt3-bottom abt3-cus'>
+                                <img className="abt3-img" src={moving}></img>
+                                <div className='abt3-text'>
+                                    <span >Trust & Authenticity</span>
+                                    <p>We care about your dating life like a good friend, offering profile help, messaging tips, and date ideas!</p>
+                                </div>
+                            </div>
+
+
+                        </Container>
+
+
+
+
+
+
+
+
+
+                    </Container>
+
+
+
 
 
                 </Container>
