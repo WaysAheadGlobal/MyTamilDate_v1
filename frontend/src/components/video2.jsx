@@ -15,19 +15,20 @@ export const Video2 = () => {
             <span>Check out the MTD community's tips & insights! </span>
 
             <Container className='video2-content'>
-                <a className='vid2' >
+                <a  href="https://www.instagram.com/reel/CbiMcvWDt_V/" target="_blank"  className='vid2' >
                     <img   className='video2-img' src={vd1}>
                     </img>
                     <div className='play-icon'></div>
 
                 </a>
-                <div className='vid2'>
+                 <a href='https://www.instagram.com/reel/C6EPQwmvOPp/
+' target="_blank" className='vid2'>
                     <img  className='video2-img' src={vd2} >
 
                     </img>
                     <div className='play-icon'></div>
-                </div>
-                <a className='vid2'>
+                </a>
+                <a href='https://www.instagram.com/reel/CsT1_nlB5VR/' target="_blank" className='vid2'>
                     <img  className='video2-img' src={vd3}>
                     </img>
                     <div className='play-icon'></div>

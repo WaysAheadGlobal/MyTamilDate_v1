@@ -8,7 +8,7 @@ import { Pictext} from './pic-text';
 import { Stories} from './stories';
 import {Join} from './join';
 import {Footer} from './footer';
-import {Video} from './video';
+import {Video2} from './video2';
 import { NavBar } from './nav'; 
 
 export const LP=()=>{
@@ -18,7 +18,7 @@ export const LP=()=>{
         <Headerlp/>
         <Pictext/>
         <Stories/>
-        <Video/>
+        <Video2/>
         <Join/>
         <Footer/>
         

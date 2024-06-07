@@ -42,10 +42,10 @@ export const Headerlp = () => {
           <Image src={logo2} className='main-logo'></Image>
           <span>Meet Tamil Singles</span>
           <Container className='header-btn'>
-            <button className='header-btn1' onClick={goToSignup}>
+            <button className='header-btnone' onClick={goToSignup}>
             Get Started
             </button>
-            <button className='header-btn2'  onClick={goToSignin}>
+            <button className='header-btntwo'  onClick={goToSignin}>
             Returning? Login
             </button>
           </Container>

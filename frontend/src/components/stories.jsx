@@ -1,7 +1,7 @@
 
 import React, { useState, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './stories.css';
+import './storiess.css';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -26,40 +26,40 @@ export const Stories = () => {
       };
     return (
         <>
-            <Container fluid className='main-team'>
-                <div className='team-text'>
+            <Container fluid className='story-main'>
+                <div className='story-text'>
                    
-                    <p className='team-heading' >They met their Match on <span style={{color:'#4E1173'}}>myTamilDate</span></p>
+                    <p className='story-heading' >They met their Match on <span style={{color:'#4E1173'}}>myTamilDate</span></p>
                 </div>
-                <Container className='team-content'>
-                <Row  fluid className="team-row">
-                        <Col fluid className="team-col" xs={12} md={3}>
-                            <div className="team-item">
-                                <Image fluid className='team-image' src={st1} />
-                                <div className="team-detail">
-                                    <span className='person-name'>Madhu & Niya</span>
-                                    <span className='person-title'>It was love at first sight for Madhu and Niya...</span>
-                                    <a href='' className='read-more'>Read more</a>
+                <Container className='story-content'>
+                <Row  fluid className="story-row">
+                        <Col fluid className="story-col" xs={12} md={3}>
+                            <div className="story-item">
+                                <Image fluid className='story-image' src={st1} />
+                                <div className="story-detail">
+                                    <span className='story-name'>Madhu & Niya</span>
+                                    <span className='story-title'>It was love at first sight for Madhu and Niya...</span>
+                                    <a href='' className='story-read-more'>Read more</a>
                                 </div>
                             </div>
                         </Col>
-                        <Col className="team-col" xs={12} md={3}>
-                            <div className="team-item">
-                                <Image fluid className='team-image' src={st2} />
-                                <div className="team-detail">
-                                    <span className='person-name'>Abi & John</span>
-                                    <span className='person-title'>Abi & John Bonded Over Faith & Connection...</span>
-                                    <a href='' className='read-more'>Read more</a>
+                        <Col className="story-col" xs={12} md={3}>
+                            <div className="story-item">
+                                <Image fluid className='story-image' src={st2} />
+                                <div className="story-detail">
+                                    <span className='story-name'>Abi & John</span>
+                                    <span className='story-title'>Abi & John Bonded Over Faith & Connection...</span>
+                                    <a href='' className='story-read-more'>Read more</a>
                                 </div>
                             </div>
                         </Col>
-                        <Col className="team-col" xs={12} md={3}>
-                            <div className="team-item">
-                                <Image fluid className='team-image' src={st3} />
-                                <div className="team-details">
-                                    <span className='person-name'>Jenani & Nav</span>
-                                    <span className='person-title'>Jenani & Nav Found Each Other At The Right Time...</span>
-                                    <a  href="" className='read-more'>Read more</a>
+                        <Col className="story-col" xs={12} md={3}>
+                            <div className="story-item">
+                                <Image fluid className='story-image' src={st3} />
+                                <div className="story-details">
+                                    <span className='story-name'>Jenani & Nav</span>
+                                    <span className='story-title'>Jenani & Nav Found Each Other At The Right Time...</span>
+                                    <a  href="" className='story-read-more'>Read more</a>
                                 </div>
                             </div>
                         </Col>

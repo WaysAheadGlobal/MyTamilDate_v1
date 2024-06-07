@@ -97,9 +97,36 @@ display: flex;
 flex-direction: column;
 align-items: center;
   }
-
-  .header-btn1:hover
+  .header-btnone
   {
+    border: 2px solid;
+
+    background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+      color:#FFFFFF;
+      max-width: 320px;
+      width:100%;
+      height:68px;
+    border-radius: 36px;
+      /* background-color: #FFFFFF; */
+
+      font-family: Poppins;
+font-size: 22px;
+font-weight: 600;
+line-height: 24px;
+letter-spacing: 0.02em;
+text-align: center;
+/* border: 2px solid linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%); */
+color:  #FFFFFF;
+
+
+    
+
+  }
+
+  .header-btnone:hover
+  {
+    border: 2px solid;
+
     background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
    max-width: 320px;
     width:100%;
@@ -135,11 +162,15 @@ font-weight: 600;
 line-height: 24px;
 letter-spacing: 0.02em;
 text-align: center;
+border: 2px solid
+linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+color:  #FC8C66;
+
 
     
 
   } */
-  .header-btn2
+  .header-btntwo
   {
     border: 2px solid;
 
@@ -165,31 +196,7 @@ color:  #FC8C66;
     
 
   }
-  .header-btn1
-  {
-    border: 2px solid;
-
-    background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
-      color:#FFFFFF;
-      max-width: 320px;
-      width:100%;
-      height:68px;
-      border-radius: 36px;
-      /* background-color: #FFFFFF; */
-
-      font-family: Poppins;
-font-size: 22px;
-font-weight: 600;
-line-height: 24px;
-letter-spacing: 0.02em;
-text-align: center;
-/* border: 2px solid linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%); */
-color:  #FFFFFF;
-
-
-    
-
-  }
+ 
 
 
 
