@@ -49,10 +49,10 @@ const UserDetails = () => {
             <Typography variant="h5" align="center">{`${userDetails.firstName} ${userDetails.lastName}`}</Typography>
             <Typography variant="subtitle1" color="textSecondary" align="center">{userDetails.status}</Typography>
           </Box>
-          <Box display="flex" gap="5px" alignItems="center" justifyContent="center">
+          <Box display="flex" gap="2px" alignItems="center" justifyContent="center">
             <Box mb={2} textAlign="center">
-              <Button variant="contained" sx={{ backgroundColor: theme.palette.grey[600] }} onClick={handleRemoveFromList}>
-                Remove
+              <Button variant="contained" sx={{ backgroundColor: theme.palette.grey[900] }} onClick={handleRemoveFromList}>
+                Reject
               </Button>
             </Box>
             <Box mb={2} textAlign="center">
@@ -71,6 +71,9 @@ const UserDetails = () => {
             </Box>
             <Box mb={2} textAlign="center">
               <Button variant="contained" color="error" onClick={handleRejectRequest}>Delete</Button>
+            </Box>
+            <Box mb={2} textAlign="center">
+              <Button variant="contained" color="error" onClick={handleRejectRequest}>Delete Request</Button>
             </Box>
           </Box>
         </Grid>

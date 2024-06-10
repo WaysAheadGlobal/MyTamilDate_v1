@@ -1,4 +1,6 @@
-import { Card, CardContent, Box, Button, IconButton, Typography, useTheme, useMediaQuery } from "@mui/material";
+/** @jsxImportSource @emotion/react */
+import { css, keyframes } from '@emotion/react';
+import { Card, CardContent, Box, Button, Typography, useTheme, useMediaQuery } from "@mui/material";
 import { tokens } from "../../theme";
 import { mockTransactions } from "../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
@@ -10,15 +12,9 @@ import Header from "../../components/Header1";
 import GeographyChart from "../../components/GeographyChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
-
-const data = [
-  { country: 'Canada', value: 6 },
-  { country: 'Australia', value: 2 },
-  { country: 'United Kingdom', value: 2 },
-  { country: 'United States', value: 2 },
-  { country: 'India', value: 1 },
-];
-
+import PieChart from '../../components/PieChart';
+import { ResponsivePie } from "@nivo/pie";
+import { mockPieData as data } from "../../data/mockData";
 const agedata = [
   { age: '18-24', value: 6 },
   { age: '25-30', value: 3 },
@@ -26,10 +22,148 @@ const agedata = [
   { age: '41+', value: 2 },
 ];
 
+const transformedagedata = agedata.map(item => ({
+  id: item.age,
+  label: item.age,
+  value: item.value,
+}));
+
 const gendersdata = [
   { gender: 'Male', value: 16 },
   { gender: 'Female', value: 23 },
+  { gender: 'Other', value: 12 },
 ];
+
+const transformedGenderData = gendersdata.map(item => ({
+  id: item.gender,
+  label: item.gender,
+  value: item.value,
+}));
+
+const cardStyle = {
+  width: '320px',
+  margin: '10px',
+  borderRadius: '12px',
+  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+  border: '1px solid #e0e0e0',
+  overflow: 'hidden',
+};
+
+const cardHeaderStyle = {
+  background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+  padding: '16px',
+  textAlign: 'center',
+};
+
+const cardContentStyle = {
+  padding: '20px',
+};
+
+const cardTextStyle = {
+  margin: '4px 0',
+  fontWeight: 'bold',
+  fontSize: '24px',
+  textAlign: 'center',
+  color: '#333',
+};
+
+const StatCard = ({ title, value }) => (
+  <Box display="flex" justifyContent="center">
+    <Card style={cardStyle}>
+      <CardContent style={{ padding: 0 }}>
+        <Box style={cardHeaderStyle}>
+          <Typography variant="h6" style={{ color: 'white', fontWeight: 'bold' }}>
+            {title}
+          </Typography>
+        </Box>
+        <Box style={cardContentStyle}>
+          <Typography variant="body1" style={cardTextStyle}>
+            {value}
+          </Typography>
+        </Box>
+      </CardContent>
+    </Card>
+  </Box>
+);
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+const slideIn = keyframes`
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+`;
+
+const listCardStyle = {
+  width: '100%',
+  maxWidth: '500px',
+  margin: '16px',
+  animation: `${fadeIn} 1s ease-in-out`,
+};
+
+const listCardHeaderStyle = {
+  background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+  padding: '16px',
+};
+
+const listCardContentStyle = {
+  padding: '16px',
+};
+
+const itemStyle = index => css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0;
+  padding: 8px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  animation: ${slideIn} 0.5s ease-in-out ${index * 0.1}s forwards;
+  opacity: 0;
+`;
+
+const ListCard = ({ title, data }) => (
+  <Box display="flex" justifyContent="center">
+    <Card style={listCardStyle}>
+      <CardContent style={{ padding: 0 }}>
+        <Box style={listCardHeaderStyle}>
+          <Typography variant="h6" style={{ color: 'white', fontWeight: 'bold' }}>
+            {title}
+          </Typography>
+        </Box>
+        <Box style={listCardContentStyle}>
+          {data.map((item, index) => (
+            <Box
+              key={index}
+              css={itemStyle(index)}
+            >
+              <Typography variant="body1" style={{ fontWeight: 'bold', color: '#333' }}>
+                {item.age || item.gender}
+              </Typography>
+              <Typography variant="body1" style={{ fontWeight: 'bold', color: '#FC8C66' }}>
+                {item.value}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      </CardContent>
+    </Card>
+  </Box>
+);
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -65,7 +199,7 @@ const Dashboard = () => {
         gap="20px"
       >
         {/* ROW 1 */}
-        <Box gridColumn={isMobile ? "span 12" : "span 3"} backgroundColor={colors.primary[400]} display="flex" alignItems="center" justifyContent="center">
+        <Box gridColumn={isMobile ? "span 12" : "span 3"}  display="flex" alignItems="center" justifyContent="center">
           <StatBox
             title="12,361"
             subtitle="Messages"
@@ -74,7 +208,7 @@ const Dashboard = () => {
             icon={<EmailIcon sx={{ color: colors.greenAccent[600], fontSize: "26px" }} />}
           />
         </Box>
-        <Box gridColumn={isMobile ? "span 12" : "span 3"} backgroundColor={colors.primary[400]} display="flex" alignItems="center" justifyContent="center">
+        <Box gridColumn={isMobile ? "span 12" : "span 3"}  display="flex" alignItems="center" justifyContent="center">
           <StatBox
             title="431,225"
             subtitle="Likes"
@@ -83,7 +217,7 @@ const Dashboard = () => {
             icon={<FavoriteBorderIcon sx={{ color: colors.greenAccent[600], fontSize: "26px" }} />}
           />
         </Box>
-        <Box gridColumn={isMobile ? "span 12" : "span 3"} backgroundColor={colors.primary[400]} display="flex" alignItems="center" justifyContent="center">
+        <Box gridColumn={isMobile ? "span 12" : "span 3"}  display="flex" alignItems="center" justifyContent="center">
           <StatBox
             title="32,441"
             subtitle="Matches"
@@ -92,7 +226,7 @@ const Dashboard = () => {
             icon={<JoinInnerIcon sx={{ color: colors.greenAccent[600], fontSize: "26px" }} />}
           />
         </Box>
-        <Box gridColumn={isMobile ? "span 12" : "span 3"} backgroundColor={colors.primary[400]} display="flex" alignItems="center" justifyContent="center">
+        <Box gridColumn={isMobile ? "span 12" : "span 3"}  display="flex" alignItems="center" justifyContent="center">
           <StatBox
             title="1,325,134"
             subtitle="Requests"
@@ -101,93 +235,129 @@ const Dashboard = () => {
             icon={<TrafficIcon sx={{ color: colors.greenAccent[600], fontSize: "26px" }} />}
           />
         </Box>
-
-        {/* ROW 2 */}
-        <Box gridColumn={isMobile ? "span 12" : "span 4"} gridRow="span 2" backgroundColor={colors.primary[400]} padding="30px">
-          <Typography variant="h5" fontWeight="600" sx={{ marginBottom: "15px" }}>
-            Geography Based Traffic
-          </Typography>
-          <Box height="200px">
-            <GeographyChart isDashboard={true} />
-          </Box>
-        </Box>
-        <Box gridColumn={isMobile ? "span 12" : "span 4"} gridRow="span 2" backgroundColor={colors.primary[400]} overflow="auto">
-          <Box display="flex" justifyContent="space-between" alignItems="center" borderBottom={`4px solid ${colors.primary[500]}`} p="15px">
-            <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-              Recent Transactions
-            </Typography>
-          </Box>
-          {mockTransactions.map((transaction, i) => (
-            <Box key={`${transaction.txId}-${i}`} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`4px solid ${colors.primary[500]}`} p="15px">
-              <Box>
-                <Typography color={colors.greenAccent[500]} variant="h5" fontWeight="600">
-                  {transaction.txId}
-                </Typography>
-                <Typography color={colors.grey[100]}>
-                  {transaction.user}
-                </Typography>
-              </Box>
-              <Box color={colors.grey[100]}>{transaction.date}</Box>
-              <Box backgroundColor={colors.greenAccent[500]} p="5px 10px" borderRadius="4px">
-                ${transaction.cost}
-              </Box>
-            </Box>
-          ))}
-        </Box>
-
-        {/* ROW 3 */}
-        <Box gridColumn={isMobile ? "span 12" : "span 4"} gridRow="span 2" backgroundColor={colors.primary[400]} p="30px">
-          <Typography variant="h5" fontWeight="600">
-            Total Revenue
-          </Typography>
-          <Box display="flex" flexDirection="column" alignItems="center" mt="25px">
-            <ProgressCircle size="125" />
-            <Typography variant="h5" color={colors.greenAccent[500]} sx={{ mt: "15px" }}>
-              $48,352 revenue generated
-            </Typography>
-            <Typography>Includes extra misc expenditures and costs</Typography>
-          </Box>
-        </Box>
       </Box>
 
-      {/* CARDS */}
-      <Box display="grid" gridTemplateColumns={isMobile ? "1fr" : "repeat(auto-fill, minmax(300px, 1fr))"} gap="20px">
-        {[
-          { title: "Age Groups", data: agedata, key: 'age' },
-          { title: "Distribution of Genders", data: gendersdata, key: 'gender' },
-          { title: "Total Number of New Paid Members", value: 14 },
-          { title: "Total Number of New Members Signed Up", value: 144 },
-          { title: "Total Number of Old Users Signing In for the First Time", value: 15 },
-          { title: "Avg Days to Paid Conversion", value: 6 },
-          { title: "Avg Time Per Session", value: 19 },
-          { title: "Avg Number of Interactions Per Session", value: 20 },
-        ].map((item, index) => (
-          <Box key={index}>
-            <Card style={{ width: '300px', margin: '20px auto', borderRadius: '8px' }}>
-              <CardContent style={{ padding: '16px' }}>
-                <Box style={{ backgroundColor: '#FC8C66', padding: '8px', borderRadius: '4px 4px 0 0' }}>
-                  <Typography variant="h6" style={{ color: 'white', textAlign: 'center' }}>
-                    {item.title}
+      {/* CONTENT GRID */}
+      <Box m="20px">
+        <Box
+          display="grid"
+          gridTemplateColumns={isMobile ? "1fr" : "repeat(12, 1fr)"}
+          gridAutoRows="140px"
+          gap="20px"
+        >
+          {/* Recent Transactions */}
+          <Box gridColumn={isMobile ? "span 12" : "span 4"} gridRow="span 2" overflow="auto">
+            <Box display="flex" justifyContent="space-between" alignItems="center" borderBottom={`4px solid ${colors.primary[500]}`} p="15px">
+              <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
+                Recent Transactions
+              </Typography>
+            </Box>
+            {mockTransactions.map((transaction, i) => (
+              <Box
+                key={`${transaction.txId}-${i}`}
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                borderBottom={`2px solid ${colors.primary[500]}`}
+                p="15px"
+                sx={{
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'scale(1.02)',
+                    borderColor: colors.greenAccent[500],
+                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+                  },
+                }}
+              >
+                <Box>
+                  <Typography color={colors.greenAccent[500]} variant="h5" fontWeight="600">
+                    {transaction.txId}
+                  </Typography>
+                  <Typography color={colors.grey[100]}>
+                    {transaction.user}
                   </Typography>
                 </Box>
-                <Box style={{ padding: '8px' }}>
-                  {item.data
-                    ? item.data.map((subItem, subIndex) => (
-                        <Typography key={subIndex} variant="body1" style={{ margin: '4px 0' }}>
-                          {subItem[item.key]} - {subItem.value}
-                        </Typography>
-                      ))
-                    : (
-                      <Typography variant="body1" style={{ margin: '4px 0' }}>
-                        {item.value}
-                      </Typography>
-                    )}
+                <Box color={colors.grey[100]}>{transaction.date}</Box>
+                <Box backgroundColor={colors.greenAccent[500]} p="5px 10px" borderRadius="4px">
+                  ${transaction.cost}
                 </Box>
-              </CardContent>
-            </Card>
+              </Box>
+            ))}
           </Box>
-        ))}
+          
+          <Box mb="20px" gridColumn={isMobile ? "span 13" : "span 4"} gridRow="span 2">
+          <Box style={cardHeaderStyle}>
+          <Typography variant="h6" style={{ color: 'white', fontWeight: 'bold' }}>
+          Distribution of genders
+          </Typography>
+        </Box>
+            <PieChart data={transformedGenderData} />
+          </Box>
+          <Box mb="20px" gridColumn={isMobile ? "span 12" : "span 4"} gridRow="span 2">
+          <Box style={cardHeaderStyle}>
+          <Typography variant="h6" style={{ color: 'white', fontWeight: 'bold' }}>
+          Age groups
+          </Typography>
+        </Box>
+            <PieChart data={transformedagedata}  />
+          </Box>
+
+          {/* Total Revenue */}
+          {/* <Box
+            gridColumn={isMobile ? "span 12" : "span 4"}
+            gridRow="span 2"
+            backgroundColor="#fff"
+            p="30px"
+            sx={{
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+              borderRadius: '12px',
+              border: `2px solid ${colors.greenAccent[500]}`,
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'scale(1.02)',
+                borderColor: colors.primary[500],
+                boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+              },
+            }}
+          >
+            <Typography variant="h5" fontWeight="600">
+              Total Revenue
+            </Typography>
+            <Box display="flex" flexDirection="column" alignItems="center" mt="25px">
+              <ProgressCircle size="100" />
+              <Typography variant="h5" color={colors.greenAccent[500]} sx={{ mt: "15px" }}>
+                $48,352 revenue generated
+              </Typography>
+              <Typography>Includes extra misc expenditures and costs</Typography>
+            </Box>
+          </Box> */}
+
+          {/* Age Groups */}
+          {/* <Box gridColumn={isMobile ? "span 12" : "span 4"} gridRow="span 2" mt="-25px">
+            <ListCard title="Age Groups" data={agedata} />
+          </Box> */}
+
+        </Box>
+
+        {/* Additional Cards */}
+        <Box display="grid" gridTemplateColumns={isMobile ? "repeat(auto-fill, minmax(250px, 1fr))" : "repeat(auto-fill, minmax(250px, 1fr))"} gap="10px" mt="20px">
+        <StatCard title="total Revenue Generated" value="14443" />
+          <StatCard title="Total Number of Old Users Signing In for the First Time" value="15" />
+          <StatCard title="Total Number of New Members Signed Up" value="144" />
+          <StatCard title="Total Number of New Paid Members" value="14" />
+        </Box>
+        <Box display="grid" gridTemplateColumns={isMobile ? "repeat(auto-fill, minmax(250px, 1fr))" : "repeat(auto-fill, minmax(250px, 1fr))"} gap="10px" mt="20px">
+          
+          <StatCard title="Total # of renewals" value="15" />
+          <StatCard title="Avg # of Interaction Per Session" value="144" />
+          <StatCard title="Avg Time Per Session" value="14" />
+          <StatCard title="Avg Time Per Session" value="14" />
+        </Box>
+
       </Box>
+     
+      
     </Box>
   );
 };

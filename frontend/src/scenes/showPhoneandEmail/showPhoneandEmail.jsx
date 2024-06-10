@@ -87,7 +87,7 @@ const ShowphoneAndEmail = () => {
           width={{ xs: '90%', sm: '70%', md: '50%', lg: '40%', xl: '30%' }}
         >
           <Typography variant="h6" sx={{ color: '#3A3A3A', mb: 2 }}>
-            Frist Verify Your Phone Number
+            First Verify Your Phone Number
           </Typography>
           
           <TextField

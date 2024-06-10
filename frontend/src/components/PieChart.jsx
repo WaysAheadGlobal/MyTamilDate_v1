@@ -1,11 +1,12 @@
 import { ResponsivePie } from "@nivo/pie";
 import { tokens } from "../theme";
 import { useTheme } from "@mui/material";
-import { mockPieData as data } from "../data/mockData";
+import PropTypes from "prop-types";
 
-const PieChart = () => {
+const PieChart = ({ data = [] }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
   return (
     <ResponsivePie
       data={data}
@@ -84,13 +85,13 @@ const PieChart = () => {
           justify: false,
           translateX: 0,
           translateY: 56,
-          itemsSpacing: 0,
-          itemWidth: 100,
+          itemsSpacing: 5, // Reduced spacing
+          itemWidth: 80, // Reduced width
           itemHeight: 18,
           itemTextColor: "#999",
           itemDirection: "left-to-right",
           itemOpacity: 1,
-          symbolSize: 18,
+          symbolSize: 12, // Reduced symbol size
           symbolShape: "circle",
           effects: [
             {
@@ -104,6 +105,16 @@ const PieChart = () => {
       ]}
     />
   );
+};
+
+PieChart.propTypes = {
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      value: PropTypes.number.isRequired,
+    })
+  ),
 };
 
 export default PieChart;

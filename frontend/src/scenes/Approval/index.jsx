@@ -132,28 +132,48 @@ const Contacts = () => {
           "& .MuiDataGrid-root": {
             border: "none",
           },
+          "& .MuiDataGrid-columnHeaders": {
+            backgroundImage: 'linear-gradient(90deg, #9663BF, #4B164C)', // Lavender gradient background
+            color: '#fff', // Text color white
+            borderBottom: "none",
+          },
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
+            fontSize: "14px", // Adjust the font size
+            fontWeight: "Medium", // Make the font bold
           },
           "& .name-column--cell": {
             color: colors.greenAccent[300],
           },
           "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[900],
+            backgroundColor: "#605f61",
+            color: '#fff',
             borderBottom: "none",
           },
           "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[400],
+            // backgroundColor: colors.primary[400],
           },
           "& .MuiDataGrid-footerContainer": {
             borderTop: "none",
-            backgroundColor: colors.blueAccent[900],
+            backgroundColor: "#9663BF",
+            color: '#fff',
           },
+
           "& .MuiCheckbox-root": {
             color: `${colors.greenAccent[200]} !important`,
           },
+
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
             color: `${colors.grey[100]} !important`,
+          },".MuiDataGrid-footerContainer": {
+            borderTop: "none",
+            backgroundColor: '#605f61',
+            color: '#fff',
+          },
+          ".MuiTablePagination-root": {
+            overflow: "auto",
+            color: "rgb(255 255 255 / 87%)",
+            fontSize: "14px",
           },
         }}
       >

@@ -102,26 +102,7 @@ const AddPromotionalCode = () => {
               margin="normal"
             />
           </Grid>
-          <Grid item xs={12} lg={6}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Available From"
-                value={formData.availableFrom}
-                onChange={(date) => handleDateChange('availableFrom', date)}
-                renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
-              />
-            </LocalizationProvider>
-          </Grid>
-          <Grid item xs={12} lg={6}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Available To"
-                value={formData.availableTo}
-                onChange={(date) => handleDateChange('availableTo', date)}
-                renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
-              />
-            </LocalizationProvider>
-          </Grid>
+         
           
           <Grid item xs={12} lg={6}>
             <FormControl fullWidth margin="normal">
@@ -150,7 +131,38 @@ const AddPromotionalCode = () => {
                 <MenuItem value="yes">Yes</MenuItem>
                 <MenuItem value="no">No</MenuItem>
               </Select>
+
+              
             </FormControl>
+          </Grid>
+          <Grid item xs={12} lg={6}>
+          <Grid container spacing={2}>
+      <Grid item xs={12} lg={6}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Available From"
+            value={formData.availableFrom}
+            onChange={(date) => handleDateChange('availableFrom', date)}
+            renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+          />
+        </LocalizationProvider>
+      </Grid>
+      <Grid item xs={12} lg={6}>
+        <Box ml={{ lg: 2 }}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Available To"
+              value={formData.availableTo}
+              onChange={(date) => handleDateChange('availableTo', date)}
+              renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+            />
+          </LocalizationProvider>
+        </Box>
+      </Grid>
+    </Grid>
+          </Grid>
+          <Grid item xs={12} lg={6}>
+           
           </Grid>
         </Grid>
         <Button type="submit" variant="contained" sx={{
