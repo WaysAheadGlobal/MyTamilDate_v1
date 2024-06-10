@@ -80,10 +80,10 @@ const UserDetails = () => {
             </Box>
             <Typography variant="h5" align="center">{`${user.firstName} ${user.lastName}`}</Typography>
             <Typography variant="subtitle1" color="textSecondary" align="center">{user.status}</Typography>
-            <Box display="flex" gap="5px" alignItems="center" justifyContent="center" mt={2}>
+            <Box display="flex" gap="2px" alignItems="center" justifyContent="center" mt={2}>
               <Box mb={2} textAlign="center">
-                <Button variant="contained" sx={{ backgroundColor: colors.grey[600] }} onClick={handleRemoveFromList}>
-                  Remove
+                <Button variant="contained" sx={{ backgroundColor: colors.grey[100] }} onClick={handleRemoveFromList}>
+                  Reject
                 </Button>
               </Box>
               <Box mb={2} textAlign="center">
@@ -98,6 +98,9 @@ const UserDetails = () => {
               <Box mb={2} textAlign="center">
                 <Button variant="contained" color="error" onClick={handleRejectRequest}>Delete</Button>
               </Box>
+              <Box mb={2} textAlign="center">
+              <Button variant="contained" color="error" onClick={handleRejectRequest}>Delete Request</Button>
+            </Box>
             </Box>
           </Box>
         </Grid>

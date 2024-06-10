@@ -41,6 +41,7 @@ const Details = () => {
           }}
         >
           <Button variant="contained" color="secondary">List</Button>
+          <Button variant="contained" color="secondary">Edit</Button>
           <Button variant="contained" color="error">Delete</Button>
         </Box>
       </Box>
