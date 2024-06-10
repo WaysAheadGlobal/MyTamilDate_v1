@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -16,6 +16,16 @@ import heartlogo from '../assets/images/heart-logo.png';
 
 export const NavBar = () => {
 
+
+
+  const [activeLink, setActiveLink] = useState(null);
+
+  const handleLinkClick = (event) => {
+    const targetLink = event.target.getAttribute("data-target");
+    setActiveLink(targetLink);
+};
+
+
 return(
 
 
@@ -31,12 +41,16 @@ return(
 
     </Nav>
     <Nav className='nav-link-container'>
-
+{/* 
       <Nav.Link target="_blank"  as={Link} to="/SuccessPage" >Success Stories</Nav.Link>
       <Nav.Link  target="_blank" as={Link} to="/aboutus" >About Us</Nav.Link>
       <Nav.Link  target="_blank"  href="https://tamilculture.com/user/mytamildatecom">Blogs</Nav.Link>
       <Nav.Link  target="_blank" as={Link} to="/FaqPage" >FAQs</Nav.Link>
-      <Nav.Link  target="_blank" as={Link} to="/GetInTouch" >Contact Us</Nav.Link>
+      <Nav.Link  target="_blank" as={Link} to="/GetInTouch" >Contact Us</Nav.Link> */}
+      <Nav.Link target="_blank" as={Link} to="/SuccessPage"  data-target="success" >Success Stories</Nav.Link>
+      <Nav.Link target="_blank" as={Link} to="/aboutus"  data-target="AboutUs" >About Us</Nav.Link>
+      <Nav.Link target="_blank" href="https://tamilculture.com/user/mytamildatecom"  data-target="Blogs" >Blogs</Nav.Link>
+      <Nav.Link target="_blank" as={Link} to="/GetInTouch" data-target="ContactUs" >Contact Us</Nav.Link>
     </Nav>
   </Navbar.Collapse>
 </Container>

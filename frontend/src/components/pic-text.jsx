@@ -13,7 +13,6 @@ import c2 from '../assets/images/c2.png'
 import c3 from '../assets/images/c3.png'
 import logo from "../assets/images/MTDlogo.png";
 
-// nkjndkjg
 
 
 export const Pictext = () => {
