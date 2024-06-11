@@ -12,7 +12,27 @@ margin-top: 50px;
 .policy-main p
 {
     font-family: Poppins;
-    font-size: 20px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    
+    
+    text-align: justify;
+    color:#5E5E5E;
+}
+/* .policy-main ul li {
+    font-family: Poppins !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    line-height: 24px !important;
+    text-align: justify !important;
+    color: #5E5E5E !important;
+} */
+
+.policy-main a
+{
+    font-family: Poppins;
+    font-size: 16px;
     font-weight: 500;
     line-height: 24px;
     
@@ -59,7 +79,7 @@ padding-bottom:40px ;
 {
  
     font-family: Poppins;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 500;
     line-height: 24px;
     

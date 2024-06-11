@@ -12,11 +12,10 @@ margin-top: 50px;
 .tnc-main p
 {
     font-family: Poppins;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 500;
     line-height: 24px;
-    
-    
+
     text-align: justify;
     color:#5E5E5E;
 }
@@ -29,6 +28,36 @@ line-height: 24px;
 text-align:left;
 
 
+
+}
+.tnc-main  a
+{
+    font-family: Poppins;
+font-size: 16px;
+font-weight: 800;
+line-height: 24px;
+text-align:left;
+color:#5E5E5E;
+
+
+}
+
+
+
+
+
+
+
+.tnc-main ol li
+{
+   
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+
+    text-align: justify;
+    color:#5E5E5E;
 
 }
 .tnc-main span

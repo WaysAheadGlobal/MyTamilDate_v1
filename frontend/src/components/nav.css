@@ -7,7 +7,8 @@ position: sticky;
 position: -webkit-sticky;
 top: 0;
 z-index: 50;
-display: block;   
+display: block;  
+/* background-color: transparent;  */
 
 }
 
@@ -15,6 +16,7 @@ display: block;
   .nav-link-container
   {
 gap:44px;
+/* background-color: transparent;  */
   }
 
   .nav-link-container .nav-link
@@ -30,9 +32,9 @@ gap:44px;
   }
 
 
-  /* @media (max-width: 750px) {
-    .nav-logo
-    {
-      display: none;
-    }
-    } */
+    .Navbar-container .nav-link-container .nav-link.active-link {
+      color: #FC8C66;
+      text-decoration: underline;
+  }
+  
+  

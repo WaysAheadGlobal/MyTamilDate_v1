@@ -17,9 +17,9 @@ export const Join = () => {
 
                 <div className='future-header-text'>
                     <div className='future-hero-text'>
-                        <span className='future-first-line'>It worked for them & it could work for you!</span>
-                        <span className='future-sec-line'>Meet Tamil singles from Canada, US, UK & more! ❤️
-                         <br />We're responsible for countless marriages & relationships.</span>
+                        <span className='future-first-line'>Meet Tamil singles from Canada, US, UK & more! ❤️</span>
+                        {/* <span className='future-sec-line'>Meet Tamil singles from Canada, US, UK & more! ❤️
+                         <br />We're responsible for countless marriages & relationships.</span> */}
                         <button varient="primary" className='future-get-started'>Join Today</button>
                     </div>
                 </div>

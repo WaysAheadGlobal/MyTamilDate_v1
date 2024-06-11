@@ -21,8 +21,7 @@ export const Video2 = () => {
                     <div className='play-icon'></div>
 
                 </a>
-                 <a href='https://www.instagram.com/reel/C6EPQwmvOPp/
-' target="_blank" className='vid2'>
+                 <a href='https://www.instagram.com/reel/C6EPQwmvOPp/' target="_blank" className='vid2'>
                     <img  className='video2-img' src={vd2} >
 
                     </img>
