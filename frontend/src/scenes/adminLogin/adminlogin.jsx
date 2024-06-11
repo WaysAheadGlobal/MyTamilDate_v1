@@ -4,7 +4,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useAppContext } from '../../Context/UseContext';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from '../../hooks/useCookies';
-import adminbackground from '../../assets/images/adminbackground.png'
+import adminbackground from '../../assets/images/adminbackground.png';
 
 const themeSettings = {
   typography: {
@@ -70,18 +70,17 @@ const AdminSignIn = () => {
 
   return (
     <ThemeProvider theme={theme}>
-   <Box
-  display="flex"
-  justifyContent="center"
-  alignItems="center"
-  minHeight="100vh"
-  sx={{
-    background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-    backgroundSize: 'cover',
-    backgroundColor: 'rgb(245, 245, 245)',
-  }}
->
-
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+        sx={{
+          background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+          backgroundSize: 'cover',
+          backgroundColor: 'rgb(245, 245, 245)',
+        }}
+      >
         <Box
           display="flex"
           flexDirection="column"

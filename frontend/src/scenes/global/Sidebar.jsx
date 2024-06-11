@@ -9,19 +9,12 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
-import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
-import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
-import { useAppContext } from "../../Context/UseContext";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import { useAppContext } from "../../Context/UseContext";
 import "./Sidebar.css"; // Import custom CSS
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -69,7 +62,32 @@ const Category = ({ title, icon, children, isCollapsed }) => {
       <Box className={`dropdown-sidebar ${isOpen ? "open" : ""}`} pl={2}>
         {children}
       </Box>
+    <Box 
+      display="flex" 
+      alignItems="center" 
+      sx={{ cursor: "pointer", mt: isCollapsed ? "30px" : "0", mb: isCollapsed ? "30px" : "0" }} 
+      onClick={handleToggle}
+    >
+      {icon && React.cloneElement(icon, { sx: { color: colors.grey[100], marginLeft: '27px', marginTop : "10px" } })}
+      {!isCollapsed && (
+        <Typography
+          variant="h6"
+          color={colors.grey[100]}
+          sx={{ m: "15px 0 5px 20px", flexGrow: 1 }}
+        >
+          {title}
+        </Typography>
+      )}
+      {!isCollapsed && (
+        <Box sx={{ mr: 2 }}>
+          {isOpen ? <ExpandLessIcon sx={{ color: colors.grey[100] }} /> : <ExpandMoreIcon sx={{ color: colors.grey[100] }} />}
+        </Box>
+      )}
     </Box>
+    <Box className={`dropdown ${isOpen ? "open" : ""}`} pl={2}>
+      {children}
+    </Box>
+  </Box>
   );
 };
 
@@ -104,6 +122,7 @@ const Sidebar = () => {
         "& .pro-menu-item.active": {
           color: "#6870fa !important",
         },
+        fontFamily: 'Poppins, sans-serif', 
       }}
     >
       <ProSidebar collapsed={isCollapsed}>
@@ -203,9 +222,10 @@ const Sidebar = () => {
               variant="contained"
               onClick={handleLogout}
               sx={{
-                width: '100%',
+                width: '90%',
                 mb: 2,
                 mt: 2,
+                mr:6,
                 py: 1.5,
                 background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
                 color: '#FFF',
@@ -225,8 +245,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
-
-
-
-

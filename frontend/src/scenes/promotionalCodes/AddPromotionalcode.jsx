@@ -113,9 +113,9 @@ const AddPromotionalCode = () => {
                 onChange={handleChange}
                 label="Only For Subscription"
               >
-                <MenuItem value="1 month">1 Month</MenuItem>
-                <MenuItem value="2 months">2 Months</MenuItem>
-                <MenuItem value="3 months">3 Months</MenuItem>
+                <MenuItem value="1 month">Premium Account Subscription (1 Month)</MenuItem>
+                <MenuItem value="2 months">Premium Account Subscription (2 Month)</MenuItem>
+                <MenuItem value="3 months">Premium Account Subscription (3 Month)</MenuItem>
               </Select>
             </FormControl>
           </Grid>

@@ -11,6 +11,7 @@ const PieChart = ({ data = [] }) => {
     <ResponsivePie
       data={data}
       theme={{
+        fontFamily: 'Poppins, sans-serif',  // Add font family globally
         axis: {
           domain: {
             line: {
@@ -20,6 +21,7 @@ const PieChart = ({ data = [] }) => {
           legend: {
             text: {
               fill: colors.grey[100],
+              fontFamily: 'Poppins, sans-serif', // Add font family here
             },
           },
           ticks: {
@@ -29,12 +31,14 @@ const PieChart = ({ data = [] }) => {
             },
             text: {
               fill: colors.grey[100],
+              fontFamily: 'Poppins, sans-serif', // Add font family here
             },
           },
         },
         legends: {
           text: {
             fill: colors.grey[100],
+            fontFamily: 'Poppins, sans-serif', // Add font family here
           },
         },
       }}
