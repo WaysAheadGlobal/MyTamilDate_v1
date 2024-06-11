@@ -13,7 +13,7 @@ const StatBox = ({ title, subtitle, icon, progress, increase }) => {
         transition: "transform 0.3s, border 0.3s",
         '&:hover': {
           transform: "translateY(-5px) scale(1.02)", // Scale effect on hover
-          border: `2px solid ${theme.palette.primary.main}`, // Change to secondary color on hover
+         // Change to secondary color on hover
           boxShadow: `${theme.shadows[5]}`, // Increase shadow on hover
         },
         boxShadow: theme.shadows[3], // Use theme-defined shadow

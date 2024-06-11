@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
 import { mockDataContacts } from '../../data/mockData';
@@ -17,6 +17,7 @@ const Contacts = () => {
   const togglePhoneNumberemail = () => {
     { showFullPhoneNumberemail ? togglePhoneNumber() : Navigate("/showPhoneandEmail") }
   }
+
   // Function to format phone number
   const formatPhoneNumber = (phoneNumber) => {
     if (phoneNumber.length >= 6) {
@@ -42,7 +43,6 @@ const Contacts = () => {
       field: 'name',
       headerName: 'Name',
       flex: 1,
-
     },
     {
       field: 'age',
@@ -100,7 +100,6 @@ const Contacts = () => {
 
   return (
     <Box m="20px">
-      <Box></Box>
       <Header
         mb={2}
         title="Users List"
@@ -138,10 +137,11 @@ const Contacts = () => {
             backgroundImage: 'linear-gradient(90deg, #9663BF, #4B164C)', // Lavender gradient background
             color: '#fff', // Text color white
             borderBottom: "none",
+            fontSize: "16px", // Adjust the font size of column headers
           },
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
-            fontSize: "14px", // Adjust the font size
+            fontSize: "12px", // Adjust the font size of cells
             fontWeight: "Medium", // Make the font bold
           },
           "& .name-column--cell": {
@@ -151,6 +151,7 @@ const Contacts = () => {
             backgroundColor: "#605f61",
             color: '#fff',
             borderBottom: "none",
+            fontSize: "14px"
           },
           "& .MuiDataGrid-virtualScroller": {
             // backgroundColor: colors.primary[400],
@@ -160,14 +161,13 @@ const Contacts = () => {
             backgroundColor: "#9663BF",
             color: '#fff',
           },
-
           "& .MuiCheckbox-root": {
             color: `${colors.greenAccent[200]} !important`,
           },
-
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
             color: `${colors.grey[100]} !important`,
-          },".MuiDataGrid-footerContainer": {
+          },
+          ".MuiDataGrid-footerContainer": {
             borderTop: "none",
             backgroundColor: '#605f61',
             color: '#fff',

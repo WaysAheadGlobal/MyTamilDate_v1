@@ -61,8 +61,8 @@ const cardContentStyle = {
 
 const cardTextStyle = {
   margin: '4px 0',
-  fontWeight: 'bold',
-  fontSize: '24px',
+fontWeight:'500',
+  fontSize: '16px',
   textAlign: 'center',
   color: '#333',
 };
@@ -72,7 +72,7 @@ const StatCard = ({ title, value }) => (
     <Card style={cardStyle}>
       <CardContent style={{ padding: 0 }}>
         <Box style={cardHeaderStyle}>
-          <Typography variant="h6" style={{ color: 'white', fontWeight: 'bold' }}>
+          <Typography variant="h7" style={{ color: 'white'}}>
             {title}
           </Typography>
         </Box>
@@ -176,7 +176,7 @@ const Dashboard = () => {
       <Box display="flex" flexDirection={isMobile ? "column" : "row"} justifyContent="space-between" alignItems="center">
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
         <Box mt={isMobile ? "10px" : "0"}>
-          <Button
+          {/* <Button
             sx={{
               background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
               color: '#fff',
@@ -187,7 +187,7 @@ const Dashboard = () => {
           >
             <DownloadOutlinedIcon sx={{ mr: "10px" }} />
             Download Reports
-          </Button>
+          </Button> */}
         </Box>
       </Box>
 
@@ -208,6 +208,8 @@ const Dashboard = () => {
             icon={<EmailIcon sx={{ color: colors.greenAccent[600], fontSize: "26px" }} />}
           />
         </Box>
+
+
         <Box gridColumn={isMobile ? "span 12" : "span 3"}  display="flex" alignItems="center" justifyContent="center">
           <StatBox
             title="431,225"
@@ -238,66 +240,28 @@ const Dashboard = () => {
       </Box>
 
       {/* CONTENT GRID */}
-      <Box m="20px">
+      <Box m="20px" mt="40px">
         <Box
           display="grid"
-          gridTemplateColumns={isMobile ? "1fr" : "repeat(12, 1fr)"}
+          gridTemplateColumns={isMobile ? "1fr" : "repeat(8, 1fr)"}
           gridAutoRows="140px"
           gap="20px"
         >
           {/* Recent Transactions */}
-          <Box gridColumn={isMobile ? "span 12" : "span 4"} gridRow="span 2" overflow="auto">
-            <Box display="flex" justifyContent="space-between" alignItems="center" borderBottom={`4px solid ${colors.primary[500]}`} p="15px">
-              <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-                Recent Transactions
-              </Typography>
-            </Box>
-            {mockTransactions.map((transaction, i) => (
-              <Box
-                key={`${transaction.txId}-${i}`}
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                borderBottom={`2px solid ${colors.primary[500]}`}
-                p="15px"
-                sx={{
-                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'scale(1.02)',
-                    borderColor: colors.greenAccent[500],
-                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
-                  },
-                }}
-              >
-                <Box>
-                  <Typography color={colors.greenAccent[500]} variant="h5" fontWeight="600">
-                    {transaction.txId}
-                  </Typography>
-                  <Typography color={colors.grey[100]}>
-                    {transaction.user}
-                  </Typography>
-                </Box>
-                <Box color={colors.grey[100]}>{transaction.date}</Box>
-                <Box backgroundColor={colors.greenAccent[500]} p="5px 10px" borderRadius="4px">
-                  ${transaction.cost}
-                </Box>
-              </Box>
-            ))}
-          </Box>
+         
           
           <Box mb="20px" gridColumn={isMobile ? "span 13" : "span 4"} gridRow="span 2">
-          <Box style={cardHeaderStyle}>
-          <Typography variant="h6" style={{ color: 'white', fontWeight: 'bold' }}>
-          Distribution of genders
+          <Box >
+          <Typography variant="h4" fontWeight="500" >
+          Distribution of Genders
           </Typography>
         </Box>
             <PieChart data={transformedGenderData} />
           </Box>
           <Box mb="20px" gridColumn={isMobile ? "span 12" : "span 4"} gridRow="span 2">
-          <Box style={cardHeaderStyle}>
-          <Typography variant="h6" style={{ color: 'white', fontWeight: 'bold' }}>
-          Age groups
+          <Box >
+          <Typography variant="h4" fontWeight="500" >
+          Age Groups
           </Typography>
         </Box>
             <PieChart data={transformedagedata}  />
@@ -341,25 +305,68 @@ const Dashboard = () => {
         </Box>
 
         {/* Additional Cards */}
-        <Box display="grid" gridTemplateColumns={isMobile ? "repeat(auto-fill, minmax(250px, 1fr))" : "repeat(auto-fill, minmax(250px, 1fr))"} gap="10px" mt="20px">
-        <StatCard title="total Revenue Generated" value="14443" />
-          <StatCard title="Total Number of Old Users Signing In for the First Time" value="15" />
-          <StatCard title="Total Number of New Members Signed Up" value="144" />
-          <StatCard title="Total Number of New Paid Members" value="14" />
+        <Box display="grid" gridTemplateColumns={isMobile ? "repeat(auto-fill, minmax(250px, 1fr))" : "repeat(auto-fill, minmax(250px, 1fr))"} gap="10px" mt="50px">
+        <StatCard title="Total Revenue Generated" value="CAD 14k" />
+          <StatCard title="Total Old Users Signing First Time" value="15" />
+          <StatCard title="Total New Members Sign Up" value="144" />
+          <StatCard title="Total of New Paid Members" value="14" />
         </Box>
         <Box display="grid" gridTemplateColumns={isMobile ? "repeat(auto-fill, minmax(250px, 1fr))" : "repeat(auto-fill, minmax(250px, 1fr))"} gap="10px" mt="20px">
           
-          <StatCard title="Total # of renewals" value="15" />
-          <StatCard title="Avg # of Interaction Per Session" value="144" />
+          <StatCard title="Total of Renewals" value="15" />
+          <StatCard title="Avg of Interaction Per Session" value="144" />
           <StatCard title="Avg Time Per Session" value="14" />
           <StatCard title="Avg Time Per Session" value="14" />
         </Box>
 
+        <Box gridColumn={isMobile ? "span 12" : "span 4"} gridRow="span 2" overflow="auto" mt="30px">
+      <Box display="flex" justifyContent="space-between" alignItems="center" borderBottom={`4px solid ${colors.primary[500]}`} p="15px">
+        <Typography color={colors.grey[100]} variant="h6" fontWeight="600" sx={{ fontFamily: 'Poppins, sans-serif' }}>
+          Recent Transactions
+        </Typography>
+      </Box>
+      {mockTransactions.map((transaction, i) => (
+        <Box
+          key={`${transaction.txId}-${i}`}
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          borderBottom={`2px solid ${colors.primary[500]}`}
+          p="15px"
+          sx={{
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              transform: 'scale(1.02)',
+              borderColor: colors.greenAccent[500],
+              boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+            },
+            fontFamily: 'Poppins, sans-serif',
+          }}
+        >
+          <Box>
+            <Typography color={colors.greenAccent[500]} variant="h5" fontWeight="600" sx={{ fontFamily: 'Poppins, sans-serif' }}>
+              {transaction.txId}
+            </Typography>
+            <Typography color={colors.grey[100]} sx={{ fontFamily: 'Poppins, sans-serif' }}>
+              {transaction.user}
+            </Typography>
+          </Box>
+          <Box color={colors.grey[100]} sx={{ fontFamily: 'Poppins, sans-serif' }}>
+            {transaction.date}
+          </Box>
+          <Box backgroundColor={colors.greenAccent[500]} p="5px 10px" borderRadius="4px" sx={{ fontFamily: 'Poppins, sans-serif' }}>
+            ${transaction.cost}
+          </Box>
+        </Box>
+      ))}
+    </Box>
       </Box>
      
       
     </Box>
   );
 };
+
 
 export default Dashboard;

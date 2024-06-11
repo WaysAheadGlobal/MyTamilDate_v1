@@ -138,7 +138,7 @@ const Contacts = () => {
           },
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
-            fontSize: "14px", // Adjust the font size
+            fontSize: "12px", // Adjust the font size
             fontWeight: "Medium", // Make the font bold
           },
           "& .name-column--cell": {
@@ -148,6 +148,7 @@ const Contacts = () => {
             backgroundColor: "#605f61",
             color: '#fff',
             borderBottom: "none",
+            fontSize: "14px",
           },
           "& .MuiDataGrid-virtualScroller": {
             // backgroundColor: colors.primary[400],
