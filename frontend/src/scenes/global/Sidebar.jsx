@@ -122,7 +122,7 @@ const Sidebar = () => {
         "& .pro-menu-item.active": {
           color: "#6870fa !important",
         },
-        fontFamily: 'Poppins, sans-serif',
+        fontFamily: '"Inter", sans-serif',
       }}
     >
       <ProSidebar collapsed={isCollapsed}>

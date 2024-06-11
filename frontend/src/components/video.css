@@ -42,7 +42,7 @@ flex-direction: column;
 
 }
 .video-heading{
-    font-family: Poppins;
+    font-family: "Inter";
     font-size: 40px;
     font-weight: 600;
     line-height: 60px;
@@ -62,7 +62,7 @@ color:#4E1173;
 padding-left:15px;
 padding-right:15px;
   
-font-family: Poppins;
+font-family: "Inter";
 font-size: 28px;
 font-weight: 600;
 line-height: 50.4px;

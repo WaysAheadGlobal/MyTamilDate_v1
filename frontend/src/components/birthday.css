@@ -232,7 +232,7 @@ outline-color: transparent;
   }
   .calculated-age
   {
-    font-family: Poppins;
+    font-family: "Inter";
     font-size: 14px;
     font-weight: 500;
     line-height: 22px;
@@ -278,7 +278,7 @@ max-width: 104px;
 width: 100%;
 /* background: linear-gradient(90deg, #9663BF 0%, #4B164C 100%); */
 border: 1px solid #6C6C6C ;
-font-family: Poppins;
+font-family: "Inter";
 font-size: 16px;
 font-weight: 500;
 line-height: 24px;

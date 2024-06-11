@@ -79,7 +79,7 @@ export const FaqPage = () => {
                     ))}
                     <div className='faq-last-lines'>
                     <p>To cancel the subscription please contact the support team.</p>
-                <span>Have more questions for us?<br/> Feel Free To Reach Out To Us At <a style={{fontFamily: 'Poppins', fontSize: '20px',
+                <span>Have more questions for us?<br/> Feel Free To Reach Out To Us At <a style={{fontFamily: '"Inter"', fontSize: '20px',
   fontWeight: '500',
   lineHeight: '34px',
   textAlign: 'left',

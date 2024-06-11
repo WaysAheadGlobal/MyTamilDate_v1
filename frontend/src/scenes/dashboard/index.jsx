@@ -321,7 +321,7 @@ const Dashboard = () => {
 
         <Box gridColumn={isMobile ? "span 12" : "span 4"} gridRow="span 2" overflow="auto" mt="30px">
       <Box display="flex" justifyContent="space-between" alignItems="center" borderBottom={`4px solid ${colors.primary[500]}`} p="15px">
-        <Typography color={colors.grey[100]} variant="h6" fontWeight="600" sx={{ fontFamily: 'Poppins, sans-serif' }}>
+        <Typography color={colors.grey[100]} variant="h6" fontWeight="600" sx={{ fontFamily: '"Inter", sans-serif' }}>
           Recent Transactions
         </Typography>
       </Box>
@@ -341,21 +341,21 @@ const Dashboard = () => {
               borderColor: colors.greenAccent[500],
               boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
             },
-            fontFamily: 'Poppins, sans-serif',
+            fontFamily: '"Inter", sans-serif',
           }}
         >
           <Box>
-            <Typography color={colors.greenAccent[500]} variant="h5" fontWeight="600" sx={{ fontFamily: 'Poppins, sans-serif' }}>
+            <Typography color={colors.greenAccent[500]} variant="h5" fontWeight="600" sx={{ fontFamily: '"Inter", sans-serif' }}>
               {transaction.txId}
             </Typography>
-            <Typography color={colors.grey[100]} sx={{ fontFamily: 'Poppins, sans-serif' }}>
+            <Typography color={colors.grey[100]} sx={{ fontFamily: '"Inter", sans-serif' }}>
               {transaction.user}
             </Typography>
           </Box>
-          <Box color={colors.grey[100]} sx={{ fontFamily: 'Poppins, sans-serif' }}>
+          <Box color={colors.grey[100]} sx={{ fontFamily: '"Inter", sans-serif' }}>
             {transaction.date}
           </Box>
-          <Box backgroundColor={colors.greenAccent[500]} p="5px 10px" borderRadius="4px" sx={{ fontFamily: 'Poppins, sans-serif' }}>
+          <Box backgroundColor={colors.greenAccent[500]} p="5px 10px" borderRadius="4px" sx={{ fontFamily: '"Inter", sans-serif' }}>
             ${transaction.cost}
           </Box>
         </Box>

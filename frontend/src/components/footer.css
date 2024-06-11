@@ -42,7 +42,7 @@ padding-bottom: 50px;;
 }
 .foot-logo-txt p{
    
-    font-family: Poppins;
+    font-family: "Inter";
     font-size: 16px;
     font-weight: 500;
     line-height: 30px;
@@ -93,7 +93,7 @@ height: 95px;
     padding-top:10px; 
 
 padding-left: 5px;
-    font-family: Poppins;
+    font-family: "Inter";
 font-size: 18px;
 font-weight: 500;
 line-height: 30px;
@@ -104,7 +104,7 @@ text-align: justified;
 .linkf
 {
 margin-top:20px ;
-font-family: Poppins;
+font-family: "Inter";
 font-size: 18px;
 font-weight: 500;
 line-height: 30px;
@@ -152,7 +152,7 @@ height: 49.07px;
 
 .copy-text
 {
-    font-family: Poppins;
+    font-family: "Inter";
     font-size: 16px;
     font-weight: 500;
     line-height: 30px;
