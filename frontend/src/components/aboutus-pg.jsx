@@ -66,7 +66,7 @@ export const AboutUsPage = () => {
                                 We’ve been helping single Tamils meet, date and marry for years. On their own terms & their own timelines.
                             </span>
                         </div>
-                        <a href="/signup" target='_blank'>Get Started</a>
+                        <a href="/signup" >Get Started</a>
 
 
                     </div>
@@ -159,7 +159,7 @@ export const AboutUsPage = () => {
 
 
                 <Container className='abt4-main'>
-              <a  target="_blank"href='https://www.instagram.com/reel/C4Bg5EWJZ8P/'>
+              <a href='https://www.instagram.com/reel/C4Bg5EWJZ8P/'>
 
                       <img className='abt4-bg' src={abt4vid}></img>
 

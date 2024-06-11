@@ -72,7 +72,7 @@ export const SignupPhone = () => {
                         <Form onSubmit={handleSubmit} className='verify-phone-form'>
                             <Form.Group controlId="formPhoneNumber" className='verify-form-group'>
                                 <Form.Label className='num-verify-lable'> What's your phone number?</Form.Label>
-                                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', width: '100%', }}>
                                     <Dropdown>
                                         <Dropdown.Toggle as="div" id="dropdown-basic" className='flag-box'>
                                             <Flag code={selectedCountry} style={{ width: '34px', height: '25px', marginRight: '10px' }} className='flag' />
@@ -109,7 +109,7 @@ export const SignupPhone = () => {
                             <div className='line'></div>
                         </Container>
                         <p>Already have an account? <a href='/SignIn' className='signup-signin'>Sign in here</a></p>
-                        <p>By continuing you accept our <br /><a className="signup-links" target="_blank" href="/PrivacyPolicy">Privacy Policy</a> and <a className="signup-links" target="_blank" href='/Tnc'>Terms of Use</a></p>
+                        <p>By continuing you accept our <br /><a className="signup-links" href="/PrivacyPolicy">Privacy Policy</a> and <a className="signup-links" target="_blank" href='/Tnc'>Terms of Use</a></p>
                     </Container>
                 </Container>
             </Container>

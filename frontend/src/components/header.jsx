@@ -35,11 +35,12 @@ export const Headerlp = () => {
       <div className='header-content'>
 
         <div className='bg-l'>
-          <Image src={bgl} style={{ height: '100%', width: '100%' }} ></Image>
+          {/* <Image src={bgl} style={{ height: '100%', width: '100%' }} ></Image> */}
+          <div className='header-shade'></div>
         </div>
 
         <div className='header-text'>
-          <Image src={logo2} className='main-logo'></Image>
+          <img src={logo2} className='main-logo'></img>
           <span>Meet Tamil Singles</span>
           <Container className='header-btn'>
             <button className='header-btnone' onClick={goToSignup}>

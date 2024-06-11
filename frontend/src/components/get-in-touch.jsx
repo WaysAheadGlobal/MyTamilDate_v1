@@ -149,9 +149,9 @@ export const GetInTouch = () => {
                                     style={{ fontFamily: 'Poppins', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}
                                 >
 
-    <option value="" style={{ fontFamily: 'Poppins', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>I have technical a issue</option>
-    <option value="support" style={{ fontFamily: 'Poppins', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>I have a question</option>
-    <option value="sales" style={{ fontFamily: 'Poppins', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>I have billing a issue</option>
+    <option value="" className="option-style" style={{ fontFamily: 'Poppins', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>I have technical a issue</option>
+    <option value="support"  className="option-style"style={{ fontFamily: 'Poppins', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>I have a question</option>
+    <option value="sales" className="option-style" style={{ fontFamily: 'Poppins', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>I have billing a issue</option>
        
                                 </Form.Control>
                                 <SlArrowDown className="arrow-icon" />
@@ -166,7 +166,7 @@ export const GetInTouch = () => {
                                     onChange={handleChange}
                                 />
                             </Form.Group>
-<div className='connect-btn-box'>
+                  <div className='connect-btn-box'>
                             <Button variant="primary" className='getintouch-btn'  onClick={() => setModalShow(true)}   type="submit">
                                 Submit
                             </Button>
@@ -175,7 +175,7 @@ export const GetInTouch = () => {
                     </Container>
 
                     <Container className='get-bg-container'>
-                    <Image className='get-bg' src={getbg}></Image>
+                    {/* <Image className='get-bg' src={getbg}></Image> */}
                     </Container>
 
 

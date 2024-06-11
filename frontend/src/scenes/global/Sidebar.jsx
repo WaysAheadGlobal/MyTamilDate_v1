@@ -66,7 +66,7 @@ const Category = ({ title, icon, children, isCollapsed }) => {
         )}
         {!isCollapsed && (isOpen ?   icon=<ExpandLessIcon /> : <ExpandMoreIcon />)}
       </Box>
-      <Box className={`dropdown ${isOpen ? "open" : ""}`} pl={2}>
+      <Box className={`dropdown-sidebar ${isOpen ? "open" : ""}`} pl={2}>
         {children}
       </Box>
     </Box>

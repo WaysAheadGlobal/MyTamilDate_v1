@@ -13,6 +13,8 @@ display: block;
 }
 
 
+
+
   .nav-link-container
   {
 gap:44px;
@@ -36,5 +38,21 @@ gap:44px;
       color: #FC8C66;
       text-decoration: underline;
   }
+
+
+  @media only screen and (max-width: 700px) {
+    
+  .nav-link-container
+  {
+gap:10px;
+display: flex;
+align-items: center;
+
+  }
+
+
+
+     
+    }
   
   
