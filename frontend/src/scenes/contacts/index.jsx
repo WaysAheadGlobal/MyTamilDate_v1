@@ -1,44 +1,89 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
-import { mockDataContacts } from '../../data/mockData';
 import Header from '../../components/Header1';
 import { useTheme } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../Context/UseContext';
+import { API_URL } from '../../api';
 
 const Contacts = () => {
+  const [custmer, setCustmer] = useState([]);
+  const [page, setPage] = useState(0); // Updated to use 0-based index for the page
+  const [pageSize, setPageSize] = useState(25); // Default page size
+  const [rowCount, setRowCount] = useState(0); // Total number of rows, to be set from API response
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const { showFullPhoneNumberemail, togglePhoneNumber } = useAppContext();
-  const Navigate = useNavigate();
-  const togglePhoneNumberemail = () => {
-    { showFullPhoneNumberemail ? togglePhoneNumber() : Navigate("/showPhoneandEmail") }
-  }
+  const navigate = useNavigate();
 
-  // Function to format phone number
+  const togglePhoneNumberemail = () => {
+    if (showFullPhoneNumberemail) {
+      togglePhoneNumber();
+    } else {
+      navigate("/showPhoneandEmail");
+    }
+  };
+
+  const fetchData = async (page, pageSize) => {
+    try {
+      const response = await fetch(`${ API_URL }/admin/users/customers?limit=${pageSize}&pageNo=${page + 1}`);
+      const data = await response.json();
+      
+      const formattedData = data.results.map((item) => ({
+        id: item.user_id,
+        name: `${item.first_name} ${item.last_name || ''}`, // Combining first and last name
+        age: new Date().getFullYear() - new Date(item.birthday).getFullYear(),
+        phone: item.phone || 'N/A',
+        email: item.email || 'N/A',
+        country: item.country || 'N/A', // Assuming address is optional
+        status: item.status,
+        gender: item.gender == 1 ? "Male" : "Female",
+        created_at: new Date(item.created_at).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }),
+        birthday: new Date(item.birthday).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }),
+      }));
+
+      setCustmer(formattedData);
+      setRowCount(data.total); // Assuming your API response contains the total number of records
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(page, pageSize);
+  }, [page, pageSize]);
+
   const formatPhoneNumber = (phoneNumber) => {
-    if (phoneNumber.length >= 6) {
+    if (phoneNumber && phoneNumber.length >= 6) {
       const visibleDigits = 3;
       const maskedSection = phoneNumber.substring(visibleDigits, phoneNumber.length - visibleDigits).replace(/\d/g, '*');
       const visiblePart = phoneNumber.substring(0, visibleDigits) + maskedSection + phoneNumber.substring(phoneNumber.length - visibleDigits);
       return visiblePart;
     }
-    return phoneNumber;
+    return phoneNumber || 'N/A';
   };
 
-  // Function to format email address
   const formatEmailAddress = (email) => {
-    const parts = email.split('@');
-    const visiblePart = `${parts[0].charAt(0)}***@${parts[1]}`;
-    return visiblePart;
+    if (email) {
+      const parts = email.split('@');
+      const visiblePart = `${parts[0].charAt(0)}***@${parts[1]}`;
+      return visiblePart;
+    }
+    return 'N/A';
   };
 
   const columns = [
-    { field: 'id', headerName: 'ID', flex: 0.5 },
-    { field: 'registrarId', headerName: 'Registrar ID' },
     {
       field: 'name',
       headerName: 'Name',
@@ -72,18 +117,18 @@ const Contacts = () => {
       ),
     },
     {
-      field: 'address',
-      headerName: 'Address',
+      field: 'birthday',
+      headerName: 'Birthday',
       flex: 1,
     },
     {
-      field: 'city',
-      headerName: 'City',
+      field: 'gender',
+      headerName: 'Gender',
       flex: 1,
     },
     {
-      field: 'zipCode',
-      headerName: 'Zip Code',
+      field: 'country',
+      headerName: 'Locations',
       flex: 1,
     },
     {
@@ -91,7 +136,7 @@ const Contacts = () => {
       headerName: 'Link',
       flex: 1,
       renderCell: (params) => (
-        <Link to="/userdetails" style={{ color: colors.blueAccent[400], textDecoration: 'none' }}>
+        <Link to={`/userdetails/${params.row.id}`} style={{ color: colors.blueAccent[400], textDecoration: 'none' }}>
           Show
         </Link>
       ),
@@ -111,6 +156,7 @@ const Contacts = () => {
         justifyContent="flex-end"
         sx={{ mt: { lg: '-70px' } }}
       >
+        {/* Uncomment the button below to use it */}
         {/* <Button
            sx={{
             mb: 2,
@@ -134,15 +180,15 @@ const Contacts = () => {
             border: "none",
           },
           "& .MuiDataGrid-columnHeaders": {
-            backgroundImage: 'linear-gradient(90deg, #9663BF, #4B164C)', // Lavender gradient background
-            color: '#fff', // Text color white
+            backgroundImage: 'linear-gradient(90deg, #9663BF, #4B164C)',
+            color: '#fff',
             borderBottom: "none",
-            fontSize: "16px", // Adjust the font size of column headers
+            fontSize: "16px",
           },
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
-            fontSize: "12px", // Adjust the font size of cells
-            fontWeight: "Medium", // Make the font bold
+            fontSize: "12px",
+            fontWeight: "Medium",
           },
           "& .name-column--cell": {
             color: colors.greenAccent[300],
@@ -151,10 +197,7 @@ const Contacts = () => {
             backgroundColor: "#605f61",
             color: '#fff',
             borderBottom: "none",
-            fontSize: "14px"
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            // backgroundColor: colors.primary[400],
+            fontSize: "14px",
           },
           "& .MuiDataGrid-footerContainer": {
             borderTop: "none",
@@ -180,9 +223,28 @@ const Contacts = () => {
         }}
       >
         <DataGrid
-          rows={mockDataContacts}
+          rows={custmer}
           columns={columns}
           components={{ Toolbar: GridToolbar }}
+          pagination
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[25, 50, 100]}
+          paginationMode="server"
+          onPageChange={(newPage) => setPage(newPage)}
+          rowCount={rowCount}
+          componentsProps={{
+            pagination: {
+              sx: {
+                "& .MuiButtonBase-root": {
+                  color: '#fff',
+                },
+                "& .MuiPaginationItem-root": {
+                  color: '#fff',
+                },
+              },
+            },
+          }}
         />
       </Box>
     </Box>

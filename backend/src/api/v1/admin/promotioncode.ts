@@ -6,16 +6,41 @@ const promotions = Router();
 
 // Get all promotional codes
 promotions.get('/', (req: AdminRequest, res: Response) => {
-    const sql = 'SELECT * FROM promotional_codes WHERE deleted_at IS NULL';
+    const { limit = 50, pageNo = 1 } = req.query;
+    const limitNum = Number(limit);
+    const pageNoNum = Number(pageNo);
+    const offset = Math.max(0, (pageNoNum - 1) * limitNum); // Ensure offset is non-negative
 
-    db.query(sql, (err, results) => {
+    if (isNaN(limitNum) || isNaN(pageNoNum)) {
+        return res.status(400).json({ message: 'Invalid limit or pageNo' });
+    }
+
+    const countSql = 'SELECT COUNT(*) AS total FROM promotional_codes WHERE deleted_at IS NULL';
+    const dataSql = `
+        SELECT * FROM promotional_codes WHERE deleted_at IS NULL
+        LIMIT ? OFFSET ?
+    `;
+
+    db.query(countSql, (err, countResult) => {
         if (err) {
-            console.log('Error fetching data:', err);
+            console.error('Error fetching total count:', err);
             return res.status(500).json({ message: 'Internal Server Error' });
         }
-        res.status(200).json(results);
+
+        const total = countResult[0].total;
+
+        db.query(dataSql, [limitNum, offset], (err, results) => {
+            if (err) {
+                console.error('Error fetching data:', err);
+                return res.status(500).json({ message: 'Internal Server Error' });
+            }
+            res.status(200).json({ total, results });
+        });
     });
 });
+
+
+
 
 // Get promotional code by ID
 promotions.get('/:id', (req: AdminRequest, res: Response) => {
@@ -39,32 +64,52 @@ promotions.post('/', (req: AdminRequest, res: Response) => {
         promo_id, amount_off, percent_off, available_to, available_from,
         applies_to, max_redemptions, once_per_user, stripe_id
     } = req.body;
-    if (
-        !promo_id || amount_off == null || percent_off == null || !available_to || !available_from ||
-        !applies_to || max_redemptions == null || once_per_user == null || !stripe_id
-    ) {
-        return res.status(400).json({ message: 'All fields are required' });
-    }
     
-    const sql = `
-        INSERT INTO promotional_codes (
-            promo_id, amount_off, percent_off, available_to, available_from,
-            applies_to, max_redemptions, once_per_user, stripe_id, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
-    `;
-    const values = [
-        promo_id, amount_off, percent_off, available_to, available_from,
-        applies_to, max_redemptions, once_per_user, stripe_id
-    ];
+    // Check if required fields are missing
+    if (!promo_id || max_redemptions == null) {
+        return res.status(400).json({ message: 'Fields are required' });
+    }
 
-    db.query(sql, values, (err, result) => {
+    // Check if promo_id already exists
+    const checkSql = `
+        SELECT COUNT(*) AS count FROM promotional_codes WHERE promo_id = ?
+    `;
+    const checkValues = [promo_id];
+
+    db.query(checkSql, checkValues, (err, rows) => {
         if (err) {
-            console.log('Error creating data:', err);
+            console.error('Error checking promo_id:', err);
             return res.status(500).json({ message: 'Internal Server Error' });
         }
-        res.status(201).json({ message: 'Promotional code created successfully', id: result.insertId });
+
+        const count = rows[0].count;
+        if (count > 0) {
+            return res.status(400).json({ message: 'Promo ID already exists. Please choose a unique ID.' });
+        }
+
+        // If promo_id is unique, proceed with insertion
+        const insertSql = `
+            INSERT INTO promotional_codes (
+                promo_id, amount_off, percent_off, available_to, available_from,
+                applies_to, max_redemptions, once_per_user, stripe_id, created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+        `;
+        const insertValues = [
+            promo_id, amount_off, percent_off, available_to, available_from,
+            applies_to, max_redemptions, once_per_user, stripe_id
+        ];
+
+        db.query(insertSql, insertValues, (err, result) => {
+            if (err) {
+                console.error('Error creating promotional code:', err);
+                return res.status(500).json({ message: 'Internal Server Error' });
+            }
+
+            res.status(201).json({ message: 'Promotional code created successfully', id: result.insertId });
+        });
     });
 });
+
 
 // Edit a promotional code
 promotions.put('/:id', (req: AdminRequest, res: Response) => {

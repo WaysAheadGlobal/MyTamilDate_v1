@@ -54,6 +54,8 @@ import { AboutUsPage } from "./components/aboutus-pg"
 import TotalCount from "./components/totalcount";
 import { Video2 } from "./components/video2";
 import ProtectedRoute from "./components/ProtectedRoute";
+import EditDetails from "./scenes/promotionalCodes/Editpromotionalcode";
+import ImageGallery from "./scenes/Approval/Imageget";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -67,10 +69,10 @@ function App() {
     "/team",
     "/contacts",
     "/approval",
-    "/promotionalcodedetails",
-    "/userdetails",
+    "/promotionalcodedetails/:id",
+    "/userdetails/:id",
     "/showPhoneandEmail",
-    "/approvaluserdetails",
+    "/approvaluserdetails/:id",
     "/promotionalcodes",
     "/invoices",
     "/count",
@@ -82,6 +84,7 @@ function App() {
     "/calendar",
     "/geography",
     "/addpromotionalcode",
+    "/editpromotionalcode/:id"
   ];
 
   // Check if the current route is protected
@@ -102,10 +105,11 @@ function App() {
               <Route path="/team" element={<ProtectedRoute><Team /></ProtectedRoute>} />
               <Route path="/contacts" element={<ProtectedRoute><Contacts /></ProtectedRoute>} />
               <Route path="/approval" element={<ProtectedRoute><Approval /></ProtectedRoute>} />
-              <Route path="/promotionalcodedetails" element={<ProtectedRoute><Details /></ProtectedRoute>} />
-              <Route path="/userdetails" element={<ProtectedRoute><UserDetails /></ProtectedRoute>} />
+              <Route path="/promotionalcodedetails/:id" element={<ProtectedRoute><Details /></ProtectedRoute>} />
+              <Route path="/editpromotionalcode/:id" element={<ProtectedRoute>< EditDetails/></ProtectedRoute>} />
+              <Route path="/userdetails/:id" element={<ProtectedRoute><UserDetails /></ProtectedRoute>} />
               <Route path="/showPhoneandEmail" element={<ProtectedRoute><ShowphoneAndEmail /></ProtectedRoute>} />
-              <Route path="/approvaluserdetails" element={<ProtectedRoute><ApprovalUserDetails /></ProtectedRoute>} />
+              <Route path="/approvaluserdetails/:id" element={<ProtectedRoute><ApprovalUserDetails /></ProtectedRoute>} />
               <Route path="/promotionalcodes" element={<ProtectedRoute><PromotionalCodes /></ProtectedRoute>} />
               <Route path="/invoices" element={<ProtectedRoute><Invoices /></ProtectedRoute>} />
               <Route path="/count" element={<ProtectedRoute><TotalCount /></ProtectedRoute>} />
@@ -118,6 +122,8 @@ function App() {
               <Route path="/geography" element={<ProtectedRoute><Geography /></ProtectedRoute>} />
               <Route path="/adminlogin" element={<AdminSignIn />} />
               <Route path="/addpromotionalcode" element={<ProtectedRoute><AddPromotioncode /></ProtectedRoute>} />
+              <Route  path="/img" element={<ImageGallery />}></Route>
+
 
 
               <Route path="/" element={<LP />} />

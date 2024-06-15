@@ -1,109 +1,113 @@
-import React, { useState } from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Box, Button } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
-import { mockDataContacts } from '../../data/mockData';
 import Header from '../../components/Header1';
 import { useTheme } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { API_URL } from '../../api';
 const Contacts = () => {
+  const [activeCodes, setActiveCodes] = useState([]);
+  const [pageSize, setPageSize] = useState(50); // Keep pageSize fixed
+  const [pageNo, setPageNo] = useState(0);
+  const [total, setTotal] = useState(0);
   const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  // Function to format phone number
-  const formatPhoneNumber = (phoneNumber) => {
-    if (phoneNumber.length >= 6) {
-      const visibleDigits = 3;
-      const maskedSection = phoneNumber.substring(visibleDigits, phoneNumber.length - visibleDigits).replace(/\d/g, '*');
-      const visiblePart = phoneNumber.substring(0, visibleDigits) + maskedSection + phoneNumber.substring(phoneNumber.length - visibleDigits);
-      return visiblePart;
+  const fetchData = async (pageSize, pageNo) => {
+    try {
+      const data = await fetch(`${API_URL}/admin/promotioncode/?limit=${pageSize}&pageNo=${pageNo + 1}`);
+      const response = await data.json();
+      const formattedData = response.results.map((item) => ({
+        ...item,
+        created_at: new Date(item.created_at).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }),
+      }));
+      setActiveCodes(formattedData);
+      setTotal(response.total);
+    } catch (err) {
+      console.log(err);
     }
-    return phoneNumber;
   };
 
-  // Function to format email address
-  const formatEmailAddress = (email) => {
-    const parts = email.split('@');
-    const visiblePart = `${parts[0].charAt(0)}***@${parts[1]}`;
-    return visiblePart;
-  };
-
-  // State to toggle showing full phone number
-  const [showFullPhoneNumber, setShowFullPhoneNumber] = useState(false);
-  const togglePhoneNumber = () => setShowFullPhoneNumber(!showFullPhoneNumber);
-
-  // State to toggle showing full email
-  const [showFullEmail, setShowFullEmail] = useState(false);
-  const toggleEmail = () => setShowFullEmail(!showFullEmail);
+  useEffect(() => {
+    fetchData(pageSize, pageNo);
+  }, [pageSize, pageNo]);
 
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.5 },
-    { field: 'registrarId', headerName: 'Registrar ID' },
+    { field: 'promo_id', headerName: 'Promo ID', flex: 1 },
     {
-      field: 'name',
-      headerName: 'Name',
-      // flex: 1,
-      // headerClassName: 'name-column--header',
-      // cellClassName: 'name-column--cell'
-    },
-    {
-      field: 'age',
-      headerName: 'Age',
+      field: 'percent_off',
+      headerName: 'Percent Off',
       type: 'number',
+      flex: 1,
+     
       headerAlign: 'left',
       align: 'left',
     },
     {
-      field: 'phone',
-      headerName: 'Phone Number',
+      field: 'amount_off',
+      headerName: 'Amount Off',
+      type: 'number',
       flex: 1,
-      renderCell: (params) => (
-        <span onClick={togglePhoneNumber}>
-          {showFullPhoneNumber ? params.value : formatPhoneNumber(params.value)}
-        </span>
-      ),
+      headerAlign: 'left',
+      align: 'left',
     },
     {
-      field: 'email',
-      headerName: 'Email',
+      field: 'max_redemptions',
+      headerName: 'Max Redemptions',
+      type: 'number',
       flex: 1,
-      renderCell: (params) => (
-        <span onClick={toggleEmail}>
-          {showFullEmail ? params.value : formatEmailAddress(params.value)}
-        </span>
-      ),
+      headerAlign: 'left',
+      align: 'left',
     },
     {
-      field: 'address',
-      headerName: 'Address',
+      field: 'applies_to',
+      headerName: 'Applies To',
+      type: 'text',
       flex: 1,
+      headerAlign: 'left',
+      align: 'left',
     },
     {
-      field: 'city',
-      headerName: 'City',
+      field: 'once_per_user',
+      headerName: 'Once Per User',
+      type: 'boolean',
       flex: 1,
+      headerAlign: 'left',
+      align: 'left',
     },
     {
-      field: 'zipCode',
-      headerName: 'Zip Code',
+      field: 'created_at',
+      headerName: 'Created At',
+      type: 'dateTime',
       flex: 1,
+      headerAlign: 'left',
+      align: 'left',
     },
     {
       field: 'status',
       headerName: 'Link',
       flex: 1,
       renderCell: (params) => (
-        <Link to="/promotionalcodedetails" style={{ color: colors.blueAccent[400], textDecoration: 'none' }}>
+        <Link to={`/promotionalcodedetails/${params.id}`} style={{ color: colors.blueAccent[400], textDecoration: 'none' }}>
           Show
         </Link>
       ),
     },
   ];
-  
+
   const handleAddPromoCode = () => {
     navigate("/addpromotionalcode");
+  };
+
+  const handlePageChange = (params) => {
+    setPageNo(params.page);
   };
 
   return (
@@ -132,23 +136,17 @@ const Contacts = () => {
             border: "none",
           },
           "& .MuiDataGrid-columnHeaders": {
-            backgroundImage: 'linear-gradient(90deg, #9663BF, #4B164C)', // Lavender gradient background
+            backgroundColor: "#605f61", // Lavender gradient background
             color: '#fff', // Text color white
             borderBottom: "none",
           },
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
-            fontSize: "12px", // Adjust the font size
+            fontSize: "14px", // Adjust the font size
             fontWeight: "Medium", // Make the font bold
           },
           "& .name-column--cell": {
             color: colors.greenAccent[300],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: "#605f61",
-            color: '#fff',
-            borderBottom: "none",
-            fontSize: "14px",
           },
           "& .MuiDataGrid-virtualScroller": {
             // backgroundColor: colors.primary[400],
@@ -158,14 +156,13 @@ const Contacts = () => {
             backgroundColor: "#9663BF",
             color: '#fff',
           },
-
           "& .MuiCheckbox-root": {
             color: `${colors.greenAccent[200]} !important`,
           },
-
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
             color: `${colors.grey[100]} !important`,
-          },".MuiDataGrid-footerContainer": {
+          },
+          ".MuiDataGrid-footerContainer": {
             borderTop: "none",
             backgroundColor: '#605f61',
             color: '#fff',
@@ -178,9 +175,16 @@ const Contacts = () => {
         }}
       >
         <DataGrid
-          rows={mockDataContacts}
+          rows={activeCodes}
           columns={columns}
+          pagination
+          pageSize={pageSize}
+          rowsPerPageOptions={[25]} // Fixed page size
+          rowCount={total}
+          paginationMode="server"
+          onPageChange={handlePageChange}
           components={{ Toolbar: GridToolbar }}
+          getRowId={(row) => row.id} // Ensure each row has a unique ID
         />
       </Box>
     </Box>

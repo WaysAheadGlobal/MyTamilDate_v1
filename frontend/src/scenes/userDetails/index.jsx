@@ -1,41 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Grid, Typography, Button, Avatar } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import Header from '../../components/Header1'; // Adjust path as per your project structure
+import Header from '../../components/Header1';
+import { useParams } from 'react-router-dom';
+import { API_URL } from '../../api';
 
 const UserDetails = () => {
+  const [details, setDetails] = useState({});
+  const { id } = useParams();
   const theme = useTheme();
 
-  // Example user details (replace with actual data)
-  const userDetails = {
-    firstName: 'Thanu',
-    lastName: 'T_kanth',
-    status: 'Pending Approval',
-    email: 'M*****@gmail.com',
-    paymentStatus: 'Free',
-    phoneNumber: '+33****7573',
-    birthday: '1988-09-10',
-    gender: 'Male',
-    location: 'Paris, France',
-    study: 'High School',
-    job: 'Non-profit',
-    growth: '5\'10" (177.80cm)',
-    imageSrc: 'https://img.freepik.com/free-photo/celebration-deity-navratri_23-2151220028.jpg?size=626&ext=jpg', // Replace with actual path to image
+  const fetchData = async () => {
+    try {
+      const data = await fetch(`${API_URL}/admin/users/customers/${id}`);
+      const response = await data.json();
+      setDetails(response[0]);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  
+  useEffect(() => {
+    fetchData();
+  }, [id]);
+
   const handleRemoveFromList = () => {
-    // Implement logic for removing user from list
     console.log('Removing user from list');
   };
 
   const handleApproveRequest = () => {
-    // Implement logic for approving user request
     console.log('Approving user request');
   };
 
   const handleRejectRequest = () => {
-    // Implement logic for rejecting user request
     console.log('Rejecting user request');
   };
 
@@ -45,9 +42,13 @@ const UserDetails = () => {
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column" mb={2}>
-            <Avatar alt="User Image" src={userDetails.imageSrc} sx={{ width: 250, height: 250, mb: 2 }} />
-            <Typography variant="h5" align="center">{`${userDetails.firstName} ${userDetails.lastName}`}</Typography>
-            <Typography variant="subtitle1" color="textSecondary" align="center">{userDetails.status}</Typography>
+            <Avatar
+              alt="User Image"
+              src={details.imageSrc || 'https://img.freepik.com/free-photo/celebration-deity-navratri_23-2151220028.jpg?size=626&ext=jpg'}
+              sx={{ width: 250, height: 250, mb: 2 }}
+            />
+            <Typography variant="h5" align="center">{`${details.first_name || ''} ${details.last_name || ''}`}</Typography>
+            <Typography variant="subtitle1" color="textSecondary" align="center">{details.status || 'N/A'}</Typography>
           </Box>
           <Box display="flex" gap="2px" alignItems="center" justifyContent="center">
             <Box mb={2} textAlign="center">
@@ -82,53 +83,53 @@ const UserDetails = () => {
             <Grid item xs={6}>
               <Box mb={4}>
                 <Typography variant="h4" gutterBottom>First Name</Typography>
-                <Typography variant="body1">{userDetails.firstName}</Typography>
+                <Typography variant="body1">{details.first_name || 'N/A'}</Typography>
               </Box>
               <Box mb={4}>
                 <Typography variant="h4" gutterBottom>Status</Typography>
-                <Typography variant="body1">{userDetails.status}</Typography>
+                <Typography variant="body1">{details.status || 'N/A'}</Typography>
               </Box>
               <Box mb={4}>
                 <Typography variant="h4" gutterBottom>Email</Typography>
-                <Typography variant="body1">{userDetails.email}</Typography>
+                <Typography variant="body1">{details.email || 'N/A'}</Typography>
               </Box>
               <Box mb={4}>
                 <Typography variant="h4" gutterBottom>Birthday</Typography>
-                <Typography variant="body1">{userDetails.birthday}</Typography>
+                <Typography variant="body1">{details.birthday ? new Date(details.birthday).toLocaleDateString('en-US') : 'N/A'}</Typography>
               </Box>
               <Box mb={4}>
                 <Typography variant="h4" gutterBottom>Location</Typography>
-                <Typography variant="body1">{userDetails.location}</Typography>
+                <Typography variant="body1">{details.country || 'N/A'}</Typography>
               </Box>
               <Box mb={4}>
                 <Typography variant="h4" gutterBottom>Job</Typography>
-                <Typography variant="body1">{userDetails.job}</Typography>
+                <Typography variant="body1">{details.job_name || 'N/A'}</Typography>
               </Box>
             </Grid>
             <Grid item xs={6}>
               <Box mb={4}>
                 <Typography variant="h4" gutterBottom>Last Name</Typography>
-                <Typography variant="body1">{userDetails.lastName}</Typography>
+                <Typography variant="body1">{details.last_name || 'N/A'}</Typography>
               </Box>
               <Box mb={4}>
                 <Typography variant="h4" gutterBottom>Payment Status</Typography>
-                <Typography variant="body1">{userDetails.paymentStatus}</Typography>
+                <Typography variant="body1">{details.paymentStatus || 'N/A'}</Typography>
               </Box>
               <Box mb={4}>
                 <Typography variant="h4" gutterBottom>Phone Number</Typography>
-                <Typography variant="body1">{userDetails.phoneNumber}</Typography>
+                <Typography variant="body1">{details.phone || 'N/A'}</Typography>
               </Box>
               <Box mb={4}>
                 <Typography variant="h4" gutterBottom>Gender</Typography>
-                <Typography variant="body1">{userDetails.gender}</Typography>
+                <Typography variant="body1">{details.gender == 1 ? 'Male' : 'Female'}</Typography>
               </Box>
               <Box mb={4}>
                 <Typography variant="h4" gutterBottom>Study</Typography>
-                <Typography variant="body1">{userDetails.study}</Typography>
+                <Typography variant="body1">{details.study_name || 'N/A'}</Typography>
               </Box>
               <Box mb={4}>
                 <Typography variant="h4" gutterBottom>Growth</Typography>
-                <Typography variant="body1">{userDetails.growth}</Typography>
+                <Typography variant="body1">{details.growth_name || 'N/A'}</Typography>
               </Box>
             </Grid>
           </Grid>

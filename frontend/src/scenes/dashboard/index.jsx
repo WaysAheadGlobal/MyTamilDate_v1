@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from '@emotion/react';
-import { Card, CardContent, Box, Button, Typography, useTheme, useMediaQuery } from "@mui/material";
+import { Card, CardContent, Box, Button, Typography, useTheme, useMediaQuery, Select, MenuItem } from "@mui/material";
 import { tokens } from "../../theme";
 import { mockTransactions } from "../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
@@ -15,6 +15,10 @@ import ProgressCircle from "../../components/ProgressCircle";
 import PieChart from '../../components/PieChart';
 import { ResponsivePie } from "@nivo/pie";
 import { mockPieData as data } from "../../data/mockData";
+import { useEffect, useState } from 'react';
+import { API_URL } from '../../api';
+import axios from 'axios';
+
 const agedata = [
   { age: '18-24', value: 6 },
   { age: '25-30', value: 3 },
@@ -28,17 +32,17 @@ const transformedagedata = agedata.map(item => ({
   value: item.value,
 }));
 
-const gendersdata = [
-  { gender: 'Male', value: 16 },
-  { gender: 'Female', value: 23 },
-  { gender: 'Other', value: 12 },
-];
+// const gendersdata = [
+//   { gender: 'Male', value: 16 },
+//   { gender: 'Female', value: 23 },
+//   { gender: 'Other', value: 12 },
+// ];
 
-const transformedGenderData = gendersdata.map(item => ({
-  id: item.gender,
-  label: item.gender,
-  value: item.value,
-}));
+// const transformedGenderData = gendersdata.map(item => ({
+//   id: item.gender,
+//   label: item.gender,
+//   value: item.value,
+// }));
 
 const cardStyle = {
   width: '320px',
@@ -166,31 +170,177 @@ const ListCard = ({ title, data }) => (
 );
 
 const Dashboard = () => {
+  const [ageData, setAgedata1] = useState([]);
+  const [genderData, setGenderData] = useState([]);
+  const[totalNewUsersignup, setTotalNewUsersignup] = useState({});
+  const [transactions, setTransactions] = useState([]);
+  const [TotalPeyment, setTotalPeyment] = useState(0);
+  const [messageCount, setMessageCount] = useState(0);
+  const [timeRange, setTimeRange] = useState('month');
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  const getCountByGender = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/admin/dashboard/count-by-gender`, {
+        params: { timeRange }
+      });
+  
+      const transformedData = Object.keys(response.data).map(key => ({
+        id: key,
+        label: key,
+        value: response.data[key],
+      }));
+  
+      if (transformedData.length === 0) {
+        setGenderData([
+          { id: 'Male', label: 'Male', value: 1 },
+          { id: 'Female', label: 'Female', value: 1 },
+          { id: 'Other', label: 'Other', value: 1 },
+        ]);
+      } else {
+        setGenderData(transformedData);
+      }
+  
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error fetching count by gender:', error);
+      setGenderData([
+        { id: 'Male', label: 'Male', value: 1 },
+        { id: 'Female', label: 'Female', value: 1 },
+        { id: 'Other', label: 'Other', value: 1 },
+      ]);
+    }
+  };
+  
+  const getAgeGroup = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/admin/dashboard/users/age-group`, {
+        params: { timeRange }
+      });
+  
+      const transformedData = response.data.map(item => ({
+        id: item.age_group,
+        label: item.age_group,
+        value: item.count,
+      }));
+  
+      if (transformedData.length === 0) {
+        setAgedata1([
+          { id: '18-24', label: '18-24', value: 1 },
+          { id: '25-30', label: '25-30', value: 1 },
+          { id: '31-40', label: '31-40', value: 1 },
+          { id: '41+', label: '41+', value: 1 },
+        ]);
+      } else {
+        setAgedata1(transformedData);
+      }
+  
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error fetching age group data:', error);
+      setAgedata1([
+        { id: '18-24', label: '18-24', value: 1 },
+        { id: '25-30', label: '25-30', value: 1 },
+        { id: '31-40', label: '31-40', value: 1 },
+        { id: '41+', label: '41+', value: 1 },
+      ]);
+    }
+  };
+
+  const TotalNewsignUp = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/admin/dashboard/users/count`, {
+        params: { timeRange }
+      });
+      setTotalNewUsersignup(response.data);
+      console.log(response.data);
+    }
+      catch(err){
+        console.log(err)
+      }
+    }
+
+
+    const Transections = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/admin/dashboard/payments`);
+        setTransactions(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+      }
+    };
+
+    const getMessageCount = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/admin/dashboard/messages/count`, {
+          params: { timeRange }
+        });
+        setMessageCount(response.data.total_messages);
+      } catch (error) {
+        console.error('Error fetching message count:', error);
+      }
+    };
+
+    const TotalPayments = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/admin/dashboard/payments/total`, {
+          params: { timeRange }
+        });
+        setTotalPeyment(response.data.total_payments_cad);
+        const formattedTotalPayments = formatToK(response.data.total_payments_cad);
+      } catch (error) {
+        console.error('Error fetching message count:', error);
+      }
+    };
+
+
+
+  useEffect(() => {
+    getCountByGender();
+    getAgeGroup();
+    TotalNewsignUp();
+    getMessageCount();
+    TotalPayments();
+  }, [timeRange]);
+
+  useEffect(()=>{
+    Transections();
+  },[])
+
+  const formatToK = (num) => {
+    if (num >= 1000) {
+      return `${(num / 1000).toFixed(1)}k`;
+    }
+    return num.toString();
+  };
+  const handleTimeRangeChange = (event) => {
+    setTimeRange(event.target.value);
+  };
+
+  
   return (
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" flexDirection={isMobile ? "column" : "row"} justifyContent="space-between" alignItems="center">
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
         <Box mt={isMobile ? "10px" : "0"}>
-          {/* <Button
-            sx={{
-              background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-              color: '#fff',
-              '&:hover': {
-                background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-              },
-            }}
+          <Select
+            value={timeRange}
+            onChange={handleTimeRangeChange}
+            width="50px"
+            sx={{ backgroundColor: 'white', borderRadius: '8px', padding: '8px' }}
           >
-            <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-            Download Reports
-          </Button> */}
+            <MenuItem value="24h">Last 24 Hours</MenuItem>
+            <MenuItem value="week">Last Week</MenuItem>
+            <MenuItem value="month">Last Month</MenuItem>
+            <MenuItem value="3months">Last 3 Months</MenuItem>
+            <MenuItem value="12months">Last 12 Months</MenuItem>
+          </Select>
         </Box>
       </Box>
-
       {/* GRID */}
       <Box
         display="grid"
@@ -201,7 +351,7 @@ const Dashboard = () => {
         {/* ROW 1 */}
         <Box gridColumn={isMobile ? "span 12" : "span 3"}  display="flex" alignItems="center" justifyContent="center">
           <StatBox
-            title="12,361"
+           title={messageCount}
             subtitle="Messages"
             progress="0.75"
             increase="+14%"
@@ -212,7 +362,7 @@ const Dashboard = () => {
 
         <Box gridColumn={isMobile ? "span 12" : "span 3"}  display="flex" alignItems="center" justifyContent="center">
           <StatBox
-            title="431,225"
+            title="43,22"
             subtitle="Likes"
             progress="0.50"
             increase="+21%"
@@ -221,7 +371,7 @@ const Dashboard = () => {
         </Box>
         <Box gridColumn={isMobile ? "span 12" : "span 3"}  display="flex" alignItems="center" justifyContent="center">
           <StatBox
-            title="32,441"
+            title="344"
             subtitle="Matches"
             progress="0.30"
             increase="+5%"
@@ -230,7 +380,7 @@ const Dashboard = () => {
         </Box>
         <Box gridColumn={isMobile ? "span 12" : "span 3"}  display="flex" alignItems="center" justifyContent="center">
           <StatBox
-            title="1,325,134"
+            title="1134"
             subtitle="Requests"
             progress="0.80"
             increase="+43%"
@@ -243,74 +393,50 @@ const Dashboard = () => {
       <Box m="20px" mt="40px">
         <Box
           display="grid"
+          
           gridTemplateColumns={isMobile ? "1fr" : "repeat(8, 1fr)"}
           gridAutoRows="140px"
           gap="20px"
         >
-          {/* Recent Transactions */}
+     
          
           
-          <Box mb="20px" gridColumn={isMobile ? "span 13" : "span 4"} gridRow="span 2">
+          <Box mb="20px"  gridColumn={isMobile ? "span 12" : "span 4"} gridRow="span 2" style={{ maxWidth: '400px' }}>
           <Box >
-          <Typography variant="h4" fontWeight="500" >
-          Distribution of Genders
-          </Typography>
-        </Box>
-            <PieChart data={transformedGenderData} />
-          </Box>
-          <Box mb="20px" gridColumn={isMobile ? "span 12" : "span 4"} gridRow="span 2">
-          <Box >
-          <Typography variant="h4" fontWeight="500" >
-          Age Groups
-          </Typography>
-        </Box>
-            <PieChart data={transformedagedata}  />
-          </Box>
-
-          {/* Total Revenue */}
-          {/* <Box
-            gridColumn={isMobile ? "span 12" : "span 4"}
-            gridRow="span 2"
-            backgroundColor="#fff"
-            p="30px"
-            sx={{
-              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-              borderRadius: '12px',
-              border: `2px solid ${colors.greenAccent[500]}`,
-              transition: 'all 0.3s ease',
-              '&:hover': {
-                transform: 'scale(1.02)',
-                borderColor: colors.primary[500],
-                boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
-              },
-            }}
-          >
-            <Typography variant="h5" fontWeight="600">
-              Total Revenue
+            <Typography variant="h4" fontWeight="500">
+              Distribution of Genders
             </Typography>
-            <Box display="flex" flexDirection="column" alignItems="center" mt="25px">
-              <ProgressCircle size="100" />
-              <Typography variant="h5" color={colors.greenAccent[500]} sx={{ mt: "15px" }}>
-                $48,352 revenue generated
-              </Typography>
-              <Typography>Includes extra misc expenditures and costs</Typography>
-            </Box>
-          </Box> */}
+          </Box>
+          {genderData.length !== 0 ? (<PieChart data={genderData} />) : (
+            <Typography variant="body1">No data available</Typography>
+          )}
+        </Box>
 
-          {/* Age Groups */}
-          {/* <Box gridColumn={isMobile ? "span 12" : "span 4"} gridRow="span 2" mt="-25px">
-            <ListCard title="Age Groups" data={agedata} />
-          </Box> */}
+        <Box mb="20px" gridColumn={isMobile ? "span 12" : "span 4"} gridRow="span 2" style={{ maxWidth: '400px' }}>
+          <Box>
+            <Typography variant="h4" fontWeight="500">
+              Age Groups
+            </Typography>
+          </Box>
+          {ageData.length !== 0 ? (<PieChart data={ageData} />) : (
+            <Typography variant="body1">No data available</Typography>
+          )}
+        </Box>
+
 
         </Box>
 
         {/* Additional Cards */}
+
+
         <Box display="grid" gridTemplateColumns={isMobile ? "repeat(auto-fill, minmax(250px, 1fr))" : "repeat(auto-fill, minmax(250px, 1fr))"} gap="10px" mt="50px">
-        <StatCard title="Total Revenue Generated" value="CAD 14k" />
+        <StatCard title="Total Revenue Generated" value={`CAD ${TotalPeyment}`} />
           <StatCard title="Total Old Users Signing First Time" value="15" />
-          <StatCard title="Total New Members Sign Up" value="144" />
+          <StatCard title="Total New Members Sign Up" value={totalNewUsersignup.total_users} />
           <StatCard title="Total of New Paid Members" value="14" />
         </Box>
+
+
         <Box display="grid" gridTemplateColumns={isMobile ? "repeat(auto-fill, minmax(250px, 1fr))" : "repeat(auto-fill, minmax(250px, 1fr))"} gap="10px" mt="20px">
           
           <StatCard title="Total of Renewals" value="15" />
@@ -320,47 +446,49 @@ const Dashboard = () => {
         </Box>
 
         <Box gridColumn={isMobile ? "span 12" : "span 4"} gridRow="span 2" overflow="auto" mt="30px">
-      <Box display="flex" justifyContent="space-between" alignItems="center" borderBottom={`4px solid ${colors.primary[500]}`} p="15px">
-        <Typography color={colors.grey[100]} variant="h6" fontWeight="600" sx={{ fontFamily: '"Inter", sans-serif' }}>
-          Recent Transactions
-        </Typography>
-      </Box>
-      {mockTransactions.map((transaction, i) => (
-        <Box
-          key={`${transaction.txId}-${i}`}
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          borderBottom={`2px solid ${colors.primary[500]}`}
-          p="15px"
-          sx={{
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-            transition: 'all 0.3s ease',
-            '&:hover': {
-              transform: 'scale(1.02)',
-              borderColor: colors.greenAccent[500],
-              boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
-            },
-            fontFamily: '"Inter", sans-serif',
-          }}
-        >
-          <Box>
-            <Typography color={colors.greenAccent[500]} variant="h5" fontWeight="600" sx={{ fontFamily: '"Inter", sans-serif' }}>
-              {transaction.txId}
-            </Typography>
-            <Typography color={colors.grey[100]} sx={{ fontFamily: '"Inter", sans-serif' }}>
-              {transaction.user}
-            </Typography>
-          </Box>
-          <Box color={colors.grey[100]} sx={{ fontFamily: '"Inter", sans-serif' }}>
-            {transaction.date}
-          </Box>
-          <Box backgroundColor={colors.greenAccent[500]} p="5px 10px" borderRadius="4px" sx={{ fontFamily: '"Inter", sans-serif' }}>
-            ${transaction.cost}
-          </Box>
+        <Box display="flex" justifyContent="space-between" alignItems="center" borderBottom={`4px solid ${colors.primary[500]}`} p="15px">
+          <Typography color={colors.grey[100]} variant="h6" fontWeight="600" sx={{ fontFamily: 'Poppins, sans-serif' }}>
+            Recent Transactions
+          </Typography>
         </Box>
-      ))}
-    </Box>
+        {transactions.map((transaction, i) => (
+          <Box
+            key={`${transaction.id}-${i}`}
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            borderBottom={`2px solid ${colors.primary[500]}`}
+            p="15px"
+            sx={{
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'scale(1.02)',
+                borderColor: colors.greenAccent[500],
+                boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+              },
+              fontFamily: 'Poppins, sans-serif',
+            }}
+          >
+            <Box>
+              <Typography color={colors.greenAccent[500]} variant="h5" fontWeight="600" sx={{ fontFamily: 'Poppins, sans-serif' }}>
+                {transaction.id}
+              </Typography>
+              <Typography color={colors.grey[100]} sx={{ fontFamily: 'Poppins, sans-serif' }}>
+                {transaction.first_name}
+              </Typography>
+            </Box>
+            <Box color={colors.grey[100]} sx={{ fontFamily: 'Poppins, sans-serif' }}>
+              {new Date(transaction.created_at).toLocaleDateString()}
+            </Box>
+            <Box backgroundColor={colors.greenAccent[500]} p="5px 10px" borderRadius="4px" sx={{ fontFamily: 'Poppins, sans-serif' }}>
+              ${transaction.amount / 100}
+            </Box>
+          </Box>
+        ))}
+      </Box>
+
+
       </Box>
      
       
