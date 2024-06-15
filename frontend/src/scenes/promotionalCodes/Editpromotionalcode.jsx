@@ -1,89 +1,110 @@
-import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Grid, MenuItem, Select, FormControl, InputLabel, useTheme } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  Grid,
+  TextField,
+  Typography,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  useTheme
+} from "@mui/material";
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { tokens } from "../../theme";
-import { useNavigate } from 'react-router-dom';
-import { API_URL } from '../../api';
-const AddPromotionalCode = () => {
+import Header from "../../components/Header1";
+import { useParams, useNavigate } from "react-router-dom";
+import { API_URL } from "../../api";
+const EditDetails = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { id } = useParams();
+  const [details, setDetails] = useState(null);
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    promo_id: "",         
-    amount_off: "", 
-    percent_off: "", 
-    available_from: null, 
-    available_to: null, 
-    max_redemptions: "", 
-    applies_to: "", 
-    once_per_user: "", 
-  });
+  useEffect(() => {
+    const fetchDetails = async () => {
+      try {
+        const response = await fetch(`http://localhost:3001/api/v1/admin/promotioncode/${id}`);
+        const data = await response.json();
+        setDetails(data);
+      } catch (error) {
+        console.error("Error fetching promotion code details:", error);
+      }
+    };
+
+    fetchDetails();
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setDetails({
+      ...details,
       [name]: value,
     });
   };
 
   const handleDateChange = (name, date) => {
-    setFormData({
-      ...formData,
-      [name]: date, // Store the date object directly
+    setDetails({
+      ...details,
+      [name]: date,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${API_URL}/admin/promotioncode/`, {
-        method: 'POST',
+      const response = await fetch(`${API_URL}/admin/promotioncode/${id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...formData,
-          available_from: formData.available_from ? formData.available_from.format('YYYY-MM-DD') : null,
-          available_to: formData.available_to ? formData.available_to.format('YYYY-MM-DD') : null,
-          once_per_user: formData.once_per_user === "yes" ? 1 : 0,  // Convert yes/no to 1/0
+          ...details,
+          available_from: details.available_from ? dayjs(details.available_from).format('YYYY-MM-DD') : null,
+          available_to: details.available_to ? dayjs(details.available_to).format('YYYY-MM-DD') : null,
+          once_per_user: details.once_per_user === "yes" ? 1 : 0,
         }),
       });
       if (response.ok) {
-        console.log("Promotional code added successfully!");
+        console.log("Promotional code updated successfully!");
         navigate("/promotionalcodes");
       } else {
-        console.error("Failed to add promotional code");
+        console.error("Failed to update promotional code");
       }
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
+  if (!details) {
+    return <Typography>Loading...</Typography>;
+  }
+
   return (
     <Box m="20px">
-      <Typography variant="h2">Add Promotional Code</Typography>
+      <Header title="Edit Promotional Code" subtitle="" />
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
             <TextField
               name="promo_id"
               label="Promotion Code"
-              value={formData.promo_id}
+              value={details.promo_id}
               onChange={handleChange}
               fullWidth
               margin="normal"
-              required
+             
             />
           </Grid>
           <Grid item xs={12} lg={6}>
             <TextField
               name="amount_off"
               label="Amount Off"
-              value={formData.amount_off}
+              value={details.amount_off}
               onChange={handleChange}
               fullWidth
               margin="normal"
@@ -94,7 +115,7 @@ const AddPromotionalCode = () => {
             <TextField
               name="percent_off"
               label="Percent Off"
-              value={formData.percent_off}
+              value={details.percent_off}
               onChange={handleChange}
               fullWidth
               margin="normal"
@@ -105,7 +126,7 @@ const AddPromotionalCode = () => {
             <TextField
               name="max_redemptions"
               label="Max Redemptions"
-              value={formData.max_redemptions}
+              value={details.max_redemptions}
               onChange={handleChange}
               fullWidth
               margin="normal"
@@ -117,7 +138,7 @@ const AddPromotionalCode = () => {
               <InputLabel>Only For Subscription</InputLabel>
               <Select
                 name="applies_to"
-                value={formData.applies_to}
+                value={details.applies_to}
                 onChange={handleChange}
                 label="Only For Subscription"
                 required
@@ -133,7 +154,7 @@ const AddPromotionalCode = () => {
               <InputLabel>Once Per User</InputLabel>
               <Select
                 name="once_per_user"
-                value={formData.once_per_user}
+                value={details.once_per_user ? "yes" : "no"}
                 onChange={handleChange}
                 label="Once Per User"
                 required
@@ -149,9 +170,8 @@ const AddPromotionalCode = () => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Available From"
-                    value={formData.available_from}
+                    value={dayjs(details.available_from)}
                     onChange={(date) => handleDateChange('available_from', date)}
-                    required
                     renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
                   />
                 </LocalizationProvider>
@@ -161,9 +181,8 @@ const AddPromotionalCode = () => {
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                       label="Available To"
-                      value={formData.available_to}
+                      value={dayjs(details.available_to)}
                       onChange={(date) => handleDateChange('available_to', date)}
-                      required
                       renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
                     />
                   </LocalizationProvider>
@@ -180,11 +199,11 @@ const AddPromotionalCode = () => {
             background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
           },
         }}>
-          Add Code
+          Save
         </Button>
       </form>
     </Box>
   );
 };
 
-export default AddPromotionalCode;
+export default EditDetails;
