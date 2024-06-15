@@ -1,19 +1,25 @@
 .signupphone-container
 {
 display: flex;
-/* width: 90%; */
+
 
 justify-content:space-between;
+position: relative;
 
 }
 .signup-phone-bg
 {
-    background-image:url("../assets/images/responsive-bg.png") ;
+  
     width: 100%;
    
     height: auto;
     background-size: cover;
     background-repeat: no-repeat;
+}
+.responsive-bg
+{
+    height: 100%;
+    width: 100%;
 }
 
 
@@ -26,8 +32,8 @@ justify-content:space-between;
 
 gap:24px;
 align-items: center;
-
-width: 80%;
+height:100%;
+width: 85%;
 }
 
 
@@ -38,7 +44,8 @@ width: 80%;
     display: flex;
     
 justify-content: center;
-
+height: 100dvh;
+width: 100%;
 align-items: center;
 
 }
@@ -50,6 +57,20 @@ align-items: center;
 justify-content: space-between;
 gap: 16px;
 margin-top: 50px;
+
+
+}
+.logo-arrow1
+{
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0px;
+    margin: 0px;
+   
+    height: 10dvh;
+    position: relative;
 
 
 }
@@ -84,46 +105,33 @@ border-radius: 4px;
 {
     display: flex;
     flex-direction: column;
-    /* padding: 0px; */
+   height: 100dvh;
+
+
 
 }
 .verify-phone-form
 {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     flex-direction:column ;
-    padding: 0px;
+    padding-bottom:36px;
+
+height: 100%;
+ 
+   
 }
 .verify-form-group
 {
     width: 100%;
 }
-/* .verify-phone-text p:first-child {
-    font-family: Work Sans;
-    font-size: 24px;
-    font-weight: 500;
-    line-height: 28.15px;
-    text-align: center;
-    
-    color: #515151;
 
-  }
-  .verify-phone-text p:last-child {
-    font-family: Work Sans;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 22px;
-    text-align: center;
-     margin: 0px;
-    color: #515151;
-
-  } */
 
   .num-verify-lable
   {
     font-family: Work Sans;
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 500;
     line-height: 23.46px;
     text-align: left;
@@ -168,8 +176,8 @@ color: #6C6C6C;
     margin-top: 8px;
     border: 1px solid #6C6C6C;
     padding: 10px;
-    z-index: 1050; /* Ensuring the dropdown is above other elements */
-    position: absolute; /* Position absolute to ensure it doesn't push content */
+    z-index: 1050; 
+    position: absolute;
 }
 .flag-item {
     color: #6C6C6C;
@@ -197,9 +205,42 @@ color: #6C6C6C;
 
 
   }
+  .num-verify-input::placeholder
+  {
+
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0.04em;
+    color:#6C6C6C;
+    
+
+  }
+  .flag-box span
+  {
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    color:#6C6C6C;
+    
+  }
   .num-verify-input.error
   {
    border-color: red;
+
+
+  }
+  .error-message
+  {
+    font-family: Poppins;
+font-size: 14px;
+font-weight: 600;
+line-height: 22px;
+text-align: left;
+color: #FF4747 !important;
+
 
 
   }
@@ -208,9 +249,9 @@ color: #6C6C6C;
     height:48px;
     width:100%;
     max-width:250px;
-    margin-top:115px ;
+   
     background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
-/* position: absolute; */
+
     box-shadow: 0px 4px 10px 0px #00000029;
     color:#FFFFFF;
  
@@ -228,7 +269,7 @@ border-radius: 42px;
 {
     display: flex;
     align-items: center;
-    /* padding: 0px; */
+
 }
 .or-line span{
     padding-left: 5px;
@@ -244,14 +285,13 @@ color: #6C6C6C;
 }
 .or-option
 {
-    padding: 0px;
-    /* margin-top: 14px; */
+    padding-bottom: 24px;
+  
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     gap:15px;
-    /* margin-bottom: 30px; */
-    /* padding-bottom: 20px; */
+
 
 }
 .or-option p
@@ -266,13 +306,15 @@ color: #6C6C6C;
     color: #6C6C6C;
     
 }
-.signup-logo
+.logo1
 {
     max-width: 219.47px;
 height: 71.9px;
 width: 100%;
 
-
+position: absolute;
+left: 50%;
+  transform: translate(-50%);
 }
 .line{
     width: 50%;
@@ -341,13 +383,25 @@ color:#4E1173;
 }
 
 
- 
+.modal-body .flag-item {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    cursor: pointer;
+}
+.custom-modal  {
+    max-width: 300px;
+}
+
+.custom-modal {
+    margin: auto;
+}
  
 .dropdown-toggle::after {
     display: none;
    
 }
-@media only screen and (max-width:650px){
+@media only screen and (max-width:750px){
 .signup-phone-bg
 {
     display:none;
@@ -355,7 +409,7 @@ color:#4E1173;
 .verify-phone-btn
 {
     
-    margin-top:175px ;
+  
   
 }
 .signupphone-content
@@ -363,4 +417,13 @@ color:#4E1173;
     
 width: 100%;
 }
+.verify-phone-details
+{
+    
+    
+
+}
+
+
+
 }

@@ -8,9 +8,9 @@ justify-content: flex-start;
 }
 .birthday-bg
 {
-    background-image:url("../assets/images/signup-bg.jpg") ;
+    
     width: 100%;
-  
+    height: auto;
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -22,16 +22,28 @@ justify-content: flex-start;
 
 .birthday-main
 {
-    background: #FFFFFF;
+    /* background: #FFFFFF;
+
+    display: flex;
+    flex-direction: column;
+
+gap:24px;
+align-items: center; */
+
+
+
+}
+.birthday-content
+{
+  background: #FFFFFF;
 
     display: flex;
     flex-direction: column;
 /* justify-content: space-evenly; */
 gap:24px;
 align-items: center;
-/* height: 100dvh; */
-
-
+height: 100dvh;
+width: 85%;
 }
 .logo{
 
@@ -40,14 +52,14 @@ left: 50%;
   transform: translate(-50%);
 
 }
-.logo-progressbar4
+.logo-progressbar5
 {
     margin-top: 50px;
     gap: 16px;
     display: flex;
     flex-direction: column;
 }
-.logo-arrow4
+.logo-arrow5
 {
     display: flex;
 
@@ -63,7 +75,7 @@ left: 50%;
 }
 
 
-.track-btn4
+.track-btn5
 {
     width: 100%;
     height: 6px;
@@ -71,56 +83,67 @@ left: 50%;
 border-radius: 4px;
 padding: 0px;
 
+
 }
-.track-btn4 div
+.track-btn5 div
 {
-    width: 40%;
-    background: linear-gradient(90deg, #9663BF 0%, #4B164C 100%);
+    width: 50%;
+   
     box-shadow: 0px 4px 4px 0px #82828240;
     height: 100%;
 border-radius: 4px;
    
+background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+}
+.gender-name span{
+  font-family: Poppins;
+font-size: 14px;
+font-weight: 500;
+line-height: 21px;
+letter-spacing: 0.04em;
+text-align: center;
+color:
+#515151;
 
 }
 .birthday-text
 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding-bottom: 5px;
+  display: flex;
+ 
+  align-items: center;
+  justify-content: flex-start;
+  gap:8px;
     
 }
 .birthday-details
 {
     display: flex;
     flex-direction: column;
-    /* padding: 0px; */
+  
 
 }
 .birthday-form
 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction:column ;
-    /* padding-bottom: 15px; */
-    z-index: 9;
-    gap:24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction:column ;
+  padding-bottom: 15px;
+  z-index: 9;
 }
 .birthday-group
 {
     width: 100%;
 }
 
-.birthday-text p:first-child {
-    font-family: Work Sans;
-    font-size: 24px;
-    font-weight: 500;
-    line-height: 28.15px;
-    text-align: center;
-    
-    color: #515151;
+.birthday-text p {
+  font-family: Poppins;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 36px;
+  text-align: left;
+  color: #515151;
+  margin-bottom: 0px;
 
   }
   /* .birthday-text p:last-child {
@@ -136,13 +159,14 @@ border-radius: 4px;
 
   .birthday-label
   {
-    font-family: Work Sans;
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 23.46px;
-    text-align: left;
-    margin-bottom: 12px;
+    font-family: Poppins;
+font-size: 20px;
+font-weight: 500;
+line-height: 30px;
+text-align: left;
 
+    margin-bottom: 12px;
+color:#424242;
     
 
 
@@ -168,6 +192,17 @@ box-sizing: border-box;
 
   
   }
+  .birthday-input::placeholder
+  {
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0.04em;
+   
+    color:#6C6C6C;
+  }
+  
   
   .birthday-input-verify
   {
@@ -230,18 +265,7 @@ outline-color: transparent;
 --bs-btn-hover-bg: transparent; 
 
   }
-  .calculated-age
-  {
-    font-family: "Inter";
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 22px;
-    text-align: left;
-    color: #9663BF;
-    margin-top: 8px;
-
-    
-  }
+ 
   .gender-btn
   {
     border: none;
@@ -278,12 +302,13 @@ max-width: 104px;
 width: 100%;
 /* background: linear-gradient(90deg, #9663BF 0%, #4B164C 100%); */
 border: 1px solid #6C6C6C ;
-font-family: "Inter";
+font-family: Poppins;
 font-size: 16px;
 font-weight: 500;
 line-height: 24px;
 letter-spacing: 0.04em;
 text-align: center;
+
 color:#6C6C6C;
 
 
@@ -299,24 +324,25 @@ color:#6C6C6C;
 
   .birthday-nxt-btn
   {
-      height:48px;
-      width:100%;
-      max-width:250px;
-      /* position: absolute; */
-      margin-bottom:35px;
-      margin-top:42px ;
-      background: linear-gradient(90deg, #9663BF 0%, #4B164C 100%);
-      box-shadow: 0px 4px 10px 0px #00000029;
-      color:#FFFFFF;
-      font-family: Work Sans;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 22px;
-  letter-spacing: 0.04em;
-  text-align: center;
-  align-items: center;
-  border: none;
-  border-radius: 42px;
+    height:48px;
+    width:100%;
+    max-width:250px;
+    position: absolute;
+    bottom:36px;
+    margin-top:20px ;
+    background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+
+    box-shadow: 0px 4px 10px 0px #00000029;
+    color:#FFFFFF;
+    font-family: Work Sans;
+font-size: 14px;
+font-weight: 400;
+line-height: 22px;
+letter-spacing: 0.04em;
+text-align: center;
+align-items: center;
+border: none;
+border-radius: 42px;
 
   
   }
@@ -328,9 +354,12 @@ color:#6C6C6C;
   
 
 
-@media only screen and (max-width:650px){
+@media only screen and (max-width:750px){
 .birthday-bg
 {
     display:none;
 }
+.birthday-content{
+  width: 100%;
+  }
 }

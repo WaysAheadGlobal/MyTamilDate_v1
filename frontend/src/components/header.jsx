@@ -34,7 +34,7 @@ export const Headerlp = () => {
             <button className='header-btnone' onClick={goToSignup}>
               Get Started
             </button>
-            <button className='header-btntwo' onClick={goToSignin}>
+            <button className='header-btntwo' >
               Returning? Login
             </button>
           </Container>

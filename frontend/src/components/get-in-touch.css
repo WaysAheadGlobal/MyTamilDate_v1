@@ -248,6 +248,9 @@ width: 100%; */
     }
 
 
+    
+
+
     .getintouch-main p {
 
         font-size: 32px;
@@ -259,6 +262,17 @@ width: 100%; */
         font-size: 24px;
 
 
+    }
+    .getintouch-content {
+        padding: 20px;
+        display: flex;
+        border-radius: 20px;
+        border: 2px solid #E3C1FF;
+        background: #F9F1FF;
+        align-items: center;
+        justify-content: center;
+        gap: 50px;
+        width: 85%;
     }
 
     .getintouch-btn {

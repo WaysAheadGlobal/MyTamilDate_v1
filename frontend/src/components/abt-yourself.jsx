@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './birthday.css';
+import './abt-yourself.css';
+import { useNavigate } from 'react-router-dom';
 import backarrow from "../assets/images/backarrow.jpg";
 import logo from "../assets/images/MTDlogo.png";
 import google from "../assets/images/google 1.jpg";
@@ -10,8 +11,20 @@ import { Container, Image, Form, Button } from 'react-bootstrap';
 import Modal from 'react-modal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import basicdetails from "../assets/images/basic-details.png";
+import responsivebg from "../assets/images/responsive-bg.png";
 
-export const Birthday = () => {
+
+export const AbtYourself = () => {
+
+
+    const navigate = useNavigate();
+    const goToSelfie = () => {
+        navigate("/selfie");
+      };
+
+
+
     const [errorMessage, setErrorMessage] = useState('');
 
     const [femaleActive, setFemaleActive] = useState(false);
@@ -63,24 +76,27 @@ export const Birthday = () => {
 
     return (
         <div className='birthday-container'>
-            <div className='birthday-bg'></div>
+            <div className='birthday-bg'>
+            <Image className='responsive-bg' src={responsivebg}></Image>
+            </div>
             <Container className='birthday-main'>
-                <Container className='logo-progressbar4'>
-                    <Container className='logo-arrow4'>
+            <Container className='birthday-content'>
+                <Container className='logo-progressbar5'>
+                    <Container className='logo-arrow5'>
                         <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
                         <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
                     </Container>
-                    <div className='track-btn4'>
+                    <div className='track-btn5'>
                         <div></div>
                     </div>
                 </Container>
                 <Container className='birthday-text'>
-                    <p>Tell us about yourself</p>
+                <Image className='about-yourself-icon' src={basicdetails}></Image>
                     <p>Tell us about yourself</p>
                 </Container>
                 <Container className='birthday-details'>
                     <Form className='birthday-form'>
-                        <Form.Group controlId="formbday" className='birthday-group'>
+                        {/* <Form.Group controlId="formbday" className='birthday-group'>
                             <Form.Label className='birthday-label'>When is Your Birthday? *</Form.Label>
                             <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                                 <Form.Control
@@ -91,13 +107,13 @@ export const Birthday = () => {
                                     style={{ flex: 1 }}
                                 />
                                 <div className="birthday-div">
-                                    {/* Open modal when button is clicked */}
+                                   
                                     <Button className='calender-btn custom-button'><Image src={calender} /></Button>
                                 </div>
                             </div>
                             <span className='calculated-age'>*Your age will be displayed as 24</span>
                             {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
-                        </Form.Group>
+                        </Form.Group> */}
 
 
 
@@ -107,7 +123,7 @@ export const Birthday = () => {
 
                         <Form.Group controlId="formgender" className='birthday-group'>
                             <Form.Label className='birthday-label'>What is Your Gender? *</Form.Label>
-                            <div style={{ display: 'flex', alignItems: 'center', width: '100%', gap: '43px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', width: '100%',marginBottom:"24px",justifyContent:"space-evenly", }}>
                                 <div className='gender-name'>
                                     <Button className={`gender-btn ${femaleActive ? 'active' : ''}`} onClick={handleFemaleButtonClick}>
                                         <svg width="34" height="48" viewBox="0 0 34 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -156,7 +172,7 @@ export const Birthday = () => {
 
                         <Form.Group controlId="formgender" className='birthday-group'>
                             <Form.Label className='birthday-label'>Whom do you want to Date? *</Form.Label>
-                            <div style={{ display: 'flex', alignItems: 'center', width: '100%', gap: '11px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', width: '100%',justifyContent:"space-evenly" }}>
 
                             <Button 
                 className="prefer-whome" 
@@ -243,10 +259,11 @@ export const Birthday = () => {
 
 
 
-                        <Button variant="primary" type="submit" className='birthday-nxt-btn'>
+                        <Button variant="primary" type="submit" className='birthday-nxt-btn' onClick={goToSelfie}>
                             Next
                         </Button>
                     </Form>
+                </Container>
                 </Container>
             </Container>
 

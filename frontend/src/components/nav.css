@@ -3,8 +3,8 @@
 
 width: 100%;
 background-color: #FFFFFF !important;
-position: sticky;
-position: -webkit-sticky;
+/* position: sticky; */
+/* position: -webkit-sticky; */
 top: 0;
 z-index: 50;
 display: block;  

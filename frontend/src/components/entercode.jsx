@@ -2,14 +2,24 @@
 import React, { useState, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './entercode.css';
-
+import { useNavigate } from 'react-router-dom';
+import responsivebg from "../assets/images/responsive-bg.png";
 import backarrow from "../assets/images/backarrow.jpg";
 import logo from "../assets/images/MTDlogo.png";
+import code from "../assets/images/code.png";
 import google from "../assets/images/google 1.jpg";
 import mail from "../assets/images/Gmail.jpg";
 import { Container, Image, Form, Button } from 'react-bootstrap';
 
 export const Entercode = () => {
+    const navigate = useNavigate();
+    const goToEmailVerify = () => {
+        navigate("/emailverify");
+      };
+
+
+
+
     const [code1, setCode1] = useState('');
     const [code2, setCode2] = useState('');
     const [code3, setCode3] = useState('');
@@ -44,13 +54,15 @@ export const Entercode = () => {
             setErrorMessage('*Invalid code, please re-enter again');
         } else {
             setErrorMessage('');
-            //   alert('Form submitted successfully: ' + code);
+           
         }
     };
 
     return (
         <div className='entercode-container'>
-            <div className='entercode-bg'></div>
+            <div className='entercode-bg'>
+            <Image className='responsive-bg' src={responsivebg}></Image>
+            </div>
             <Container className='entercode-main'>
                 <Container className='logo-progressbar2'>
 
@@ -64,11 +76,15 @@ export const Entercode = () => {
                 </Container>
 
                 <Container className='entercode-text'>
-                    <p>Enter Your Code</p>
-                    <p>Please enter the 4-digit code sent to you at +1 (905)216-5247</p>
+                <Image src={code} />
+                    {/* <p>Enter your verification code</p> */}
+                    {/* <p>Please enter the 4-digit code sent to you at +1 (905)216-5247</p> */}
                 </Container>
                 <Form onSubmit={handleSubmit} className='entercode-form'>
+                <Container className='entercode-content'>
+                <div>
                     <Form.Group controlId="formCode" className='entercode-form-group'>
+                    <Form.Label className='entercode-lable'> What's your phone number?</Form.Label>
                         <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
                             <Form.Control
                                 className={`entercode-input ${errorMessage ? 'error' : ''}`}
@@ -117,11 +133,13 @@ export const Entercode = () => {
                         <a href=''> Resend code</a>
                         <span>1:48sec</span>
                     </div>
-                    <Button variant="primary" type="submit" className='entercode-btn'>
+                    </div>   
+                    <Button variant="primary" type="submit" onClick={goToEmailVerify} className='entercode-btn'>
                         Next
                     </Button>
+                    </Container>
                 </Form>
-                <Container className='or-option'>
+                {/* <Container className='or-option'>
                     <Container className='or-line'>
                         <div className='line'></div>
                         <span>or</span>
@@ -132,7 +150,7 @@ export const Entercode = () => {
                         <a href=''><Image src={google} alt="Google" />Sign Up using Google</a>
                         <a href=''><Image src={mail} alt="Mail" /></a>
                     </Container>
-                </Container>
+                </Container> */}
             </Container>
         </div>
     );

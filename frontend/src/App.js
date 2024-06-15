@@ -1,4 +1,4 @@
-// App.jsx
+
 
 import { useContext, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
@@ -27,12 +27,19 @@ import { useAppContext } from "./Context/UseContext";
 import ShowphoneAndEmail from "./scenes/showPhoneandEmail/showPhoneandEmail";
 import Landingpage from "./components/Landingpage";
 import AddPromotioncode from "./scenes/promotionalCodes/AddPromotionalcode";
+
 import { Entercode } from './components/entercode';
 import { SignupPhone } from './components/signup-verifyphone';
 import { BasicDetails } from './components/basic-details';
 import { EmailVerify } from './components/email-verify';
-import { Birthday } from './components/birthday';
+import { GetStarted } from './components/get-started';
+import { AbtYourself } from './components/abt-yourself';
 import { Selfie } from './components/take-selfie1';
+import { Located } from './components/located';
+import { Religion} from './components/religion';
+import { Education} from './components/education';
+import { JobTitle} from './components/job-title';
+
 import { LP } from './components/LP';
 import { FaqPage } from './components/faq-pg';
 import { Tnc } from './components/tnc';
@@ -127,10 +134,17 @@ function App() {
 
               
               <Route path="/entercode" element={<Entercode />} />
-              <Route path="/BasicDetails" element={<BasicDetails />} />
-              <Route path="/EmailVerify" element={<EmailVerify />} />
-              <Route path="/Birthday" element={<Birthday />} />
-              <Route path="/Selfie" element={<Selfie />} />
+              <Route path="/emailverify" element={<EmailVerify />} />
+              <Route path="/getstarted" element={<GetStarted />} />
+              <Route path="/basicdetails" element={<BasicDetails />} />
+              <Route path="/abtyourself" element={<AbtYourself />} />
+              <Route path="/selfie" element={<Selfie />} />
+              <Route path="/located" element={<Located />} />
+              <Route path="/religion" element={<Religion />} />
+              <Route path="/edu" element={<Education />} />
+              <Route path="/jobtitle" element={<JobTitle />} />
+
+
             </Routes>
           </main>
         </div>

@@ -19,9 +19,8 @@ export const Video2 = () => {
             <VerticallyCenteredModal
                 show={modalShow}
                 onHide={() => setModalShow(false)}
-                videoURL={videoURL}
-            />
-            <p>Dating While Tamil? </p>
+                videoURL={videoURL}/>
+            <p>Dating While Tamil?</p>
             <span style={{ textAlign: "center" }}>Check out the MTD community's tips & insights! </span>
 
             <Container className='video2-content'>
