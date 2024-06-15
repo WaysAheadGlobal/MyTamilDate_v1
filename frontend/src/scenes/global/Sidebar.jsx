@@ -46,32 +46,48 @@ const Category = ({ title, icon, children, isCollapsed }) => {
 
   return (
     <Box>
-    <Box 
-      display="flex" 
-      alignItems="center" 
-      sx={{ cursor: "pointer", mt: isCollapsed ? "30px" : "0", mb: isCollapsed ? "30px" : "0" }} 
-      onClick={handleToggle}
-    >
-      {icon && React.cloneElement(icon, { sx: { color: colors.grey[100], marginLeft: '27px', marginTop : "10px" } })}
-      {!isCollapsed && (
-        <Typography
-          variant="h6"
-          color={colors.grey[100]}
-          sx={{ m: "15px 0 5px 20px", flexGrow: 1 }}
-        >
-          {title}
-        </Typography>
-      )}
-      {!isCollapsed && (
-        <Box sx={{ mr: 2 }}>
-          {isOpen ? <ExpandLessIcon sx={{ color: colors.grey[100] }} /> : <ExpandMoreIcon sx={{ color: colors.grey[100] }} />}
-        </Box>
-      )}
+      {/* <Box display="flex" alignItems="center" sx={{ cursor: "pointer", mt: isCollapsed ? "30px" : "0", mb: isCollapsed ? "30px" : "0" }} onClick={handleToggle}>
+        {icon && React.cloneElement(icon, { sx: { color: colors.grey[100], marginLeft: '27px' } })}
+        {!isCollapsed && (
+          <Typography
+            variant="h6"
+            color={colors.grey[100]}
+            sx={{ m: "15px 0 5px 20px", flexGrow: 1 }}
+          >
+            {title}
+          </Typography>
+        )}
+        {!isCollapsed && (isOpen ? icon = <ExpandLessIcon /> : <ExpandMoreIcon />)}
+      </Box>
+      <Box className={`dropdown-sidebar ${isOpen ? "open" : ""}`} pl={2}>
+        {children}
+      </Box> */}
+      <Box
+        display="flex"
+        alignItems="center"
+        sx={{ cursor: "pointer", mt: isCollapsed ? "30px" : "0", mb: isCollapsed ? "30px" : "0" }}
+        onClick={handleToggle}
+      >
+        {icon && React.cloneElement(icon, { sx: { color: colors.grey[100], marginLeft: '27px', marginTop: "10px" } })}
+        {!isCollapsed && (
+          <Typography
+            variant="h6"
+            color={colors.grey[100]}
+            sx={{ m: "15px 0 5px 20px", flexGrow: 1 }}
+          >
+            {title}
+          </Typography>
+        )}
+        {!isCollapsed && (
+          <Box sx={{ mr: 2 }}>
+            {isOpen ? <ExpandLessIcon sx={{ color: colors.grey[100] }} /> : <ExpandMoreIcon sx={{ color: colors.grey[100] }} />}
+          </Box>
+        )}
+      </Box>
+      <Box className={`dropdown-sidebar ${isOpen ? "open" : ""}`} pl={2}>
+        {children}
+      </Box>
     </Box>
-    <Box className={`dropdown ${isOpen ? "open" : ""}`} pl={2}>
-      {children}
-    </Box>
-  </Box>
   );
 };
 
@@ -106,7 +122,7 @@ const Sidebar = () => {
         "& .pro-menu-item.active": {
           color: "#6870fa !important",
         },
-        fontFamily: 'Poppins, sans-serif', 
+        fontFamily: '"Inter", sans-serif',
       }}
     >
       <ProSidebar collapsed={isCollapsed}>
@@ -127,7 +143,7 @@ const Sidebar = () => {
                 ml="15px"
               >
                 <Typography variant="h3" color={colors.grey[100]}>
-                  
+
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
@@ -161,15 +177,15 @@ const Sidebar = () => {
           )}
 
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-            
-              <Item
-                title="Dashboard"
-                to="/dashboard"
-                icon={<HomeOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              />
-           
+
+            <Item
+              title="Dashboard"
+              to="/dashboard"
+              icon={<HomeOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
 
             <Category
               title="Users"
@@ -192,15 +208,15 @@ const Sidebar = () => {
               />
             </Category>
 
-          <Item
-                title="Promotional Codes"
-                to="/promotionalcodes"
-                icon={<ReceiptOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              />
+            <Item
+              title="Promotional Codes"
+              to="/promotionalcodes"
+              icon={<ReceiptOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
 
-            
+
 
             <Button
               variant="contained"
@@ -209,7 +225,7 @@ const Sidebar = () => {
                 width: '90%',
                 mb: 2,
                 mt: 2,
-                mr:6,
+                mr: 6,
                 py: 1.5,
                 background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
                 color: '#FFF',

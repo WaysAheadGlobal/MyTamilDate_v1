@@ -7,7 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 const themeSettings = {
   typography: {
-    fontFamily: ['Poppins', 'sans-serif'].join(','),
+    fontFamily: ['"Inter"', 'sans-serif'].join(','),
     fontSize: 14,
     h4: {
       fontSize: 24,

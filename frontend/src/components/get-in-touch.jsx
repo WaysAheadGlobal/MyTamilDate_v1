@@ -1,69 +1,57 @@
-import React, { useState, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState } from 'react';
 import './get-in-touch.css';
 
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import { Container, Image, Form, Button } from 'react-bootstrap';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import getbg from '../assets/images/getintouch-bg.png';
-import verify from '../assets/images/verified.png';
+import { Button, Container, Form, Image } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import { SlArrowDown } from "react-icons/sl";
+import verify from '../assets/images/verified.png';
+import { Footer } from './footer';
 import { NavBar } from './nav';
 
 
 function SuccessfullModal(props) {
     return (
-  
-      <Modal
-  
-        {...props}
-        size="lg"
-        // aria-labelledby="contained-modal-title-vcenter"
-        centered
-        style={{
-          width: '100%',
-          height: '100%',
-          border: 'none',
-          backgroundColor: "#000000B2"
-        }}
-  
-      >
-  
-  
-  
-        <Modal.Body className='getintouch-modal'>
-  
-         
-  
-          <div className=' getetintouch-model-main'>
-            <div className='getintouch-close'>
-              <button type="button" className="btn-close" onClick={props.onHide} style={{ color: '#FFFFFF', padding: '10px' }} >
-              </button>
-            </div>
-            <div className='getintouch-model-content'>
-              <Image className='verify-img' src={verify}></Image>
-              <span >Thanks! We've received your submission and will be in touch.</span>
-            </div>
-          </div>
-  
-  
-        </Modal.Body>
-  
-      </Modal>
-  
+
+        <Modal
+
+            {...props}
+            size="lg"
+            // aria-labelledby="contained-modal-title-vcenter"
+            centered
+            style={{
+                width: '100%',
+                height: '100%',
+                border: 'none',
+                backgroundColor: "#000000B2"
+            }}
+
+        >
+
+
+
+            <Modal.Body className='getintouch-modal'>
+
+
+
+                <div className=' getetintouch-model-main'>
+                    <div className='getintouch-close'>
+                        <button type="button" className="btn-close" onClick={props.onHide} style={{ color: '#FFFFFF', padding: '10px' }} >
+                        </button>
+                    </div>
+                    <div className='getintouch-model-content'>
+                        <Image className='verify-img' src={verify}></Image>
+                        <span >Thanks! We've received your submission and will be in touch.</span>
+                    </div>
+                </div>
+
+
+            </Modal.Body>
+
+        </Modal>
+
     );
-  }
-
-
-
-
-
-
-
-
+}
 
 export const GetInTouch = () => {
 
@@ -90,11 +78,6 @@ export const GetInTouch = () => {
         console.log('Form data submitted:', formData);
         // You can add form submission logic here (e.g., API call)
     };
-
-
-
-
-
 
     return (
 
@@ -146,13 +129,14 @@ export const GetInTouch = () => {
                                     onChange={handleChange}
                                     // placeholder="Your Topic"
                                     size="sm"
-                                    style={{ fontFamily: 'Poppins', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}
+                                    style={{ fontFamily: '"Inter"', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}
                                 >
 
-    <option value="" style={{ fontFamily: 'Poppins', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>I have technical a issue</option>
-    <option value="support" style={{ fontFamily: 'Poppins', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>I have a question</option>
-    <option value="sales" style={{ fontFamily: 'Poppins', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>I have billing a issue</option>
-       
+                                    <option value="" className="option-style" style={{ fontFamily: '"Inter"', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>Select</option>
+                                    <option value="I have technical a issue" className="option-style" style={{ fontFamily: '"Inter"', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>I have technical a issue</option>
+                                    <option value="I have a question" className="option-style" style={{ fontFamily: '"Inter"', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>I have a question</option>
+                                    <option value="I have billing a issue" className="option-style" style={{ fontFamily: '"Inter"', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>I have billing a issue</option>
+
                                 </Form.Control>
                                 <SlArrowDown className="arrow-icon" />
                             </Form.Group>
@@ -166,16 +150,16 @@ export const GetInTouch = () => {
                                     onChange={handleChange}
                                 />
                             </Form.Group>
-<div className='connect-btn-box'>
-                            <Button variant="primary" className='getintouch-btn'  onClick={() => setModalShow(true)}   type="submit">
-                                Submit
-                            </Button>
+                            <div className='connect-btn-box'>
+                                <Button variant="primary" className='getintouch-btn' onClick={() => setModalShow(true)} type="submit">
+                                    Submit
+                                </Button>
                             </div>
                         </Form>
                     </Container>
 
                     <Container className='get-bg-container'>
-                    <Image className='get-bg' src={getbg}></Image>
+                        {/* <Image className='get-bg' src={getbg}></Image> */}
                     </Container>
 
 
@@ -188,13 +172,13 @@ export const GetInTouch = () => {
                 </Container>
 
             </div>
-
+            <Footer />
 
 
             <SuccessfullModal
-        show={modalShow}
-        onHide={() => setModalShow(false)}
-      />
+                show={modalShow}
+                onHide={() => setModalShow(false)}
+            />
 
         </>
 

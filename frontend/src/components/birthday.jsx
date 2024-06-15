@@ -163,7 +163,7 @@ export const Birthday = () => {
                 onClick={() => handlePrefer('female')} 
                 style={{ 
                     background: selectedOption === 'female' ? 'linear-gradient(90deg, #9663BF 0%, #4B164C 100%)' : 'transparent', 
-                    fontFamily: 'Poppins', 
+                    fontFamily: '"Inter"', 
                     fontSize: '16px', 
                     fontWeight: '500', 
                     color: selectedOption === 'female' ? 'white' : '#6C6C6C', 
@@ -179,7 +179,7 @@ export const Birthday = () => {
                 onClick={() => handlePrefer('male')} 
                 style={{ 
                     background: selectedOption === 'male' ? 'linear-gradient(90deg, #9663BF 0%, #4B164C 100%)' : 'transparent', 
-                    fontFamily: 'Poppins', 
+                    fontFamily: '"Inter"', 
                     fontSize: '16px', 
                     fontWeight: '500', 
                     color: selectedOption === 'male' ? 'white' : '#6C6C6C', 
@@ -195,7 +195,7 @@ export const Birthday = () => {
                 onClick={() => handlePrefer('all')} 
                 style={{ 
                     background: selectedOption === 'all' ? 'linear-gradient(90deg, #9663BF 0%, #4B164C 100%)' : 'transparent', 
-                    fontFamily: 'Poppins', 
+                    fontFamily: '"Inter"', 
                     fontSize: '16px', 
                     fontWeight: '500', 
                     color: selectedOption === 'all' ? 'white' : '#6C6C6C', 

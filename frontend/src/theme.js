@@ -161,35 +161,35 @@ export const themeSettings = (mode) => {
           }),
     },
     typography: {
-      fontFamily: ['Poppins', 'sans-serif'].join(','),
+      fontFamily: ['Inter', 'sans-serif'].join(','),
       fontSize: 12,
       h1: {
-        fontFamily: ['Poppins', 'sans-serif'].join(','),
+        fontFamily: ['Inter', 'sans-serif'].join(','),
         fontSize: 40,
         color: mode === 'dark' ? '#ffffff' : '#3A3A3A',
       },
       h2: {
-        fontFamily: ['Poppins', 'sans-serif'].join(','),
+        fontFamily: ['Inter', 'sans-serif'].join(','),
         fontSize: 32,
         color: mode === 'dark' ? '#ffffff' : '#3A3A3A',
       },
       h3: {
-        fontFamily: ['Poppins', 'sans-serif'].join(','),
+        fontFamily: ['Inter', 'sans-serif'].join(','),
         fontSize: 24,
         color: mode === 'dark' ? '#ffffff' : '#3A3A3A',
       },
       h4: {
-        fontFamily: ['Poppins', 'sans-serif'].join(','),
+        fontFamily: ['Inter', 'sans-serif'].join(','),
         fontSize: 20,
         color: mode === 'dark' ? '#ffffff' : '#3A3A3A',
       },
       h5: {
-        fontFamily: ['Poppins', 'sans-serif'].join(','),
+        fontFamily: ['Inter', 'sans-serif'].join(','),
         fontSize: 16,
         color: mode === 'dark' ? '#ffffff' : '#3A3A3A',
       },
       h6: {
-        fontFamily: ['Poppins', 'sans-serif'].join(','),
+        fontFamily: ['Inter', 'sans-serif'].join(','),
         fontSize: 14,
         color: mode === 'dark' ? '#ffffff' : '#3A3A3A', // Adjust heading color here
       },

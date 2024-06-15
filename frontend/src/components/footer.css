@@ -42,11 +42,11 @@ padding-bottom: 50px;;
 }
 .foot-logo-txt p{
    
-    font-family: Poppins;
+    font-family: "Inter";
     font-size: 16px;
     font-weight: 500;
     line-height: 30px;
-
+    margin-bottom: 0px;
     color:#5E5E5E;
     text-align: left;
     text-justify: inter-word;
@@ -92,8 +92,8 @@ height: 95px;
     color:#5E5E5E;
     padding-top:10px; 
 
-
-    font-family: Poppins;
+padding-left: 5px;
+    font-family: "Inter";
 font-size: 18px;
 font-weight: 500;
 line-height: 30px;
@@ -104,7 +104,7 @@ text-align: justified;
 .linkf
 {
 margin-top:20px ;
-font-family: Poppins;
+font-family: "Inter";
 font-size: 18px;
 font-weight: 500;
 line-height: 30px;
@@ -121,7 +121,7 @@ padding-right: 5px;
 }
 .social
 {
-    margin-top: 26px;
+    margin-top: 20px;
 }
 .copyrights
 {
@@ -152,7 +152,7 @@ height: 49.07px;
 
 .copy-text
 {
-    font-family: Poppins;
+    font-family: "Inter";
     font-size: 16px;
     font-weight: 500;
     line-height: 30px;
@@ -162,25 +162,40 @@ height: 49.07px;
 
 }
 
-
-
-
-
 @media only screen and (max-width: 700px) {
     .foot-content{
         flex-direction: column;
     }
     .flinks{
-        margin-top:20px; ;
+
+        border-top: 1px solid #EEEDEB ;
+margin-top:30px ;
     }
     .foot-logo-txt
     {
         padding: 0px;
     }
+    .linkf
+{
+
+font-size: 16px;
+
+
+margin-top:10px; 
+
+}
+
     
+.link-heading
+{
+display: none;
+}
 
-
-   
+   .social{
+    /* display: flex;
+   justify-content: space-between; */
+   margin-top: 12px;
+   }
   }
   @media only screen and (max-width: 1200px) {
  

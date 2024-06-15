@@ -11,7 +11,7 @@ margin-top: 50px;
 }
 .policy-main p
 {
-    font-family: Poppins;
+    font-family: "Inter";
     font-size: 16px;
     font-weight: 500;
     line-height: 24px;
@@ -21,7 +21,7 @@ margin-top: 50px;
     color:#5E5E5E;
 }
 /* .policy-main ul li {
-    font-family: Poppins !important;
+    font-family: "Inter" !important;
     font-size: 16px !important;
     font-weight: 500 !important;
     line-height: 24px !important;
@@ -31,7 +31,7 @@ margin-top: 50px;
 
 .policy-main a
 {
-    font-family: Poppins;
+    font-family: "Inter";
     font-size: 16px;
     font-weight: 500;
     line-height: 24px;
@@ -42,7 +42,7 @@ margin-top: 50px;
 }
 .policy-main h4
 {
-    font-family: Poppins;
+    font-family: "Inter";
 font-size: 20px;
 font-weight: 600;
 line-height: 24px;
@@ -53,7 +53,7 @@ text-align:left;
 }
 .policy-main span
 {
-    font-family: Poppins;
+    font-family: "Inter";
     font-size: 20px;
     font-weight: 600;
     line-height: 24px;
@@ -65,7 +65,7 @@ text-align:left;
 .policy-main h1
 {
  
-    font-family: Poppins;
+    font-family: "Inter";
     font-size: 40px;
     font-weight: 600;
     line-height: 60px;
@@ -78,7 +78,7 @@ padding-bottom:40px ;
 .policy-main ul li
 {
  
-    font-family: Poppins;
+    font-family: "Inter";
     font-size: 16px;
     font-weight: 500;
     line-height: 24px;
@@ -100,7 +100,7 @@ background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
 border:none;
 color:#FFFFFF;
 box-shadow: 0px 4px 4px 0px #00000040;
-font-family: Poppins;
+font-family: "Inter";
 font-size: 22px;
 font-weight: 600;
 line-height: 24px;
@@ -120,7 +120,7 @@ justify-content: center;
 {
     display: flex;
     align-items: center;
-    font-family: Poppins;
+    font-family: "Inter";
 font-size: 20px;
 font-weight: 500;
 line-height: 24px;

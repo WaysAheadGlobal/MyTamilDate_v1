@@ -23,39 +23,35 @@ export const NavBar = () => {
   const handleLinkClick = (event) => {
     const targetLink = event.target.getAttribute("data-target");
     setActiveLink(targetLink);
-};
+  };
 
 
-return(
+  return (
+    <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary Navbar-container sticky">
+      <Container>
+        <Navbar.Brand href="/" ><Image src={logo2} className='nav-logo' style={{ height: '50px', width: '144px' }}></Image></Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <div className="me-auto">
 
-
-
-
-
-<Navbar collapseOnSelect expand="lg" className="bg-body-tertiary Navbar-container">
-<Container>
-  <Navbar.Brand href="/" ><Image src={heartlogo} className='nav-logo' style={{ height: '70px', width: '70px' }}></Image></Navbar.Brand>
-  <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-  <Navbar.Collapse id="responsive-navbar-nav">
-    <Nav className="me-auto">
-
-    </Nav>
-    <Nav className='nav-link-container'>
-{/* 
+          </div>
+          <Nav className='nav-link-container'>
+            {/* 
       <Nav.Link target="_blank"  as={Link} to="/SuccessPage" >Success Stories</Nav.Link>
       <Nav.Link  target="_blank" as={Link} to="/aboutus" >About Us</Nav.Link>
       <Nav.Link  target="_blank"  href="https://tamilculture.com/user/mytamildatecom">Blogs</Nav.Link>
       <Nav.Link  target="_blank" as={Link} to="/FaqPage" >FAQs</Nav.Link>
       <Nav.Link  target="_blank" as={Link} to="/GetInTouch" >Contact Us</Nav.Link> */}
-      <Nav.Link target="_blank" as={Link} to="/SuccessPage"  data-target="success" >Success Stories</Nav.Link>
-      <Nav.Link target="_blank" as={Link} to="/aboutus"  data-target="AboutUs" >About Us</Nav.Link>
-      <Nav.Link target="_blank" href="https://tamilculture.com/user/mytamildatecom"  data-target="Blogs" >Blogs</Nav.Link>
-      <Nav.Link target="_blank" as={Link} to="/GetInTouch" data-target="ContactUs" >Contact Us</Nav.Link>
-    </Nav>
-  </Navbar.Collapse>
-</Container>
-</Navbar>
+            <Nav.Link as={Link} to="/SuccessPage" data-target="success" >Success Stories</Nav.Link>
+            <Nav.Link as={Link} to="/aboutus" data-target="AboutUs" >About Us</Nav.Link>
+            <Nav.Link href="https://tamilculture.com/user/mytamildatecom" data-target="Blogs" >Blogs</Nav.Link>
+            <Nav.Link as={Link} to="/GetInTouch" data-target="ContactUs" >Contact Us</Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
 
 
 
-);}
+  );
+}

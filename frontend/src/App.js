@@ -29,23 +29,23 @@ import Landingpage from "./components/Landingpage";
 import AddPromotioncode from "./scenes/promotionalCodes/AddPromotionalcode";
 import { Entercode } from './components/entercode';
 import { SignupPhone } from './components/signup-verifyphone';
-import {BasicDetails } from './components/basic-details';
-import { EmailVerify} from './components/email-verify';
-import { Birthday} from './components/birthday';
-import { Selfie} from './components/take-selfie1';
-import {LP} from './components/LP';
-import {FaqPage} from './components/faq-pg';
-import {Tnc} from './components/tnc';
-import {PrivacyPolicy} from './components/privacy-policy';
+import { BasicDetails } from './components/basic-details';
+import { EmailVerify } from './components/email-verify';
+import { Birthday } from './components/birthday';
+import { Selfie } from './components/take-selfie1';
+import { LP } from './components/LP';
+import { FaqPage } from './components/faq-pg';
+import { Tnc } from './components/tnc';
+import { PrivacyPolicy } from './components/privacy-policy';
 import { Stories } from "./components/theirstories";
 import { Pictext } from "./components/pic-text";
 
-import {SuccessPage} from "./components/success-stories-pg";
-import {GetInTouch} from './components/get-in-touch';
-import {SignIn} from  "./components/signin";
-import {AboutUsPage}   from "./components/aboutus-pg"
+import { SuccessPage } from "./components/success-stories-pg";
+import { GetInTouch } from './components/get-in-touch';
+import { SignIn } from "./components/signin";
+import { AboutUsPage } from "./components/aboutus-pg"
 import TotalCount from "./components/totalcount";
-import {Video2} from "./components/video2";
+import { Video2 } from "./components/video2";
 import ProtectedRoute from "./components/ProtectedRoute";
 import EditDetails from "./scenes/promotionalCodes/Editpromotionalcode";
 import ImageGallery from "./scenes/Approval/Imageget";
@@ -130,6 +130,8 @@ function App() {
               <Route path="/signIn" element={<SignIn />} />
               <Route path="/video2" element={<Video2 />} />
               <Route path="/signup" element={<SignupPhone />} />
+
+              
               <Route path="/entercode" element={<Entercode />} />
               <Route path="/BasicDetails" element={<BasicDetails />} />
               <Route path="/EmailVerify" element={<EmailVerify />} />
