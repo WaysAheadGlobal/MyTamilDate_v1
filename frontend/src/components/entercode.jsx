@@ -165,7 +165,10 @@ export const Entercode = () => {
             <div className='entercode-bg'>
                 <Image className='responsive-bg' src={responsivebg}></Image>
             </div>
+            
             <Container className='entercode-main'>
+            <Container className='entercode-box'>
+            
                 <Container className='logo-progressbar2'>
                     <Container className='logo-arrow2'>
                         <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />

@@ -15,7 +15,7 @@ export const Headerlp = () => {
   };
 
   const goToSignin = () => {
-    navigate("/SignIn");
+    navigate("/Signinoptions");
   };
 
 
@@ -34,7 +34,7 @@ export const Headerlp = () => {
             <button className='header-btnone' onClick={goToSignup}>
               Get Started
             </button>
-            <button className='header-btntwo' >
+            <button className='header-btntwo'  onClick={goToSignin} >
               Returning? Login
             </button>
           </Container>

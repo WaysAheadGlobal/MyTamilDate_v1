@@ -1,18 +1,25 @@
-/* .signupphone-container
+.signupphone-container
 {
 display: flex;
 
+
 justify-content:space-between;
+position: relative;
 
 }
 .signup-phone-bg
 {
-
+  
     width: 100%;
    
     height: auto;
     background-size: cover;
     background-repeat: no-repeat;
+}
+.responsive-bg
+{
+    height: 100%;
+    width: 100%;
 }
 
 
@@ -25,9 +32,8 @@ justify-content:space-between;
 
 gap:24px;
 align-items: center;
-
 height:100%;
-width: 80%;
+width: 85%;
 }
 
 
@@ -38,10 +44,9 @@ width: 80%;
     display: flex;
     
 justify-content: center;
-
+height: 100dvh;
+width: 100%;
 align-items: center;
-height: 100%;
-
 
 }
 .logo-progressbar1
@@ -52,6 +57,20 @@ align-items: center;
 justify-content: space-between;
 gap: 16px;
 margin-top: 50px;
+
+
+}
+.logo-arrow1
+{
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0px;
+    margin: 0px;
+   
+    height: 10dvh;
+    position: relative;
 
 
 }
@@ -80,43 +99,39 @@ border-radius: 4px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap:24px;
-    
-}
-.verify-phone-text p
-{
-    font-family: "Inter";
-    font-size: 24px;
-    font-weight: 500;
-    line-height: 36px;
-    text-align: center;
-    color:#515151;
     
 }
 .verify-phone-details
 {
     display: flex;
     flex-direction: column;
- 
+   height: 100dvh;
+
+
 
 }
 .verify-phone-form
 {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     flex-direction:column ;
-    padding: 0px;
+    padding-bottom:36px;
+
+height: 100%;
+ 
+   
 }
 .verify-form-group
 {
     width: 100%;
 }
 
+
   .num-verify-lable
   {
     font-family: Work Sans;
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 500;
     line-height: 23.46px;
     text-align: left;
@@ -128,26 +143,23 @@ border-radius: 4px;
     
   }
 
-
-
-
-.flag-box
-{
-font-family: Manrope;
-font-size: 16px;
-font-weight: 500;
-line-height: 21.86px;
-text-align: center;
-
-height:52px;
-border: 1px solid #6C6C6C;
-
-padding: 10px;
-gap:px;
-border-radius: 8px;
-border: 1px 0px 0px 0px;
-
+  .flag-box {
+    font-family: Manrope;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 21.86px;
+    text-align: center;
+    background-color: #FFFFFF;
+    height: 52px;
+    border: 1px solid #6C6C6C;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
 }
+
+
 .flag-box span
 {
     font-family: Manrope;
@@ -158,28 +170,26 @@ text-align: center;
 color: #6C6C6C;
 
 }
-.flag-menu
-{
+.flag-menu {
     background: #FFFFFF;
-   
     min-width: 5.5rem;
     margin-top: 8px;
     border: 1px solid #6C6C6C;
-padding: 10px;
+    padding: 10px;
+    z-index: 1050; 
+    position: absolute;
 }
-.flag-item
-{
-    width: 100%;
-    color:#6C6C6C;
+.flag-item {
+    color: #6C6C6C;
     font-family: Manrope;
-font-size: 16px;
-font-weight: 500;
-line-height: 21.86px;
-text-align: center;
-padding: 0px 0px 10px 0px;
-
-
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 21.86px;
+    text-align: center;
+    padding: 0px 0px 10px 0px;
+    cursor: pointer;
 }
+
 .custom-input:focus {
     outline: none !important;
     box-shadow: none !important;
@@ -195,9 +205,42 @@ padding: 0px 0px 10px 0px;
 
 
   }
+  .num-verify-input::placeholder
+  {
+
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0.04em;
+    color:#6C6C6C;
+    
+
+  }
+  .flag-box span
+  {
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    color:#6C6C6C;
+    
+  }
   .num-verify-input.error
   {
    border-color: red;
+
+
+  }
+  .error-message
+  {
+    font-family: Poppins;
+font-size: 14px;
+font-weight: 600;
+line-height: 22px;
+text-align: left;
+color: #FF4747 !important;
+
 
 
   }
@@ -206,18 +249,19 @@ padding: 0px 0px 10px 0px;
     height:48px;
     width:100%;
     max-width:250px;
-    margin-top:115px ;
+   
     background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
 
     box-shadow: 0px 4px 10px 0px #00000029;
     color:#FFFFFF;
  
-    font-family: Work Sans;
-font-size: 14px;
-font-weight: 400;
-line-height: 22px;
-letter-spacing: 0.04em;
+    font-family: Poppins;
+font-size: 16px;
+font-weight: 600;
+line-height: 24px;
+letter-spacing: 0.06em;
 text-align: center;
+
 align-items: center;
 border: none;
 border-radius: 42px;
@@ -226,7 +270,7 @@ border-radius: 42px;
 {
     display: flex;
     align-items: center;
-  
+
 }
 .or-line span{
     padding-left: 5px;
@@ -242,13 +286,13 @@ color: #6C6C6C;
 }
 .or-option
 {
-    padding: 0px;
-   
+    padding-bottom: 24px;
+  
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     gap:15px;
-    
+
 
 }
 .or-option p
@@ -263,13 +307,15 @@ color: #6C6C6C;
     color: #6C6C6C;
     
 }
-.signup-logo
+.logo1
 {
     max-width: 219.47px;
 height: 71.9px;
 width: 100%;
 
-
+position: absolute;
+left: 50%;
+  transform: translate(-50%);
 }
 .line{
     width: 50%;
@@ -338,13 +384,25 @@ color:#4E1173;
 }
 
 
- 
+.modal-body .flag-item {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    cursor: pointer;
+}
+.custom-modal  {
+    max-width: 300px;
+}
+
+.custom-modal {
+    margin: auto;
+}
  
 .dropdown-toggle::after {
     display: none;
    
 }
-@media only screen and (max-width:650px){
+@media only screen and (max-width:750px){
 .signup-phone-bg
 {
     display:none;
@@ -352,7 +410,7 @@ color:#4E1173;
 .verify-phone-btn
 {
     
-    margin-top:175px ;
+  
   
 }
 .signupphone-content
@@ -360,4 +418,13 @@ color:#4E1173;
     
 width: 100%;
 }
-} */
+.verify-phone-details
+{
+    
+    
+
+}
+
+
+
+}

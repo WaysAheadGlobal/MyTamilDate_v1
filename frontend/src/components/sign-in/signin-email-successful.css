@@ -1,4 +1,5 @@
-.emailverify-container
+
+.entercode-container
 {
 display: flex;
 /* width: 100%;
@@ -11,7 +12,7 @@ justify-content:space-between;
 position: relative;
 
 }
-.emailverify-bg
+.entercode-bg
 {
 
     width: 100%;
@@ -32,14 +33,12 @@ position: relative;
 
 
 
-
-.emailverify-main
+.entercode-main
 {
-    
-
+    width:100%
 }
-.emailverify-box{
-
+.entercode-box
+{
     background: #FFFFFF;
 
     display: flex;
@@ -48,16 +47,17 @@ position: relative;
 gap:24px;
 align-items: center;
 height: 100dvh;
-width: 85%;
+width:85%;
+
 }
-.logo-progressbar3
+.logo-progressbar2
 {
     margin-top: 50px;
     gap: 16px;
     display: flex;
     flex-direction: column;
 }
-.logo-arrow3
+.logo-arrow2
 {
     display: flex;
 
@@ -81,7 +81,7 @@ width: 85%;
 
 
     
-.track-btn3
+.track-btn2
 {
     width: 100%;
     height: 6px;
@@ -92,9 +92,9 @@ padding: 0px;
 
 
 }
-.track-btn3 div
+.track-btn2 div
 {
-    width: 30%;
+    width: 20%;
     background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
 
     box-shadow: 0px 4px 4px 0px #82828240;
@@ -103,7 +103,7 @@ border-radius: 4px;
    
 
 }
-.emailverify-text
+.entercode-text
 {
     display: flex;
     flex-direction: column;
@@ -112,17 +112,16 @@ border-radius: 4px;
     gap:24px;
     
 }
-.emailverify-details
+.entercode-details
 {
     display: flex;
     flex-direction: column;
    height: 100dvh;
 
 }
-.emailverify-content
+.entercode-content
 {
     height: 100%;
-    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -130,39 +129,43 @@ border-radius: 4px;
     height: 100%;
     padding-bottom: 36px;
 }
-.emailverify-form
+.entercode-form
 {
-    
-width: 100%;
+    /* display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction:column ;
+    padding-bottom:24px;
+
+height: 100%; */
+
 display: flex;
     flex-direction: column;
    height: 100dvh;
 
 }
-.emailverify-lable
+.entercode-lable
   {
     font-family: Work Sans;
     font-size: 24px;
     font-weight: 500;
     line-height: 23.46px;
-    text-align: center;
+    text-align: left;
     margin-bottom: 12px;
-    width: 100%;
 
     
 
 
     
   }
-.emailverify-form-group
+.entercode-form-group
 {
-    width: 100%; 
-    align-items: center; 
+    width: 100%;  
 
 }
-.emailverify-text p
+.entercode-text p
  {
-    font-family: Work Sans;
+    font-family: poppins;
     font-size: 24px;
     font-weight: 500;
     line-height: 28.15px;
@@ -186,21 +189,21 @@ display: flex;
   
 
 
-.emailverify-input
+.entercode-input
   {
     border: 1px solid #6C6C6C;
     color: #6C6C6C;
     height:52px;
-    width: 100%;
+    width: 50px;
     border-radius: 8px;
     background: #FFFFFF;
-    text-align: left;
-width: 100%;
+    text-align: center;
 
 }
 
-.emailverify-input::placeholder
-  {
+
+.entercode-input::placeholder
+ {
     font-family: Poppins;
     font-size: 16px;
     font-weight: 500;
@@ -209,16 +212,13 @@ width: 100%;
     color:#6C6C6C;
 
 }
-
-
 .custom-input:focus {
     outline: none !important;
     box-shadow: none !important;
     border-color:#6C6C6C !important;
   }
-.emailverify-input.error {
+.entercode-input.error {
     border-color: red;
-
   }
   .error-message
   {
@@ -233,7 +233,7 @@ color: #FF4747 !important;
   
 
 
-.emailverify-input:active
+.entercode-input:active
 {
 
 
@@ -268,7 +268,7 @@ color: #FF4747 !important;
     #6C6C6C;
     
 }
-.emailverify-btn
+.entercode-btn
 {
     height:48px;
     width:100%;
@@ -278,10 +278,10 @@ color: #FF4747 !important;
 
     box-shadow: 0px 4px 10px 0px #00000029;
     color:#FFFFFF;
-    font-family: Work Sans;
-font-size: 14px;
-font-weight: 400;
-line-height: 22px;
+    font-family: poppins;
+font-size: 16px;
+font-weight: 600;
+line-height: 24px;
 letter-spacing: 0.04em;
 text-align: center;
 align-items: center;
@@ -391,13 +391,12 @@ text-align: left;
    
 }
 @media only screen and (max-width:750px){
-.emailverify-bg
+.entercode-bg
 {
     display:none;
 }
-.emailverify-box{
-
-    
+.entercode-box
+{
 width: 100%;
 }
 }
