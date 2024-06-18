@@ -1,25 +1,25 @@
 
 import React, { useState, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './email-verify.css';
+import './signin-email.css';
 import { useNavigate } from 'react-router-dom';
-import responsivebg from "../assets/images/responsive-bg.png";
-import backarrow from "../assets/images/backarrow.jpg";
-import logo from "../assets/images/MTDlogo.png";
-import message from "../assets/images/message.png";
+import responsivebg from "../../assets/images/responsive-bg.png";
+import backarrow from "../../assets/images/backarrow.jpg";
+import logo from "../../assets/images/MTDlogo.png";
+import message from "../../assets/images/message.png";
 
-import mail from "../assets/images/Gmail.jpg";
+import mail from "../../assets/images/Gmail.jpg";
 import { Container, Image, Form, Button } from 'react-bootstrap';
 
-export const EmailVerify = () => {
+export const SignInEmail = () => {
 
 
 
 
     const navigate = useNavigate();
-    // const goToGetstarted = () => {
-    //     navigate("/getstarted");
-    //   };
+    const goToSignupEmailOTP = () => {
+        navigate("/signinemailotp");
+      };
   
     const [errorMessage, setErrorMessage] = useState('');
     const [email, setEmail] = useState('');
@@ -50,41 +50,40 @@ export const EmailVerify = () => {
     };
 
     return (
-        <div className='emailverify-container'>
-            <div className='emailverify-bg'>
+        <div className='signin-emailverify-container'>
+            <div className='signin-emailverify-bg'>
             <Image className='responsive-bg' src={responsivebg}></Image>
             </div>
-            <Container className='emailverify-main'>
-            <Container className='emailverify-box'>
+            <Container className='signin-emailverify-main'>
+            <Container className='signin-emailverify-box'>
                 <Container className='logo-progressbar3'>
 
                     <Container className='logo-arrow3'>
                         <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
                         <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
                     </Container>
-                    <div className='track-btn3'>
+                    {/* <div className='track-btn3'>
                         <div></div>
-                    </div>
+                    </div> */}
                 </Container>
 
-                <Container className='emailverify-text'>
+                <Container className='signin-emailverify-text'>
                 <Image src={message} />
                     {/* <p>Enter your verification code</p> */}
                     {/* <p>Please enter the 4-digit code sent to you at +1 (905)216-5247</p> */}
                 </Container>
-                <Form onSubmit={handleSubmit} className='emailverify-form'>
-                <Container className='emailverify-content'>
+                <Form onSubmit={handleSubmit} className='signin-emailverify-form'>
+                <Container className='signin-emailverify-content'>
                 <div style={{ width: '100%', alignItems: 'center'}}>
-                    <Form.Group controlId="formCode" className='emailverify-form-group'>
-                    <Form.Label className='emailverify-lable'> Enter your email</Form.Label>
+                    <Form.Group controlId="formCode" className='signin-emailverify-form-group'>
+                    <Form.Label className='signin-emailverify-lable'> Enter your email</Form.Label>
                       
                             <Form.Control
-                                className={`emailverify-input ${errorMessage ? 'error' : ''}`}
+                                className={`signin-emailverify-input ${errorMessage ? 'error' : ''}`}
                                 type="text"
                                 style={{ flex: 1 }}
                                 placeholder="Example@gmail.com"
-                                onChange={(e) => setEmail(e.target.value)}
-                              
+                                onChange={(e) => setEmail(e.target.value)}  
                             />
                           
                      
@@ -92,7 +91,7 @@ export const EmailVerify = () => {
                     </Form.Group>
                    
                     </div>   
-                    <Button variant="primary" type="submit" className='emailverify-btn'>
+                    <Button variant="primary" type="submit" className='signin-emailverify-btn' onClick={goToSignupEmailOTP}>
                         Next
                     </Button>
                     </Container>

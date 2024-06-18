@@ -1,20 +1,19 @@
 
 import React, { useState, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './entercode.css';
+import './signin-email-otp.css';
 import { useNavigate } from 'react-router-dom';
-import responsivebg from "../assets/images/responsive-bg.png";
-import backarrow from "../assets/images/backarrow.jpg";
-import logo from "../assets/images/MTDlogo.png";
-import code from "../assets/images/code.png";
-import google from "../assets/images/google 1.jpg";
-import mail from "../assets/images/Gmail.jpg";
+import responsivebg from "../../assets/images/responsive-bg.png";
+import backarrow from "../../assets/images/backarrow.jpg";
+import logo from "../../assets/images/MTDlogo.png";
+import code from "../../assets/images/code.png";
+
 import { Container, Image, Form, Button } from 'react-bootstrap';
 
-export const Entercode = () => {
+export const SignInEmailOTP = () => {
     const navigate = useNavigate();
-    const goToEmailVerify = () => {
-        navigate("/emailverify");
+    const goToSigninEmailSuccessful = () => {
+        navigate("/signinemailsuccessful");
       };
 
 
@@ -73,9 +72,9 @@ export const Entercode = () => {
                         <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
                         <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
                     </Container>
-                    <div className='track-btn2'>
+                    {/* <div className='track-btn2'>
                         <div></div>
-                    </div>
+                    </div> */}
                 </Container>
 
                 <Container className='entercode-text'>
@@ -87,7 +86,7 @@ export const Entercode = () => {
                 <Container className='entercode-content'>
                 <div>
                     <Form.Group controlId="formCode" className='entercode-form-group'>
-                    <Form.Label className='entercode-lable'>Enter your verification code</Form.Label>
+                    <Form.Label className='entercode-lable'>Enter your verification code<br/><span>Please enter the 4-digit code sent to you at example@gmail.com.</span></Form.Label>
                         <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
                             <Form.Control
                                 className={`entercode-input ${errorMessage ? 'error' : ''}`}
@@ -137,7 +136,7 @@ export const Entercode = () => {
                         <span>1:48sec</span>
                     </div>
                     </div>   
-                    <Button variant="primary" type="submit" onClick={goToEmailVerify} className='entercode-btn'>
+                    <Button variant="primary" type="submit" onClick={goToSigninEmailSuccessful} className='entercode-btn'>
                         Next
                     </Button>
                     </Container>

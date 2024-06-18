@@ -49,13 +49,23 @@ import { Pictext } from "./components/pic-text";
 
 import { SuccessPage } from "./components/success-stories-pg";
 import { GetInTouch } from './components/get-in-touch';
-import { SignIn } from "./components/signin";
+
+import { SignIn } from "./components/sign-in/signin";
+import { SignInEmail } from "./components/sign-in/signin-email";
+import { SignInEmailOTP } from "./components/sign-in/signin-email-otp";
+import { SignInPhoneOTP } from "./components/sign-in/signin-phone-otp";
+import { SignInPhoneSuccessful } from "./components/sign-in/signin-phone-successful";
+import { SignInEmailSuccessful } from "./components/sign-in/signin-email-successful";
+
 import { AboutUsPage } from "./components/aboutus-pg"
 import TotalCount from "./components/totalcount";
 import { Video2 } from "./components/video2";
 import ProtectedRoute from "./components/ProtectedRoute";
 import EditDetails from "./scenes/promotionalCodes/Editpromotionalcode";
 import ImageGallery from "./scenes/Approval/Imageget";
+
+
+import { SignInOptions } from "./components/sign-in/sign-in-options";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -133,10 +143,17 @@ function App() {
               <Route path="/aboutus" element={<AboutUsPage />} />
               <Route path="/Tnc" element={<Tnc />} />
               <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
-              <Route path="/signup" element={<SignupPhone />} />
-              <Route path="/signIn" element={<SignIn />} />
               <Route path="/video2" element={<Video2 />} />
+
               <Route path="/signup" element={<SignupPhone />} />
+              <Route path="/signinoptions" element={<SignInOptions />} />
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/signinphoneotp" element={<SignInPhoneOTP />} />
+              <Route path="/signinphonesuccessful" element={<SignInPhoneSuccessful />} />
+              <Route path="/signinemailsuccessful" element={<SignInEmailSuccessful/>} />
+            
+              <Route path="/signinemail" element={<SignInEmail />} />
+              <Route path="/signinemailotp" element={<SignInEmailOTP />} />
 
               
               <Route path="/entercode" element={<Entercode />} />

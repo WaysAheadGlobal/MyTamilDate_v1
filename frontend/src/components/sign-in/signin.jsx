@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './signup-verifyphone.css';
+import './signin.css';
 import { useNavigate } from 'react-router-dom';
-import logo2 from "../assets/images/logo2.png";
-import blank from "../assets/images/blank.png";
-import responsivebg from "../assets/images/responsive-bg.png";
+import logo2 from "../../assets/images/logo2.png";
+import blank from "../../assets/images/blank.png";
+import responsivebg from "../../assets/images/responsive-bg.png";
 import Flag from 'react-world-flags';
-import backarrow from "../assets/images/backarrow.jpg";
+import backarrow from "../../assets/images/backarrow.jpg";
 import { Container, Image, Form, Button, Dropdown,Modal, InputGroup, FormControl } from 'react-bootstrap';
 
 const countries = [
@@ -16,12 +16,13 @@ const countries = [
     { code: 'AU', name: 'Australia', dialCode: '+36' },
 ];
 
-export const SignupPhone = () => {
+export const SignIn = () => {
 
     const navigate = useNavigate();
     const goToEnterCode = () => {
-        navigate("/entercode");
+        navigate("/signinphoneotp");
       };
+      
 
 
 
@@ -92,9 +93,9 @@ export const SignupPhone = () => {
                             <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
                             <Image src={logo2} alt="Logo" className='logo1' style={{ backgroundColor: 'transparent' }} />
                         </Container>
-                        <div className='track-btn1'>
+                        {/* <div className='track-btn1'>
                             <div></div>
-                        </div>
+                        </div> */}
                     </Container>
 
 
@@ -104,7 +105,7 @@ export const SignupPhone = () => {
                     <Container className='verify-phone-details'>
                         <Form onSubmit={handleSubmit} className='verify-phone-form'>
                             <Form.Group controlId="formPhoneNumber" className='verify-form-group'>
-                                <Form.Label className='num-verify-lable'> What's your phone number?</Form.Label>
+                                <Form.Label className='num-verify-lable'> Enter Phone Number</Form.Label>
                                 <div style={{ display: 'flex', alignItems: 'center', width: '100%', }}>
                                     <Dropdown>
                                         <div id="dropdown-basic" onClick={() => setShowModal(true)} className='flag-box'>
@@ -136,16 +137,16 @@ export const SignupPhone = () => {
                                 Next
                             </Button>
                         </Form>
-                   
+{/*                    
                     <Container className='or-option'>
                         <Container className='or-line'>
                             <div className='line'></div>
                             <span>or</span>
                             <div className='line'></div>
                         </Container>
-                        <p>Already have an account? <a href='/Signinoptions' className='signup-signin'>Sign in here</a></p>
+                        <p>New here? Create an account?<a href='./signup' className='signup-signin'>Sign Up</a></p>
                         <p>By continuing you accept our <br /><a className="signup-links" href="/PrivacyPolicy">Privacy Policy</a> and <a className="signup-links" target="_blank" href='/Tnc'>Terms of Use</a></p>
-                    </Container>
+                    </Container> */}
                      </Container>
                    
                 </Container>
