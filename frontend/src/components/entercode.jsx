@@ -244,6 +244,7 @@ export const Entercode = () => {
                     </Container>
                 </Form>
             </Container>
+            </Container>
         </div>
     );
 };
