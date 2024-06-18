@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback,useEffect } from 'react';
 import { Container, Image, Button, Row, Col, Modal } from 'react-bootstrap';
+
 import Cropper from 'react-easy-crop';
 import backarrow from "../assets/images/backarrow.jpg";
 import logo from "../assets/images/MTDlogo.png";
@@ -13,12 +14,7 @@ import addplus from "../assets/images/add-plus.png";
 
 export const Selfie = () => {
 
-
     const navigate = useNavigate();
-
-
-
-
     const [selectedImages, setSelectedImages] = useState({ main: null, first: null, second: null });
     const [showModal, setShowModal] = useState(false);
     const [showCropModal, setShowCropModal] = useState(false);

@@ -149,8 +149,6 @@ function App() {
               <Route path="/religion" element={<Religion />} />
               <Route path="/edu" element={<Education />} />
               <Route path="/jobtitle" element={<JobTitle />} />
-
-
             </Routes>
           </main>
         </div>

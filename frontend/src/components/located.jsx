@@ -10,66 +10,63 @@ import location from "../assets/images/location.png";
 
 
 const countryOptions = [
-    { value: 'US', label: 'United States' },
-    { value: 'CA', label: 'Canada' },
-    { value: 'IN', label: 'India' },
-    { value: 'AU', label: 'Australia' },
-    { value: 'UK', label: 'United Kingdom' },
-    { value: 'FR', label: 'France' },
-    { value: 'DE', label: 'Germany' },
+    { value: 'United States', label: 'United States' },
+    { value: 'Canada', label: 'Canada' },
+    { value: 'India', label: 'India' },
+    { value: 'Australia', label: 'Australia' },
+    { value: 'United Kingdom', label: 'United Kingdom' },
+    { value: 'France', label: 'France' },
+    { value: 'Germany', label: 'Germany' },
     // Add more countries as needed
 ];
 
-
-
-
 const cityOptions = {
-    'US': [
-        { value: 'NY', label: 'New York' },
-        { value: 'LA', label: 'Los Angeles' },
-        { value: 'CH', label: 'Chicago' },
+    'United States': [
+        { value: 'New York', label: 'New York' },
+        { value: 'Los Angeles', label: 'Los Angeles' },
+        { value: 'Chicago', label: 'Chicago' },
         // Add more cities as needed
     ],
-    'CA': [
-        { value: 'TO', label: 'Toronto' },
-        { value: 'VAN', label: 'Vancouver' },
-        { value: 'MTL', label: 'Montreal' },
+    'Canada': [
+        { value: 'Toronto', label: 'Toronto' },
+        { value: 'Vancouver', label: 'Vancouver' },
+        { value: 'Montreal', label: 'Montreal' },
         // Add more cities as needed
     ],
-    'IN': [
-        { value: 'DL', label: 'Delhi' },
-        { value: 'MB', label: 'Mumbai' },
-        { value: 'BLR', label: 'Bangalore' },
-        { value: 'CH', label: 'Chennai' },
-        // { value: 'BLR', label: 'Bangalore' },
+    'India': [
+        { value: 'Delhi', label: 'Delhi' },
+        { value: 'Mumbai', label: 'Mumbai' },
+        { value: 'Bangalore', label: 'Bangalore' },
+        { value: 'Chennai', label: 'Chennai' },
         // Add more cities as needed
     ],
-    'AU': [
-        { value: 'SYD', label: 'Sydney' },
-        { value: 'MEL', label: 'Melbourne' },
-        { value: 'BRI', label: 'Brisbane' },
+    'Australia': [
+        { value: 'Sydney', label: 'Sydney' },
+        { value: 'Melbourne', label: 'Melbourne' },
+        { value: 'Brisbane', label: 'Brisbane' },
         // Add more cities as needed
     ],
-    'UK': [
-        { value: 'LDN', label: 'London' },
-        { value: 'MAN', label: 'Manchester' },
-        { value: 'EDB', label: 'Edinburgh' },
+    'United Kingdom': [
+        { value: 'London', label: 'London' },
+        { value: 'Manchester', label: 'Manchester' },
+        { value: 'Edinburgh', label: 'Edinburgh' },
         // Add more cities as needed
     ],
-    'FR': [
-        { value: 'PAR', label: 'Paris' },
-        { value: 'LYN', label: 'Lyon' },
-        { value: 'MAR', label: 'Marseille' },
+    'France': [
+        { value: 'Paris', label: 'Paris' },
+        { value: 'Lyon', label: 'Lyon' },
+        { value: 'Marseille', label: 'Marseille' },
         // Add more cities as needed
     ],
-    'DE': [
-        { value: 'BER', label: 'Berlin' },
-        { value: 'MUN', label: 'Munich' },
-        { value: 'FRK', label: 'Frankfurt' },
+    'Germany': [
+        { value: 'Berlin', label: 'Berlin' },
+        { value: 'Munich', label: 'Munich' },
+        { value: 'Frankfurt', label: 'Frankfurt' },
         // Add more cities as needed
     ],
     // Add more cities for other countries as needed
 };
+    // Add more cities for other countries as needed
 
 export const Located = () => {
 

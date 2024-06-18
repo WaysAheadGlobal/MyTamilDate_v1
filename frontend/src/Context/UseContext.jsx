@@ -10,7 +10,17 @@ export const useAppContext = () => useContext(AppContext);
 // Context provider component
 export const AppContextProvider = ({ children }) => {
   const { getCookie, setCookie, deleteCookie } = useCookies();
+
+  const [userDetails, setUserDetails] = useState({
+    first_name: "",
+    last_name: "",
+    birthday: "",
+    gender: "",
+    want_gender: "",
+  });
+
   const [isAdmin, setIsAdmin] = useState(false);
+  const[phoneNumber, setPhoneNumber] = useState('')
   const [showFullPhoneNumberemail, setShowFullPhoneNumber] = useState(false);
 
   useEffect(() => {
@@ -22,7 +32,7 @@ export const AppContextProvider = ({ children }) => {
 
   const loginAsAdmin = () => {
     setIsAdmin(true);
-    setCookie('userId', 'adminlogin', 365); // Store the admin login state in a cookie for 365 days
+    setCookie('userId', 'adminlogin', 365);
   };
 
   const logout = () => {
@@ -33,7 +43,7 @@ export const AppContextProvider = ({ children }) => {
   const togglePhoneNumber = () => setShowFullPhoneNumber(!showFullPhoneNumberemail);
 
   return (
-    <AppContext.Provider value={{ isAdmin, loginAsAdmin, logout, togglePhoneNumber, showFullPhoneNumberemail }}>
+    <AppContext.Provider value={{phoneNumber, setPhoneNumber, userDetails, setUserDetails, isAdmin, loginAsAdmin, logout, togglePhoneNumber, showFullPhoneNumberemail }}>
       {children}
     </AppContext.Provider>
   );
