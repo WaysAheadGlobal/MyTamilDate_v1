@@ -196,9 +196,6 @@ auth.post('/login',
     }
 );
 
-
-
-
 // Route to send OTP for signup
 auth.post('/signup/otp', body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'en-AU']), async (req, res) => {
     const result = validationResult(req);

@@ -55,16 +55,16 @@ export const SignInEmail = () => {
             <Image className='responsive-bg' src={responsivebg}></Image>
             </div>
             <Container className='signin-emailverify-main'>
-            <Container className='signin-emailverify-box'>
+             
+            <Container className='signin-emailverify-box'> 
+
                 <Container className='logo-progressbar3'>
 
                     <Container className='logo-arrow3'>
                         <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
                         <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
                     </Container>
-                    {/* <div className='track-btn3'>
-                        <div></div>
-                    </div> */}
+                    
                 </Container>
 
                 <Container className='signin-emailverify-text'>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './abt-yourself.css';
 import { useNavigate } from 'react-router-dom';
@@ -9,17 +9,15 @@ import basicdetails from "../assets/images/basic-details.png";
 import responsivebg from "../assets/images/responsive-bg.png";
 import { useAppContext } from '../Context/UseContext';
 import { useCookies } from '../hooks/useCookies';
+import { API_URL } from '../api';
 
 export const AbtYourself = () => {
     const { userDetails, setUserDetails } = useAppContext();
-    const{getCookies} = useCookies();
+    const { getCookie } = useCookies();
     const navigate = useNavigate();
 
-    const goToSelfie = () => {
-        navigate("/selfie");
-        console.log(userDetails);
-    };
-
+    const [havegender, setHavegender] = useState(0);
+    const [wantGender, setWantGender] = useState(0);
     const [errorMessage, setErrorMessage] = useState('');
     const [femaleActive, setFemaleActive] = useState(false);
     const [maleActive, setMaleActive] = useState(false);
@@ -35,7 +33,7 @@ export const AbtYourself = () => {
         setFemaleSvgColor('#8457A8');
         setMaleSvgColor('#AAAAAA');
         setNonBinarySvgColor('#AAAAAA');
-        setUserDetails({ ...userDetails, gender: 2 });
+        setHavegender(2);
     };
 
     const handleMaleButtonClick = () => {
@@ -45,7 +43,7 @@ export const AbtYourself = () => {
         setFemaleSvgColor('#AAAAAA');
         setMaleSvgColor('#8457A8');
         setNonBinarySvgColor('#AAAAAA');
-        setUserDetails({ ...userDetails, gender: 1 });
+        setHavegender(1);
     };
 
     const handleNonBinaryButtonClick = () => {
@@ -55,7 +53,7 @@ export const AbtYourself = () => {
         setFemaleSvgColor('#AAAAAA');
         setMaleSvgColor('#AAAAAA');
         setNonBinarySvgColor('#8457A8');
-        setUserDetails({ ...userDetails, gender: 3 });
+        setHavegender(3);
     };
 
     const [selectedOption, setSelectedOption] = useState(null);
@@ -63,8 +61,82 @@ export const AbtYourself = () => {
     const handlePrefer = (option) => {
         setSelectedOption(option);
         const wantGender = option === 'female' ? 2 : option === 'male' ? 1 : 3;
-        setUserDetails({ ...userDetails, want_gender: wantGender });
+        setWantGender(wantGender);
     };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            const response = await fetch(`${API_URL}/customer/users/gender`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+                body: JSON.stringify({
+                    gender: havegender,
+                    want_gender: wantGender
+                })
+            });
+    
+            const result = await response.json();
+            console.log('Response status:', response.status);
+            console.log('Response body:', result);
+    
+            if (response.ok) {
+                navigate("/selfie");
+            } else {
+                setErrorMessage(result.errors ? result.errors.map(error => error.msg).join(', ') : 'Error updating profile');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setErrorMessage('Error updating profile');
+        }
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${API_URL}/customer/users/gender`, {
+                    headers: {
+                        'Authorization': `Bearer ${getCookie('token')}`
+                    }
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    const { gender, want_gender } = result;
+                    console.log(result);
+                    setHavegender(gender);
+                    setWantGender(want_gender);
+
+                   
+                    if (gender === 1) {
+                        handleMaleButtonClick();
+                    } else if (gender === 2) {
+                        handleFemaleButtonClick();
+                    } else if (gender === 3) {
+                        handleNonBinaryButtonClick();
+                    }
+
+                    if (want_gender === 1) {
+                        setSelectedOption('male');
+                    } else if (want_gender === 2) {
+                        setSelectedOption('female');
+                    } else if (want_gender === 3) {
+                        setSelectedOption('all');
+                    }
+                } else {
+                    console.error('Error fetching user data:', result.message);
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+    
 
     return (
         <div className='birthday-container'>
@@ -87,7 +159,7 @@ export const AbtYourself = () => {
                         <p>Tell us about yourself</p>
                     </Container>
                     <Container className='birthday-details'>
-                        <Form className='birthday-form'>
+                        <Form className='birthday-form' onSubmit={handleSubmit}>
                             <Form.Group controlId="formgender" className='birthday-group'>
                                 <Form.Label className='birthday-label'>What is Your Gender? *</Form.Label>
                                 <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: "24px", justifyContent: "space-evenly" }}>
@@ -188,7 +260,7 @@ export const AbtYourself = () => {
                                 {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
                             </Form.Group>
 
-                            <Button variant="primary" type="submit" className='birthday-nxt-btn' onClick={goToSelfie}>
+                            <Button variant="primary" type="submit" className='birthday-nxt-btn'>
                                 Next
                             </Button>
                         </Form>

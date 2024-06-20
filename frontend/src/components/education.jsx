@@ -12,11 +12,7 @@ const educationLevels = [
     'Associates', 'Bachelors', 'Doctorate', 'High school', 'Masters', 'Trade school', 'Prefer not to say'
 ];
 
-
-
-
 export const Education = () => {
-
     const navigate = useNavigate();
     const goTojobTitle = () => {
         navigate("/jobtitle");

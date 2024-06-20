@@ -8,7 +8,9 @@ import responsivebg from "../../assets/images/responsive-bg.png";
 import Flag from 'react-world-flags';
 import backarrow from "../../assets/images/backarrow.jpg";
 import { Container, Image, Form, Button, Dropdown,Modal, InputGroup, FormControl } from 'react-bootstrap';
-
+import { useAppContext } from '../../Context/UseContext';
+import { useCookies } from '../../hooks/useCookies';
+import { API_URL } from '../../api';
 const countries = [
     { code: 'US', name: 'United States', dialCode: '+1' },
     { code: 'CA', name: 'Canada', dialCode: '+1' },
@@ -17,29 +19,20 @@ const countries = [
 ];
 
 export const SignIn = () => {
-
+    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
-    const goToEnterCode = () => {
-        navigate("/signinphoneotp");
-      };
-      
-
-
-
-
-
-
+    const { phoneNumber, setPhoneNumber, } = useAppContext();
     const [selectedCountry, setSelectedCountry] = useState('CA');
-    const [phoneNumber, setPhoneNumber] = useState('');
     const [selectedCountryInfo, setSelectedCountryInfo] = useState(countries.find(country => country.code === 'CA'));
     const [showModal, setShowModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
 
+    const { setCookie } = useCookies(); 
     const handleCountrySelect = (countryCode) => {
         setSelectedCountry(countryCode);
         const countryInfo = countries.find(country => country.code === countryCode);
         setSelectedCountryInfo(countryInfo);
-        setPhoneNumber(countryInfo.dialCode);
+        setPhoneNumber('');
         toggleModal();
     };
 
@@ -53,30 +46,45 @@ export const SignIn = () => {
     };
 
 
-    const [errorMessage, setErrorMessage] = useState('');
 
     const handlePhoneNumberChange = (e) => {
-        const value = e.target.value;
-        if (!isNaN(value)) {
-            setPhoneNumber(value);
-        }
+        const value = e.target.value.replace(/\D/g, ''); 
+        setPhoneNumber(value);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
+        const completePhoneNumber = selectedCountryInfo.dialCode + phoneNumber;
         if (phoneNumber.length === 0) {
             setErrorMessage('Please enter phone number');
         } else if (phoneNumber.length < 10) {
             setErrorMessage('Phone number must be at least 10 digits');
         } else {
             setErrorMessage('');
-            alert('Form submitted successfully');
-        }
+            try {
+                const response = await fetch(`${API_URL}/user/login/otp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone: completePhoneNumber,
+                    }),
+                });
 
-        console.log('Country:', selectedCountry);
-        console.log('Dial Code:', selectedCountryInfo.dialCode);
-        console.log('Phone Number:', phoneNumber);
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                    setCookie('phoneNumber', completePhoneNumber, 7);
+                    navigate("/signinphoneotp");
+                } else {
+                    setErrorMessage(result.message || 'Failed to send OTP');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                setErrorMessage('An error occurred. Please try again later.');
+            }
+        }
     };
 
     return (
@@ -89,13 +97,13 @@ export const SignIn = () => {
 
                     <Container className='logo-progressbar1'>
 
-                        <Container className='logo-arrow1'>
+                    <Container className='logo-arrow1'>
                             <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
                             <Image src={logo2} alt="Logo" className='logo1' style={{ backgroundColor: 'transparent' }} />
                         </Container>
-                        {/* <div className='track-btn1'>
+                        <div className='track-btn1'>
                             <div></div>
-                        </div> */}
+                        </div>
                     </Container>
 
 
@@ -105,12 +113,12 @@ export const SignIn = () => {
                     <Container className='verify-phone-details'>
                         <Form onSubmit={handleSubmit} className='verify-phone-form'>
                             <Form.Group controlId="formPhoneNumber" className='verify-form-group'>
-                                <Form.Label className='num-verify-lable'> Enter Phone Number</Form.Label>
-                                <div style={{ display: 'flex', alignItems: 'center', width: '100%', }}>
+                                <Form.Label className='num-verify-lable'> What's your phone number?</Form.Label>
+                                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                                     <Dropdown>
                                         <div id="dropdown-basic" onClick={() => setShowModal(true)} className='flag-box'>
                                             <Flag code={selectedCountry} style={{ width: '34px', height: '25px', marginRight: '10px' }} className='flag' />
-                                            <span>{selectedCountryInfo.code}</span>
+                                            <span>{selectedCountryInfo.dialCode}</span>
                                         </div>
                                         {/* <Dropdown.Menu className='flag-menu'>
                                             {countries.map((country) => (
@@ -121,7 +129,8 @@ export const SignIn = () => {
                                             ))}
                                         </Dropdown.Menu> */}
                                     </Dropdown>
-                                    <Form.Control className={`num-verify-input ${errorMessage ? 'error' : ''}`}
+                                    <Form.Control
+                                        className={`num-verify-input ${errorMessage ? 'error' : ''}`}
                                         type="text"
                                         placeholder="(905)258-2258"
                                         value={phoneNumber}
@@ -133,7 +142,7 @@ export const SignIn = () => {
                             </Form.Group>
 
                        
-                            <Button variant="primary" type="submit"  onClick={goToEnterCode} className='verify-phone-btn'>
+                            <Button variant="primary" type="submit"   className='verify-phone-btn'>
                                 Next
                             </Button>
                         </Form>

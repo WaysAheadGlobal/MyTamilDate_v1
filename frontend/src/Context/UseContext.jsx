@@ -12,12 +12,19 @@ export const AppContextProvider = ({ children }) => {
   const { getCookie, setCookie, deleteCookie } = useCookies();
 
   const [userDetails, setUserDetails] = useState({
+
     first_name: "",
     last_name: "",
     birthday: "",
     gender: "",
     want_gender: "",
   });
+
+  const [locations, setLocations] = useState({
+    country : "",
+    locations_string: ""
+
+  })
 
   const [isAdmin, setIsAdmin] = useState(false);
   const[phoneNumber, setPhoneNumber] = useState('')
@@ -43,7 +50,7 @@ export const AppContextProvider = ({ children }) => {
   const togglePhoneNumber = () => setShowFullPhoneNumber(!showFullPhoneNumberemail);
 
   return (
-    <AppContext.Provider value={{phoneNumber, setPhoneNumber, userDetails, setUserDetails, isAdmin, loginAsAdmin, logout, togglePhoneNumber, showFullPhoneNumberemail }}>
+    <AppContext.Provider value={{locations, setLocations,phoneNumber, setPhoneNumber, userDetails, setUserDetails, isAdmin, loginAsAdmin, logout, togglePhoneNumber, showFullPhoneNumberemail }}>
       {children}
     </AppContext.Provider>
   );

@@ -618,7 +618,6 @@ users.get('/paymentstatu', (req: AdminRequest, res: Response) => {
 });
 
 
-
 users.get('/paymentstatuu', (req: AdminRequest, res: Response) => {
     const sql = `
         SELECT *

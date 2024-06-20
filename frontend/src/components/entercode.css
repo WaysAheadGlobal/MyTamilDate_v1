@@ -11,6 +11,11 @@ justify-content:space-between;
 position: relative;
 
 }
+
+.religion-item.active, .lang-item.active {
+    background-color: #9d9a9a; /* Dark grey background */
+    
+}
 .signinphone-successful-bg
 {
 

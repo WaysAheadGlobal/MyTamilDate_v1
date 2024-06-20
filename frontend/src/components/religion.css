@@ -20,8 +20,8 @@ justify-content: flex-start;
 
 
 
-.religion-main
-{
+/* .religion-main
+{ */
     /* background: #FFFFFF;
 
     display: flex;
@@ -32,6 +32,11 @@ align-items: center; */
 
 
 
+/* } */
+
+.religion-item.active, .lang-item.active {
+    background-color: #d0d0d0; /* Dark grey background */
+    
 }
 .religion-content
 {

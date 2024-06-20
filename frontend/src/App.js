@@ -66,6 +66,7 @@ import ImageGallery from "./scenes/Approval/Imageget";
 
 
 import { SignInOptions } from "./components/sign-in/sign-in-options";
+import { AccountSetting } from "./components/Account-Settings/accountSetting";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -166,6 +167,9 @@ function App() {
               <Route path="/religion" element={<Religion />} />
               <Route path="/edu" element={<Education />} />
               <Route path="/jobtitle" element={<JobTitle />} />
+
+              
+              <Route path = "/accoutsetting" element={<AccountSetting/>}></Route>
             </Routes>
           </main>
         </div>

@@ -97,7 +97,7 @@ export const Entercode = () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
+                        
                     },
                     body: JSON.stringify({
                         phone: phoneNumber,
@@ -128,7 +128,7 @@ export const Entercode = () => {
         e.preventDefault();
         if (resendTimer === 0) {
             try {
-                const response = await fetch('http://localhost:3001/api/v1/user/signup/otp', {
+                const response = await fetch(`${API_URL}/user/signup/otp`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -244,7 +244,7 @@ export const Entercode = () => {
                     </Container>
                 </Form>
             </Container>
-            </Container>
+             </Container>
         </div>
     );
 };

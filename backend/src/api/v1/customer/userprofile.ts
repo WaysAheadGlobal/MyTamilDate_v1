@@ -53,7 +53,6 @@ profile.post('/updateemail', verifyUser, [
         console.error('Error fetching updated profile data:', err);
         return res.status(500).json({ message: 'Internal Server Error' });
       }
-
       res.status(200).json({ message: 'Email updated successfully', data: updatedResults });
     });
   });
@@ -61,46 +60,125 @@ profile.post('/updateemail', verifyUser, [
 
 
 //update name,last name, brithday, gender , genderwan
-profile.post('/update-profile', [
+profile.put('/namedetails', [
   verifyUser,
   body('first_name').isString().notEmpty().withMessage('First name is required'),
   body('birthday').isDate().withMessage('Birthday must be a valid date'),
-  body('gender').isInt().withMessage('Gender must be an integer'),
-  body('want_gender').isInt().withMessage('Wanted gender must be an integer'),
   body('last_name').optional().isString().withMessage('Last name must be a string')
+
 ], (req: UserRequest, res: any) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-
-  const { first_name, last_name, birthday, gender, want_gender } = req.body;
+  const { first_name, last_name, birthday,  } = req.body;
   const userId = req.userId;
   console.log(userId);
 
   const query = `
       UPDATE user_profiles
-      SET first_name = ?, last_name = COALESCE(?, last_name), birthday = ?, gender = ?, want_gender = ?, updated_at = NOW()
+      SET first_name = ?, last_name = COALESCE(?, last_name), birthday = ?,  updated_at = NOW()
       WHERE user_id = ?
     `;
 
-  db.query(query, [first_name, last_name, birthday, gender, want_gender, userId], (err, results) => {
+  db.query(query, [first_name, last_name, birthday,  userId], (err, results) => {
     if (err) {
       console.error('Error updating user profile:', err);
       return res.status(500).send('Internal Server Error');
     }
-
     if (results.affectedRows === 0) {
       return res.status(404).json({ message: 'User profile not found' });
     }
+    res.status(200).json({ message: 'Profile updated successfully' });
+  });
+});
 
+profile.get('/namedetails', verifyUser, (req: UserRequest, res: any) => {
+  const userId = req.userId;
+  const query = `
+      SELECT first_name, last_name, birthday
+      FROM user_profiles
+      WHERE user_id = ?
+  `;
+
+  db.query(query, [userId], (err, results) => {
+      if (err) {
+          console.error('Error fetching user profile:', err);
+          return res.status(500).send('Internal Server Error');
+      }
+
+      if (results.length === 0) {
+          return res.status(404).json({ message: 'User profile not found' });
+      }
+
+      const userProfile = results[0]; 
+      
+      // Format the birthday using toLocaleDateString
+      const birthdayDate = new Date(userProfile.birthday);
+      userProfile.birthday = birthdayDate.toLocaleDateString('en-CA'); // 'en-CA' gives 'YYYY-MM-DD' format
+
+      res.status(200).json(userProfile);
+  });
+});
+
+//gender want and whom to date
+// Update gender and want_gender
+profile.put('/gender', [
+  verifyUser,
+  body('gender').isInt().notEmpty().withMessage('Gender is required'),
+  body('want_gender').isInt().withMessage('Gender want is required '),
+], (req: UserRequest, res: any) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  const { gender, want_gender } = req.body;
+  const userId = req.userId;
+  console.log(userId);
+
+  const query = `
+      UPDATE user_profiles
+      SET gender = ?, want_gender = ?, updated_at = NOW()
+      WHERE user_id = ?
+    `;
+
+  db.query(query, [gender, want_gender, userId], (err, results) => {
+    if (err) {
+      console.error('Error updating user profile:', err);
+      return res.status(500).send('Internal Server Error');
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: 'User profile not found' });
+    }
     res.status(200).json({ message: 'Profile updated successfully' });
   });
 });
 
 
-//add locations and update user_profile with locations_id
+profile.get('/gender', verifyUser, (req: UserRequest, res: any) => {
+  const userId = req.userId;
+  const query = `
+      SELECT gender, want_gender
+      FROM user_profiles
+      WHERE user_id = ?
+  `;  
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching user profile:', err);
+      return res.status(500).send('Internal Server Error');
+    }
 
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'User profile not found' });
+    }
+
+    const userProfile = results[0]; 
+    res.status(200).json(userProfile);
+  });
+});
+
+
+//add locations and update user_profile with locations_id
 profile.post('/locations', [
   verifyUser,
   body('country').isString().notEmpty().withMessage('Country is required'),
@@ -142,88 +220,92 @@ profile.post('/locations', [
   });
 });
 
-//add religions and update user_profile with locations_id
+profile.get('/locations', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  const query = `
+    SELECT locations.country, locations.location_string
+    FROM locations
+    JOIN user_profiles ON user_profiles.location_id = locations.id
+    WHERE user_profiles.user_id = ?`;
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching location:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Location not found' });
+    }
+
+    res.status(200).json(results[0]);
+  });
+});
+
+
+
+//add religions 
 profile.post('/religions', [
   verifyUser,
-  body('name').isString().notEmpty().withMessage('Religion name is required'),
+  body('religionId').isInt().withMessage('Religion ID is required'),
 ], (req: UserRequest, res: express.Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { name } = req.body;
+  const { religionId } = req.body;
   const userId = req.userId;
 
-  console.log(`UserId: ${userId}, Religion: ${name}`);
+  console.log(`UserId: ${userId}, Religion ID: ${religionId}`);
 
-  const query = 'INSERT INTO religions (name, visible, created_at, updated_at) VALUES (?, 1, NOW(), NOW())';
+  const updateUserProfileQuery = 'UPDATE user_profiles SET religion_id = ?, updated_at = NOW() WHERE user_id = ?';
 
-  db.query(query, [name], (err, results) => {
+  db.query(updateUserProfileQuery, [religionId, userId], (err, updateResults) => {
     if (err) {
-      console.error('Error inserting religion:', err);
+      console.error('Error updating user profile:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
     }
 
-    const religionId = results.insertId;
-    const updateUserProfileQuery = 'UPDATE user_profiles SET religion_id = ?, updated_at = NOW() WHERE user_id = ?';
+    if (updateResults.affectedRows === 0) {
+      return res.status(404).json({ message: 'User profile not found' });
+    }
 
-    db.query(updateUserProfileQuery, [religionId, userId], (err, updateResults) => {
+    res.status(200).json({ message: 'Religion updated successfully' });
+  });
+});
+
+profile.get('/religions', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  const getAllReligionsQuery = 'SELECT id, name FROM religions WHERE visible = 1';
+  const getUserReligionQuery = 'SELECT r.id, r.name FROM religions r JOIN user_profiles up ON r.id = up.religion_id WHERE up.user_id = ?';
+
+  db.query(getAllReligionsQuery, (err, religions) => {
+    if (err) {
+      console.error('Error fetching religions:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    db.query(getUserReligionQuery, [userId], (err, userReligionResults) => {
       if (err) {
-        console.error('Error updating user profile:', err);
+        console.error('Error fetching user religion:', err);
         return res.status(500).json({ message: 'Internal Server Error' });
       }
 
-      if (updateResults.affectedRows === 0) {
-        return res.status(404).json({ message: 'User profile not found' });
+      let userReligion = null;
+      if (userReligionResults.length > 0) {
+        userReligion = userReligionResults[0];
       }
 
-      res.status(200).json({ message: 'Religion added and user profile updated successfully' });
+      res.status(200).json({ religions, userReligion });
     });
   });
 });
 
-//add languages and update user_profile with language_id
-profile.post('/languages', [
-  verifyUser,
-  body('name').isString().notEmpty().withMessage('Language name is required'),
-  body('code').isString().notEmpty().withMessage('Language code is required'),
-], (req: UserRequest, res: express.Response) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
 
-  const { name, code } = req.body;
-  const userId = req.userId;
 
-  console.log(`UserId: ${userId}, Language Name: ${name}, Language Code: ${code}`);
-
-  const query = 'INSERT INTO languages (name, code, created_at, updated_at) VALUES (?, ?, NOW(), NOW())';
-
-  db.query(query, [name, code], (err, results) => {
-    if (err) {
-      console.error('Error inserting language:', err);
-      return res.status(500).json({ message: 'Internal Server Error' });
-    }
-
-    const languageId = results.insertId;
-    const updateUserProfileQuery = 'UPDATE user_profiles SET language_id = ?, updated_at = NOW() WHERE user_id = ?';
-
-    db.query(updateUserProfileQuery, [languageId, userId], (err, updateResults) => {
-      if (err) {
-        console.error('Error updating user profile:', err);
-        return res.status(500).json({ message: 'Internal Server Error' });
-      }
-
-      if (updateResults.affectedRows === 0) {
-        return res.status(404).json({ message: 'User profile not found' });
-      }
-
-      res.status(200).json({ message: 'Language added and user profile updated successfully' });
-    });
-  });
-});
 
 //add growths and update user_profile with growths_id
 profile.post('/growths', [
@@ -308,6 +390,33 @@ profile.post('/studies', [
   });
 });
 
+profile.get('/studies', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  console.log(`Fetching studies for UserId: ${userId}`);
+
+  const query = `
+    SELECT studies.id, studies.name, studies.visible, studies.created_at, studies.updated_at 
+    FROM studies 
+    JOIN user_profiles ON user_profiles.study_id = studies.id 
+    WHERE user_profiles.user_id = ?`;
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching studies:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No studies found for this user' });
+    }
+
+    res.status(200).json({ studies: results });
+  });
+});
+
+
+
 //add jobs and update user_profile with jobs_id
 profile.post('/jobs', [
   verifyUser,
@@ -348,9 +457,6 @@ profile.post('/jobs', [
     });
   });
 });
-
-
-
 
 //add want_kids and update user_profile with jobs_id.. family plans
 profile.post('/update-want-kids', verifyUser, [
@@ -503,6 +609,9 @@ profile.post('/update-drink', verifyUser, [
     });
   });
 });
+
+
+
 
 
 

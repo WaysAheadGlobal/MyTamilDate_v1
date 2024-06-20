@@ -289,13 +289,23 @@ const Dashboard = () => {
         const response = await axios.get(`${API_URL}/admin/dashboard/payments/total`, {
           params: { timeRange }
         });
-        setTotalPeyment(response.data.total_payments_cad);
+        setTotalPeyment(response.data.total_payments_cad.toFixed(1));
         const formattedTotalPayments = formatToK(response.data.total_payments_cad);
       } catch (error) {
         console.error('Error fetching message count:', error);
       }
     };
 
+    const formatToK = (amount) => {
+      if (amount >= 1000 && amount < 1000000) {
+        return `${(amount / 1000).toFixed(1)}k`;
+      } else if (amount >= 1000000) {
+        return `${(amount / 1000000).toFixed(1)}M`;
+      } else {
+        return `${amount}`;
+      }
+    };
+  
 
 
   useEffect(() => {
@@ -310,12 +320,12 @@ const Dashboard = () => {
     Transections();
   },[])
 
-  const formatToK = (num) => {
-    if (num >= 1000) {
-      return `${(num / 1000).toFixed(1)}k`;
-    }
-    return num.toString();
-  };
+  // const formatToK = (num) => {
+  //   if (num >= 1000) {
+  //     return `${(num / 1000).toFixed(1)}k`;
+  //   }
+  //   return num.toString();
+  // };
   const handleTimeRangeChange = (event) => {
     setTimeRange(event.target.value);
   };
