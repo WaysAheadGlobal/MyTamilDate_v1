@@ -67,6 +67,16 @@ import ImageGallery from "./scenes/Approval/Imageget";
 
 import { SignInOptions } from "./components/sign-in/sign-in-options";
 import { AccountSetting } from "./components/Account-Settings/accountSetting";
+import Height from "./components/Height";
+import Personality from "./components/Personality";
+import ProfileAnswers from "./components/ProfileAnswers";
+import KidsAndFamily from "./components/KidsAndFamily";
+import SmokeAndFamily from "./components/SmokeAndDrink";
+import ApproveEmail from "./components/ApproveEmail";
+import AlmostThere from "./components/AlmostThere";
+import AccountPending from "./components/AccountPending";
+import AccountNotApproved from "./components/AccountNotApproved";
+import AccountApproved from "./components/AccountApproved";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -167,6 +177,16 @@ function App() {
               <Route path="/religion" element={<Religion />} />
               <Route path="/edu" element={<Education />} />
               <Route path="/jobtitle" element={<JobTitle />} />
+              <Route path="/height" element={<Height />} />
+              <Route path="/personality" element={<Personality />} />
+              <Route path="/profile-answers" element={<ProfileAnswers />} />
+              <Route path="/kids-family" element={<KidsAndFamily />} />
+              <Route path="/smoke-drink" element={<SmokeAndFamily />} />
+              <Route path="/approve" element={<ApproveEmail />} />
+              <Route path="/almost-there" element={<AlmostThere />} />
+              <Route path="/pending" element={<AccountPending />} />
+              <Route path="/not-approved" element={<AccountNotApproved />} />
+              <Route path="/approved" element={<AccountApproved />} />
 
               
               <Route path = "/accoutsetting" element={<AccountSetting/>}></Route>
