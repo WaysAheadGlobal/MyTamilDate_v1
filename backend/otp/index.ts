@@ -4,8 +4,7 @@ import { randomInt } from 'crypto';
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID!;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN!;
 
-console.log(`TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID ? 'Exists' : 'Not found'}`);
-console.log(`TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN ? 'Exists' : 'Not found'}`);
+
 
 if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN) {
   throw new Error("Twilio credentials are not provided correctly.");
@@ -33,7 +32,7 @@ export async function sendOTPtoPhoneNumber({ phone }: PhoneNumberDetails): Promi
   const otp = randomInt(1000, 9999).toString(); 
   try {
     const message = await client.messages.create({
-      body: `Your OTP is ${otp}`,
+      body: `Your MTD OTP is ${otp}`,
       from: '+16473609147', // Your Twilio phone number
       to: phone
     });

@@ -77,6 +77,9 @@ import AlmostThere from "./components/AlmostThere";
 import AccountPending from "./components/AccountPending";
 import AccountNotApproved from "./components/AccountNotApproved";
 import AccountApproved from "./components/AccountApproved";
+import UnsubscribeComponent from "./components/Account-Settings/unsubscribeEmail";
+import { PrivacyPolicySetting } from "./components/Account-Settings/privacyPolicy";
+import { TermsConditions } from "./components/Account-Settings/termandconditons";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -188,9 +191,13 @@ function App() {
               <Route path="/not-approved" element={<AccountNotApproved />} />
               <Route path="/approved" element={<AccountApproved />} />
 
-              
+            
               <Route path = "/accoutsetting" element={<AccountSetting/>}></Route>
+              <Route path = "/unsubscribe" element={<UnsubscribeComponent/>}></Route>
+              <Route path="//PrivacyPolicyDetails" element={<PrivacyPolicySetting/>}></Route>
+             <Route path="/termandconditions" element={<TermsConditions/>}></Route>
             </Routes>
+
           </main>
         </div>
       </ThemeProvider>

@@ -3,6 +3,8 @@ import express from 'express';
 import 'dotenv/config';
 import { db } from '../db/db';
 import api from './api';
+import { Sendmail } from './sendgrip/mail';
+
 
 const PORT = process.env.PORT;
 
@@ -14,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.use("/api", api);
+app.use('/sendmail',Sendmail)
 
 app.get('/', (req, res) => {
     db.query('SELECT * FROM admin_users', (err, results) => {

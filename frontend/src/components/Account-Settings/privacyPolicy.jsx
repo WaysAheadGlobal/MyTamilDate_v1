@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { IoIosArrowDown } from 'react-icons/io';
-import Container from 'react-bootstrap/Container';
-import './privacy-policy.module.css';
-import { NavBar } from './nav';
-import {Footer} from './footer';
-import { Button } from 'react-bootstrap';
-export const PrivacyPolicy = () => {
+import { Container, Image } from 'react-bootstrap';
+import backarrow from "../../assets/images/backarrow.jpg";
+
+import './privacyPolicy.module.css';
+
+export const PrivacyPolicySetting = () => {
     const [isChecked, setIsChecked] = useState(false);
+
     const handleCheckboxChange = () => {
         setIsChecked(!isChecked);
     };
@@ -14,9 +15,17 @@ export const PrivacyPolicy = () => {
 
     return (
         <>
-            <NavBar />
-            <Container fluid className='policy-main'>
-              <h1>Privacy Policy</h1>
+            
+            <Container fluid className='policy-main'> 
+            
+                <Container className='logo-arrow3'>
+                            <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
+                            <h1 className='account-setting-heading'>
+                            Privacy Policy
+                            </h1>
+                        </Container>
+              
+             
               {/* <span>Last revised on Feb. 4th, 2021.</span> */}
               <p>TC Global Inc. (“MTD”, "we", "us", "our" or the “Company”) is a corporation formed pursuant to the Business Corporations Act R.S.O. 1990, CHAPTER B.16 in Ontario, Canada. Further to our terms of use (https://mytamildate.com/TermsConditions) (the “Terms”), this Privacy Policy sets out how we collect, store and use personal information and cookies. Unless otherwise indicated, any capitalized terms in this Privacy Policy have the same meaning attributed to them in our Terms.</p>
 
@@ -239,7 +248,7 @@ We also allow users to create an account via third party account login providers
 <Container  className='policy-btn-box' ><Button className='policy-btn' disabled={!isChecked}>OK</Button></Container> */}
             </Container>
 
-            <Footer/>
+           
         </>
     );
 }
