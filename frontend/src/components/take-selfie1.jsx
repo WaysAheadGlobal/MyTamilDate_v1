@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback,useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Container, Image, Button, Row, Col, Modal } from 'react-bootstrap';
 
 import Cropper from 'react-easy-crop';
@@ -33,8 +33,12 @@ export const Selfie = () => {
     const handleFileChange = (event, imageKey) => {
         const file = event.target.files[0];
         if (file) {
-            const imageURL = URL.createObjectURL(file);
-            setImageToCrop(imageURL);
+            const reader = new FileReader();
+            reader.onload = () => {
+                setImageToCrop(reader.result);
+            };
+            reader.readAsDataURL(file);
+
             setCurrentImageKey(imageKey);
             setShowCropModal(true);
         }
@@ -65,7 +69,7 @@ export const Selfie = () => {
     }, []);
 
     const handleCropSave = () => {
-        console.log('Attempting to save cropped image:', imageToCrop, croppedAreaPixels);
+        /* console.log('Attempting to save cropped image:', imageToCrop, croppedAreaPixels); */
 
         // Ensure croppedAreaPixels is not null before proceeding
         if (!croppedAreaPixels) {
@@ -73,12 +77,13 @@ export const Selfie = () => {
         }
 
         getCroppedImg(imageToCrop, croppedAreaPixels)
+            /* croppedImage: Blob */
             .then(croppedImage => {
-                console.log('Cropped image URL:', croppedImage);
+                console.log('Cropped image URL:', croppedImage); // You can save this URL to the state or DB
 
                 setSelectedImages(prevState => ({
                     ...prevState,
-                    [currentImageKey]: croppedImage
+                    [currentImageKey]: URL.createObjectURL(croppedImage)
                 }));
 
                 setShowCropModal(false);
@@ -101,7 +106,7 @@ export const Selfie = () => {
 
     const getCroppedImg = (imageSrc, crop) => {
         const canvas = document.createElement('canvas');
-        const image = new Image();
+        const image = document.createElement('img');
         const promise = new Promise((resolve, reject) => {
             image.onload = () => {
                 const ctx = canvas.getContext('2d');
@@ -126,8 +131,7 @@ export const Selfie = () => {
                         reject(new Error('Canvas is empty'));
                         return;
                     }
-                    const fileUrl = URL.createObjectURL(blob);
-                    resolve(fileUrl);
+                    resolve(blob);
                 }, 'image/jpeg');
             };
             image.src = imageSrc;
@@ -195,7 +199,7 @@ export const Selfie = () => {
                         <Col md={6} className='selfie-box2' onClick={() => handleClick('first')}>
                             {!selectedImages.first && (
                                 <>
-                                    <Image className='selfie-icon' src={addplus} style={{marginTop:'5px'}}></Image>
+                                    <Image className='selfie-icon' src={addplus} style={{ marginTop: '5px', objectFit: "contain", objectPosition: "center" }}></Image>
                                     <span>Add photo</span>
                                 </>
                             )}
@@ -210,7 +214,7 @@ export const Selfie = () => {
                         <Col md={6} className='selfie-box2' onClick={() => handleClick('second')}>
                             {!selectedImages.second && (
                                 <>
-                                    <Image className='selfie-icon' src={addplus} style={{marginTop:'5px'}}></Image>
+                                    <Image className='selfie-icon' src={addplus} style={{ marginTop: '5px' }}></Image>
                                     <span>Add photo</span>
                                 </>
                             )}
@@ -274,22 +278,22 @@ export const Selfie = () => {
 
                 <Modal centered className="dos-donts-modal" show={showDosDontsModal} onHide={handleDosDontsClose}>
                     <Modal.Header className='do-donts-head' closeButton>
-                   
+
                     </Modal.Header>
                     <Modal.Body className='dos-donts-modal-body'>
                         <div style={{ display: 'flex', flexDirection: 'column', }}>
-                            <div style={{ alignItems:'center',display: 'flex', flexDirection: 'column' }}>
+                            <div style={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
                                 <h5>Do’s</h5>
-                                <Image  style={{ marginBottom:'-20px',zIndex:'10' }}src={doo}></Image>
+                                <Image style={{ marginBottom: '-20px', zIndex: '10' }} src={doo}></Image>
                                 <ul className='dos'>
                                     <li><p><span>Light it up</span>: Use good lighting, natural light is best. Avoid shadows.</p></li>
                                     <li><p><span>Keep it real</span>: Use authentic pics of yourself which clearly show your face.</p></li>
                                     <li><p><span>Show off your personality</span>: Love traveling? Have a special hobby? Don't hesitate to show it off through your pics.</p></li>
                                 </ul>
                             </div>
-                            <div style={{ alignItems:'center',display: 'flex', flexDirection: 'column' }}>
+                            <div style={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
                                 <h5>Don’t</h5>
-                                <Image  style={{ marginBottom:'-20px',zIndex:'10' }}src={dont}></Image>
+                                <Image style={{ marginBottom: '-20px', zIndex: '10' }} src={dont}></Image>
                                 <ul className='dos'>
                                     <li><p><span>Hide your face</span>: Ensure your face is clearly visible. Avoid sunglasses or hats that hide your face.</p></li>
                                     <li><p><span>Fake it</span> Avoid heavy filters or overly edited photos. Stay authentic to how you look in real life. You're fabulous as you are!</p></li>
