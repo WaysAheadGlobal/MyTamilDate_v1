@@ -94,13 +94,13 @@ export const Religion = () => {
                                 <p>What is your religion?</p>
                             </Container>
                             <Container className='all-religion'>
-                                {allReligions.map((religion, index) => (
+                                {religions.map((religion, index) => (
                                     <div
                                         key={index}
-                                        className={`religion-item ${selectedReligion === religion.name ? 'active' : ''}`}
-                                        onClick={() => setSelectedReligion(religion.name)}
+                                        className={`religion-item ${selectedReligion === religion ? 'active' : ''}`}
+                                        onClick={() => setSelectedReligion(religion)}
                                     >
-                                        {religion.name}
+                                        {religion}
                                     </div>
                                 ))}
                             </Container>
