@@ -1,23 +1,26 @@
 import React, { useState } from 'react';
-import { IoIosArrowDown } from 'react-icons/io';
-import Container from 'react-bootstrap/Container';
-import './tnc.module.css';
-import { NavBar } from './nav';
-import {Footer} from './footer';
-import { Button } from 'react-bootstrap';
-export const Tnc = () => {
-    const [isChecked, setIsChecked] = useState(false);
 
+import { Container, Image } from 'react-bootstrap';
+import './termandcondition.module.css';
+import backarrow from "../../assets/images/backarrow.jpg";
+
+export const TermsConditions = () => {
+    const [isChecked, setIsChecked] = useState(false);
     const handleCheckboxChange = () => {
         setIsChecked(!isChecked);
     };
 
-
     return (
         <>
-            <NavBar />
+           
             <Container fluid className='tnc-main'>
-              <h1> Terms and Conditions</h1>
+            <Container className='logo-arrow3'>
+                            <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
+                            <h1 className='account-setting-heading'>
+                            Terms and Conditions
+                            </h1>
+                        </Container>
+              
               {/* <span>Last revised on Feb. 4th, 2021.</span> */}
               <p>Welcome to myTamilDate! We’re thrilled you’ve joined and look forward to helping you find your special someone.</p>
               <p>TC Global Inc. (“MTD”, "we", "us", "our" or the “Company”) is a corporation formed pursuant to the Business Corporations Act R.S.O. 1990, CHAPTER B.16 in Ontario, Canada. In consideration for permitting your access to our online dating website, applications and online services and other good and valuable consideration, you agree as follows:</p>
@@ -252,7 +255,7 @@ Cancellation will be effective as of the next billing date as long as notice is 
 <Container  className='tnc-btn-box' ><Button className='tnc-btn' disabled={!isChecked}>OK</Button></Container> */}
             </Container>
 
-            <Footer/>
+          
         </>
     );
 };

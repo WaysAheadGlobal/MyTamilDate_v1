@@ -22,7 +22,6 @@ import { API_URL } from '../../api';
 import Flag from 'react-world-flags';
 
 
-
 const countries = [
     { code: 'US', name: 'United States', dialCode: '+1' },
     { code: 'CA', name: 'Canada', dialCode: '+1' },
@@ -32,16 +31,20 @@ const countries = [
 
 
 export const AccountSetting = () => {
+    const navigate = useNavigate();
     const [showUserName, setshowUserName] = useState(false);
     const [showUserEmail, setshowUserEmail] = useState(false);
     const [showUserEmailotp, setshowUserEmailotp] = useState(false);
     const [showUserPhoneotp, setshowUserPhoneotp] = useState(false);
     const [showUserphone, setshowUserphone] = useState(false);
+    const [showUnsubscribeEmail, setShowUnsubscribeEmail] = useState(false);
     const [showPause, setShowPause] = useState(false);
     const [showPauseOption, setShowPauseOpion] = useState(false); 
     const [firstName, setFirstName] = useState('Karthik');
     const [lastName, setLastName] = useState('Kumar');
+    
 
+    
     const handleCloseName = () => setshowUserName(false);
     const handleShowName = () => setshowUserName(true);
 
@@ -59,16 +62,27 @@ export const AccountSetting = () => {
 
     const handleClosePause = () => setShowPause(false);
     const handleShowPause = () => setShowPause(true);
-   
 
+const GotoPrivacyPolicy = ()=>{
+    navigate("/PrivacyPolicyDetails")
+}
+const Gototermandconditions = ()=>{
+    navigate("/termandconditions")
+}
 
-    const handlePauseAccount = () => {
-        setShowPause(false);
-        handleShowPauseOption();
+    // Unsubscribe Email
+    const handleCloseUnsubscribeEmail = () => setShowUnsubscribeEmail(false);
+    const handleShowUnsubscribeEmail = () => setShowUnsubscribeEmail(true);
+    const handleUnsubscribeEmail = () => {
+        setShowUnsubscribeEmail(false);
+        navigate("/unsubscribe")
     };
 
-//pause my account 
-
+   //pause my account 
+   const handlePauseAccount = () => {
+    setShowPause(false);
+    handleShowPauseOption();
+};
     const [selectedOption, setSelectedOption] = useState('');
     const handleClosePauseOption = () => setShowPauseOpion(false);
     const handleShowPauseOption = () => setShowPauseOpion(true);
@@ -79,11 +93,6 @@ export const AccountSetting = () => {
 
 
   
-
-
-
-
-
      //success modal of Email OTP  open and close
      const [showsuccessemail, setShowsuccess] = useState(false);
      const handleClosesuccess = () => setShowsuccess(false);
@@ -125,9 +134,9 @@ export const AccountSetting = () => {
 
     //otp for email code 
 
-    const navigateopt = useNavigate();
+    
     const goToSigninEmailSuccessful = () => {
-        navigateopt("/signinemailsuccessful");
+        navigate("/signinemailsuccessful");
     };
 
     const [code1, setCode1] = useState('');
@@ -345,7 +354,7 @@ const handleSubmitphoneotp = (e) => {
 
                         <div className="user-info-container">
                             <div className="last-user-info-item">
-                                <div className='lastleftsideinfo'>
+                                <div className='lastleftsideinfo' onClick={handleShowUnsubscribeEmail}>
                                     <span className='lastuserleftinfo'>Email Unsubscribe</span>
                                 </div>
                                 <div>
@@ -353,7 +362,7 @@ const handleSubmitphoneotp = (e) => {
                                 </div>
                             </div>
 
-                            <div className="last-user-info-item">
+                            <div className="last-user-info-item" onClick={GotoPrivacyPolicy}>
                                 <div className='lastleftsideinfo'>
                                     <span className='lastuserleftinfo'>Privacy Policy</span>
                                 </div>
@@ -361,7 +370,7 @@ const handleSubmitphoneotp = (e) => {
                                     <Image className='userinfoicon' src={privacy} />
                                 </div>
                             </div>
-                            <div className="last-user-info-item">
+                            <div className="last-user-info-item" onClick={Gototermandconditions}>
                                 <div className='lastleftsideinfo'>
                                     <span className='lastuserleftinfo'>Terms of Service</span>
                                 </div>
@@ -410,14 +419,14 @@ const handleSubmitphoneotp = (e) => {
                             placeholder="First name"
                             value={firstName}
                             onChange={(e) => setFirstName(e.target.value)}
-                            className="form-control"
+                            className="form-control-name"
                         />
                         <Form.Control
                             type="text"
                             placeholder="Last name"
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)}
-                            className="form-control"
+                            className="form-control-name"
                         />
                     </Form>
                 </Modal.Body>
@@ -841,8 +850,24 @@ const handleSubmitphoneotp = (e) => {
             </Modal.Body>
         </Modal>
 
-        
-
+        {/* Unsubscribe email  */}
+           
+        <Modal show={showUnsubscribeEmail} onHide={handleCloseUnsubscribeEmail} centered>
+            <Modal.Body className="pause-modal-content">
+                <div className="pause-modal-title">Cancel Auto-Renewal on your Subscription?</div>
+                <div className="pause-modal-message">
+                Your account will not auto-renew and your service will be interrupted on the expiry date. Keep auto-renew for a seamless experience.
+                </div>
+                <div className="d-flex justify-content-center">
+                    <Button variant="outline-danger" className="btn-no" onClick={handleCloseUnsubscribeEmail}>
+                        Cancel
+                    </Button>
+                    <Button variant="primary" className="btn-yes" onClick={handleUnsubscribeEmail}>
+                        Keep
+                    </Button>
+                </div>
+            </Modal.Body>
+        </Modal>
         </div>
     );
 };

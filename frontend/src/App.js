@@ -67,6 +67,9 @@ import ImageGallery from "./scenes/Approval/Imageget";
 
 import { SignInOptions } from "./components/sign-in/sign-in-options";
 import { AccountSetting } from "./components/Account-Settings/accountSetting";
+import UnsubscribeComponent from "./components/Account-Settings/unsubscribeEmail";
+import { PrivacyPolicySetting } from "./components/Account-Settings/privacyPolicy";
+import { TermsConditions } from "./components/Account-Settings/termandconditons";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -168,9 +171,13 @@ function App() {
               <Route path="/edu" element={<Education />} />
               <Route path="/jobtitle" element={<JobTitle />} />
 
-              
+            
               <Route path = "/accoutsetting" element={<AccountSetting/>}></Route>
+              <Route path = "/unsubscribe" element={<UnsubscribeComponent/>}></Route>
+              <Route path="//PrivacyPolicyDetails" element={<PrivacyPolicySetting/>}></Route>
+             <Route path="/termandconditions" element={<TermsConditions/>}></Route>
             </Routes>
+
           </main>
         </div>
       </ThemeProvider>
