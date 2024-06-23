@@ -69,7 +69,7 @@ const cityOptions = {
 
 export const Located = () => {
   const navigate = useNavigate();
-  const {getCookie} = useCookies();
+  const { getCookie } = useCookies();
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
   const [locationData, setLocationData] = useState({ country: '', location_string: '' });
@@ -81,7 +81,7 @@ export const Located = () => {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${getCookie('token')}`
-    },
+      },
     })
       .then(response => response.json())
       .then(data => {
@@ -97,7 +97,7 @@ export const Located = () => {
 
   const handleCountrySelect = (country) => {
     setSelectedCountry(country);
-    setSelectedCity(null); 
+    setSelectedCity(null);
   };
 
   const handleCitySelect = (city) => {
@@ -115,8 +115,8 @@ export const Located = () => {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${getCookie('token')}`
-    },
-    
+      },
+
       body: JSON.stringify({
         country: selectedCountry.label,
         location_string: selectedCity.label,

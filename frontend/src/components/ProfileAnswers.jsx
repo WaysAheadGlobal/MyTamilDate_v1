@@ -1,32 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Container, Image } from 'react-bootstrap';
 import BModal from 'react-bootstrap/Modal';
 import logo from "../assets/images/MTDlogo.png";
 import backarrow from "../assets/images/backarrow.jpg";
 import responsivebg from "../assets/images/responsive-bg.png";
 import './job-title.css';
-import { Link } from 'react-router-dom';
-
-
-const questions = [
-    {
-        question: "Two trust and a lie",
-        description: "I invented mutton rolls, I've invited...",
-    },
-    {
-        question: "A life goal of mine",
-        description: "To visit every country in the world"
-    },
-    {
-        question: "I get along best with people...",
-        description: "Laugh at all my bad jokes"
-    },
-    {
-        question: "Typical weekend",
-        description: "Family time, workout, etc..!"
-    }
-];
+import { Link, useNavigate } from 'react-router-dom';
+import { API_URL } from '../api';
+import { useCookies } from '../hooks/useCookies';
 
 export default function ProfileAnswers() {
 
@@ -35,10 +17,33 @@ export default function ProfileAnswers() {
         heading: "",
         apiURL: "",
     });
+    const { getCookie } = useCookies();
+    const [questions, setQuestions] = useState([]);
+    const navigate = useNavigate();
+    const [alert, setAlert] = useState(false);
+
+    useEffect(() => {
+        (async () => {
+            const response = await fetch(`${API_URL}/customer/users/questions`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+
+            if (response.ok) {
+                setQuestions(data.questions);
+            }
+        })()
+    }, [])
 
     return (
         <div className='job-container'>
             <Modal show={show} onHide={() => setShow(false)} modalData={modalData} />
+            <AlertModal show={alert} onHide={() => setAlert(false)} />
             <div className='job-bg'>
                 <Image className='responsive-bg' src={responsivebg} alt="Background"></Image>
             </div>
@@ -84,6 +89,8 @@ export default function ProfileAnswers() {
                             <div style={{
                                 maxHeight: "50vh",
                                 overflow: "auto",
+                                scrollbarColor: "transparent transparent",
+                                scrollBehavior: "smooth",
                             }}>
                                 <div style={{
                                     display: "flex",
@@ -108,7 +115,7 @@ export default function ProfileAnswers() {
                                                     setShow(true);
                                                     setModalData({
                                                         heading: question.question,
-                                                        apiURL: "",
+                                                        apiURL: `${API_URL}/customer/users/answer/${question.id}`,
                                                     });
                                                 }}
                                             >
@@ -146,15 +153,16 @@ export default function ProfileAnswers() {
                             </div>
                         </div>
                     </Container>
-                    <Button variant="primary" type="submit" className='job-nxt-btn'>
-                        <Link to="/kids-family" style={{
-                            color: "white",
-                            textDecoration: "none",
-                            width: "100%",
-                            height: "100%",
-                        }}>
-                            Next
-                        </Link>
+                    <Button variant="primary" type="submit" className='job-nxt-btn' onClick={() => {
+                        const answers = getCookie('answers');
+
+                        if (answers && Number(answers) >= 2) {
+                            navigate('/kids-family');
+                        } else {
+                            setAlert(true);
+                        }
+                    }}>
+                        Next
                     </Button>
                 </Container>
             </Container>
@@ -162,11 +170,53 @@ export default function ProfileAnswers() {
     );
 };
 
-function Modal({ show, onHide, modalData }) {
+function Modal({ show, onHide, modalData, alert }) {
     const [text, setText] = useState("");
+    const { getCookie, setCookie } = useCookies();
+
+    useEffect(() => {
+        setText("");
+        
+        (async () => {
+            if (!modalData.apiURL) return;
+
+            const response = await fetch(modalData.apiURL, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                }
+            });
+            const data = await response.json();
+            console.log(data);
+
+            if (response.ok) {
+                setText(data.answer);
+            }
+        })()
+    }, [modalData.apiURL]);
+
+    async function saveAnswer() {
+        const response = await fetch(modalData.apiURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
+            },
+            body: JSON.stringify({ answer: text }),
+        });
+        const data = await response.json();
+        console.log(data);
+
+        if (response.ok) {
+            onHide();
+            const answers = getCookie('answers');
+            setCookie('answers', answers ? Number(answers) + 1 : 0, { path: '/' });
+        }
+    }
 
     return (
-        <BModal show={show} onHide={onHide} >
+        <BModal centered show={show} onHide={onHide} >
             <BModal.Header closeButton>
                 <p style={{
                     fontSize: "large",
@@ -217,7 +267,7 @@ function Modal({ show, onHide, modalData }) {
                     padding: "0.5rem 1rem",
                     color: "#6c6c6c",
                     fontWeight: "600",
-                }} onClick={() => { onHide() }}>
+                }} onClick={() => { onHide(); setText(""); }}>
                     Close
                 </Button>
                 <Button variant="primary" style={{
@@ -225,10 +275,40 @@ function Modal({ show, onHide, modalData }) {
                     borderColor: "#F76A7B",
                     borderRadius: "9999px",
                     padding: "0.5rem 1rem",
-                }} onClick={() => { }}>
+                }} onClick={saveAnswer}>
                     Save Changes
                 </Button>
             </div>
+        </BModal>
+    )
+}
+
+function AlertModal({ show, onHide }) {
+    return (
+        <BModal centered show={show} onHide={onHide}>
+            <div>
+                <p style={{
+                    fontSize: "large",
+                    lineHeight: "24px",
+                    fontWeight: "600",
+                    textAlign: "center",
+                    marginTop: "1rem",
+                }}>
+                    Answer atleast 2 prompts.
+                </p>
+            </div>
+            <Button style={{
+                backgroundColor: "white",
+                borderColor: "#6c6c6c",
+                borderRadius: "9999px",
+                padding: "0.5rem 1rem",
+                color: "#6c6c6c",
+                fontWeight: "600",
+                margin: "1rem auto",
+                width: "50%",
+            }} onClick={() => { onHide(); }}>
+                Okay
+            </Button>
         </BModal>
     )
 }

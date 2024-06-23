@@ -179,14 +179,14 @@ export const BasicDetails = () => {
                 <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                   <Form.Control
                     className={`basic-details-input-verify custom-input ${errorMessage ? 'error' : ''}`}
-                    type="text"
+                    type="date"
                     placeholder="Day / Month / Year"
                     value={userDetails.birthday || ''}
                     onChange={handleBirthdayChange}
                     style={{ flex: 1 }}
                   />
                   <div className="birthday-div">
-                    <Button className='calender-btn custom-button'><Image src={calender} /></Button>
+                    
                   </div>
                 </div>
                 {age !== null && <span className='calculated-age'>Your age is {age}</span>}

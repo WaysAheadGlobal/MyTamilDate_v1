@@ -71,7 +71,7 @@ profile.put('/namedetails', [
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  const { first_name, last_name, birthday,  } = req.body;
+  const { first_name, last_name, birthday, } = req.body;
   const userId = req.userId;
   console.log(userId);
 
@@ -81,7 +81,7 @@ profile.put('/namedetails', [
       WHERE user_id = ?
     `;
 
-  db.query(query, [first_name, last_name, birthday,  userId], (err, results) => {
+  db.query(query, [first_name, last_name, birthday, userId], (err, results) => {
     if (err) {
       console.error('Error updating user profile:', err);
       return res.status(500).send('Internal Server Error');
@@ -102,22 +102,22 @@ profile.get('/namedetails', verifyUser, (req: UserRequest, res: any) => {
   `;
 
   db.query(query, [userId], (err, results) => {
-      if (err) {
-          console.error('Error fetching user profile:', err);
-          return res.status(500).send('Internal Server Error');
-      }
+    if (err) {
+      console.error('Error fetching user profile:', err);
+      return res.status(500).send('Internal Server Error');
+    }
 
-      if (results.length === 0) {
-          return res.status(404).json({ message: 'User profile not found' });
-      }
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'User profile not found' });
+    }
 
-      const userProfile = results[0]; 
-      
-      // Format the birthday using toLocaleDateString
-      const birthdayDate = new Date(userProfile.birthday);
-      userProfile.birthday = birthdayDate.toLocaleDateString('en-CA'); // 'en-CA' gives 'YYYY-MM-DD' format
+    const userProfile = results[0];
 
-      res.status(200).json(userProfile);
+    // Format the birthday using toLocaleDateString
+    const birthdayDate = new Date(userProfile.birthday);
+    userProfile.birthday = birthdayDate.toLocaleDateString('en-CA'); // 'en-CA' gives 'YYYY-MM-DD' format
+
+    res.status(200).json(userProfile);
   });
 });
 
@@ -161,7 +161,7 @@ profile.get('/gender', verifyUser, (req: UserRequest, res: any) => {
       SELECT gender, want_gender
       FROM user_profiles
       WHERE user_id = ?
-  `;  
+  `;
   db.query(query, [userId], (err, results) => {
     if (err) {
       console.error('Error fetching user profile:', err);
@@ -172,7 +172,7 @@ profile.get('/gender', verifyUser, (req: UserRequest, res: any) => {
       return res.status(404).json({ message: 'User profile not found' });
     }
 
-    const userProfile = results[0]; 
+    const userProfile = results[0];
     res.status(200).json(userProfile);
   });
 });
@@ -305,46 +305,70 @@ profile.get('/religions', verifyUser, (req: UserRequest, res: express.Response) 
 });
 
 
+profile.get('/growths-options', (req: UserRequest, res: express.Response) => {
+  db.query('SELECT name, id FROM growths', (err, results) => {
+    if (err) {
+      console.error('Error fetching growths:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
 
+    res.status(200).json({ growths: results });
+  });
+});
+
+profile.get('/growths', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  console.log(`Fetching growths for UserId: ${userId}`);
+
+  const query = `
+    SELECT growths.id, growths.name, growths.visible, growths.created_at, growths.updated_at 
+    FROM growths 
+    JOIN user_profiles ON user_profiles.growth_id = growths.id 
+    WHERE user_profiles.user_id = ?`;
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching growths:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No growths found for this user' });
+    }
+
+    res.status(200).json({ growths: results });
+  });
+});
 
 //add growths and update user_profile with growths_id
 profile.post('/growths', [
   verifyUser,
-  body('name').isString().notEmpty().withMessage('Growth name is required'),
+  body('growthId').isInt().withMessage('Growth ID is required'),
 ], (req: UserRequest, res: express.Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { name } = req.body;
+  const { growthId } = req.body;
   const userId = req.userId;
 
-  console.log(`UserId: ${userId}, Growth Name: ${name}`);
+  console.log(`UserId: ${userId}, Growth ID: ${growthId}`);
 
-  const query = 'INSERT INTO growths (name, visible, created_at, updated_at) VALUES (?, 1, NOW(), NOW())';
+  const updateUserProfileQuery = 'UPDATE user_profiles SET growth_id = ?, updated_at = NOW() WHERE user_id = ?';
 
-  db.query(query, [name], (err, results) => {
+  db.query(updateUserProfileQuery, [growthId, userId], (err, updateResults) => {
     if (err) {
-      console.error('Error inserting growth:', err);
+      console.error('Error updating user profile:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
     }
 
-    const growthId = results.insertId;
-    const updateUserProfileQuery = 'UPDATE user_profiles SET growth_id = ?, updated_at = NOW() WHERE user_id = ?';
+    if (updateResults.affectedRows === 0) {
+      return res.status(404).json({ message: 'User profile not found' });
+    }
 
-    db.query(updateUserProfileQuery, [growthId, userId], (err, updateResults) => {
-      if (err) {
-        console.error('Error updating user profile:', err);
-        return res.status(500).json({ message: 'Internal Server Error' });
-      }
-
-      if (updateResults.affectedRows === 0) {
-        return res.status(404).json({ message: 'User profile not found' });
-      }
-
-      res.status(200).json({ message: 'Growth added and user profile updated successfully' });
-    });
+    res.status(200).json({ message: 'Growth added and user profile updated successfully' });
   });
 });
 
@@ -416,6 +440,31 @@ profile.get('/studies', verifyUser, (req: UserRequest, res: express.Response) =>
 });
 
 
+profile.get('/jobs', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  console.log(`Fetching jobs for UserId: ${userId}`);
+
+  const query = `
+    SELECT jobs.id, jobs.name, jobs.visible, jobs.created_at, jobs.updated_at 
+    FROM jobs 
+    JOIN user_profiles ON user_profiles.job_id = jobs.id 
+    WHERE user_profiles.user_id = ?`;
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching jobs:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No jobs found for this user' });
+    }
+
+    res.status(200).json({ jobs: results });
+  });
+});
+
 
 //add jobs and update user_profile with jobs_id
 profile.post('/jobs', [
@@ -455,6 +504,36 @@ profile.post('/jobs', [
 
       res.status(200).json({ message: 'Job added and user profile updated successfully' });
     });
+  });
+});
+
+profile.get('/kids-family', verifyUser, (req: UserRequest, res: express.Response) => {
+  db.query('SELECT want_kid_id, have_kid_id FROM user_profiles WHERE user_id = ?', [req.userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching kids-family:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'User profile not found' });
+    }
+
+    res.status(200).json(results[0]);
+  });
+});
+
+profile.get('/smoke-drink', verifyUser, (req: UserRequest, res: express.Response) => {
+  db.query('SELECT smoke_id, drink_id FROM user_profiles WHERE user_id = ?', [req.userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching kids-family:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'User profile not found' });
+    }
+
+    res.status(200).json(results[0]);
   });
 });
 
@@ -610,21 +689,174 @@ profile.post('/update-drink', verifyUser, [
   });
 });
 
+profile.get('/personality-options', (req: UserRequest, res: express.Response) => {
+  db.query('SELECT name, id FROM personalities', (err, results) => {
+    if (err) {
+      console.error('Error fetching personalities:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
 
+    res.status(200).json({ personalities: results });
+  });
+});
 
+profile.get('/personalities', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
 
+  console.log(`Fetching personalities for UserId: ${userId}`);
 
+  const query = `
+    SELECT p.id, p.name, p.visible, p.created_at, p.updated_at 
+    FROM personalities p
+    JOIN user_personalities up ON p.id = up.personality_id
+    WHERE up.user_id = ?`;
 
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching personalities:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
 
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No personalities found for this user' });
+    }
 
+    res.status(200).json({ personalities: results });
+  });
+});
 
+profile.post('/personality', verifyUser, (req: UserRequest, res: express.Response) => {
+  const { personalities } = req.body;
+  const userId = req.userId;
 
+  if (!userId || !Array.isArray(personalities)) {
+    return res.status(400).json({ message: 'Invalid request' });
+  }
 
+  // Start a transaction
+  db.beginTransaction(err => {
+    if (err) {
+      console.error('Transaction Start Error:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
 
+    // Delete existing personalities
+    db.query('DELETE FROM user_personalities WHERE user_id = ?', [userId], (err, results) => {
+      if (err) {
+        console.error('Error deleting personalities:', err);
+        db.rollback(() => {
+          return res.status(500).json({ message: 'Internal Server Error' });
+        });
+      } else {
+        // Insert new personalities
+        const query = 'INSERT INTO user_personalities (user_id, personality_id) VALUES ?';
+        const values = personalities.map((personalityId: number) => [userId, personalityId]);
 
+        db.query(query, [values], (err, results) => {
+          if (err) {
+            console.error('Error inserting personalities:', err);
+            db.rollback(() => {
+              return res.status(500).json({ message: 'Internal Server Error' });
+            });
+          } else {
+            // Commit the transaction
+            db.commit(err => {
+              if (err) {
+                console.error('Transaction Commit Error:', err);
+                db.rollback(() => {
+                  return res.status(500).json({ message: 'Internal Server Error' });
+                });
+              } else {
+                res.status(200).json({ message: 'Personalities updated successfully' });
+              }
+            });
+          }
+        });
+      }
+    });
+  });
+});
 
+profile.get('/questions', (req: UserRequest, res: express.Response) => {
+  db.query('SELECT id, text as question FROM questions', (err, results) => {
+    if (err) {
+      console.error('Error fetching questions:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
 
+    res.status(200).json({ questions: results });
+  });
+});
 
+profile.post('/answer/:questionId', verifyUser, (req: UserRequest, res: express.Response) => {
+  const { answer } = req.body;
+  const userId = req.userId;
+  const questionId = req.params.questionId;
 
+  if (!answer) {
+    return res.status(400).json({ message: 'Answer is required' });
+  }
+
+  db.beginTransaction(err => {
+
+    if (err) {
+      console.error('Transaction Start Error:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    const deleteQuery = 'DELETE FROM question_answers WHERE user_id = ? AND question_id = ?';
+
+    db.query(deleteQuery, [userId, questionId], (err, results) => {
+      if (err) {
+        console.error('Error deleting answer:', err);
+        db.rollback(() => {
+          return res.status(500).json({ message: 'Internal Server Error' });
+        });
+      }
+
+      const query = 'INSERT INTO question_answers (user_id, question_id, answer, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())';
+
+      db.query(query, [userId, questionId, answer], (err, results) => {
+        if (err) {
+          console.error('Error inserting answer:', err);
+          db.rollback(() => {
+            return res.status(500).json({ message: 'Internal Server Error' });
+          });
+        }
+
+        db.commit(err => {
+          if (err) {
+            console.error('Transaction Commit Error:', err);
+            db.rollback(() => {
+              return res.status(500).json({ message: 'Internal Server Error' });
+            });
+          }
+
+          res.status(200).json({ message: 'Answer updated successfully' });
+        });
+      });
+    });
+  });
+});
+
+profile.get('/answer/:questionId', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+  const questionId = req.params.questionId;
+
+  const query = 'SELECT answer FROM question_answers WHERE user_id = ? AND question_id = ?';
+
+  db.query(query, [userId, questionId], (err, results) => {
+    if (err) {
+      console.error('Error fetching answer:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Answer not found' });
+    }
+
+    res.status(200).json(results[0]);
+  });
+});
 
 export default profile;

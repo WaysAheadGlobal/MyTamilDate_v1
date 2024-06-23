@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './education.css';
 import backarrow from "../assets/images/backarrow.jpg";
@@ -7,17 +7,62 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Image, Button } from 'react-bootstrap';
 import responsivebg from "../assets/images/responsive-bg.png";
 import edu from "../assets/images/education.png";
+import { API_URL } from '../api';
+import { useCookies } from '../hooks/useCookies';
 
 const educationLevels = [
     'Associates', 'Bachelors', 'Doctorate', 'High school', 'Masters', 'Trade school', 'Prefer not to say'
 ];
 
+/* studies */
+
 export const Education = () => {
     const navigate = useNavigate();
+    const { getCookie } = useCookies();
+    const [selectedOption, setSelectedOption] = React.useState(null);
+
+    useEffect(() => {
+
+        (async () => {
+            const response = await fetch(`${API_URL}/customer/users/studies`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+
+            if (response.ok) {
+                setSelectedOption(data.studies?.[0]?.name);
+            }
+        })()
+
+    }, [])
+
     const goTojobTitle = () => {
         navigate("/jobtitle");
-      };
+    };
 
+    async function saveEducation() {
+        const response = await fetch(`${API_URL}/customer/users/studies`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
+            },
+            body: JSON.stringify({ name: selectedOption }),
+        });
+        const data = await response.json();
+        console.log(data);
+
+        if (response.ok) {
+            goTojobTitle();
+        } else {
+            alert(data.message);
+        }
+    }
 
 
     return (
@@ -46,26 +91,68 @@ export const Education = () => {
                                 <div className="outer-div">
                                     <div className="first-div">
                                         <div className="inner-div">
-                                            <div className="sub-inner-div">Associates</div>
-                                            <div className="sub-inner-div">Bachelors</div>
+                                            <div
+                                                onClick={() => setSelectedOption("Associates")}
+                                                className="sub-inner-div"
+                                                style={{
+                                                    backgroundColor: selectedOption === "Associates" ? '#F7ECFF' : 'transparent',
+                                                }}
+                                            >Associates</div>
+                                            <div
+                                                onClick={() => setSelectedOption("Bachelors")}
+                                                className="sub-inner-div"
+                                                style={{
+                                                    backgroundColor: selectedOption === "Bachelors" ? '#F7ECFF' : 'transparent',
+                                                }}
+                                            >Bachelors</div>
                                         </div>
                                         <div className="inner-div">
-                                            <div className="sub-inner-div">Doctorate</div>
-                                            <div className="sub-inner-div">High school</div>
+                                            <div
+                                                onClick={() => setSelectedOption("Doctorate")}
+                                                className="sub-inner-div"
+                                                style={{
+                                                    backgroundColor: selectedOption === "Doctorate" ? '#F7ECFF' : 'transparent',
+                                                }}
+                                            >Doctorate</div>
+                                            <div
+                                                onClick={() => setSelectedOption("High school")}
+                                                className="sub-inner-div"
+                                                style={{
+                                                    backgroundColor: selectedOption === "High school" ? '#F7ECFF' : 'transparent',
+                                                }}
+                                            >High school</div>
                                         </div>
                                         <div className="inner-div">
-                                            <div className="sub-inner-div">Masters</div>
-                                            <div className="sub-inner-div">Trade school</div>
+                                            <div
+                                                onClick={() => setSelectedOption("Masters")}
+                                                className="sub-inner-div"
+                                                style={{
+                                                    backgroundColor: selectedOption === "Masters" ? '#F7ECFF' : 'transparent',
+                                                }}
+                                            >Masters</div>
+                                            <div
+                                                onClick={() => setSelectedOption("Trade school")}
+                                                className="sub-inner-div"
+                                                style={{
+                                                    backgroundColor: selectedOption === "Trade school" ? '#F7ECFF' : 'transparent',
+                                                }}
+                                            >Trade school</div>
                                         </div>
                                     </div>
-                                    <div className="second-div">
-                                    Prefer not to say
+                                    <div
+                                        onClick={() => setSelectedOption("Prefer not to say")}
+                                        className="second-div"
+                                        style={{
+                                            backgroundColor: selectedOption === "Prefer not to say" ? '#F7ECFF' : 'transparent',
+                                        }}
+                                    >
+                                        Prefer not to say
                                     </div>
                                 </div>
                             </Container>
                         </div>
                     </Container>
-                    <Button variant="primary" type="submit" className='education-nxt-btn' onClick={goTojobTitle}>
+                    <Button variant="primary" type="submit" className='education-nxt-btn' onClick={saveEducation}>
                         Next
                     </Button>
                 </Container>

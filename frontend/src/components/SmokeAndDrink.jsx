@@ -1,10 +1,13 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Container, Image } from 'react-bootstrap';
 import logo from "../assets/images/MTDlogo.png";
 import backarrow from "../assets/images/backarrow.jpg";
 import responsivebg from "../assets/images/responsive-bg.png";
 import './job-title.css';
+import { API_URL } from '../api';
+import { useNavigate } from 'react-router-dom';
+import { useCookies } from '../hooks/useCookies';
 
 
 const options = [
@@ -15,6 +18,77 @@ const options = [
 ]
 
 export default function SmokeAndFamily() {
+    const [selectedSmoke, setSelectedSmoke] = useState(null);
+    const [selectedDrink, setSelectedDrink] = useState(null);
+    const { getCookie } = useCookies();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        (async () => {
+            const response = await fetch(`${API_URL}/customer/users/smoke-drink`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+            });
+
+            const data = await response.json();
+            console.log(data);
+
+            if (response.ok) {
+                setSelectedSmoke(options[data.smoke_id - 1]);
+                setSelectedDrink(options[data.drink_id - 1]);
+            }
+        })()
+    }, [])
+
+    async function saveSmoke() {
+        const response = await fetch(`${API_URL}/customer/users/update-smoke`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
+            },
+            body: JSON.stringify({ smoke_id: options.indexOf(selectedSmoke) + 1 }),
+        });
+
+        const data = await response.json();
+        console.log(data);
+
+        if (!response.ok) {
+            throw new Error('Error saving have kids');
+        }
+    }
+
+    async function saveDrink() {
+        const response = await fetch(`${API_URL}/customer/users/update-drink`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
+            },
+            body: JSON.stringify({ drink_id: options.indexOf(selectedDrink) + 1 }),
+        });
+
+        const data = await response.json();
+        console.log(data);
+
+        if (!response.ok) {
+            throw new Error('Error saving want kids');
+        }
+    }
+
+    async function saveAll() {
+        try {
+            await Promise.all([saveSmoke(), saveDrink()]);
+            navigate('/approve');
+        } catch (error) {
+            alert('Error saving kids and family');
+            console.error('Error saving kids and family:', error);
+        }
+    }
+
     return (
         <div className='job-container'>
             <div className='job-bg'>
@@ -58,7 +132,8 @@ export default function SmokeAndFamily() {
                                             display: "flex",
                                             alignItems: "center",
                                             justifyContent: "center",
-                                        }}>
+                                            backgroundColor: selectedSmoke === option ? "#F7ECFF" : "transparent",
+                                        }} onClick={() => setSelectedSmoke(option)}>
                                             {option}
                                         </div>
                                     ))}
@@ -94,7 +169,8 @@ export default function SmokeAndFamily() {
                                             display: "flex",
                                             alignItems: "center",
                                             justifyContent: "center",
-                                        }}>
+                                            backgroundColor: selectedDrink === option ? "#F7ECFF" : "transparent",
+                                        }} onClick={() => setSelectedDrink(option)}>
                                             {option}
                                         </div>
                                     ))}
@@ -119,7 +195,7 @@ export default function SmokeAndFamily() {
                             fontSize: "1.25rem",
                             fontWeight: "bold",
                             color: "#6c6c6c",
-                        }}>
+                        }} onClick={() => navigate("/approve")}>
                             Ask me later
                         </Button>
                         <Button variant="primary" style={{
@@ -131,7 +207,7 @@ export default function SmokeAndFamily() {
                             padding: "0.75rem",
                             fontSize: "1.25rem",
                             fontWeight: "bold",
-                        }}>
+                        }} onClick={saveAll}>
                             Continue
                         </Button>
                     </div>

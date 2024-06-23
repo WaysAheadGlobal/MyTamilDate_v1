@@ -30,7 +30,7 @@ let otpData: { phone: string, otp: string, createdAt: Date } | null = null;
 //         }
 
 //         const { phone } = req.body;
-    
+
 //         const query = 'SELECT first_name FROM user_profiles WHERE phone = ?';
 //         db.query(query, [phone], async (err, results) => {
 //             if (err) {
@@ -109,28 +109,28 @@ let otpData: { phone: string, otp: string, createdAt: Date } | null = null;
 
 
 // Route to send OTP for login
- auth.get('/test-twilio', async (req, res) => {
+auth.get('/test-twilio', async (req, res) => {
     const isConnected = await testTwilioConnection();
     if (isConnected) {
-      res.status(200).send('Twilio connection successful');
+        res.status(200).send('Twilio connection successful');
     } else {
-      res.status(500).send('Twilio connection failed');
+        res.status(500).send('Twilio connection failed');
     }
-   });
+});
 // Route to send OTP for login
- auth.post('/login/otp', 
+auth.post('/login/otp',
     [
         body('phone').notEmpty().withMessage('Phone number is required'),
-       
+
     ],
-    async (req:any, res:any) => {
+    async (req: any, res: any) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
 
         const { phone, countryCode } = req.body;
-    
+
         const query = 'SELECT first_name FROM user_profiles WHERE phone = ?';
         db.query(query, phone, async (err, results) => {
             if (err) {
@@ -143,7 +143,7 @@ let otpData: { phone: string, otp: string, createdAt: Date } | null = null;
             }
 
             try {
-                
+
                 await sendOTPtoPhoneNumber({ phone: phone });
                 return res.status(200).json({ message: 'OTP sent successfully!' });
                 // return res.status(200).json({ message: 'Your OTP is ',otp });
@@ -153,10 +153,10 @@ let otpData: { phone: string, otp: string, createdAt: Date } | null = null;
             }
         });
     }
- );
+);
 
 // Route to verify OTP and login
-auth.post('/login', 
+auth.post('/login',
     [
         body('phone').notEmpty().withMessage('Phone number is required'),
         body('otp').notEmpty().withMessage('OTP is required')
@@ -220,7 +220,7 @@ auth.post('/signup/otp', body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US',
         }
 
         try {
-            await sendOTPtoPhoneNumber({ phone }); 
+            await sendOTPtoPhoneNumber({ phone });
             res.status(200).json({ message: 'OTP sent successfully!' });
         } catch (error) {
             res.status(500).json({ message: 'Internal Server Error' });
@@ -230,7 +230,7 @@ auth.post('/signup/otp', body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US',
 });
 
 // Route to verify OTP and signup
-auth.post('/signup', [body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'en-AU'])], async (req : UserRequest, res:any) => {
+auth.post('/signup', [body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'en-AU'])], async (req: UserRequest, res: any) => {
     const result = validationResult(req);
     if (!result.isEmpty()) {
         return res.status(400).json({ message: 'Invalid phone number' });
@@ -293,7 +293,7 @@ auth.post('/signup', [body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'e
                                 });
                             }
                             const jwt = sign({ phone, userId }, process.env.JWT_SECRET as string, { expiresIn: '15 days' });
-                            res.status(201).json({ message: 'Sign up successful', token: jwt , userId});
+                            res.status(201).json({ message: 'Sign up successful', token: jwt, userId });
                         });
                     });
                 });
@@ -304,5 +304,11 @@ auth.post('/signup', [body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'e
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
+
+auth.post("/verify", async (req: UserRequest, res) => {
+
+});
+
+auth.get("/verify/:token", async (req: UserRequest, res) => {});
 
 export default auth;

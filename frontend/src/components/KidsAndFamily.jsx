@@ -1,12 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useEffect, useRef, useState } from 'react';
-import { Button, Container, Form, Image, InputGroup } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Button, Container, Image } from 'react-bootstrap';
 import logo from "../assets/images/MTDlogo.png";
 import backarrow from "../assets/images/backarrow.jpg";
 import responsivebg from "../assets/images/responsive-bg.png";
 import './job-title.css';
 
-import { IoIosSearch } from "react-icons/io";
+import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../api';
+import { useCookies } from '../hooks/useCookies';
 
 const kidsOptions = [
     "Don't have kids",
@@ -22,6 +24,77 @@ const familyOptions = [
 ]
 
 export default function KidsAndFamily() {
+    const [selectedHaveKids, setSelectedHaveKids] = useState(null);
+    const [selectedWantKids, setSelectedWantKids] = useState(null);
+    const { getCookie } = useCookies();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        (async () => {
+            const response = await fetch(`${API_URL}/customer/users/kids-family`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+            });
+
+            const data = await response.json();
+            console.log(data);
+
+            if (response.ok) {
+                setSelectedHaveKids(kidsOptions[data.have_kid_id - 1]);
+                setSelectedWantKids(familyOptions[data.want_kid_id - 1]);
+            }
+        })()
+    }, [])
+
+    async function saveHaveKids() {
+        const response = await fetch(`${API_URL}/customer/users/update-have-kids`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
+            },
+            body: JSON.stringify({ have_kid_id: kidsOptions.indexOf(selectedHaveKids) + 1}),
+        });
+
+        const data = await response.json();
+        console.log(data);
+
+        if (!response.ok) {
+            throw new Error('Error saving have kids');
+        }
+    }
+
+    async function saveWantKids() {
+        const response = await fetch(`${API_URL}/customer/users/update-want-kids`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
+            },
+            body: JSON.stringify({ want_kid_id: familyOptions.indexOf(selectedWantKids) + 1 }),
+        });
+
+        const data = await response.json();
+        console.log(data);
+
+        if (!response.ok) {
+            throw new Error('Error saving want kids');
+        }
+    }
+
+    async function saveAll() {
+        try {
+            await Promise.all([saveHaveKids(), saveWantKids()]);
+            navigate('/smoke-drink');
+        } catch (error) {
+            alert('Error saving kids and family');
+            console.error('Error saving kids and family:', error);
+        }
+    }
+
     return (
         <div className='job-container'>
             <div className='job-bg'>
@@ -65,7 +138,14 @@ export default function KidsAndFamily() {
                             }}>
                                 <div className="job-columns">
                                     {kidsOptions.map((kid, index) => (
-                                        <div key={index} className='job-item'>
+                                        <div
+                                            key={index}
+                                            className='job-item'
+                                            onClick={() => setSelectedHaveKids(kid)}
+                                            style={{
+                                                backgroundColor: selectedHaveKids === kid ? '#F7ECFF' : 'transparent',
+                                            }}
+                                        >
                                             {kid}
                                         </div>
                                     ))}
@@ -95,7 +175,14 @@ export default function KidsAndFamily() {
                             }}>
                                 <div className="job-columns">
                                     {familyOptions.map((family, index) => (
-                                        <div key={index} className='job-item'>
+                                        <div
+                                            key={index}
+                                            className='job-item'
+                                            onClick={() => setSelectedWantKids(family)}
+                                            style={{
+                                                backgroundColor: selectedWantKids === family ? '#F7ECFF' : 'transparent',
+                                            }}
+                                        >
                                             {family}
                                         </div>
                                     ))}
@@ -132,7 +219,7 @@ export default function KidsAndFamily() {
                             padding: "0.75rem",
                             fontSize: "1.25rem",
                             fontWeight: "bold",
-                        }}>
+                        }} onClick={saveAll}>
                             Next
                         </Button>
                     </div>

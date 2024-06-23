@@ -1,35 +1,63 @@
-import React, { useState, useRef, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './job-title.css';
-import backarrow from "../assets/images/backarrow.jpg";
+import React, { useEffect, useRef, useState } from 'react';
+import { Button, Container, Form, Image, InputGroup } from 'react-bootstrap';
 import logo from "../assets/images/MTDlogo.png";
-import { Container, Image, Button, Form, Modal, InputGroup } from 'react-bootstrap';
+import backarrow from "../assets/images/backarrow.jpg";
 import responsivebg from "../assets/images/responsive-bg.png";
-import job from "../assets/images/job.png";
+import './job-title.css';
 
 import { IoIosSearch } from "react-icons/io";
-
-const personalityTypes = [
-    "Affectionate",
-    "Activist",
-    "Adaptable",
-    "Animal lover",
-    "Artsy",
-    "Bookworm",
-    "Confident",
-    "Balanced",
-    "Charming",
-    "Carefree",
-    "Bold"
-];
+import { API_URL } from '../api';
+import { useCookies } from '../hooks/useCookies';
+import { useNavigate } from 'react-router-dom';
 
 export default function Personality() {
     const [searchTerm, setSearchTerm] = useState('');
     const personalityListEndRef = useRef(null);
     const [hasAddedPersonality, setHasAddedPersonality] = useState(false);
+    const [personalities, setPersonalities] = useState([]);
+    const { getCookie } = useCookies();
+    const [selectedPersonalities, setSelectedPersonalities] = useState([]);
+    const navigate = useNavigate();
 
-    const filteredPersonality = personalityTypes.filter(p => p.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filteredPersonality = personalities.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
+
+    useEffect(() => {
+        // Fetch existing location data on component mount
+        fetch(`${API_URL}/customer/users/personality-options`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.personalities) {
+                    setPersonalities(data.personalities);
+                }
+            })
+            .catch(error => console.error('Error fetching location:', error));
+    }, []);
+
+    useEffect(() => {
+        fetch(`${API_URL}/customer/users/personalities`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.personalities) {
+                    console.log(data.personalities.map(p => p.name))
+                    setSelectedPersonalities(data.personalities);
+                }
+            })
+            .catch(error => console.error('Error fetching location:', error));
+    }, [personalities]);
 
     useEffect(() => {
         if (hasAddedPersonality && personalityListEndRef.current) {
@@ -37,6 +65,25 @@ export default function Personality() {
             setHasAddedPersonality(false);
         }
     }, [hasAddedPersonality]);
+
+    async function savePersonalities() {
+        const response = await fetch(`${API_URL}/customer/users/personality`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
+            },
+            body: JSON.stringify({ personalities: selectedPersonalities.map(p => p.id) }),
+        });
+        const data = await response.json();
+        console.log(data);
+
+        if (response.ok) {
+            navigate("/profile-answers");
+        } else {
+            alert(data.message);
+        }
+    }
 
     return (
         <div className='job-container'>
@@ -87,7 +134,7 @@ export default function Personality() {
                                 />
                                 <InputGroup.Text className='search-icon' style={{
                                     position: "relative",
-                                    top: "-0.5rem",
+                                    top: "0rem",
                                 }}><IoIosSearch /></InputGroup.Text>
                             </InputGroup>
                             <div style={{
@@ -95,9 +142,22 @@ export default function Personality() {
                                 overflow: "auto",
                             }}>
                                 <div className="job-columns">
-                                    {filteredPersonality.map((job, index) => (
-                                        <div key={index} className='job-item'>
-                                            {job}
+                                    {filteredPersonality.map((personality, index) => (
+                                        <div
+                                            key={index}
+                                            className='job-item'
+                                            onClick={() => {
+                                                if (selectedPersonalities.find(p => p.name === personality.name)) {
+                                                    setSelectedPersonalities(selectedPersonalities.filter(p => p !== personality));
+                                                } else {
+                                                    setSelectedPersonalities([...selectedPersonalities, personality]);
+                                                }
+                                            }}
+                                            style={{
+                                                backgroundColor: selectedPersonalities.find(p => p.name === personality.name) ? "#F7ECFF" : "transparent",
+                                            }}
+                                        >
+                                            {personality.name}
                                         </div>
                                     ))}
                                     <div ref={personalityListEndRef} />
@@ -105,7 +165,7 @@ export default function Personality() {
                             </div>
                         </div>
                     </Container>
-                    <Button variant="primary" type="submit" className='job-nxt-btn'>
+                    <Button variant="primary" onClick={savePersonalities} type="submit" className='job-nxt-btn'>
                         Next
                     </Button>
                 </Container>

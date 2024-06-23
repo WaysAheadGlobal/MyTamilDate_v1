@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './signin.css';
-import { useNavigate } from 'react-router-dom';
-import logo2 from "../../assets/images/logo2.png";
-import blank from "../../assets/images/blank.png";
-import responsivebg from "../../assets/images/responsive-bg.png";
+import React, { useEffect, useState } from 'react';
+import { Button, Container, Dropdown, Form, FormControl, Image, InputGroup, Modal } from 'react-bootstrap';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Flag from 'react-world-flags';
-import backarrow from "../../assets/images/backarrow.jpg";
-import { Container, Image, Form, Button, Dropdown,Modal, InputGroup, FormControl } from 'react-bootstrap';
 import { useAppContext } from '../../Context/UseContext';
-import { useCookies } from '../../hooks/useCookies';
 import { API_URL } from '../../api';
+import backarrow from "../../assets/images/backarrow.jpg";
+import blank from "../../assets/images/blank.png";
+import logo2 from "../../assets/images/logo2.png";
+import responsivebg from "../../assets/images/responsive-bg.png";
+import { useCookies } from '../../hooks/useCookies';
+import './signin.css';
 const countries = [
     { code: 'US', name: 'United States', dialCode: '+1' },
     { code: 'CA', name: 'Canada', dialCode: '+1' },
@@ -26,8 +26,9 @@ export const SignIn = () => {
     const [selectedCountryInfo, setSelectedCountryInfo] = useState(countries.find(country => country.code === 'CA'));
     const [showModal, setShowModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const searchParams = useSearchParams();
 
-    const { setCookie } = useCookies(); 
+    const { setCookie } = useCookies();
     const handleCountrySelect = (countryCode) => {
         setSelectedCountry(countryCode);
         const countryInfo = countries.find(country => country.code === countryCode);
@@ -48,7 +49,7 @@ export const SignIn = () => {
 
 
     const handlePhoneNumberChange = (e) => {
-        const value = e.target.value.replace(/\D/g, ''); 
+        const value = e.target.value.replace(/\D/g, '');
         setPhoneNumber(value);
     };
 
@@ -76,6 +77,10 @@ export const SignIn = () => {
                 if (response.ok) {
                     alert(result.message);
                     setCookie('phoneNumber', completePhoneNumber, 7);
+                    if (searchParams[0].get('next') === "verify") {
+                        navigate("/" + searchParams[0].get('next'));
+                        return;
+                    }
                     navigate("/signinphoneotp");
                 } else {
                     setErrorMessage(result.message || 'Failed to send OTP');
@@ -97,7 +102,7 @@ export const SignIn = () => {
 
                     <Container className='logo-progressbar1'>
 
-                    <Container className='logo-arrow1'>
+                        <Container className='logo-arrow1'>
                             <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
                             <Image src={logo2} alt="Logo" className='logo1' style={{ backgroundColor: 'transparent' }} />
                         </Container>
@@ -141,12 +146,12 @@ export const SignIn = () => {
                                 {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
                             </Form.Group>
 
-                       
-                            <Button variant="primary" type="submit"   className='verify-phone-btn'>
+
+                            <Button variant="primary" type="submit" className='verify-phone-btn'>
                                 Next
                             </Button>
                         </Form>
-{/*                    
+                        {/*                    
                     <Container className='or-option'>
                         <Container className='or-line'>
                             <div className='line'></div>
@@ -156,8 +161,8 @@ export const SignIn = () => {
                         <p>New here? Create an account?<a href='./signup' className='signup-signin'>Sign Up</a></p>
                         <p>By continuing you accept our <br /><a className="signup-links" href="/PrivacyPolicy">Privacy Policy</a> and <a className="signup-links" target="_blank" href='/Tnc'>Terms of Use</a></p>
                     </Container> */}
-                     </Container>
-                   
+                    </Container>
+
                 </Container>
             </Container>
 
@@ -165,13 +170,13 @@ export const SignIn = () => {
 
 
             <Modal show={showModal} onHide={() => setShowModal(false)}
-             centered
+                centered
                 dialogClassName="custom-modal"
             >
                 {/* <Modal.Header closeButton>
 
                 </Modal.Header> */}
-                
+
                 <Modal.Body>
                     <InputGroup className="mb-3">
                         <FormControl

@@ -8,6 +8,9 @@ import responsivebg from "../assets/images/responsive-bg.png";
 import job from "../assets/images/job.png";
 
 import { IoIosSearch } from "react-icons/io";
+import { API_URL } from '../api';
+import { useCookies } from '../hooks/useCookies';
+import { useNavigate } from 'react-router-dom';
 
 const jobTypes = [
     'Anesthesiologist', 'Actor', 'Analyst', 'Anthropologist', 'Biologist', 'Business owner', 'Chef', 'Civil Engineer', 'Designer', 'Entrepreneur'
@@ -20,6 +23,9 @@ export const JobTitle = () => {
     const [newJobTitle, setNewJobTitle] = useState('');
     const jobListEndRef = useRef(null);
     const [hasAddedJob, setHasAddedJob] = useState(false);
+    const { getCookie } = useCookies();
+    const [selectedOption, setSelectedOption] = React.useState(null);
+    const navigate = useNavigate();
 
     const filteredJobs = jobTypes.filter(job => job.toLowerCase().includes(searchTerm.toLowerCase()));
 
@@ -31,11 +37,48 @@ export const JobTitle = () => {
     };
 
     useEffect(() => {
+        (async () => {
+            const response = await fetch(`${API_URL}/customer/users/jobs`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+
+            if (response.ok) {
+                setSelectedOption(data.jobs[0]?.name);
+            }
+        })();
+    }, [])
+
+    useEffect(() => {
         if (hasAddedJob && jobListEndRef.current) {
             jobListEndRef.current.scrollIntoView({ behavior: 'smooth' });
             setHasAddedJob(false);
         }
     }, [customJobs, hasAddedJob]);
+
+    async function saveJobTitle() {
+        const response = await fetch(`${API_URL}/customer/users/jobs`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
+            },
+            body: JSON.stringify({ name: selectedOption }),
+        });
+        const data = await response.json();
+        console.log(data);
+
+        if (response.ok) {
+            navigate("/height");
+        } else {
+            alert(data.message);
+        }
+    }
 
     return (
         <div className='job-container'>
@@ -72,12 +115,16 @@ export const JobTitle = () => {
                             <Container className='all-job'>
                                 <div className="job-columns">
                                     {filteredJobs.map((job, index) => (
-                                        <div key={index} className='job-item'>
+                                        <div onClick={() => setSelectedOption(job)} key={index} className='job-item' style={{
+                                            backgroundColor: selectedOption === job ? '#F7ECFF' : 'transparent'
+                                        }}>
                                             {job}
                                         </div>
                                     ))}
                                     {customJobs.map((job, index) => (
-                                        <div key={index + filteredJobs.length} className='job-item'>
+                                        <div key={index + filteredJobs.length} onClick={() => setSelectedOption(job)} className='job-item' style={{
+                                            backgroundColor: selectedOption === job ? '#F7ECFF' : 'transparent'
+                                        }}>
                                             {job}
                                         </div>
                                     ))}
@@ -90,7 +137,7 @@ export const JobTitle = () => {
                             </div>
                         </div>
                     </Container>
-                    <Button variant="primary" type="submit" className='job-nxt-btn'>
+                    <Button variant="primary" type="submit" onClick={saveJobTitle} className='job-nxt-btn'>
                         Next
                     </Button>
                 </Container>

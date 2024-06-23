@@ -24,7 +24,7 @@ export const Selfie = () => {
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [currentImageKey, setCurrentImageKey] = useState(null);
     const [showDosDontsModal, setShowDosDontsModal] = useState(false);
-    const [selectedDosDonts, setSelectedDosDonts] = useState(null);
+    const [imageBlob, setImageBlob] = useState(null);   
 
     const fileInputRefMain = useRef(null);
     const fileInputRefFirst = useRef(null);
@@ -55,13 +55,14 @@ export const Selfie = () => {
     };
 
     const handleNextClick = () => {
-        if (!selectedImages.main || !selectedImages.first || !selectedImages.second) {
+        /* if (!selectedImages.main || !selectedImages.first || !selectedImages.second) {
             setShowModal(true);
-        } else {
-            navigate("/located");
-        }
+            return;
+        } */
 
-        // navigate("/located");
+    
+
+        navigate("/located");
     };
 
     const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
@@ -79,8 +80,8 @@ export const Selfie = () => {
         getCroppedImg(imageToCrop, croppedAreaPixels)
             /* croppedImage: Blob */
             .then(croppedImage => {
-                console.log('Cropped image URL:', croppedImage); // You can save this URL to the state or DB
 
+                setImageBlob(croppedImage);
                 setSelectedImages(prevState => ({
                     ...prevState,
                     [currentImageKey]: URL.createObjectURL(croppedImage)
