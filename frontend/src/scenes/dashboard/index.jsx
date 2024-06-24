@@ -176,6 +176,7 @@ const Dashboard = () => {
   const [transactions, setTransactions] = useState([]);
   const [TotalPeyment, setTotalPeyment] = useState(0);
   const[TotalLikeCount, setLikeCount] = useState(0);
+  const[locationscount, setLocationsCount] = useState([]);
   const[TotalMatchsCount, setMatchsCount] = useState(0);
   const [messageCount, setMessageCount] = useState(0);
   const [timeRange, setTimeRange] = useState('month');
@@ -296,6 +297,7 @@ const Dashboard = () => {
         console.error('Error fetching message count:', error);
       }
     };
+
     const getMatchCount = async () => {
       try {
         const response = await axios.get(`${API_URL}/admin/dashboard/matches/count`, {
@@ -318,6 +320,20 @@ const Dashboard = () => {
         console.error('Error fetching message count:', error);
       }
     };
+   
+    const Toptencountry = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/admin/dashboard/locations/count`, {
+          params: { timeRange }
+        });
+        setLocationsCount(response.data);
+     console.log(response.data);
+     console.log("jldsjfs");
+      } catch (error) {
+        console.error('Error fetching message count:', error);
+      }
+    };
+
 
     const formatToK = (amount) => {
       if (amount >= 1000 && amount < 1000000) {
@@ -337,6 +353,7 @@ const Dashboard = () => {
     TotalPayments();
     getLikeCount();
     getMatchCount();
+    Toptencountry();
   }, [timeRange]);
 
   useEffect(()=>{

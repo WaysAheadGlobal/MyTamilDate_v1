@@ -6,17 +6,20 @@ import responsivebg from "../assets/images/responsive-bg.png";
 import './job-title.css';
 import { API_URL } from '../api';
 import { useNavigate } from 'react-router-dom';
+import { useCookies } from '../hooks/useCookies';
 
 export default function ApproveEmail() {
 
     const navigate = useNavigate();
-
+    const { getCookie } = useCookies();
     const updateStatus = async (newStatus) => {
         try {
           const response = await fetch(`${API_URL}/customer/users/updatestatus`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
+              'Authorization': `Bearer ${getCookie('token')}`
+
             },
             body: JSON.stringify({ approval: newStatus }),
           });
