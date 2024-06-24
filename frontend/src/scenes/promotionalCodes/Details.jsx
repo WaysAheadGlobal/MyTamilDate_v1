@@ -14,7 +14,7 @@ const Details = () => {
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/v1/admin/promotioncode/${id}`);
+        const response = await fetch(`${API_URL}/admin/promotioncode/${id}`);
         const data = await response.json();
         setDetails(data);
       } catch (error) {
