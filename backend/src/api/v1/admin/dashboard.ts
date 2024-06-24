@@ -188,7 +188,7 @@ dashboard.get('/locations/count', (req: AdminRequest, res) => {
             country
         ORDER BY 
             count DESC
-        LIMIT 10`;
+        LIMIT 5`;
 
     db.query(sql, (err, results) => {
         if (err) {
@@ -275,7 +275,7 @@ dashboard.get('/jobs/top-three', (req: AdminRequest, res) => {
             j.name
         ORDER BY 
             count DESC
-        LIMIT 3`;
+        LIMIT 5`;
 
     db.query(sql, (err, results) => {
         if (err) {

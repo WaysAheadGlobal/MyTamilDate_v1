@@ -4,8 +4,38 @@ import { Button, Container, Image } from 'react-bootstrap';
 import logo from "../assets/images/MTDlogo.png";
 import responsivebg from "../assets/images/responsive-bg.png";
 import './job-title.css';
+import { API_URL } from '../api';
+import { useNavigate } from 'react-router-dom';
 
 export default function ApproveEmail() {
+
+    const navigate = useNavigate();
+
+    const updateStatus = async (newStatus) => {
+        try {
+          const response = await fetch(`${API_URL}/customer/users/updatestatus`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ approval: newStatus }),
+          });
+      
+          if (!response.ok) {
+            const errorDetails = await response.text(); 
+            throw new Error(`Failed to update status: ${errorDetails}`);
+          }
+          navigate("/almost-there")
+          console.log("Status updated successfully");
+        } catch (err) {
+          console.error(err);
+        }
+      };
+
+      const handleUpdatestatus = ()=>{
+        updateStatus(10);
+      }
+
     return (
         <div className='job-container'>
             <div className='job-bg'>
@@ -66,7 +96,7 @@ export default function ApproveEmail() {
                         marginTop: "auto",
                         marginBottom: "2rem",
                     }}>
-                        <Button variant="primary" style={{
+                        <Button variant="primary" onClick={handleUpdatestatus} style={{
                             width: "100%",
                             marginTop: "1rem",
                             background: "linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%)",

@@ -262,7 +262,7 @@ auth.post('/signup', [body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'e
                 }
 
                 const userQuery = `INSERT INTO users (approval, active, created_at, updated_at, incomplete_email, trial_popup_shown, is_online, last_activity, unseen_message_sent)
-                VALUES (10, 1, NOW(), NOW(), 0, 0, 0, NOW(), 0)`;
+                VALUES (40, 1, NOW(), NOW(), 0, 0, 0, NOW(), 0)`;
 
                 db.query(userQuery, (userErr, userResult) => {
                     if (userErr) {

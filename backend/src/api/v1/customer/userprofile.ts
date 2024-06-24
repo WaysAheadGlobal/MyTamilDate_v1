@@ -859,4 +859,29 @@ profile.get('/answer/:questionId', verifyUser, (req: UserRequest, res: express.R
   });
 });
 
+profile.put('/updatestatus',verifyUser, (req: UserRequest, res: express.Response) => {
+  const {  approval } = req.body;
+  const userId = req.userId;
+
+  if ( !approval) {
+      res.status(400).send('Bad Request: Missing  status');
+      return;
+  }
+
+  const updateStatusSql = `
+      UPDATE users
+      SET approval = ?
+      WHERE id = ?
+  `;
+
+  db.query(updateStatusSql, [approval, userId], (err: Error | null, result: any) => {
+      if (err) {
+          console.log('Error updating status:', err);
+          res.status(500).send('Internal Server Error');
+          return;
+      }
+      res.status(200).send('Status updated successfully');
+  });
+});
+
 export default profile;
