@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, Typography, Button, Avatar } from '@mui/material';
+import { Box, Grid, Typography, Button, Avatar, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Header from '../../components/Header1';
 import { useParams } from 'react-router-dom';
 import { API_URL } from '../../api';
+import { tokens } from "../../theme";
+
+
+
 
 const UserDetails = () => {
-  const [details, setDetails] = useState({});
-  const { id } = useParams();
   const theme = useTheme();
+  const [details, setDetails] = useState({});
+  const colors = tokens(theme.palette.mode);
+   const isLgUp = useMediaQuery(theme.breakpoints.up('lg'));
+  const { id } = useParams();
 
   const fetchData = async () => {
     try {
       const data = await fetch(`${API_URL}/admin/users/customers/${id}`);
       const response = await data.json();
       setDetails(response[0]);
+      console.log(response[0]);
     } catch (err) {
       console.log(err);
     }
@@ -24,16 +31,92 @@ const UserDetails = () => {
     fetchData();
   }, [id]);
 
-  const handleRemoveFromList = () => {
-    console.log('Removing user from list');
+  const updateStatus = async (newStatus) => {
+    try {
+      const response = await fetch(`${API_URL}/admin/users/updatestatus`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: id, approval: newStatus }),
+      });
+  
+      if (!response.ok) {
+        const errorDetails = await response.text(); // Get error details for debugging
+        throw new Error(`Failed to update status: ${errorDetails}`);
+      }
+  
+      // Fetch updated details after updating the status
+      await fetchData();
+      
+      console.log("Status updated successfully");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
+  const handleDeleteRequest = async () => {
+    try {
+      const response = await fetch(`${API_URL}/admin/users/deleteuser`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: id }),
+      });
+
+      if (!response.ok) {
+        const errorDetails = await response.text(); // Get error details for debugging
+        throw new Error(`Failed to delete user: ${errorDetails}`);
+      }
+
+      
+      await fetchData();
+
+      console.log('User deleted successfully');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+
+  const maskEmail = (email) => {
+    if (!email) return 'N/A';
+    const [localPart, domain] = email.split('@');
+    const maskedLocalPart = localPart[0] + '****' + localPart.slice(-1);
+    return `${maskedLocalPart}@${domain}`;
+  };
+
+  const maskPhone = (phone) => {
+    if (!phone) return 'N/A';
+    return phone.replace(/(\d{2})\d{6}(\d{2})/, '$1******$2');
+  };
+
+  let status;
+  const approvalStatuses = {
+    10: 'Pending User',
+    15: 'Disable',
+    20: 'Approved',
+    30: 'Rejected User',
+    40: 'Incomplete Registration',
+  };
+
+   status = 'N/A';
+  if (details.deleted_at) {
+    status = 'Deleted';
+  } else {
+    status = approvalStatuses[details.approval] || 'N/A';
+  }
+
+  
+
+
   const handleApproveRequest = () => {
-    console.log('Approving user request');
+    updateStatus(20);
   };
 
   const handleRejectRequest = () => {
-    console.log('Rejecting user request');
+    updateStatus(30);
   };
 
   return (
@@ -48,38 +131,196 @@ const UserDetails = () => {
               sx={{ width: 250, height: 250, mb: 2 }}
             />
             <Typography variant="h5" align="center">{`${details.first_name || ''} ${details.last_name || ''}`}</Typography>
-            <Typography variant="subtitle1" color="textSecondary" align="center">{details.status || 'N/A'}</Typography>
+            <Typography variant="subtitle1" color="textSecondary" align="center">{status || 'N/A'}</Typography>
           </Box>
-          <Box display="flex" gap="2px" alignItems="center" justifyContent="center">
-            <Box mb={2} textAlign="center">
-              <Button variant="contained" sx={{ backgroundColor: theme.palette.grey[900] }} onClick={handleRemoveFromList}>
-                Reject
-              </Button>
-            </Box>
-            <Box mb={2} textAlign="center">
-              <Button 
-                sx={{
-                  background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-                  color: '#fff',
-                  '&:hover': {
-                    background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-                  },
-                }} 
-                onClick={handleApproveRequest}
-              >
-                Approve
-              </Button>
-            </Box>
-            <Box mb={2} textAlign="center">
-              <Button variant="contained" color="error" onClick={handleRejectRequest}>Delete</Button>
-            </Box>
-            <Box mb={2} textAlign="center">
-              <Button variant="contained" color="error" onClick={handleRejectRequest}>Delete Request</Button>
+         
+        </Grid>
+        <Grid item xs={12} md={8}>
+        <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <Box mb={2}>
+            <Typography variant="h6" color={colors.primary[700]}>First Name</Typography>
+            <Box
+              sx={{
+                p: 2,
+                border: `1px solid ${colors.grey[300]}`,
+                borderRadius: '8px',
+                backgroundColor: colors.primary[50],
+              }}
+            >
+              <Typography variant="body1">{details.first_name || "N/A"}</Typography>
             </Box>
           </Box>
         </Grid>
-        <Grid item xs={12} md={8}>
-          <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <Box mb={2}>
+            <Typography variant="h6" color={colors.primary[700]}>Last Name</Typography>
+            <Box
+              sx={{
+                p: 2,
+                border: `1px solid ${colors.grey[300]}`,
+                borderRadius: '8px',
+                backgroundColor: colors.primary[50],
+              }}
+            >
+              <Typography variant="body1">{details.last_name || "N/A" }</Typography>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Box mb={2}>
+            <Typography variant="h6" color={colors.primary[700]}>Status</Typography>
+            <Box
+              sx={{
+                p: 2,
+                border: `1px solid ${colors.grey[300]}`,
+                borderRadius: '8px',
+                backgroundColor: colors.primary[50],
+              }}
+            >
+              <Typography variant="body1">{status || 'N/A'}</Typography>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Box mb={2}>
+            <Typography variant="h6" color={colors.primary[700]}>Payment Status</Typography>
+            <Box
+              sx={{
+                p: 2,
+                border: `1px solid ${colors.grey[300]}`,
+                borderRadius: '8px',
+                backgroundColor: colors.primary[50],
+              }}
+            >
+              <Typography variant="body1">{details.paymentStatus || 'N/A'}</Typography>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Box mb={2}>
+            <Typography variant="h6" color={colors.primary[700]}>Email</Typography>
+            <Box
+              sx={{
+                p: 2,
+                border: `1px solid ${colors.grey[300]}`,
+                borderRadius: '8px',
+                backgroundColor: colors.primary[50],
+              }}
+            >
+              <Typography variant="body1">{maskEmail(details.email) || 'N/A'}</Typography>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Box mb={2}>
+            <Typography variant="h6" color={colors.primary[700]}>Phone Number</Typography>
+            <Box
+              sx={{
+                p: 2,
+                border: `1px solid ${colors.grey[300]}`,
+                borderRadius: '8px',
+                backgroundColor: colors.primary[50],
+              }}
+            >
+              <Typography variant="body1">{maskPhone(details.phone)|| 'N/A'}</Typography>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Box mb={2}>
+            <Typography variant="h6" color={colors.primary[700]}>Birthday</Typography>
+            <Box
+              sx={{
+                p: 2,
+                border: `1px solid ${colors.grey[300]}`,
+                borderRadius: '8px',
+                backgroundColor: colors.primary[50],
+              }}
+            >
+              <Typography variant="body1">{details.birthday ? new Date(details.birthday).toLocaleDateString('en-US') : 'N/A'}</Typography>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Box mb={2}>
+            <Typography variant="h6" color={colors.primary[700]}>Gender</Typography>
+            <Box
+              sx={{
+                p: 2,
+                border: `1px solid ${colors.grey[300]}`,
+                borderRadius: '8px',
+                backgroundColor: colors.primary[50],
+              }}
+            >
+              <Typography variant="body1">
+  {details.gender === 1 ? 'Male' : details.gender === 2 ? 'Female' : 'Other'}
+</Typography>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Box mb={2}>
+            <Typography variant="h6" color={colors.primary[700]}>Location</Typography>
+            <Box
+              sx={{
+                p: 2,
+                border: `1px solid ${colors.grey[300]}`,
+                borderRadius: '8px',
+                backgroundColor: colors.primary[50],
+              }}
+            >
+              <Typography variant="body1">{details.country || 'N/A'}</Typography>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Box mb={2}>
+            <Typography variant="h6" color={colors.primary[700]}>Study</Typography>
+            <Box
+              sx={{
+                p: 2,
+                border: `1px solid ${colors.grey[300]}`,
+                borderRadius: '8px',
+                backgroundColor: colors.primary[50],
+              }}
+            >
+              <Typography variant="body1">{details.study_name || 'N/A'}</Typography>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Box mb={2}>
+            <Typography variant="h6" color={colors.primary[700]}>Job</Typography>
+            <Box
+              sx={{
+                p: 2,
+                border: `1px solid ${colors.grey[300]}`,
+                borderRadius: '8px',
+                backgroundColor: colors.primary[50],
+              }}
+            >
+              <Typography variant="body1">{details.job_name  || 'N/A'}</Typography>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Box mb={2}>
+            <Typography variant="h6" color={colors.primary[700]}>Growth</Typography>
+            <Box
+              sx={{
+                p: 2,
+                border: `1px solid ${colors.grey[300]}`,
+                borderRadius: '8px',
+                backgroundColor: colors.primary[50],
+              }}
+            >
+              <Typography variant="body1">{details.growth_name || 'N/A'}</Typography>
+            </Box>
+          </Box>
+        </Grid>
+      </Grid>
+          {/* <Grid container spacing={2}>
             <Grid item xs={6}>
               <Box mb={4}>
                 <Typography variant="h4" gutterBottom>First Name</Typography>
@@ -132,8 +373,75 @@ const UserDetails = () => {
                 <Typography variant="body1">{details.growth_name || 'N/A'}</Typography>
               </Box>
             </Grid>
+          </Grid> */}
+           <Box display="flex" gap="8px" flexDirection={isLgUp ? 'row' : 'column'} alignItems="center" justifyContent="center">
+      <Box>
+        <Grid
+          container
+          direction={isLgUp ? 'row' : 'column'}
+          justifyContent="center"
+          alignItems="center"
+          spacing={2}
+        >
+          <Grid item xs={12} lg={6} textAlign="center">
+          {details.approval === 10 && details.deleted_at == null ? (
+                    <Button
+                      variant="contained"
+                      sx={{ backgroundColor: theme.palette.grey[900] }}
+                      onClick={handleRejectRequest}
+                    >
+                      Reject
+                    </Button>
+                  ) : null}
+          
+          </Grid>
+          <Grid item xs={12} lg={6} textAlign="center">
+          {details.approval === 10 && details.deleted_at == null ? (
+            <Button
+              sx={{
+                background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                color: '#fff',
+                '&:hover': {
+                  background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                },
+              }}
+              onClick={handleApproveRequest}
+            >
+              Approve
+            </Button>
+               ) : null}
           </Grid>
         </Grid>
+      </Box>
+
+      <Box>
+        <Grid
+          container
+          direction={isLgUp ? 'row' : 'column'}
+          justifyContent="center"
+          alignItems="center"
+          spacing={2}
+        >
+          <Grid item xs={12} lg={6} textAlign="center">
+          { details.deleted_at === null ? (
+            <Button variant="contained" color="error" onClick={handleDeleteRequest}>
+              Delete
+            </Button>
+              ) : null}
+          </Grid>
+          <Grid item xs={12} lg={6} textAlign="center">
+          { details.deleted_at === null ? (
+            <Button  sx={{width: "140px"}} variant="contained" color="error" onClick={handleDeleteRequest}>
+              Delete Request
+            </Button>
+            ) : null}
+          </Grid>
+        </Grid>
+      </Box>
+    </Box>
+        </Grid>
+
+       
       </Grid>
     </Box>
   );

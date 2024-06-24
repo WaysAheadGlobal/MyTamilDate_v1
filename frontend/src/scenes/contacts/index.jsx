@@ -27,19 +27,39 @@ const Contacts = () => {
     }
   };
 
+  const getApprovalStatus = (approval, deleted_at) => {
+    if (deleted_at) return "Deleted";
+    switch (approval) {
+      case 10:
+        return "Pending";
+      case 15:
+        return "Disable";
+      case 20:
+        return "Approved";
+      case 30:
+        return "Rejected";
+      case 40:
+        return "Incomplete Registration";
+      default:
+        return "N/A";
+    }
+  };
+
   const fetchData = async (page, pageSize) => {
     try {
       const response = await fetch(`${ API_URL }/admin/users/customers?limit=${pageSize}&pageNo=${page + 1}`);
       const data = await response.json();
+      console.log(data.results)
       
       const formattedData = data.results.map((item) => ({
         id: item.user_id,
         name: `${item.first_name} ${item.last_name || ''}`, // Combining first and last name
+        approval: getApprovalStatus(item.approval, item.deleted_at),
         age: new Date().getFullYear() - new Date(item.birthday).getFullYear(),
         phone: item.phone || 'N/A',
         email: item.email || 'N/A',
         country: item.country || 'N/A', // Assuming address is optional
-        status: item.status,
+       
         gender: item.gender == 1 ? "Male" : "Female",
         created_at: new Date(item.created_at).toLocaleDateString('en-US', {
           year: 'numeric',
@@ -87,6 +107,11 @@ const Contacts = () => {
     {
       field: 'name',
       headerName: 'Name',
+      flex: 1,
+    },
+    {
+      field: 'approval',
+      headerName: 'Status',
       flex: 1,
     },
     {

@@ -90,6 +90,65 @@ console.log('Executing SQL:', sql);
         res.status(200).json({ total_messages: totalMessages });
     });
 });
+// / API to get total likes
+dashboard.get('/likes/count', (req: AdminRequest, res) => {
+    const timeRange: string = (req.query.timeRange as string) || '24h';
+    const dateCondition = getDateCondition(timeRange);
+
+    const sql = `
+        SELECT COUNT(*) AS total_likes
+        FROM matches
+        WHERE \`like\` = 1 AND ${dateCondition}
+    `;
+    console.log('Executing SQL:', sql);
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        if (results.length === 0) {
+            res.status(404).json({ error: 'No likes found in the specified time range' });
+            return;
+        }
+        const totalLikes = results[0].total_likes;
+        res.status(200).json({ total_likes: totalLikes });
+    });
+});
+
+//API to get total matches
+dashboard.get('/matches/count', (req: AdminRequest, res) => {
+    const timeRange: string = (req.query.timeRange as string) || '24h';
+    const dateCondition = getDateCondition(timeRange);
+
+    const subQuery = `
+        SELECT user_id
+        FROM matches
+        WHERE created_at >= NOW() - INTERVAL 1 DAY AND \`like\` = 1 AND ${dateCondition}
+    `;
+
+    const sql = `
+        SELECT COUNT(*) AS total_matches
+        FROM matches
+        WHERE \`like\` = 1 AND person_id IN (${subQuery}) AND ${dateCondition}
+    `;
+    console.log('Executing SQL:', sql);
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        if (results.length === 0) {
+            res.status(404).json({ error: 'No matches found in the specified time range' });
+            return;
+        }
+        const totalMatches = results[0].total_matches;
+        res.status(200).json({ total_matches: totalMatches });
+    });
+});
 
 
 dashboard.get('/request/count', (req: AdminRequest, res) => {

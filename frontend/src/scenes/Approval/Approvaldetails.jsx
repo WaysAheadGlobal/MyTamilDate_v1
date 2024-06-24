@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Grid, Typography, Button, Avatar, List, ListItem, ListItemText } from '@mui/material';
+import { Box, Grid, Typography, Button, Avatar, List, ListItem, ListItemText, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Header from '../../components/Header1'; // Adjust path as per your project structure
 import { tokens } from '../../theme'; // Adjust path as per your project structure
 import { API_URL } from '../../api';
@@ -14,11 +14,17 @@ const photos = [
 
 const UserDetails = () => {
   const [details, setDetails] = useState(null);
-  const [quesAns, setQuesAns] = useState([]);
   const theme = useTheme();
+  const isXsUp = useMediaQuery(theme.breakpoints.up('xs'));
+  const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
+  const isLgUp = useMediaQuery(theme.breakpoints.up('lg'));
+  const navigate = useNavigate();
+  console.log(details);
+  const [quesAns, setQuesAns] = useState([]);
   const colors = tokens(theme.palette.mode);
   const { id } = useParams();
-
+console.log(id);
   const detailsfetchData = async () => {
     try {
       const response = await fetch(`${API_URL}/admin/users/approval/${id}`);
@@ -49,12 +55,64 @@ const UserDetails = () => {
     console.log('Removing user from list');
   };
 
+  const updateStatus = async (newStatus) => {
+    try {
+      const response = await fetch(`${API_URL}/admin/users/updatestatus`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: id, approval: newStatus }),
+      });
+  
+      if (!response.ok) {
+        const errorDetails = await response.text(); // Get error details for debugging
+        throw new Error(`Failed to update status: ${errorDetails}`);
+      }
+  
+      // Fetch updated details after updating the status
+      await detailsfetchData();
+      navigate("/approval")
+      console.log("Status updated successfully");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteRequest = async () => {
+    try {
+      const response = await fetch(`${API_URL}/admin/users/deleteuser`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: id }),
+      });
+
+      if (!response.ok) {
+        const errorDetails = await response.text(); 
+        throw new Error(`Failed to delete user: ${errorDetails}`);
+      }
+
+      
+      await detailsfetchData();
+      navigate("/approval")
+      console.log('User deleted successfully');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleApproveRequest = () => {
-    console.log('Approving user request');
+    updateStatus(20);
+  };
+
+  const handleReject = () => {
+    updateStatus(30);
   };
 
   const handleRejectRequest = () => {
-    console.log('Rejecting user request');
+    updateStatus(15);
   };
 
   const formatKey = (key) => {
@@ -92,78 +150,107 @@ const UserDetails = () => {
                 />
               ))}
             </Box>
-            <Typography variant="h5" align="center">{`${formatValue(details.first_name)} ${formatValue(details.last_name)}`}</Typography>
-            <Typography variant="subtitle1" color="textSecondary" align="center">{formatValue(details.status)}</Typography>
-            <Box display="flex" gap="2px" alignItems="center" justifyContent="center" mt={2}>
-              <Box mb={2} textAlign="center">
-                <Button variant="contained" sx={{ backgroundColor: colors.grey[100] }} onClick={handleRemoveFromList}>
-                  Reject
-                </Button>
-              </Box>
-              <Box mb={2} textAlign="center">
-                <Button sx={{
-                  background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-                  color: '#fff',
-                  '&:hover': {
-                    background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-                  },
-                }} onClick={handleApproveRequest}>Approve</Button>
-              </Box>
-              <Box mb={2} textAlign="center">
-                <Button variant="contained" color="error" onClick={handleRejectRequest}>Delete</Button>
-              </Box>
-              <Box mb={2} textAlign="center">
-                <Button variant="contained" color="error" onClick={handleRejectRequest}>Delete Request</Button>
-              </Box>
-            </Box>
+            <Typography variant="h5" align="center">{`${formatValue(details.Name)} ${formatValue(details.Surname)}`}</Typography>
+            <Typography variant="subtitle1" color="textSecondary" align="center">{formatValue(details.status === 15 ? "Reject" : "pending")}</Typography>
+            
           </Box>
         </Grid>
         <Grid item xs={12} md={8}>
-          <Grid container spacing={2}>
-            {Object.entries(details).map(([key, value]) => {
-              if (key !== 'answers' && key !== 'personalities' && key !== 'photos') {
-                return (
-                  <Grid item xs={6} key={key}>
-                    <Box mb={4}>
-                      <Typography variant="h4" gutterBottom sx={{ color: colors.primary[500] }}>{formatKey(key)}</Typography>
-                      <Typography variant="body1">{formatValue(value)}</Typography>
-                    </Box>
-                  </Grid>
-                );
-              }
-              return null;
-            })}
-            <Grid item xs={12}>
-              {quesAns.length > 0 && (
-                <Box mb={4}>
-                  <Typography variant="h4" gutterBottom sx={{ color: colors.primary[500] }}>Question & Answers</Typography>
-                  {quesAns.map((item, index) => (
-                    <Box key={index} mb={2}>
-                      <Typography fontWeight="bold" variant="h6">{item.question}</Typography>
-                      <Typography variant="body1">{item.answer}</Typography>
-                    </Box>
-                  ))}
+        <Grid container spacing={2}>
+      {Object.entries(details).map(([key, value]) => {
+        if (key !== 'answers' && key !== 'personalities' && key !== 'photos') {
+          return (
+            <Grid item xs={12}  lg={6} key={key}>
+              <Box mb={2}>
+                <Typography variant="h6" color={colors.primary[700]}>{formatKey(key)}</Typography>
+                <Box
+                  sx={{
+                    p: 2,
+                    border: `1px solid ${colors.grey[300]}`,
+                    borderRadius: '8px',
+                    backgroundColor: colors.primary[50],
+                  }}
+                >
+                  <Typography variant="body1">{formatValue(value)}</Typography>
                 </Box>
-              )}
-            </Grid>
-            {/* <Grid item xs={12}>
-              <Box mb={4}>
-                <Typography variant="h4" gutterBottom>Personalities</Typography>
-                <List>
-                  {details.personalities ? details.personalities.split(',').map((personality, index) => (
-                    <ListItem key={index}>
-                      <ListItemText primary={personality} />
-                    </ListItem>
-                  )) : (
-                    <ListItem>
-                      <ListItemText primary="" />
-                    </ListItem>
-                  )}
-                </List>
               </Box>
-            </Grid> */}
+            </Grid>
+          );
+        }
+        return null;
+      })}
+      <Grid item xs={12}>
+        {quesAns.length > 0 && (
+          <Box mb={4}>
+            <Typography variant="h4" gutterBottom sx={{ color: colors.primary[500] }}>Question & Answers</Typography>
+            {quesAns.map((item, index) => (
+              <Box key={index} mb={2}>
+                <Typography fontWeight="bold" variant="h6">{item.question}</Typography>
+                <Typography variant="body1">{item.answer}</Typography>
+              </Box>
+            ))}
+          </Box>
+        )}
+      </Grid>
+    </Grid>
+          <Box display="flex" gap="8px" flexDirection={isLgUp ? 'row' : 'column'} alignItems="center" justifyContent="center">
+      <Box>
+        <Grid
+          container
+          direction={isLgUp ? 'row' : 'column'}
+          justifyContent="center"
+          alignItems="center"
+          spacing={2}
+        >
+          <Grid item xs={12} lg={6} textAlign="center">
+            <Button
+              variant="contained"
+              sx={{ backgroundColor: theme.palette.grey[900] }}
+              onClick={handleReject}
+            >
+              Reject
+            </Button>
+          </Grid>
+          <Grid item xs={12} lg={6} textAlign="center">
+            <Button
+              sx={{
+                background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                color: '#fff',
+                '&:hover': {
+                  background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                },
+              }}
+              onClick={handleApproveRequest}
+            >
+              Approve
+            </Button>
           </Grid>
         </Grid>
+      </Box>
+
+      <Box>
+        <Grid
+          container
+          direction={isLgUp ? 'row' : 'column'}
+          justifyContent="center"
+          alignItems="center"
+          spacing={2}
+        >
+          <Grid item xs={12} lg={6} textAlign="center">
+            <Button variant="contained" color="error" onClick={handleDeleteRequest}>
+              Delete
+            </Button>
+          </Grid>
+          <Grid item xs={12} lg={6} textAlign="center">
+            <Button  sx={{width: "140px"}} variant="contained" color="error" onClick={handleRejectRequest}>
+              Delete Request
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
+    </Box>
+        </Grid>
+       
       </Grid>
     </Box>
   );

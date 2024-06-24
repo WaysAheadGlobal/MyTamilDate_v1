@@ -113,7 +113,7 @@ function App() {
 
   // Check if the current route is protected
   const isProtectedRoute = protectedRoutes.some((route) =>
-    location.pathname.startsWith(route.split(":")[0]) // Handle dynamic routes
+    location.pathname.startsWith(route.split(":")[0]) 
   );
 
   return (

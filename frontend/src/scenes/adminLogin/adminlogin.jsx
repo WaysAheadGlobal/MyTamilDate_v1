@@ -5,6 +5,7 @@ import { useAppContext } from '../../Context/UseContext';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from '../../hooks/useCookies';
 import adminbackground from '../../assets/images/adminbackground.png';
+import { API_URL } from '../../api';
 
 const themeSettings = {
   typography: {
@@ -49,23 +50,32 @@ const AdminSignIn = () => {
   const { loginAsAdmin } = useAppContext();
   const navigate = useNavigate();
 
-  const validateForm = () => {
-    return username === 'admin' && password === '12345';
-  };
-
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setLoading(true);
-    setTimeout(() => {
+    try {
+      const response = await fetch(`${API_URL}/admin/adminlogin/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
       setLoading(false);
-      if (validateForm()) {
-        loginAsAdmin();
-        setCookie('userId', 'adminlogin', 365);
+
+      if (response.ok) {
+        loginAsAdmin(data.token);
         navigate("/dashboard");
       } else {
-        setSnackbarMessage('Username or password is incorrect');
+        setSnackbarMessage(data.message || 'Login failed');
         setShowSnackbar(true);
       }
-    }, 1000);
+    } catch (error) {
+      setLoading(false);
+      setSnackbarMessage('An error occurred. Please try again.');
+      setShowSnackbar(true);
+    }
   };
 
   return (

@@ -34,7 +34,8 @@ users.get('/customers', (req: AdminRequest, res: Response) => {
     const dataSql = `
         SELECT 
             up.first_name, 
-            uso.status, 
+            us.approval,
+            us.deleted_at,
             up.email, 
             up.phone, 
             loc.country, 
@@ -45,17 +46,18 @@ users.get('/customers', (req: AdminRequest, res: Response) => {
             up.user_id
         FROM 
             user_profiles up
-        JOIN 
+        LEFT JOIN 
             user_status_old uso ON up.user_id = uso.id
+               LEFT JOIN 
+            users us ON up.user_id = us.id
         LEFT JOIN 
             locations loc ON up.location_id = loc.id
-         ORDER BY 
+        ORDER BY 
             up.created_at DESC
         LIMIT ? OFFSET ?
     `;
 
     const values = [limitValue, (pageNoValue - 1) * limitValue];
-
     getTotalCount(countSql, [], (err, totalCount) => {
         if (err) {
             res.status(500).send('Internal Server Error');
@@ -75,8 +77,6 @@ users.get('/customers', (req: AdminRequest, res: Response) => {
         });
     });
 });
-
-
 
 
 // users.get('/approval', (req: AdminRequest, res: Response) => {
@@ -154,38 +154,33 @@ users.get('/customers/:user_id', (req: AdminRequest, res) => {
             up.email_verified_at,
             up.phone,
             up.birthday,
-           
             loc.country,
             up.gender,
             up.want_gender,
-          
             st.name as study_name,
-            
             j.name as job_name,
-           
             g.name as growth_name,
-            
             r.name as religion_name,
-            
             wk.name as want_kid_name,
-            
             hk.name as have_kid_name,
-            
             s.name as smoke_name,
-         
             d.name as drink_name,
             up.created_at,
             up.updated_at,
             up.popup_promo_shown_stage,
             uso.status,
             uso.is_active,
+            us.approval,
+            us.deleted_at,
             GROUP_CONCAT(DISTINCT upers.personality_id) as personalities,
             qa.question_id,
             qa.answer
         FROM 
             user_profiles up
-        JOIN 
+        LEFT JOIN 
             user_status_old uso ON up.user_id = uso.id
+        LEFT JOIN 
+            users us ON up.user_id = us.id
         LEFT JOIN 
             locations loc ON up.location_id = loc.id
         LEFT JOIN 
@@ -226,6 +221,7 @@ users.get('/customers/:user_id', (req: AdminRequest, res) => {
         res.status(200).json(results);
     });
 });
+
 
 
 users.get('/approval', (req: AdminRequest, res: Response) => {
@@ -337,6 +333,7 @@ users.get('/approval/:user_id', (req: AdminRequest, res: Response) => {
             up.first_name AS Name,
             up.last_name AS Surname,
             up.email AS Email,
+            uso.approval AS Approval,
             DATE_FORMAT(up.email_verified_at, '%Y-%m-%d') AS 'Email Verified At',
             up.phone AS Phone,
             DATE_FORMAT(up.birthday, '%Y-%m-%d') AS Birthday,
@@ -412,6 +409,78 @@ users.get('/approval/:user_id', (req: AdminRequest, res: Response) => {
     });
 });
 
+// Add the PUT endpoint to update the status
+users.put('/updatestatus', (req: AdminRequest, res: Response) => {
+    const { id, approval } = req.body;
+
+    if (!id || !approval) {
+        res.status(400).send('Bad Request: Missing user_id or status');
+        return;
+    }
+
+    const updateStatusSql = `
+        UPDATE users
+        SET approval = ?
+        WHERE id = ?
+    `;
+
+    db.query(updateStatusSql, [approval, id], (err: Error | null, result: any) => {
+        if (err) {
+            console.log('Error updating status:', err);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        res.status(200).send('Status updated successfully');
+    });
+});
+
+// delete the User
+users.put('/deleteuser', (req, res) => {
+    const { id } = req.body;
+
+    if (!id) {
+        res.status(400).send('Bad Request: Missing user_id');
+        return;
+    }
+
+    const deletedAt = new Date(); // Get the current timestamp
+
+    const updateStatusSql = `
+        UPDATE users
+        SET deleted_at = ?
+        WHERE id = ?
+    `;
+
+    db.query(updateStatusSql, [deletedAt, id], (err, result) => {
+        if (err) {
+            console.log('Error updating status:', err);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        res.status(200).send('Status updated successfully');
+    });
+});
+
+users.get('/media/:id', (req: AdminRequest, res: Response) => {
+    const mediaId = req.params.id;
+  
+    const query = 'SELECT * FROM media WHERE id = ?';
+    db.query(query, [mediaId], (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Server error');
+        return;
+      }
+  
+      if (results.length === 0) {
+        res.status(404).send('Media not found');
+        return;
+      }
+  
+      const media = results[0];
+      res.json(media);
+    });
+  });
 
 // Fetch user questions by user_id
 users.get('/user/questions/:user_id', (req: AdminRequest, res: Response) => {

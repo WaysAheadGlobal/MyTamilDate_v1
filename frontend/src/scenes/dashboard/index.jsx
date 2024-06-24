@@ -175,6 +175,8 @@ const Dashboard = () => {
   const[totalNewUsersignup, setTotalNewUsersignup] = useState({});
   const [transactions, setTransactions] = useState([]);
   const [TotalPeyment, setTotalPeyment] = useState(0);
+  const[TotalLikeCount, setLikeCount] = useState(0);
+  const[TotalMatchsCount, setMatchsCount] = useState(0);
   const [messageCount, setMessageCount] = useState(0);
   const [timeRange, setTimeRange] = useState('month');
   const theme = useTheme();
@@ -284,6 +286,27 @@ const Dashboard = () => {
       }
     };
 
+    const getLikeCount = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/admin/dashboard/likes/count`, {
+          params: { timeRange }
+        });
+        setLikeCount(response.data.total_likes);
+      } catch (error) {
+        console.error('Error fetching message count:', error);
+      }
+    };
+    const getMatchCount = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/admin/dashboard/matches/count`, {
+          params: { timeRange }
+        });
+        setMatchsCount(response.data.total_matches);
+      } catch (error) {
+        console.error('Error fetching message count:', error);
+      }
+    };
+
     const TotalPayments = async () => {
       try {
         const response = await axios.get(`${API_URL}/admin/dashboard/payments/total`, {
@@ -305,15 +328,15 @@ const Dashboard = () => {
         return `${amount}`;
       }
     };
-  
-
-
+   
   useEffect(() => {
     getCountByGender();
     getAgeGroup();
     TotalNewsignUp();
     getMessageCount();
     TotalPayments();
+    getLikeCount();
+    getMatchCount();
   }, [timeRange]);
 
   useEffect(()=>{
@@ -372,7 +395,7 @@ const Dashboard = () => {
 
         <Box gridColumn={isMobile ? "span 12" : "span 3"}  display="flex" alignItems="center" justifyContent="center">
           <StatBox
-            title="43,22"
+            title="4322"
             subtitle="Likes"
             progress="0.50"
             increase="+21%"
@@ -390,7 +413,7 @@ const Dashboard = () => {
         </Box>
         <Box gridColumn={isMobile ? "span 12" : "span 3"}  display="flex" alignItems="center" justifyContent="center">
           <StatBox
-            title="1134"
+            title="1034"
             subtitle="Requests"
             progress="0.80"
             increase="+43%"
