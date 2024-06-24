@@ -215,7 +215,7 @@ auth.post('/signup/otp', body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US',
             return;
         }
         if (results.length > 0) {
-            res.status(409).json({ message: 'User already exists' });
+            res.status(409).json({ message: 'This phone number is already in use. Try with a different number.' });
             return;
         }
 

@@ -266,7 +266,7 @@ const handleSubmitphoneotp = (e) => {
         <div className='account-setting-container'>
             <Container className='desktop-left-side'>
 
-                <h1>erere</h1>
+                <h1>My Tamil Date</h1>
             </Container>
 
             <Container className='account-setting-main'>
@@ -403,7 +403,7 @@ const handleSubmitphoneotp = (e) => {
 
             <Container className='desktop-Right-side'>
 
-                <h1>erere</h1>
+                <h1>MY Tamil Date</h1>
             </Container>
 
 {/* update the Name  */}

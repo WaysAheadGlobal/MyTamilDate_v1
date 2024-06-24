@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Grid, Typography, Button, Avatar, List, ListItem, ListItemText, useMediaQuery } from '@mui/material';
+import { Box, Grid, Typography, Button, Avatar, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate, useParams } from 'react-router-dom';
 import Header from '../../components/Header1'; // Adjust path as per your project structure
@@ -20,11 +20,10 @@ const UserDetails = () => {
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
   const isLgUp = useMediaQuery(theme.breakpoints.up('lg'));
   const navigate = useNavigate();
-  console.log(details);
   const [quesAns, setQuesAns] = useState([]);
   const colors = tokens(theme.palette.mode);
   const { id } = useParams();
-console.log(id);
+
   const detailsfetchData = async () => {
     try {
       const response = await fetch(`${API_URL}/admin/users/approval/${id}`);
@@ -40,7 +39,6 @@ console.log(id);
       const response = await fetch(`${API_URL}/admin/users/user/questions/${id}`);
       const data = await response.json();
       setQuesAns(data);
-      console.log(data);
     } catch (err) {
       console.log(err);
     }
@@ -66,13 +64,12 @@ console.log(id);
       });
   
       if (!response.ok) {
-        const errorDetails = await response.text(); // Get error details for debugging
+        const errorDetails = await response.text();
         throw new Error(`Failed to update status: ${errorDetails}`);
       }
   
-      // Fetch updated details after updating the status
       await detailsfetchData();
-      navigate("/approval")
+      navigate("/approval");
       console.log("Status updated successfully");
     } catch (err) {
       console.error(err);
@@ -90,13 +87,12 @@ console.log(id);
       });
 
       if (!response.ok) {
-        const errorDetails = await response.text(); 
+        const errorDetails = await response.text();
         throw new Error(`Failed to delete user: ${errorDetails}`);
       }
 
-      
       await detailsfetchData();
-      navigate("/approval")
+      navigate("/approval");
       console.log('User deleted successfully');
     } catch (err) {
       console.error(err);
@@ -119,9 +115,39 @@ console.log(id);
     return key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
   };
 
-  const formatValue = (value) => {
+  const maskEmail = (email) => {
+    const [user, domain] = email.split('@');
+    const maskedUser = user.length > 2 ? user[0] + '*'.repeat(user.length - 2) + user.slice(-1) : user[0] + '*';
+    return `${maskedUser}@${domain}`;
+    
+  };
+
+  const formatPhoneNumber = (phoneNumber) => {
+    if (phoneNumber && phoneNumber.length >= 6) {
+      const visibleDigits = 3;
+      const maskedSection = phoneNumber.substring(visibleDigits, phoneNumber.length - visibleDigits).replace(/\d/g, '*');
+      const visiblePart = phoneNumber.substring(0, visibleDigits) + maskedSection + phoneNumber.substring(phoneNumber.length - visibleDigits);
+      return visiblePart;
+    }
+    return phoneNumber || 'N/A';
+  };
+
+  const formatValue = (key, value) => {
+    if (key.toLowerCase() === 'email') {
+      console.log(maskEmail(value))
+      return maskEmail(value);
+      
+    }
     if (value === null || value === undefined || value === '') {
       return 'N/A';
+    }
+    if (key.toLowerCase() === 'email') {
+      console.log(maskEmail(value))
+      return maskEmail(value);
+      
+    }
+    if (key.toLowerCase() === 'phone') {
+      return formatPhoneNumber(value);
     }
     if (Array.isArray(value)) {
       return value.join(', ');
@@ -150,107 +176,104 @@ console.log(id);
                 />
               ))}
             </Box>
-            <Typography variant="h5" align="center">{`${formatValue(details.Name)} ${formatValue(details.Surname)}`}</Typography>
-            <Typography variant="subtitle1" color="textSecondary" align="center">{formatValue(details.status === 15 ? "Reject" : "pending")}</Typography>
-            
+            <Typography variant="h5" align="center">{`${formatValue('name', details.Name)} ${formatValue('surname', details.Surname)}`}</Typography>
+            <Typography variant="subtitle1" color="textSecondary" align="center">{formatValue('status', details.status === 15 ? "Reject" : "pending")}</Typography>
           </Box>
         </Grid>
         <Grid item xs={12} md={8}>
-        <Grid container spacing={2}>
-      {Object.entries(details).map(([key, value]) => {
-        if (key !== 'answers' && key !== 'personalities' && key !== 'photos') {
-          return (
-            <Grid item xs={12}  lg={6} key={key}>
-              <Box mb={2}>
-                <Typography variant="h6" color={colors.primary[700]}>{formatKey(key)}</Typography>
-                <Box
-                  sx={{
-                    p: 2,
-                    border: `1px solid ${colors.grey[300]}`,
-                    borderRadius: '8px',
-                    backgroundColor: colors.primary[50],
-                  }}
-                >
-                  <Typography variant="body1">{formatValue(value)}</Typography>
+          <Grid container spacing={2}>
+            {Object.entries(details).map(([key, value]) => {
+              if (key !== 'answers' && key !== 'personalities' && key !== 'photos') {
+                return (
+                  <Grid item xs={12} lg={6} key={key}>
+                    <Box mb={2}>
+                      <Typography variant="h6" color={colors.primary[700]}>{formatKey(key)}</Typography>
+                      <Box
+                        sx={{
+                          p: 2,
+                          border: `1px solid ${colors.grey[300]}`,
+                          borderRadius: '8px',
+                          backgroundColor: colors.primary[50],
+                        }}
+                      >
+                        <Typography variant="body1">{formatValue(key, value)}</Typography>
+                      </Box>
+                    </Box>
+                  </Grid>
+                );
+              }
+              return null;
+            })}
+            <Grid item xs={12}>
+              {quesAns.length > 0 && (
+                <Box mb={4}>
+                  <Typography variant="h4" gutterBottom sx={{ color: colors.primary[500] }}>Question & Answers</Typography>
+                  {quesAns.map((item, index) => (
+                    <Box key={index} mb={2}>
+                      <Typography fontWeight="bold" variant="h6">{item.question}</Typography>
+                      <Typography variant="body1">{item.answer}</Typography>
+                    </Box>
+                  ))}
                 </Box>
-              </Box>
+              )}
             </Grid>
-          );
-        }
-        return null;
-      })}
-      <Grid item xs={12}>
-        {quesAns.length > 0 && (
-          <Box mb={4}>
-            <Typography variant="h4" gutterBottom sx={{ color: colors.primary[500] }}>Question & Answers</Typography>
-            {quesAns.map((item, index) => (
-              <Box key={index} mb={2}>
-                <Typography fontWeight="bold" variant="h6">{item.question}</Typography>
-                <Typography variant="body1">{item.answer}</Typography>
-              </Box>
-            ))}
-          </Box>
-        )}
-      </Grid>
-    </Grid>
+          </Grid>
           <Box display="flex" gap="8px" flexDirection={isLgUp ? 'row' : 'column'} alignItems="center" justifyContent="center">
-      <Box>
-        <Grid
-          container
-          direction={isLgUp ? 'row' : 'column'}
-          justifyContent="center"
-          alignItems="center"
-          spacing={2}
-        >
-          <Grid item xs={12} lg={6} textAlign="center">
-            <Button
-              variant="contained"
-              sx={{ backgroundColor: theme.palette.grey[900] }}
-              onClick={handleReject}
-            >
-              Reject
-            </Button>
-          </Grid>
-          <Grid item xs={12} lg={6} textAlign="center">
-            <Button
-              sx={{
-                background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-                color: '#fff',
-                '&:hover': {
-                  background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-                },
-              }}
-              onClick={handleApproveRequest}
-            >
-              Approve
-            </Button>
-          </Grid>
+            <Box>
+              <Grid
+                container
+                direction={isLgUp ? 'row' : 'column'}
+                justifyContent="center"
+                alignItems="center"
+                spacing={2}
+              >
+                <Grid item xs={12} lg={6} textAlign="center">
+                  <Button
+                    variant="contained"
+                    sx={{ backgroundColor: theme.palette.grey[900] }}
+                    onClick={handleReject}
+                  >
+                    Reject
+                  </Button>
+                </Grid>
+                <Grid item xs={12} lg={6} textAlign="center">
+                  <Button
+                    sx={{
+                      background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                      color: '#fff',
+                      '&:hover': {
+                        background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                      },
+                    }}
+                    onClick={handleApproveRequest}
+                  >
+                    Approve
+                  </Button>
+                </Grid>
+              </Grid>
+            </Box>
+            <Box>
+              <Grid
+                container
+                direction={isLgUp ? 'row' : 'column'}
+                justifyContent="center"
+                alignItems="center"
+                spacing={2}
+              >
+                <Grid item xs={12} lg={6} textAlign="center">
+                  <Button variant="contained" color="error" onClick={handleDeleteRequest}>
+                    Delete
+                  </Button>
+                </Grid>
+                <Grid item xs={12} lg={6} textAlign="center">
+                  <Button sx={{ width: "140px" }} variant="contained" color="error" onClick={handleRejectRequest}>
+                    Delete Request
+                  </Button>
+                </Grid>
+              </Grid>
+            </Box>
+          </Box>
         </Grid>
-      </Box>
-
-      <Box>
-        <Grid
-          container
-          direction={isLgUp ? 'row' : 'column'}
-          justifyContent="center"
-          alignItems="center"
-          spacing={2}
-        >
-          <Grid item xs={12} lg={6} textAlign="center">
-            <Button variant="contained" color="error" onClick={handleDeleteRequest}>
-              Delete
-            </Button>
-          </Grid>
-          <Grid item xs={12} lg={6} textAlign="center">
-            <Button  sx={{width: "140px"}} variant="contained" color="error" onClick={handleRejectRequest}>
-              Delete Request
-            </Button>
-          </Grid>
-        </Grid>
-      </Box>
-    </Box>
-        </Grid>
-       
       </Grid>
     </Box>
   );

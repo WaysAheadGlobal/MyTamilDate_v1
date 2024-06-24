@@ -81,6 +81,7 @@ import UnsubscribeComponent from "./components/Account-Settings/unsubscribeEmail
 import { PrivacyPolicySetting } from "./components/Account-Settings/privacyPolicy";
 import { TermsConditions } from "./components/Account-Settings/termandconditons";
 
+
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -196,6 +197,7 @@ function App() {
               <Route path = "/unsubscribe" element={<UnsubscribeComponent/>}></Route>
               <Route path="//PrivacyPolicyDetails" element={<PrivacyPolicySetting/>}></Route>
              <Route path="/termandconditions" element={<TermsConditions/>}></Route>
+             
             </Routes>
 
           </main>
