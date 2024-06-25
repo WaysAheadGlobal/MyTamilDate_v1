@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Grid, Typography, Button, Avatar, useMediaQuery } from '@mui/material';
+import { Box, Grid, Typography, Button, Avatar, useMediaQuery, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate, useParams } from 'react-router-dom';
 import Header from '../../components/Header1'; // Adjust path as per your project structure
@@ -23,6 +23,8 @@ const UserDetails = () => {
   const [quesAns, setQuesAns] = useState([]);
   const colors = tokens(theme.palette.mode);
   const { id } = useParams();
+  const [openModal, setOpenModal] = useState(false);
+  const [reason, setReason] = useState('');
 
   const detailsfetchData = async () => {
     try {
@@ -37,12 +39,30 @@ const UserDetails = () => {
   const quesAnsfetchData = async () => {
     try {
       const response = await fetch(`${API_URL}/admin/users/user/questions/${id}`);
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          console.error('Resource not found');
+          setQuesAns([]);
+          return;
+        }
+        throw new Error(`Failed to fetch questions: ${response.statusText}`);
+      }
+  
       const data = await response.json();
-      setQuesAns(data);
+  
+      if (!Array.isArray(data)) {
+        setQuesAns([]);
+      } else {
+        setQuesAns(data);
+      }
     } catch (err) {
-      console.log(err);
+      console.error('Error fetching questions:', err);
+      setQuesAns([]);
     }
   };
+  
+  
 
   useEffect(() => {
     quesAnsfetchData();
@@ -103,34 +123,49 @@ const UserDetails = () => {
     updateStatus(20);
   };
 
+ 
   const handleReject = () => {
-    updateStatus(30);
+    setOpenModal(true);
   };
 
   const handleRejectRequest = () => {
     updateStatus(15);
   };
 
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setReason('');
+  };
+
+  const handleSaveReason = () => {
+    updateStatus(30);
+    handleCloseModal();
+  };
+
+  
+
   const formatKey = (key) => {
     return key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
   };
 
   const maskEmail = (email) => {
+    if (!email) return 'N/A';
     const [user, domain] = email.split('@');
     const maskedUser = user.length > 2 ? user[0] + '*'.repeat(user.length - 2) + user.slice(-1) : user[0] + '*';
     return `${maskedUser}@${domain}`;
-    
   };
-
+  
   const formatPhoneNumber = (phoneNumber) => {
-    if (phoneNumber && phoneNumber.length >= 6) {
+    if (!phoneNumber) return 'N/A';
+    if (phoneNumber.length >= 6) {
       const visibleDigits = 3;
       const maskedSection = phoneNumber.substring(visibleDigits, phoneNumber.length - visibleDigits).replace(/\d/g, '*');
       const visiblePart = phoneNumber.substring(0, visibleDigits) + maskedSection + phoneNumber.substring(phoneNumber.length - visibleDigits);
       return visiblePart;
     }
-    return phoneNumber || 'N/A';
+    return phoneNumber;
   };
+  
 
   const formatValue = (key, value) => {
     if (key.toLowerCase() === 'email') {
@@ -275,6 +310,54 @@ const UserDetails = () => {
           </Box>
         </Grid>
       </Grid>
+
+      <Dialog
+  open={openModal}
+  onClose={handleCloseModal}
+ 
+  fullWidth
+  sx={{
+    '& .MuiDialog-paper': {
+      width: '350px', 
+      height: '300px', 
+    }
+  }}
+>
+  <DialogTitle>What's the reason?</DialogTitle>
+  <DialogContent>
+    <TextField
+      autoFocus
+      margin="dense"
+      label="Reason"
+      type="text"
+      fullWidth
+      variant="outlined"
+      value={reason}
+      onChange={(e) => setReason(e.target.value)}
+      multiline
+      rows={5} // Adjust number of rows as needed
+      sx={{
+        '& .MuiInputBase-root': {
+          height: '150px', // Adjust height as needed
+        }
+      }}
+    />
+  </DialogContent>
+  <DialogActions  >
+    <Button onClick={handleCloseModal} variant="contained" color="error" >
+      Cancel
+    </Button>
+    <Button onClick={handleSaveReason}  sx={{
+                      background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                      color: '#fff',
+                      '&:hover': {
+                        background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                      },
+                    }}>
+      Save
+    </Button>
+  </DialogActions>
+</Dialog>
     </Box>
   );
 };

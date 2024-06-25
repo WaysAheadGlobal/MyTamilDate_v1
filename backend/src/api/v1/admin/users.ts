@@ -507,10 +507,7 @@ users.get('/user/questions/:user_id', (req: AdminRequest, res: Response) => {
             res.status(500).send('Internal Server Error');
             return;
         }
-        if (results.length === 0) {
-            res.status(404).send('No questions or answers found for this user');
-            return;
-        }
+        
         res.status(200).json(results);
     });
 });
@@ -539,10 +536,7 @@ users.get('/user/questions/:user_id', (req: AdminRequest, res: Response) => {
             res.status(500).send('Internal Server Error');
             return;
         }
-        if (results.length === 0) {
-            res.status(404).send('No questions or answers found for this user');
-            return;
-        }
+        
         res.status(200).json(results);
     });
 });
