@@ -266,7 +266,7 @@ const UserDetails = () => {
                   <Button
                     variant="contained"
                     sx={{ backgroundColor: theme.palette.grey[900] }}
-                    onClick={handleReject}
+                   
                   >
                     Reject
                   </Button>
@@ -280,7 +280,7 @@ const UserDetails = () => {
                         background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
                       },
                     }}
-                    onClick={handleApproveRequest}
+                  
                   >
                     Approve
                   </Button>
@@ -296,12 +296,12 @@ const UserDetails = () => {
                 spacing={2}
               >
                 <Grid item xs={12} lg={6} textAlign="center">
-                  <Button variant="contained" color="error" onClick={handleDeleteRequest}>
+                  <Button variant="contained" color="error" >
                     Delete
                   </Button>
                 </Grid>
                 <Grid item xs={12} lg={6} textAlign="center">
-                  <Button sx={{ width: "140px" }} variant="contained" color="error" onClick={handleRejectRequest}>
+                  <Button sx={{ width: "140px" }} variant="contained" color="error" >
                     Delete Request
                   </Button>
                 </Grid>
@@ -363,3 +363,4 @@ const UserDetails = () => {
 };
 
 export default UserDetails;
+

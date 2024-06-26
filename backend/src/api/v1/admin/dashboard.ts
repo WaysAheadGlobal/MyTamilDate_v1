@@ -29,6 +29,30 @@ const getDateCondition = (timeRange: string): string => {
     return condition;
 };
 
+const getDateConditionoflike = (timeRange: string): string => {
+    let condition = '';
+    switch (timeRange) {
+        case '24h':
+            condition = "updated_at >= NOW() - INTERVAL 1 DAY";
+            break;
+        case 'week':
+            condition = "updated_at >= NOW() - INTERVAL 1 WEEK";
+            break;
+        case 'month':
+            condition = "updated_at >= NOW() - INTERVAL 1 MONTH";
+            break;
+        case '3months':
+            condition = "updated_at >= NOW() - INTERVAL 3 MONTH";
+            break;
+            case '12months':
+                condition = "updated_at >= NOW() - INTERVAL 12 MONTH";
+                break;
+        default:
+            condition = "updated_at >= NOW() - INTERVAL 1 DAY"; // Default to 24 hours
+    }
+    return condition;
+};
+
 const getDateConditionMessage = (timeRange: string): string => {
     let condition = '';
     switch (timeRange) {
@@ -52,6 +76,7 @@ const getDateConditionMessage = (timeRange: string): string => {
     }
     return condition;
 };
+
 const getDateConditionpayment = (timeRange: string): string => {
     switch (timeRange) {
         case '24h':
@@ -67,6 +92,30 @@ const getDateConditionpayment = (timeRange: string): string => {
         default:
             return "INTERVAL 1 DAY"; // Default to 24 hours
     }
+};
+
+const getDateConditionJobs = (timeRange: string): string => {
+    let condition = '';
+    switch (timeRange) {
+        case '24h':
+            condition = "up.created_at >= NOW() - INTERVAL 1 DAY";
+            break;
+        case 'week':
+            condition = "up.created_at >= NOW() - INTERVAL 1 WEEK";
+            break;
+        case 'month':
+            condition = "up.created_at >= NOW() - INTERVAL 1 MONTH";
+            break;
+        case '3months':
+            condition = "up.created_at >= NOW() - INTERVAL 3 MONTH";
+            break;
+        case '12months':
+            condition = "up.created_at >= NOW() - INTERVAL 12 MONTH";
+            break;
+        default:
+            condition = "up.created_at >= NOW() - INTERVAL 1 DAY"; // Default to 24 hours
+    }
+    return condition;
 };
 
 
@@ -90,16 +139,21 @@ console.log('Executing SQL:', sql);
         res.status(200).json({ total_messages: totalMessages });
     });
 });
-// / API to get total likes
+
 dashboard.get('/likes/count', (req: AdminRequest, res) => {
     const timeRange: string = (req.query.timeRange as string) || '24h';
-    const dateCondition = getDateCondition(timeRange);
+    console.log('Received timeRange:', timeRange); // Log received timeRange
+    const dateCondition = getDateConditionoflike(timeRange);
+
+    // Logging the date condition for debugging purposes
+    console.log('Date condition:', dateCondition);
 
     const sql = `
         SELECT COUNT(*) AS total_likes
         FROM matches
         WHERE \`like\` = 1 AND ${dateCondition}
     `;
+
     console.log('Executing SQL:', sql);
 
     db.query(sql, (err, results) => {
@@ -108,11 +162,9 @@ dashboard.get('/likes/count', (req: AdminRequest, res) => {
             res.status(500).json({ error: 'Internal Server Error' });
             return;
         }
-        if (results.length === 0) {
-            res.status(404).json({ error: 'No likes found in the specified time range' });
-            return;
-        }
+
         const totalLikes = results[0].total_likes;
+        console.log('Total likes:', totalLikes);
         res.status(200).json({ total_likes: totalLikes });
     });
 });
@@ -120,12 +172,12 @@ dashboard.get('/likes/count', (req: AdminRequest, res) => {
 //API to get total matches
 dashboard.get('/matches/count', (req: AdminRequest, res) => {
     const timeRange: string = (req.query.timeRange as string) || '24h';
-    const dateCondition = getDateCondition(timeRange);
+    const dateCondition = getDateConditionoflike(timeRange);
 
     const subQuery = `
         SELECT user_id
         FROM matches
-        WHERE created_at >= NOW() - INTERVAL 1 DAY AND \`like\` = 1 AND ${dateCondition}
+        WHERE \`like\` = 1 AND ${dateCondition}
     `;
 
     const sql = `
@@ -133,6 +185,7 @@ dashboard.get('/matches/count', (req: AdminRequest, res) => {
         FROM matches
         WHERE \`like\` = 1 AND person_id IN (${subQuery}) AND ${dateCondition}
     `;
+    
     console.log('Executing SQL:', sql);
 
     db.query(sql, (err, results) => {
@@ -142,7 +195,7 @@ dashboard.get('/matches/count', (req: AdminRequest, res) => {
             return;
         }
         if (results.length === 0) {
-            res.status(404).json({ error: 'No matches found in the specified time range' });
+            res.status(404).json({ error: 'No matches found' });
             return;
         }
         const totalMatches = results[0].total_matches;
@@ -200,26 +253,26 @@ dashboard.get('/locations/count', (req: AdminRequest, res) => {
     });
 });
 
-dashboard.get('/matches/count', (req: AdminRequest, res) => {
-    const timeRange: string = (req.query.timeRange as string) || '24h';
-    const dateCondition = getDateCondition(timeRange);
+// dashboard.get('/matches/count', (req: AdminRequest, res) => {
+//     const timeRange: string = (req.query.timeRange as string) || '24h';
+//     const dateCondition = getDateCondition(timeRange);
 
-    const sql = `SELECT COUNT(*) AS total_rows FROM matches WHERE ${dateCondition}`;
+//     const sql = `SELECT COUNT(*) AS total_rows FROM matches WHERE ${dateCondition}`;
 
-    db.query(sql, (err, results) => {
-        if (err) {
-            console.error('Error fetching data:', err);
-            res.status(500).json({ error: 'Internal Server Error' });
-            return;
-        }
-        if (results.length === 0) {
-            res.status(404).json({ error: 'No rows found in the matches table' });
-            return;
-        }
-        const totalRows = results[0].total_rows;
-        res.status(200).json({ total_rows: totalRows });
-    });
-});
+//     db.query(sql, (err, results) => {
+//         if (err) {
+//             console.error('Error fetching data:', err);
+//             res.status(500).json({ error: 'Internal Server Error' });
+//             return;
+//         }
+//         if (results.length === 0) {
+//             res.status(404).json({ error: 'No rows found in the matches table' });
+//             return;
+//         }
+//         const totalRows = results[0].total_rows;
+//         res.status(200).json({ total_rows: totalRows });
+//     });
+// });
 
 dashboard.get('/count-by-gender', (req: AdminRequest, res) => {
     const timeRange: string = (req.query.timeRange as string) || '24h';
@@ -257,40 +310,33 @@ dashboard.get('/count-by-gender', (req: AdminRequest, res) => {
     });
 });
 
-dashboard.get('/jobs/top-three', (req: AdminRequest, res) => {
-    const timeRange: string = (req.query.timeRange as string) || '24h';
-    const dateCondition = getDateCondition(timeRange);
+
+dashboard.get('/top-jobs', (req, res) => {
+    const limit = parseInt(req.query.limit as string, 10) || 5; // Default to 5 if not provided
+    const timeRange = (req.query.timeRange as string) || '24h'; // Default to 24 hours if not provided
+    const dateCondition = getDateConditionJobs(timeRange);
 
     const sql = `
-        SELECT 
-            j.name AS job,
-            COUNT(up.id) AS count
-        FROM 
-            user_profiles up
-        JOIN 
-            jobs j ON up.job_id = j.id
-        WHERE
-            ${dateCondition}
-        GROUP BY 
-            j.name
-        ORDER BY 
-            count DESC
-        LIMIT 5`;
+        SELECT j.name AS job_name, COUNT(up.job_id) AS count
+        FROM user_profiles up
+        JOIN jobs j ON up.job_id = j.id
+        WHERE ${dateCondition}
+        AND up.job_id IS NOT NULL
+        GROUP BY up.job_id
+        ORDER BY count DESC
+        LIMIT ?
+    `;
 
-    db.query(sql, (err, results) => {
+    db.query(sql, [limit], (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Internal Server Error' });
             return;
         }
-        if (results.length === 0) {
-            res.status(404).json({ error: 'No jobs found' });
-            return;
-        }
+
         res.status(200).json(results);
     });
 });
-
 dashboard.get('/users/age-group', (req: AdminRequest, res) => {
     const timeRange: string = (req.query.timeRange as string) || '24h';
     const dateCondition = getDateCondition(timeRange);
@@ -370,6 +416,35 @@ dashboard.get('/payments', (req: AdminRequest, res) => {
     });
   });
   
+  dashboard.get('/payments/count', (req: AdminRequest, res) => {
+    const timeRange: string = (req.query.timeRange as string) || '24h';
+    const dateCondition = getDateCondition(timeRange);
+
+    const sql = `
+      SELECT COUNT(*) AS total_payments
+      FROM payments
+      WHERE ${dateCondition}
+    `;
+
+    console.log('Executing SQL:', sql);
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+
+        if (results.length === 0) {
+            res.status(404).json({ error: 'No payments found in the specified time range' });
+            return;
+        }
+
+        const totalPayments = results[0].total_payments;
+        res.status(200).json({ total_payments: totalPayments });
+    });
+});
+
   dashboard.get('/payments/total', (req: AdminRequest, res) => {
     const timeRange: string = (req.query.timeRange as string) || '24h';
     const dateCondition = getDateConditionpayment(timeRange);
@@ -405,45 +480,79 @@ dashboard.get('/payments', (req: AdminRequest, res) => {
     });
 });
 
-  dashboard.get('/paymentsfirsttime', (req: AdminRequest, res) => {
+
+dashboard.get('/renewals/count', (req, res) => {
     const timeRange: string = (req.query.timeRange as string) || '24h';
     const dateCondition = getDateCondition(timeRange);
 
     const sql = `
-        SELECT 
-            COUNT(*) as count
-        FROM payments p1
-        JOIN (
-            SELECT user_id, MIN(created_at) as first_payment_date
-            FROM payments
-            WHERE ${dateCondition}
-            GROUP BY user_id
-        ) p2
-        ON p1.user_id = p2.user_id AND p1.created_at = p2.first_payment_date
-        WHERE ${dateCondition}
-        ORDER BY p1.created_at DESC
-    `;
-
-    db.query(sql, (err, results) => {
-        if (err) {
-            console.error('Error fetching data:', err);
-            res.status(500).json({ error: 'Internal Server Error' });
-            return;
-        }
-        res.status(200).json(results);
-    });
-});
-
-
-dashboard.get('/payments/multiple', (req: AdminRequest, res) => {
-    const sql = `
-        SELECT user_id, COUNT(*) as transaction_count
+        SELECT COUNT(*) AS total_renewals
         FROM payments
-        GROUP BY user_id
-        HAVING COUNT(*) > 1
-        ORDER BY COUNT(*) DESC
-        LIMIT 10
+        WHERE amount != 0
+       
+        AND ${dateCondition}
     `;
+
+    db.query(sql,  (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+
+        const totalRenewals = results[0].total_renewals;
+        res.status(200).json({ total_renewals: totalRenewals });
+    });
+});
+
+dashboard.get('/new-paid-members/count', (req, res) => {
+    const timeRange: string = (req.query.timeRange as string) || '24h';
+    const dateCondition = getDateCondition(timeRange);
+
+    const sql = `
+        SELECT COUNT(*) AS total_new_paid_members
+        FROM users u
+        WHERE 
+            u.id IN (
+                SELECT p.user_id
+                FROM payments p
+                WHERE ${dateCondition}
+            )
+            AND u.approval != ?
+            AND u.approval != ?
+            AND u.deleted_at IS NULL
+    `;
+
+    const approvalUnknown = 15; // Replace with the actual value for unknown approval status
+    const approvalRegistered = 40; // Replace with the actual value for registered approval status
+
+    // Log the SQL query for debugging
+    console.log('Executing SQL:', sql);
+
+    db.query(sql, [approvalUnknown, approvalRegistered], (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+
+        const totalNewPaidMembers = results[0]?.total_new_paid_members || 0;
+        res.status(200).json({ total_new_paid_members: totalNewPaidMembers });
+    });
+});
+
+dashboard.get('/requests/count', (req, res) => {
+    const timeRange: string = (req.query.timeRange as string) || '24h';
+    const dateCondition = getDateCondition(timeRange);
+
+    const sql = `
+        SELECT COUNT(*) AS total_requests
+        FROM request_conversations
+        WHERE ${dateCondition}
+    `;
+
+    // Log the SQL query for debugging
+    console.log('Executing SQL:', sql);
 
     db.query(sql, (err, results) => {
         if (err) {
@@ -451,8 +560,48 @@ dashboard.get('/payments/multiple', (req: AdminRequest, res) => {
             res.status(500).json({ error: 'Internal Server Error' });
             return;
         }
-        res.status(200).json(results);
+
+        const totalRequests = results[0]?.total_requests || 0;
+        res.status(200).json({ total_requests: totalRequests });
     });
 });
+
+dashboard.get('/old-members/signed-in/count', (req, res) => {
+    const timeRange: string = (req.query.timeRange as string) || '24h';
+    const dateCondition = getDateConditionoflike(timeRange);
+
+    const sql = `
+        SELECT COUNT(*) AS total_old_members_signed_in
+        FROM users
+        WHERE 
+            old_id IS NOT NULL
+            AND old_login_at IS NOT NULL
+            AND ${dateCondition}
+            AND approval != ?
+            AND approval != ?
+            AND deleted_at IS NULL
+    `;
+
+    const approvalUnknown = 15; // Replace with the actual value for unknown approval status
+    const approvalRegistered = 40; // Replace with the actual value for registered approval status
+
+    // Log the SQL query for debugging
+    console.log('Executing SQL:', sql);
+    console.log('Approval unknown:', approvalUnknown);
+    console.log('Approval registered:', approvalRegistered);
+
+    db.query(sql, [approvalUnknown, approvalRegistered], (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+
+        const totalOldMembersSignedIn = results[0]?.total_old_members_signed_in || 0;
+        res.status(200).json({ total_old_members_signed_in: totalOldMembersSignedIn });
+    });
+});
+
+
 
 export default dashboard;

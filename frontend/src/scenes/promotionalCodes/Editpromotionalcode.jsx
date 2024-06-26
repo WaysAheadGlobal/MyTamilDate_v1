@@ -87,7 +87,7 @@ const EditDetails = () => {
   return (
     <Box m="20px">
       <Header title="Edit Promotional Code" subtitle="" />
-      <form onSubmit={handleSubmit}>
+      <form >
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
             <TextField

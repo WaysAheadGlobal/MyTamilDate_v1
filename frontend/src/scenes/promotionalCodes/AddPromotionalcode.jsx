@@ -33,7 +33,7 @@ const AddPromotionalCode = () => {
   const handleDateChange = (name, date) => {
     setFormData({
       ...formData,
-      [name]: date, // Store the date object directly
+      [name]: date, 
     });
   };
 

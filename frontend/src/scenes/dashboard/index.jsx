@@ -177,8 +177,13 @@ const Dashboard = () => {
   const [TotalPeyment, setTotalPeyment] = useState(0);
   const[TotalLikeCount, setLikeCount] = useState(0);
   const[locationscount, setLocationsCount] = useState([]);
+  const[CountTopJobs, setCountTopJobs] = useState([]);
+  const[OldMembersSignedIn, setOldMembersSignedIn] = useState(0);
   const[TotalMatchsCount, setMatchsCount] = useState(0);
+  const[TotalRequestCount, setRequestCount] = useState(0);
   const [messageCount, setMessageCount] = useState(0);
+  const[paidMemberCount, setPaidMemberCount] = useState(0);
+  const[TotalRenewal, setTotalRenewalCount] = useState(0);
   const [timeRange, setTimeRange] = useState('month');
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -289,15 +294,33 @@ const Dashboard = () => {
 
     const getLikeCount = async () => {
       try {
+        console.log('timeRange:', timeRange); // Log timeRange to verify its value
         const response = await axios.get(`${API_URL}/admin/dashboard/likes/count`, {
           params: { timeRange }
         });
+        console.log('API Response:', response.data); // Log the full response
         setLikeCount(response.data.total_likes);
+        console.log('TotalLikeCount:', response.data.total_likes); // Ensure this matches what you see in Postman
       } catch (error) {
-        console.error('Error fetching message count:', error);
+        console.error('Error fetching like count:', error);
       }
     };
 
+    const RequestCount = async () => {
+      try {
+        console.log('timeRange:', timeRange); // Log timeRange to verify its value
+        const response = await axios.get(`${API_URL}/admin/dashboard/requests/count`, {
+          params: { timeRange }
+        });
+        console.log('API Response:', response.data); // Log the full response
+        setRequestCount(response.data.total_requests);
+        console.log('total_requests:', response.data.total_requests); // Ensure this matches what you see in Postman
+      } catch (error) {
+        console.error('Error fetching like count:', error);
+      }
+    };
+    
+  
     const getMatchCount = async () => {
       try {
         const response = await axios.get(`${API_URL}/admin/dashboard/matches/count`, {
@@ -309,6 +332,60 @@ const Dashboard = () => {
       }
     };
 
+    const getTopJobs = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/admin/dashboard/top-jobs`, {
+          params: { timeRange }
+        });
+        setCountTopJobs(response.data);
+        console.log('getTopJobs:', response.data)
+      } catch (error) {
+        console.error('Error fetching message count:', error);
+      }
+    };
+
+    const PaidMemberCount = async () => {
+      try {
+        console.log('timeRange:', timeRange); // Log timeRange to verify its value
+        const response = await axios.get(`${API_URL}/admin/dashboard/new-paid-members/count`, {
+          params: { timeRange }
+        });
+        console.log('API Response:', response.data); // Log the full response
+        setPaidMemberCount(response.data.total_new_paid_members);
+        console.log('Totalpayment:', response.data.total_new_paid_members); // Ensure this matches what you see in Postman
+      } catch (error) {
+        console.error('Error fetching like count:', error);
+      }
+    };
+     
+    const TotalRenewalCount = async () => {
+      try {
+        console.log('timeRange:', timeRange); // Log timeRange to verify its value
+        const response = await axios.get(`${API_URL}/admin/dashboard/renewals/count`, {
+          params: { timeRange }
+        });
+        console.log('API Response:', response.data); // Log the full response
+        setTotalRenewalCount(response.data.total_renewals);
+        console.log('TotalRenewal:', response.data.total_renewals); // Ensure this matches what you see in Postman
+      } catch (error) {
+        console.error('Error fetching like count:', error);
+      }
+    };
+
+    const TotalOldMembersSignedIn = async () => {
+      try {
+        console.log('timeRange:', timeRange); // Log timeRange to verify its value
+        const response = await axios.get(`${API_URL}/admin/dashboard/old-members/signed-in/count`, {
+          params: { timeRange }
+        });
+        console.log('API Response:', response.data); // Log the full response
+        setOldMembersSignedIn(response.data.total_old_members_signed_in);
+        console.log('total_old_members_signed_in:', response.data.total_old_members_signed_in); // Ensure this matches what you see in Postman
+      } catch (error) {
+        console.error('Error fetching like count:', error);
+      }
+    };
+     
     const TotalPayments = async () => {
       try {
         const response = await axios.get(`${API_URL}/admin/dashboard/payments/total`, {
@@ -327,8 +404,8 @@ const Dashboard = () => {
           params: { timeRange }
         });
         setLocationsCount(response.data);
-     console.log(response.data);
-     console.log("jldsjfs");
+     console.log("jldsjfs",response.data);
+   
       } catch (error) {
         console.error('Error fetching message count:', error);
       }
@@ -344,6 +421,8 @@ const Dashboard = () => {
         return `${amount}`;
       }
     };
+
+    
    
   useEffect(() => {
     getCountByGender();
@@ -354,7 +433,13 @@ const Dashboard = () => {
     getLikeCount();
     getMatchCount();
     Toptencountry();
+    PaidMemberCount();
+    TotalRenewalCount();
+    RequestCount();
+    TotalOldMembersSignedIn();
+    getTopJobs();
   }, [timeRange]);
+
 
   useEffect(()=>{
     Transections();
@@ -412,7 +497,7 @@ const Dashboard = () => {
 
         <Box gridColumn={isMobile ? "span 12" : "span 3"}  display="flex" alignItems="center" justifyContent="center">
           <StatBox
-            title="4322"
+            title={TotalLikeCount}
             subtitle="Likes"
             progress="0.50"
             increase="+21%"
@@ -421,7 +506,7 @@ const Dashboard = () => {
         </Box>
         <Box gridColumn={isMobile ? "span 12" : "span 3"}  display="flex" alignItems="center" justifyContent="center">
           <StatBox
-            title="344"
+            title={TotalMatchsCount}
             subtitle="Matches"
             progress="0.30"
             increase="+5%"
@@ -430,7 +515,7 @@ const Dashboard = () => {
         </Box>
         <Box gridColumn={isMobile ? "span 12" : "span 3"}  display="flex" alignItems="center" justifyContent="center">
           <StatBox
-            title="1034"
+            title={TotalRequestCount}
             subtitle="Requests"
             progress="0.80"
             increase="+43%"
@@ -481,19 +566,99 @@ const Dashboard = () => {
 
         <Box display="grid" gridTemplateColumns={isMobile ? "repeat(auto-fill, minmax(250px, 1fr))" : "repeat(auto-fill, minmax(250px, 1fr))"} gap="10px" mt="50px">
         <StatCard title="Total Revenue Generated" value={`CAD ${TotalPeyment}`} />
-          <StatCard title="Total Old Users Signing First Time" value="15" />
+          <StatCard title="Total Old Users Signing First Time" value={OldMembersSignedIn} />
           <StatCard title="Total New Members Sign Up" value={totalNewUsersignup.total_users} />
-          <StatCard title="Total of New Paid Members" value="14" />
+          <StatCard title="Total of New Paid Members" value={paidMemberCount} />
         </Box>
 
 
         <Box display="grid" gridTemplateColumns={isMobile ? "repeat(auto-fill, minmax(250px, 1fr))" : "repeat(auto-fill, minmax(250px, 1fr))"} gap="10px" mt="20px">
           
-          <StatCard title="Total of Renewals" value="15" />
+          <StatCard title="Total of Renewals" value={TotalRenewal} />
           <StatCard title="Avg of Interaction Per Session" value="144" />
           <StatCard title="Avg Time Per Session" value="14" />
           <StatCard title="Avg Time Per Session" value="14" />
         </Box>
+      
+
+        
+        <Box display="flex" flexDirection={isMobile ? 'column' : 'row'} justifyContent="space-around" mt="30px">
+        <Box  flex="1" mx={isMobile ? '0' : '10px'} mb={isMobile ? '20px' : '0'}>
+         <Box display="flex" justifyContent="space-between" alignItems="center" borderBottom={`4px solid ${colors.primary[500]}`} p="15px">
+           <Typography color={colors.grey[100]} variant="h6" fontWeight="600" sx={{ fontFamily: 'Poppins, sans-serif' }}>
+             Top Jobs
+           </Typography>
+         </Box>
+         {CountTopJobs.map((jobs, i) => (
+           <Box
+             key={`${jobs.id}-${i}`}
+             display="flex"
+             justifyContent="space-between"
+             alignItems="center"
+             borderBottom={`2px solid ${colors.primary[500]}`}
+             p="15px"
+             sx={{
+               boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+               transition: 'all 0.3s ease',
+               '&:hover': {
+                 transform: 'scale(1.02)',
+                 borderColor: colors.greenAccent[500],
+                 boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+               },
+               fontFamily: 'Poppins, sans-serif',
+             }}
+           >
+             <Box>
+               <Typography color={colors.grey[100]} sx={{ fontFamily: 'Poppins, sans-serif' }}>
+                 {jobs.job_name}
+               </Typography>
+             </Box>
+             <Box backgroundColor={colors.greenAccent[500]} p="5px 10px" borderRadius="4px" sx={{ fontFamily: 'Poppins, sans-serif' }}>
+               {jobs.count}
+             </Box>
+           </Box>
+         ))}
+       </Box>
+        <Box  flex="1" mx={isMobile ? '0' : '10px'} mb={isMobile ? '20px' : '0'}>
+          <Box display="flex" justifyContent="space-between" alignItems="center" borderBottom={`4px solid ${colors.primary[500]}`} p="15px">
+            <Typography color={colors.grey[100]} variant="h6" fontWeight="600" sx={{ fontFamily: 'Poppins, sans-serif' }}>
+              Top Country
+            </Typography>
+          </Box>
+          {locationscount.map((jobs, i) => (
+            <Box
+              key={`${jobs.id}-${i}`}
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              borderBottom={`2px solid ${colors.primary[500]}`}
+              p="15px"
+              sx={{
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  transform: 'scale(1.02)',
+                  borderColor: colors.greenAccent[500],
+                  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+                },
+                fontFamily: 'Poppins, sans-serif',
+              }}
+            >
+              <Box>
+                <Typography color={colors.grey[100]} sx={{ fontFamily: 'Poppins, sans-serif' }}>
+                  {jobs.country}
+                </Typography>
+              </Box>
+              <Box backgroundColor={colors.greenAccent[500]} p="5px 10px" borderRadius="4px" sx={{ fontFamily: 'Poppins, sans-serif' }}>
+                {jobs.count}
+              </Box>
+            </Box>
+          ))}
+        </Box>
+       
+    </Box>
+
+
 
         <Box gridColumn={isMobile ? "span 12" : "span 4"} gridRow="span 2" overflow="auto" mt="30px">
         <Box display="flex" justifyContent="space-between" alignItems="center" borderBottom={`4px solid ${colors.primary[500]}`} p="15px">
@@ -537,7 +702,7 @@ const Dashboard = () => {
           </Box>
         ))}
       </Box>
-
+     
 
       </Box>
      
