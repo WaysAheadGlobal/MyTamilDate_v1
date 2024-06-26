@@ -4,6 +4,9 @@ import { body, validationResult } from 'express-validator';
 import { db } from "../../../../db/db";
 import { sendOTPtoPhoneNumber, verifyOTP, testTwilioConnection } from '../../../../otp';
 import { UserRequest } from "../../../types/types";
+import crypto from 'crypto';
+import { verifyUser } from "../../../middleware/verifyUser";
+import sgMail from '@sendgrid/mail';
 
 const auth = Router();
 let otpData: { phone: string, otp: string, createdAt: Date } | null = null;
@@ -305,10 +308,66 @@ auth.post('/signup', [body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'e
     }
 });
 
-auth.post("/verify", async (req: UserRequest, res) => {
+auth.post("/verify", verifyUser, async (req: UserRequest, res) => {
 
+    db.query('SELECT email FROM user_profiles WHERE user_id = ?', [req.userId], async (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+
+        if (results.length === 0) {
+            return res.status(401).json({ message: 'Invalid email' });
+        }
+
+        const token = crypto.randomBytes(32).toString('hex');
+        const msg: sgMail.MailDataRequired = {
+            to: results[0].email,
+            from: "mtdteam2024@gmail.com",
+            subject: "Email Verification",
+            html: `
+            <h1>Email Verification</h1>
+            <p>Click the link below to verify your email address</p>
+            <a href="${process.env.URL}/api/v1//user/verify/${token}">Verify Email</a>
+
+            <p>If you did not request this email, please ignore it.</p>
+            <p>Thanks</p>
+            `,
+        };
+
+        try {
+            await sgMail.send(msg);
+        } catch (error) {   
+            console.error('Error sending email:', error);
+            return res.status(500).send('Internal Server Error');
+        }
+
+        db.query('INSERT INTO verification_token (user_id, token, created_at) VALUES (?, ?, NOW())', [req.userId, token], (err) => {
+            if (err) {
+                console.error('Error inserting data:', err);
+                return res.status(500).send('Internal Server Error');
+            }
+
+            res.status(200).json({ message: 'Verification email sent' });
+        });
+    });
 });
 
-auth.get("/verify/:token", async (req: UserRequest, res) => {});
+auth.get("/verify/:token", async (req: UserRequest, res) => {
+    const { token } = req.params;
+
+    db.query('SELECT user_id FROM verification_token WHERE token = ?', [token], (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+
+        if (results.length === 0) {
+            return res.status(401).json({ message: 'Invalid token' });
+        }
+
+        res.redirect(`${process.env.URL}/pending`);
+    });
+});
 
 export default auth;

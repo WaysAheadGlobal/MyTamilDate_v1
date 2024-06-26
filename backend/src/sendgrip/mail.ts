@@ -1,7 +1,6 @@
-import { Router } from 'express';
 import sgMail from '@sendgrid/mail';
+import express, { Router } from 'express';
 import { UserRequest } from '../types/types';
-import express from 'express';
 
 export const Sendmail = Router();
 

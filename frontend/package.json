@@ -27,6 +27,7 @@
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
     "chart.js": "^3.9.1",
+    "country-list-json": "^1.1.0",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.11",
     "formik": "^2.2.9",

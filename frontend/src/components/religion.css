@@ -1,14 +1,13 @@
-.religion-container
-{
-display: flex;
-width: 100%;
-height:auto;
-justify-content: flex-start;
+.religion-container {
+    display: flex;
+    width: 100%;
+    height: auto;
+    justify-content: flex-start;
 
 }
-.religion-bg
-{
-    
+
+.religion-bg {
+
     width: 100%;
     height: auto;
     background-position: center;
@@ -22,7 +21,7 @@ justify-content: flex-start;
 
 /* .religion-main
 { */
-    /* background: #FFFFFF;
+/* background: #FFFFFF;
 
     display: flex;
     flex-direction: column;
@@ -34,45 +33,48 @@ align-items: center; */
 
 /* } */
 
-.religion-item.active, .lang-item.active {
-    background-color: #d0d0d0; /* Dark grey background */
-    
+.religion-item.active,
+.lang-item.active {
+    background-color: #F7ECFF;
+    /* Dark grey background */
+
 }
-.religion-content
-{
-  background: #FFFFFF;
+
+.religion-content {
+    background: #FFFFFF;
 
     display: flex;
     flex-direction: column;
-/* justify-content: space-evenly; */
-gap:24px;
-align-items: center;
-height: 100dvh;
-width: 85%;
+    /* justify-content: space-evenly; */
+    gap: 24px;
+    align-items: center;
+    height: 100dvh;
+    width: 85%;
 }
-.logo{
 
-position: absolute;
-left: 50%;
-  transform: translate(-50%);
+.logo {
+
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
 
 }
-.logo-progressbar8
-{
+
+.logo-progressbar8 {
     margin-top: 50px;
     gap: 16px;
     display: flex;
     flex-direction: column;
 }
-.logo-arrow8
-{
+
+.logo-arrow8 {
     display: flex;
 
     align-items: center;
     justify-content: flex-start;
     padding: 0px;
     margin: 0px;
-   
+
     height: 57px;
     position: relative;
 
@@ -80,71 +82,68 @@ left: 50%;
 }
 
 
-.track-btn8
-{
+.track-btn8 {
     width: 100%;
     height: 6px;
     background: #D9D9D9;
-border-radius: 4px;
-padding: 0px;
+    border-radius: 4px;
+    padding: 0px;
 
 
 }
-.track-btn8 div
-{
+
+.track-btn8 div {
     width: 80%;
-   
+
     box-shadow: 0px 4px 4px 0px #82828240;
     height: 100%;
-border-radius: 4px;
-   
-background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+    border-radius: 4px;
+
+    background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
 }
 
-.religion-text
-{
-  display: flex;
- 
-  align-items: center;
-  justify-content: flex-start;
-  gap:8px;
+.religion-text {
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
 }
-.religion-text p
-{
- 
+
+.religion-text p {
+
     font-family: Poppins;
-font-size: 20px;
-font-weight: 500;
-line-height: 30px;
-text-align: left;
-color:#515151;
-margin-bottom: 0px;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 30px;
+    text-align: left;
+    color: #515151;
+    margin-bottom: 0px;
 
 }
-.religion-details
-{
+
+.religion-details {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-gap:20px;
-  padding: 0px;
-
-}
-.your-religion
-{
-    display: flex;
-    flex-direction: column;
-gap:18px;
+    gap: 20px;
+    padding: 0px;
 
 }
 
-
-.your-lang
-{
+.your-religion {
     display: flex;
     flex-direction: column;
-gap:12px;
-    
+    gap: 18px;
+
+}
+
+
+.your-lang {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
 }
 
 
@@ -152,7 +151,8 @@ gap:12px;
 .all-lang {
     display: flex;
     flex-wrap: wrap;
-    max-height: 20dvh; /* Adjust height to show 4 items initially */
+    max-height: 20dvh;
+    /* Adjust height to show 4 items initially */
     overflow-y: auto;
     /* border: 1px solid #6C6C6C; */
     border-radius: 8px;
@@ -161,23 +161,25 @@ gap:12px;
 
 .religion-item,
 .lang-item {
-  min-width: 45%; /* Adjust to make two columns */
-    margin: 5px 2.5%; 
+    min-width: 45%;
+    /* Adjust to make two columns */
+    margin: 5px 2.5%;
     padding: 12px;
-   width: fit-content;
+    width: fit-content;
     cursor: pointer;
     white-space: nowrap;
     text-align: center;
-    border: 1px solid #CCCCCC;/* Add border for clarity */
+    border: 1px solid #CCCCCC;
+    /* Add border for clarity */
     border-radius: 34px;
     font-family: Poppins;
-font-size: 16px;
-font-weight: 500;
-line-height: 24px;
-letter-spacing: 0.04em;
-text-align: center;
-color:#6C6C6C;
-height:52px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0.04em;
+    text-align: center;
+    color: #6C6C6C;
+    height: 52px;
 
 }
 
@@ -197,23 +199,28 @@ height:52px;
 .all-religion::-webkit-scrollbar,
 .all-lang::-webkit-scrollbar {
     width: 7px;
-    border-radius: 12px; /* Width of vertical scrollbar */
+    border-radius: 12px;
+    /* Width of vertical scrollbar */
 }
 
 .all-religion::-webkit-scrollbar-thumb,
 .all-lang::-webkit-scrollbar-thumb {
-    background-color: #888; /* Scrollbar thumb color */
-    border-radius: 12px; /* Scrollbar thumb radius */
+    background-color: #888;
+    /* Scrollbar thumb color */
+    border-radius: 12px;
+    /* Scrollbar thumb radius */
 }
 
 .all-religion::-webkit-scrollbar-thumb:hover,
 .all-lang::-webkit-scrollbar-thumb:hover {
-    background-color: #555; /* Scrollbar thumb color on hover */
+    background-color: #555;
+    /* Scrollbar thumb color on hover */
 }
 
 .all-religion::-webkit-scrollbar-track,
 .all-lang::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Scrollbar track color */
+    background: #f1f1f1;
+    /* Scrollbar track color */
 }
 
 
@@ -249,29 +256,28 @@ height:52px;
 
 
 
-.religion-nxt-btn
-{
-  height:48px;
-  width:100%;
-  max-width:250px;
-  position: absolute;
-  bottom:36px;
-  margin-top:20px ;
-  background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+.religion-nxt-btn {
+    height: 48px;
+    width: 100%;
+    max-width: 250px;
+    position: absolute;
+    bottom: 36px;
+    margin-top: 20px;
+    background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
 
-  box-shadow: 0px 4px 10px 0px #00000029;
-  color:#FFFFFF;
-  font-family: Poppins;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 24px;
-  letter-spacing: 0.06em;
+    box-shadow: 0px 4px 10px 0px #00000029;
+    color: #FFFFFF;
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0.06em;
 
-  
-text-align: center;
-align-items: center;
-border: none;
-border-radius: 42px;
+
+    text-align: center;
+    align-items: center;
+    border: none;
+    border-radius: 42px;
 
 
 }
@@ -283,12 +289,12 @@ border-radius: 42px;
 
 
 
-@media only screen and (max-width:750px){
-.religion-bg
-{
-  display:none;
-}
-.religion-content{
-width: 100%;
-}
+@media only screen and (max-width:750px) {
+    .religion-bg {
+        display: none;
+    }
+
+    .religion-content {
+        width: 100%;
+    }
 }

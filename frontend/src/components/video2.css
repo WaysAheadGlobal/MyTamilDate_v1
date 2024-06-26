@@ -7,8 +7,8 @@
 }
 
 .video2-main p {
-    font-family: "Lora";
-    font-style: italic;
+    font-family: "Poppins";
+    
     font-size: 40px;
     font-weight: 600;
     /* line-height: 60px;
@@ -20,8 +20,8 @@
 }
 
 .video2-main span {
-    font-family: "Lora";
-    font-style: italic;
+    font-family: "Poppins";
+    
     font-size: 28px;
     font-weight: 500;
     line-height: 50.4px;

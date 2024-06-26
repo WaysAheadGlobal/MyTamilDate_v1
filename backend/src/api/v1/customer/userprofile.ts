@@ -1,9 +1,26 @@
 import express from 'express';
-import { verifyUser } from '../../../middleware/verifyUser';
-const { body, validationResult } = require('express-validator');
 import { db } from "../../../../db/db";
+import { verifyUser } from '../../../middleware/verifyUser';
 import { UserRequest } from '../../../types/types';
-import { error } from 'console';
+const { body, validationResult } = require('express-validator');
+import multer from 'multer';
+import crypto from 'crypto';
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/profiles');
+  },
+  filename: function (req, file, cb) {
+    cb(null, crypto.randomBytes(16).toString('hex') + file.mimetype.replace('image/', '.'));
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5 // 5MB 
+  }
+});
 
 const profile = express.Router();
 
@@ -859,13 +876,13 @@ profile.get('/answer/:questionId', verifyUser, (req: UserRequest, res: express.R
   });
 });
 
-profile.put('/updatestatus',verifyUser, (req: UserRequest, res: express.Response) => {
-  const {  approval } = req.body;
+profile.put('/updatestatus', verifyUser, (req: UserRequest, res: express.Response) => {
+  const { approval } = req.body;
   const userId = req.userId;
 
-  if ( !approval) {
-      res.status(400).send('Bad Request: Missing  status');
-      return;
+  if (!approval) {
+    res.status(400).send('Bad Request: Missing  status');
+    return;
   }
 
   const updateStatusSql = `
@@ -875,13 +892,53 @@ profile.put('/updatestatus',verifyUser, (req: UserRequest, res: express.Response
   `;
 
   db.query(updateStatusSql, [approval, userId], (err: Error | null, result: any) => {
-      if (err) {
-          console.log('Error updating status:', err);
-          res.status(500).send('Internal Server Error');
-          return;
-      }
-      res.status(200).send('Status updated successfully');
+    if (err) {
+      console.log('Error updating status:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    res.status(200).send('Status updated successfully');
   });
 });
+
+
+profile.post("/media",
+  verifyUser,
+  upload.fields([
+    { name: 'main', maxCount: 1 },
+    { name: 'first', maxCount: 1 },
+    { name: 'second', maxCount: 1 },
+  ]),
+  async (req: UserRequest, res) => {
+    const userId = req.userId;
+    console.log(req.files);
+
+    if (!req.files) {
+      return res.status(400).send('No files were uploaded.');
+    }
+
+    const main = (req.files as any)['main'] ? (req.files as any)['main'][0] : null;
+    const first = (req.files as any)['first'] ? (req.files as any)['first'][0] : null;
+    const second = (req.files as any)['second'] ? (req.files as any)['second'][0] : null;
+
+    // type 3 is for new media and then 1 is for avatar and 2 is for profile
+
+    const query = 'INSERT INTO media (user_id, hash, extension, type, meta, created_at, updated_at) VALUES ?';
+    const values = [
+      [userId, main.filename.split(".")[0], main.mimetype.split("/")[1], 31, JSON.stringify(main), new Date(), new Date()],
+      [userId, first.filename.split(".")[0], first.mimetype.split("/")[1], 32, JSON.stringify(first), new Date(), new Date()],
+      [userId, second.filename.split(".")[0], second.mimetype.split("/")[1], 32, JSON.stringify(second), new Date(), new Date()]
+    ];
+
+    db.query(query, [values], (err, results) => {
+      if (err) {
+        console.error('Error inserting media:', err);
+        return res.status(500).send('Internal Server Error');
+      }
+
+      res.status(200).json({ message: 'Media uploaded successfully' });
+    });
+  }
+)
 
 export default profile;

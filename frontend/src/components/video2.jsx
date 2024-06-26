@@ -15,11 +15,11 @@ export const Video2 = () => {
 
     return (
 
-        <Container className=' video2-main'>
+        <Container className=' video2-main' style={{ marginTop: "4rem" }}>
             <VerticallyCenteredModal
                 show={modalShow}
                 onHide={() => setModalShow(false)}
-                videoURL={videoURL}/>
+                videoURL={videoURL} />
             <p>Dating While Tamil?</p>
             <span style={{ textAlign: "center" }}>Check out the MTD community's tips & insights! </span>
 

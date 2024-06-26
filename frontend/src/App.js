@@ -1,85 +1,82 @@
 
 
-import { useContext, useState } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
-import Topbar from "./scenes/global/Topbar";
-import Sidebar from "./scenes/global/Sidebar";
-import Dashboard from "./scenes/dashboard";
-import Team from "./scenes/team";
-import Invoices from "./scenes/invoices";
-import Contacts from "./scenes/contacts";
-import Bar from "./scenes/bar";
-import Form from "./scenes/form";
-import Line from "./scenes/line";
-import Pie from "./scenes/pie";
-import FAQ from "./scenes/faq";
-import Geography from "./scenes/geography";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import { ColorModeContext, useMode } from "./theme";
-import Calendar from "./scenes/calendar/calendar";
+import { useState } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
+import { useAppContext } from "./Context/UseContext";
 import Approval from "./scenes/Approval";
-import PromotionalCodes from "./scenes/promotionalCodes/CodesList";
-import Details from "./scenes/promotionalCodes/Details";
-import UserDetails from "./scenes/userDetails";
 import ApprovalUserDetails from "./scenes/Approval/Approvaldetails";
 import AdminSignIn from "./scenes/adminLogin/adminlogin";
-import { useAppContext } from "./Context/UseContext";
-import ShowphoneAndEmail from "./scenes/showPhoneandEmail/showPhoneandEmail";
-import Landingpage from "./components/Landingpage";
+import Bar from "./scenes/bar";
+import Calendar from "./scenes/calendar/calendar";
+import Contacts from "./scenes/contacts";
+import Dashboard from "./scenes/dashboard";
+import FAQ from "./scenes/faq";
+import Form from "./scenes/form";
+import Geography from "./scenes/geography";
+import Sidebar from "./scenes/global/Sidebar";
+import Topbar from "./scenes/global/Topbar";
+import Invoices from "./scenes/invoices";
+import Line from "./scenes/line";
+import Pie from "./scenes/pie";
 import AddPromotioncode from "./scenes/promotionalCodes/AddPromotionalcode";
+import PromotionalCodes from "./scenes/promotionalCodes/CodesList";
+import Details from "./scenes/promotionalCodes/Details";
+import ShowphoneAndEmail from "./scenes/showPhoneandEmail/showPhoneandEmail";
+import Team from "./scenes/team";
+import UserDetails from "./scenes/userDetails";
+import { ColorModeContext, useMode } from "./theme";
 
-import { Entercode } from './components/entercode';
-import { SignupPhone } from './components/signup-verifyphone';
-import { BasicDetails } from './components/basic-details';
-import { EmailVerify } from './components/email-verify';
-import { GetStarted } from './components/get-started';
 import { AbtYourself } from './components/abt-yourself';
-import { Selfie } from './components/take-selfie1';
+import { BasicDetails } from './components/basic-details';
+import { Education } from './components/education';
+import { EmailVerify } from './components/email-verify';
+import { Entercode } from './components/entercode';
+import { GetStarted } from './components/get-started';
+import { JobTitle } from './components/job-title';
 import { Located } from './components/located';
-import { Religion} from './components/religion';
-import { Education} from './components/education';
-import { JobTitle} from './components/job-title';
+import { Religion } from './components/religion';
+import { SignupPhone } from './components/signup-verifyphone';
+import { Selfie } from './components/take-selfie1';
 
 import { LP } from './components/LP';
 import { FaqPage } from './components/faq-pg';
-import { Tnc } from './components/tnc';
 import { PrivacyPolicy } from './components/privacy-policy';
-import { Stories } from "./components/theirstories";
-import { Pictext } from "./components/pic-text";
+import { Tnc } from './components/tnc';
 
-import { SuccessPage } from "./components/success-stories-pg";
 import { GetInTouch } from './components/get-in-touch';
+import { SuccessPage } from "./components/success-stories-pg";
 
 import { SignIn } from "./components/sign-in/signin";
 import { SignInEmail } from "./components/sign-in/signin-email";
 import { SignInEmailOTP } from "./components/sign-in/signin-email-otp";
+import { SignInEmailSuccessful } from "./components/sign-in/signin-email-successful";
 import { SignInPhoneOTP } from "./components/sign-in/signin-phone-otp";
 import { SignInPhoneSuccessful } from "./components/sign-in/signin-phone-successful";
-import { SignInEmailSuccessful } from "./components/sign-in/signin-email-successful";
 
-import { AboutUsPage } from "./components/aboutus-pg"
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AboutUsPage } from "./components/aboutus-pg";
 import TotalCount from "./components/totalcount";
 import { Video2 } from "./components/video2";
-import ProtectedRoute from "./components/ProtectedRoute";
-import EditDetails from "./scenes/promotionalCodes/Editpromotionalcode";
 import ImageGallery from "./scenes/Approval/Imageget";
+import EditDetails from "./scenes/promotionalCodes/Editpromotionalcode";
 
 
-import { SignInOptions } from "./components/sign-in/sign-in-options";
 import { AccountSetting } from "./components/Account-Settings/accountSetting";
-import Height from "./components/Height";
-import Personality from "./components/Personality";
-import ProfileAnswers from "./components/ProfileAnswers";
-import KidsAndFamily from "./components/KidsAndFamily";
-import SmokeAndFamily from "./components/SmokeAndDrink";
-import ApproveEmail from "./components/ApproveEmail";
-import AlmostThere from "./components/AlmostThere";
-import AccountPending from "./components/AccountPending";
-import AccountNotApproved from "./components/AccountNotApproved";
-import AccountApproved from "./components/AccountApproved";
-import UnsubscribeComponent from "./components/Account-Settings/unsubscribeEmail";
 import { PrivacyPolicySetting } from "./components/Account-Settings/privacyPolicy";
 import { TermsConditions } from "./components/Account-Settings/termandconditons";
+import UnsubscribeComponent from "./components/Account-Settings/unsubscribeEmail";
+import AccountApproved from "./components/AccountApproved";
+import AccountNotApproved from "./components/AccountNotApproved";
+import AccountPending from "./components/AccountPending";
+import AlmostThere from "./components/AlmostThere";
+import ApproveEmail from "./components/ApproveEmail";
+import Height from "./components/Height";
+import KidsAndFamily from "./components/KidsAndFamily";
+import Personality from "./components/Personality";
+import ProfileAnswers from "./components/ProfileAnswers";
+import SmokeAndFamily from "./components/SmokeAndDrink";
+import { SignInOptions } from "./components/sign-in/sign-in-options";
 
 
 function App() {
@@ -114,14 +111,17 @@ function App() {
 
   // Check if the current route is protected
   const isProtectedRoute = protectedRoutes.some((route) =>
-    location.pathname.startsWith(route.split(":")[0]) 
+    location.pathname.startsWith(route.split(":")[0])
   );
 
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div className="app">
+        <div className="app" style={{
+          maxWidth: "1636px",
+          margin: "0 auto",
+        }}>
           {isAdmin && isProtectedRoute && <Sidebar isSidebar={isSidebar} />}
           <main className="content">
             {isAdmin && isProtectedRoute && <Topbar setIsSidebar={setIsSidebar} />}
@@ -131,7 +131,7 @@ function App() {
               <Route path="/contacts" element={<ProtectedRoute><Contacts /></ProtectedRoute>} />
               <Route path="/approval" element={<ProtectedRoute><Approval /></ProtectedRoute>} />
               <Route path="/promotionalcodedetails/:id" element={<ProtectedRoute><Details /></ProtectedRoute>} />
-              <Route path="/editpromotionalcode/:id" element={<ProtectedRoute>< EditDetails/></ProtectedRoute>} />
+              <Route path="/editpromotionalcode/:id" element={<ProtectedRoute>< EditDetails /></ProtectedRoute>} />
               <Route path="/userdetails/:id" element={<ProtectedRoute><UserDetails /></ProtectedRoute>} />
               <Route path="/showPhoneandEmail" element={<ProtectedRoute><ShowphoneAndEmail /></ProtectedRoute>} />
               <Route path="/approvaluserdetails/:id" element={<ProtectedRoute><ApprovalUserDetails /></ProtectedRoute>} />
@@ -147,9 +147,7 @@ function App() {
               <Route path="/geography" element={<ProtectedRoute><Geography /></ProtectedRoute>} />
               <Route path="/adminlogin" element={<AdminSignIn />} />
               <Route path="/addpromotionalcode" element={<ProtectedRoute><AddPromotioncode /></ProtectedRoute>} />
-              <Route  path="/img" element={<ImageGallery />}></Route>
-
-
+              <Route path="/img" element={<ImageGallery />}></Route>
 
               <Route path="/" element={<LP />} />
               <Route path="/SuccessPage" element={<SuccessPage />} />
@@ -165,12 +163,12 @@ function App() {
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signinphoneotp" element={<SignInPhoneOTP />} />
               <Route path="/signinphonesuccessful" element={<SignInPhoneSuccessful />} />
-              <Route path="/signinemailsuccessful" element={<SignInEmailSuccessful/>} />
-            
+              <Route path="/signinemailsuccessful" element={<SignInEmailSuccessful />} />
+
               <Route path="/signinemail" element={<SignInEmail />} />
               <Route path="/signinemailotp" element={<SignInEmailOTP />} />
 
-              
+
               <Route path="/entercode" element={<Entercode />} />
               <Route path="/emailverify" element={<EmailVerify />} />
               <Route path="/getstarted" element={<GetStarted />} />
@@ -192,12 +190,12 @@ function App() {
               <Route path="/not-approved" element={<AccountNotApproved />} />
               <Route path="/approved" element={<AccountApproved />} />
 
-            
-              <Route path = "/accoutsetting" element={<AccountSetting/>}></Route>
-              <Route path = "/unsubscribe" element={<UnsubscribeComponent/>}></Route>
-              <Route path="//PrivacyPolicyDetails" element={<PrivacyPolicySetting/>}></Route>
-             <Route path="/termandconditions" element={<TermsConditions/>}></Route>
-             
+
+              <Route path="/accoutsetting" element={<AccountSetting />}></Route>
+              <Route path="/unsubscribe" element={<UnsubscribeComponent />}></Route>
+              <Route path="/PrivacyPolicyDetails" element={<PrivacyPolicySetting />}></Route>
+              <Route path="/termandconditions" element={<TermsConditions />}></Route>
+
             </Routes>
 
           </main>
