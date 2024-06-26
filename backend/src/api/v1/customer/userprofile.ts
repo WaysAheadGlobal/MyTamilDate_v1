@@ -941,4 +941,18 @@ profile.post("/media",
   }
 )
 
+profile.get('/media', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  const query = 'SELECT id, hash, extension, type FROM media WHERE user_id = ?';
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching media:', err);
+      return res.status(500).send('Internal Server Error');
+    }
+
+    res.status(200).json(results);
+  });
+});
+
 export default profile;
