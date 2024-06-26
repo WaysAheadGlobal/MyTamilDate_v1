@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
 import ejs from 'ejs';
-import sgMail from '@sendgrid/mail';
 
 class MailService {
     private transporter: nodemailer.Transporter;

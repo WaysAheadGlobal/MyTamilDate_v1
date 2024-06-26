@@ -7,6 +7,7 @@ import { UserRequest } from "../../../types/types";
 import crypto from 'crypto';
 import { verifyUser } from "../../../middleware/verifyUser";
 import sgMail from '@sendgrid/mail';
+import ejs from 'ejs';
 
 const auth = Router();
 let otpData: { phone: string, otp: string, createdAt: Date } | null = null;
@@ -325,19 +326,12 @@ auth.post("/verify", verifyUser, async (req: UserRequest, res) => {
             to: results[0].email,
             from: "mtdteam2024@gmail.com",
             subject: "Email Verification",
-            html: `
-            <h1>Email Verification</h1>
-            <p>Click the link below to verify your email address</p>
-            <a href="${process.env.URL}/api/v1//user/verify/${token}">Verify Email</a>
-
-            <p>If you did not request this email, please ignore it.</p>
-            <p>Thanks</p>
-            `,
+            html: await ejs.renderFile("mail/templates/verify.ejs", { link: `${process.env.URL}/api/v1//user/verify/${token}` }),
         };
 
         try {
             await sgMail.send(msg);
-        } catch (error) {   
+        } catch (error) {
             console.error('Error sending email:', error);
             return res.status(500).send('Internal Server Error');
         }
@@ -366,7 +360,14 @@ auth.get("/verify/:token", async (req: UserRequest, res) => {
             return res.status(401).json({ message: 'Invalid token' });
         }
 
-        res.redirect(`${process.env.URL}/pending`);
+        db.query('UPDATE users SET approval = 10 WHERE id = ?', [results[0].user_id], (err) => {
+            if (err) {
+                console.error('Error updating data:', err);
+                return res.status(500).send('Internal Server Error');
+            }
+
+            res.redirect(`${process.env.URL}/pending`);
+        });
     });
 });
 

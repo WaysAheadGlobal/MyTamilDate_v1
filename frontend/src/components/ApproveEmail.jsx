@@ -1,15 +1,13 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { Button, Container, Image } from 'react-bootstrap';
+import { API_URL } from '../api';
 import logo from "../assets/images/MTDlogo.png";
 import responsivebg from "../assets/images/responsive-bg.png";
-import './job-title.css';
-import { API_URL } from '../api';
-import { useNavigate } from 'react-router-dom';
 import { useCookies } from '../hooks/useCookies';
+import './job-title.css';
 
 export default function ApproveEmail() {
-    const navigate = useNavigate();
     const { getCookie } = useCookies();
 
     const updateStatus = async (newStatus) => {
@@ -24,7 +22,7 @@ export default function ApproveEmail() {
             });
 
             if (response.ok) {
-                navigate("/almost-there");
+                alert('Mail sent successfully! Please check your email.');
             }
         } catch (err) {
             console.error(err);
