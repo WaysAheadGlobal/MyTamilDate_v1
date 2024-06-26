@@ -38,7 +38,9 @@ export const TheirStories = () => {
         <>
             {
                 !isMobile ? (
-                    <Container fluid className='story-main'>
+                    <Container fluid className='story-main' style={{
+                        marginTop: '4rem'
+                    }}>
                         <div className='story-text'>
                             <p className='story-heading'>
                                 They met their Match on <span style={{ color: '#4E1173' }}>myTamilDate</span>

@@ -63,7 +63,7 @@
 }
 
 .abt1-detail p {
-  font-family: "Lora", sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 24px;
   font-weight: 600;
   line-height: 1.5;
@@ -132,8 +132,8 @@
 
 .abt2-txt p {
 
-  font-family: "Lora";
-  font-style: italic;
+  font-family: "Poppins";
+  
   font-size: 40px;
   font-weight: 600;
   line-height: 46px;
@@ -294,8 +294,8 @@
 }
 
 .abt3-main > p {
-  font-family: "Lora";
-  font-style: italic;
+  font-family: "Poppins";
+  
   font-size: 40px;
   font-weight: 600;
   line-height: 50px;

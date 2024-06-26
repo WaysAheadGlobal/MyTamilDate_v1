@@ -1,16 +1,18 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Container, Image, Button, Row, Col, Modal } from 'react-bootstrap';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Button, Col, Container, Image, Modal, Row } from 'react-bootstrap';
 
 import Cropper from 'react-easy-crop';
-import backarrow from "../assets/images/backarrow.jpg";
-import logo from "../assets/images/MTDlogo.png";
-import './take-selfie1.css';
 import { useNavigate } from 'react-router-dom';
-import responsivebg from "../assets/images/responsive-bg.png";
-import pic from "../assets/images/pic.png";
+import { API_URL } from '../api';
+import logo from "../assets/images/MTDlogo.png";
+import addplus from "../assets/images/add-plus.png";
+import backarrow from "../assets/images/backarrow.jpg";
 import dont from "../assets/images/do.png";
 import doo from "../assets/images/dont.png";
-import addplus from "../assets/images/add-plus.png";
+import pic from "../assets/images/pic.png";
+import responsivebg from "../assets/images/responsive-bg.png";
+import { useCookies } from '../hooks/useCookies';
+import './take-selfie1.css';
 
 export const Selfie = () => {
 
@@ -24,7 +26,8 @@ export const Selfie = () => {
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [currentImageKey, setCurrentImageKey] = useState(null);
     const [showDosDontsModal, setShowDosDontsModal] = useState(false);
-    const [imageBlob, setImageBlob] = useState(null);   
+    const { getCookie } = useCookies();
+    const [loading, setLoading] = useState(false);
 
     const fileInputRefMain = useRef(null);
     const fileInputRefFirst = useRef(null);
@@ -54,15 +57,38 @@ export const Selfie = () => {
         }
     };
 
-    const handleNextClick = () => {
-        /* if (!selectedImages.main || !selectedImages.first || !selectedImages.second) {
+    const handleNextClick = async () => {
+        if (!selectedImages.main || !selectedImages.first || !selectedImages.second) {
             setShowModal(true);
             return;
-        } */
+        }
 
-    
+        setLoading(true);
 
-        navigate("/located");
+        const formData = new FormData();
+        formData.append('main', selectedImages.main);
+        formData.append('first', selectedImages.first);
+        formData.append('second', selectedImages.second);
+
+        try {
+            const response = await fetch(`${API_URL}/customer/users/media`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Authorization': `Bearer ${getCookie('token')}`,
+                }
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                navigate("/located");
+            }
+        } catch (error) {
+            console.error('Error saving images:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
@@ -80,12 +106,12 @@ export const Selfie = () => {
         getCroppedImg(imageToCrop, croppedAreaPixels)
             /* croppedImage: Blob */
             .then(croppedImage => {
+                console.log(new File([croppedImage], window.crypto.randomUUID(), { type: 'image/jpeg' }));
 
-                setImageBlob(croppedImage);
-                setSelectedImages(prevState => ({
-                    ...prevState,
-                    [currentImageKey]: URL.createObjectURL(croppedImage)
-                }));
+                setSelectedImages({
+                    ...selectedImages,
+                    [currentImageKey]: new File([croppedImage], window.crypto.randomUUID(), { type: 'image/jpeg' })
+                })
 
                 setShowCropModal(false);
 
@@ -180,14 +206,20 @@ export const Selfie = () => {
                 </Container>
                 <Container className='selfie-adding'>
                     <Row className='selfie-row' onClick={() => handleClick('main')}>
-                        <Col md={12} className='selfie-box1'>
+                        <Col md={12} className='selfie-box1' style={{
+                            height: "24dvh"
+                        }}>
                             {!selectedImages.main && (
                                 <>
                                     <Image className='selfie-icon' src={addplus}></Image>
                                     <span>Add main photo</span>
                                 </>
                             )}
-                            {selectedImages.main && <Image src={selectedImages.main} className="user-picture1" alt="Selected" fluid />}
+                            {selectedImages.main && <Image src={URL.createObjectURL(selectedImages.main)} className="user-picture1" style={{
+                                height: '100%',
+                                width: '100%',
+                                objectFit: 'contain',
+                            }} alt="Selected" fluid />}
                             <input
                                 type="file"
                                 ref={fileInputRefMain}
@@ -197,14 +229,20 @@ export const Selfie = () => {
                         </Col>
                     </Row>
                     <Row className='selfie-row2'>
-                        <Col md={6} className='selfie-box2' onClick={() => handleClick('first')}>
+                        <Col md={6} className='selfie-box2' style={{
+                            height: "20dvh"
+                        }} onClick={() => handleClick('first')}>
                             {!selectedImages.first && (
                                 <>
                                     <Image className='selfie-icon' src={addplus} style={{ marginTop: '5px', objectFit: "contain", objectPosition: "center" }}></Image>
                                     <span>Add photo</span>
                                 </>
                             )}
-                            {selectedImages.first && <Image src={selectedImages.first} className="user-picture2" alt="Selected" fluid />}
+                            {selectedImages.first && <Image src={URL.createObjectURL(selectedImages.first)} className="user-picture2" style={{
+                                height: '100%',
+                                width: '100%',
+                                objectFit: 'contain',
+                            }} alt="Selected" fluid />}
                             <input
                                 type="file"
                                 ref={fileInputRefFirst}
@@ -212,14 +250,20 @@ export const Selfie = () => {
                                 style={{ display: 'none' }}
                             />
                         </Col>
-                        <Col md={6} className='selfie-box2' onClick={() => handleClick('second')}>
+                        <Col md={6} className='selfie-box2' style={{
+                            height: "20dvh"
+                        }} onClick={() => handleClick('second')}>
                             {!selectedImages.second && (
                                 <>
                                     <Image className='selfie-icon' src={addplus} style={{ marginTop: '5px' }}></Image>
                                     <span>Add photo</span>
                                 </>
                             )}
-                            {selectedImages.second && <Image src={selectedImages.second} className="user-picture2" alt="Selected" fluid />}
+                            {selectedImages.second && <Image src={URL.createObjectURL(selectedImages.second)} className="user-picture2" style={{
+                                height: '100%',
+                                width: '100%',
+                                objectFit: 'contain',
+                            }} alt="Selected" fluid />}
                             <input
                                 type="file"
                                 ref={fileInputRefSecond}
@@ -240,6 +284,12 @@ export const Selfie = () => {
                     }}
                 >
                     Next
+                    {
+                        loading && <div className="spinner-border spinner-border-sm" style={{
+                            marginLeft: '10px',
+                        }} role="status">
+                        </div>
+                    }
                 </Button>
                 <Modal centered className="selfie-modal" show={showModal} onHide={() => setShowModal(false)}>
                     <Modal.Body className='selfie-modal-body'>

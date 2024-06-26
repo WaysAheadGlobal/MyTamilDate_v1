@@ -60,8 +60,8 @@
 }
 
 .success-pg-heading {
-    font-family: "Lora";
-    font-style: italic;
+    font-family: "Poppins";
+    
     font-size: 40px;
     font-weight: 600;
     /* line-height: 60px;
@@ -72,8 +72,8 @@
 }
 
 .success-pg-sub {
-    font-family: "Lora";
-    font-style: italic;
+    font-family: "Poppins";
+    
     text-align: justify;
     font-size: 20px;
     font-weight: 500;

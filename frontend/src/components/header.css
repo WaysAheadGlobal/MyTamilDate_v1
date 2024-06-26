@@ -49,8 +49,8 @@
 }
 
 .header-text span {
-  font-family: "Lora";
-  /* font-style: italic; */
+  font-family: "Poppins";
+  /*  */
   font-size: 60px;
   font-weight: 600;
   line-height: 90px;
@@ -255,8 +255,8 @@
 
 
   .header-text span {
-    font-family: "Lora";
-    font-style: italic;
+    font-family: "Poppins";
+    
     font-size: 44px;
     font-weight: 600;
     line-height: 46px;

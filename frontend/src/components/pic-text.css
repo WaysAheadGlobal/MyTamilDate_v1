@@ -54,16 +54,16 @@
 .text1 h4 {
 
     color: #333333;
-    font-family: "Lora";
-    font-style: italic;
+    font-family: "Poppins";
+    
     font-size: xx-large;
     font-weight: 600;
 
 }
 
 .discover-love {
-    font-family: "Lora";
-    font-style: italic;
+    font-family: "Poppins";
+    
     font-size: xx-large;
     font-weight: 600;
     color: #4E1173;
@@ -139,6 +139,7 @@
         flex-direction: column;
         padding-left: 15px;
         padding-right: 15px;
+        
 
         padding-top: 20px;
         padding-bottom: 20px;

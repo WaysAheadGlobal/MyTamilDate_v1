@@ -9,35 +9,31 @@ import { useNavigate } from 'react-router-dom';
 import { useCookies } from '../hooks/useCookies';
 
 export default function ApproveEmail() {
-
     const navigate = useNavigate();
     const { getCookie } = useCookies();
+
     const updateStatus = async (newStatus) => {
         try {
-          const response = await fetch(`${API_URL}/customer/users/updatestatus`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${getCookie('token')}`
+            const response = await fetch(`${API_URL}/user/verify`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
 
-            },
-            body: JSON.stringify({ approval: newStatus }),
-          });
-      
-          if (!response.ok) {
-            const errorDetails = await response.text(); 
-            throw new Error(`Failed to update status: ${errorDetails}`);
-          }
-          navigate("/almost-there")
-          console.log("Status updated successfully");
+                },
+            });
+
+            if (response.ok) {
+                navigate("/almost-there");
+            }
         } catch (err) {
-          console.error(err);
+            console.error(err);
         }
-      };
+    };
 
-      const handleUpdatestatus = ()=>{
+    const handleUpdatestatus = () => {
         updateStatus(10);
-      }
+    }
 
     return (
         <div className='job-container'>
