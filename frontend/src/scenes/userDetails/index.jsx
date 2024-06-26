@@ -13,15 +13,62 @@ const UserDetails = () => {
   const theme = useTheme();
   const [details, setDetails] = useState({});
   const colors = tokens(theme.palette.mode);
-   const isLgUp = useMediaQuery(theme.breakpoints.up('lg'));
+  const isLgUp = useMediaQuery(theme.breakpoints.up('lg'));
   const { id } = useParams();
+  const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
+  const [images, setImages] = useState({
+    main: null,
+    first: null,
+    second: null,
+  });
+
+  const ImageURL = async () => {
+    try {
+      const response = await fetch(`${API_URL}/admin/users/media/${id}`, {
+        method: 'GET',
+      });
+      const data = await response.json();
+      console.log("datadaa", data);
+      if (response.ok) {
+        if (data[0].type === 31 || data[1].type === 31 || data[2].type === 31) {
+          const others = data.filter(image => image.type === 32);
+          const main = data.filter(image => image.type === 31)[0];
+          console.log(others, main)
+          setImages({
+            main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
+            first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
+            second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
+          })
+
+        }
+        else{
+          const others = data.filter(image => image.type === 2);
+          const main = data.filter(image => image.type === 1)[0];
+          console.log(others, main)
+          setImages({
+            main: OldImageURL +"/" + id + "/avatar/"+ main.hash + "-large" + "." + main.extension,
+            first: OldImageURL +"/" + id + "/avatar/"+ others[0].hash + "-large" + "." + main.extension,
+            second: OldImageURL +"/" + id + "/avatar/"+ others[1].hash  + "-large"+ "." + main.extension,
+          })
+          console.log({
+            main: OldImageURL +"/" + id + "/avatar/"+ main.hash + "." + main.extension,
+            first: OldImageURL +"/" + id + "/photo/"+ others[0].hash + "." + main.extension,
+            second: OldImageURL +"/" + id + "/photo/"+ others[1].hash + "." + main.extension,
+          })
+        }
+
+      }
+    } catch (error) {
+      console.error('Error saving images:', error);
+    }
+  }
 
   const fetchData = async () => {
     try {
       const data = await fetch(`${API_URL}/admin/users/customers/${id}`);
       const response = await data.json();
       setDetails(response[0]);
-      console.log(response[0]);
+
     } catch (err) {
       console.log(err);
     }
@@ -29,6 +76,7 @@ const UserDetails = () => {
 
   useEffect(() => {
     fetchData();
+    ImageURL();
   }, [id]);
 
   const updateStatus = async (newStatus) => {
@@ -40,15 +88,15 @@ const UserDetails = () => {
         },
         body: JSON.stringify({ id: id, approval: newStatus }),
       });
-  
+
       if (!response.ok) {
         const errorDetails = await response.text(); // Get error details for debugging
         throw new Error(`Failed to update status: ${errorDetails}`);
       }
-  
+
       // Fetch updated details after updating the status
       await fetchData();
-      
+
       console.log("Status updated successfully");
     } catch (err) {
       console.error(err);
@@ -70,7 +118,7 @@ const UserDetails = () => {
         throw new Error(`Failed to delete user: ${errorDetails}`);
       }
 
-      
+
       await fetchData();
 
       console.log('User deleted successfully');
@@ -101,14 +149,14 @@ const UserDetails = () => {
     40: 'Incomplete Registration',
   };
 
-   status = 'N/A';
+  status = 'N/A';
   if (details.deleted_at) {
     status = 'Deleted';
   } else {
     status = approvalStatuses[details.approval] || 'N/A';
   }
 
-  
+
 
 
   const handleApproveRequest = () => {
@@ -127,199 +175,199 @@ const UserDetails = () => {
           <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column" mb={2}>
             <Avatar
               alt="User Image"
-              src={details.imageSrc || 'https://img.freepik.com/free-photo/celebration-deity-navratri_23-2151220028.jpg?size=626&ext=jpg'}
+              src={images.main}
               sx={{ width: 250, height: 250, mb: 2 }}
             />
             <Typography variant="h5" align="center">{`${details.first_name || ''} ${details.last_name || ''}`}</Typography>
             <Typography variant="subtitle1" color="textSecondary" align="center">{status || 'N/A'}</Typography>
           </Box>
-         
+
         </Grid>
         <Grid item xs={12} md={8}>
-        <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <Box mb={2}>
-            <Typography variant="h6" color={colors.primary[700]}>First Name</Typography>
-            <Box
-              sx={{
-                p: 2,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">{details.first_name || "N/A"}</Typography>
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box mb={2}>
-            <Typography variant="h6" color={colors.primary[700]}>Last Name</Typography>
-            <Box
-              sx={{
-                p: 2,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">{details.last_name || "N/A" }</Typography>
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box mb={2}>
-            <Typography variant="h6" color={colors.primary[700]}>Status</Typography>
-            <Box
-              sx={{
-                p: 2,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">{status || 'N/A'}</Typography>
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box mb={2}>
-            <Typography variant="h6" color={colors.primary[700]}>Payment Status</Typography>
-            <Box
-              sx={{
-                p: 2,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">{details.paymentStatus || 'N/A'}</Typography>
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box mb={2}>
-            <Typography variant="h6" color={colors.primary[700]}>Email</Typography>
-            <Box
-              sx={{
-                p: 2,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">{maskEmail(details.email) || 'N/A'}</Typography>
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box mb={2}>
-            <Typography variant="h6" color={colors.primary[700]}>Phone Number</Typography>
-            <Box
-              sx={{
-                p: 2,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">{maskPhone(details.phone)|| 'N/A'}</Typography>
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box mb={2}>
-            <Typography variant="h6" color={colors.primary[700]}>Birthday</Typography>
-            <Box
-              sx={{
-                p: 2,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">{details.birthday ? new Date(details.birthday).toLocaleDateString('en-US') : 'N/A'}</Typography>
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box mb={2}>
-            <Typography variant="h6" color={colors.primary[700]}>Gender</Typography>
-            <Box
-              sx={{
-                p: 2,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">
-  {details.gender === 1 ? 'Male' : details.gender === 2 ? 'Female' : 'Other'}
-</Typography>
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box mb={2}>
-            <Typography variant="h6" color={colors.primary[700]}>Location</Typography>
-            <Box
-              sx={{
-                p: 2,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">{details.country || 'N/A'}</Typography>
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box mb={2}>
-            <Typography variant="h6" color={colors.primary[700]}>Study</Typography>
-            <Box
-              sx={{
-                p: 2,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">{details.study_name || 'N/A'}</Typography>
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box mb={2}>
-            <Typography variant="h6" color={colors.primary[700]}>Job</Typography>
-            <Box
-              sx={{
-                p: 2,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">{details.job_name  || 'N/A'}</Typography>
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box mb={2}>
-            <Typography variant="h6" color={colors.primary[700]}>Growth</Typography>
-            <Box
-              sx={{
-                p: 2,
-                border: `1px solid ${colors.grey[300]}`,
-                borderRadius: '8px',
-                backgroundColor: colors.primary[50],
-              }}
-            >
-              <Typography variant="body1">{details.growth_name || 'N/A'}</Typography>
-            </Box>
-          </Box>
-        </Grid>
-      </Grid>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <Box mb={2}>
+                <Typography variant="h6" color={colors.primary[700]}>First Name</Typography>
+                <Box
+                  sx={{
+                    p: 2,
+                    border: `1px solid ${colors.grey[300]}`,
+                    borderRadius: '8px',
+                    backgroundColor: colors.primary[50],
+                  }}
+                >
+                  <Typography variant="body1">{details.first_name || "N/A"}</Typography>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Box mb={2}>
+                <Typography variant="h6" color={colors.primary[700]}>Last Name</Typography>
+                <Box
+                  sx={{
+                    p: 2,
+                    border: `1px solid ${colors.grey[300]}`,
+                    borderRadius: '8px',
+                    backgroundColor: colors.primary[50],
+                  }}
+                >
+                  <Typography variant="body1">{details.last_name || "N/A"}</Typography>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Box mb={2}>
+                <Typography variant="h6" color={colors.primary[700]}>Status</Typography>
+                <Box
+                  sx={{
+                    p: 2,
+                    border: `1px solid ${colors.grey[300]}`,
+                    borderRadius: '8px',
+                    backgroundColor: colors.primary[50],
+                  }}
+                >
+                  <Typography variant="body1">{status || 'N/A'}</Typography>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Box mb={2}>
+                <Typography variant="h6" color={colors.primary[700]}>Payment Status</Typography>
+                <Box
+                  sx={{
+                    p: 2,
+                    border: `1px solid ${colors.grey[300]}`,
+                    borderRadius: '8px',
+                    backgroundColor: colors.primary[50],
+                  }}
+                >
+                  <Typography variant="body1">{details.paymentStatus || 'N/A'}</Typography>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Box mb={2}>
+                <Typography variant="h6" color={colors.primary[700]}>Email</Typography>
+                <Box
+                  sx={{
+                    p: 2,
+                    border: `1px solid ${colors.grey[300]}`,
+                    borderRadius: '8px',
+                    backgroundColor: colors.primary[50],
+                  }}
+                >
+                  <Typography variant="body1">{maskEmail(details.email) || 'N/A'}</Typography>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Box mb={2}>
+                <Typography variant="h6" color={colors.primary[700]}>Phone Number</Typography>
+                <Box
+                  sx={{
+                    p: 2,
+                    border: `1px solid ${colors.grey[300]}`,
+                    borderRadius: '8px',
+                    backgroundColor: colors.primary[50],
+                  }}
+                >
+                  <Typography variant="body1">{maskPhone(details.phone) || 'N/A'}</Typography>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Box mb={2}>
+                <Typography variant="h6" color={colors.primary[700]}>Birthday</Typography>
+                <Box
+                  sx={{
+                    p: 2,
+                    border: `1px solid ${colors.grey[300]}`,
+                    borderRadius: '8px',
+                    backgroundColor: colors.primary[50],
+                  }}
+                >
+                  <Typography variant="body1">{details.birthday ? new Date(details.birthday).toLocaleDateString('en-US') : 'N/A'}</Typography>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Box mb={2}>
+                <Typography variant="h6" color={colors.primary[700]}>Gender</Typography>
+                <Box
+                  sx={{
+                    p: 2,
+                    border: `1px solid ${colors.grey[300]}`,
+                    borderRadius: '8px',
+                    backgroundColor: colors.primary[50],
+                  }}
+                >
+                  <Typography variant="body1">
+                    {details.gender === 1 ? 'Male' : details.gender === 2 ? 'Female' : 'Other'}
+                  </Typography>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Box mb={2}>
+                <Typography variant="h6" color={colors.primary[700]}>Location</Typography>
+                <Box
+                  sx={{
+                    p: 2,
+                    border: `1px solid ${colors.grey[300]}`,
+                    borderRadius: '8px',
+                    backgroundColor: colors.primary[50],
+                  }}
+                >
+                  <Typography variant="body1">{details.country || 'N/A'}</Typography>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Box mb={2}>
+                <Typography variant="h6" color={colors.primary[700]}>Study</Typography>
+                <Box
+                  sx={{
+                    p: 2,
+                    border: `1px solid ${colors.grey[300]}`,
+                    borderRadius: '8px',
+                    backgroundColor: colors.primary[50],
+                  }}
+                >
+                  <Typography variant="body1">{details.study_name || 'N/A'}</Typography>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Box mb={2}>
+                <Typography variant="h6" color={colors.primary[700]}>Job</Typography>
+                <Box
+                  sx={{
+                    p: 2,
+                    border: `1px solid ${colors.grey[300]}`,
+                    borderRadius: '8px',
+                    backgroundColor: colors.primary[50],
+                  }}
+                >
+                  <Typography variant="body1">{details.job_name || 'N/A'}</Typography>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Box mb={2}>
+                <Typography variant="h6" color={colors.primary[700]}>Growth</Typography>
+                <Box
+                  sx={{
+                    p: 2,
+                    border: `1px solid ${colors.grey[300]}`,
+                    borderRadius: '8px',
+                    backgroundColor: colors.primary[50],
+                  }}
+                >
+                  <Typography variant="body1">{details.growth_name || 'N/A'}</Typography>
+                </Box>
+              </Box>
+            </Grid>
+          </Grid>
           {/* <Grid container spacing={2}>
             <Grid item xs={6}>
               <Box mb={4}>
@@ -374,74 +422,74 @@ const UserDetails = () => {
               </Box>
             </Grid>
           </Grid> */}
-           <Box display="flex" gap="8px" flexDirection={isLgUp ? 'row' : 'column'} alignItems="center" justifyContent="center">
-      <Box>
-        <Grid
-          container
-          direction={isLgUp ? 'row' : 'column'}
-          justifyContent="center"
-          alignItems="center"
-          spacing={2}
-        >
-          <Grid item xs={12} lg={6} textAlign="center">
-          {details.approval === 10 && details.deleted_at == null ? (
+          <Box display="flex" gap="8px" flexDirection={isLgUp ? 'row' : 'column'} alignItems="center" justifyContent="center">
+            <Box>
+              <Grid
+                container
+                direction={isLgUp ? 'row' : 'column'}
+                justifyContent="center"
+                alignItems="center"
+                spacing={2}
+              >
+                <Grid item xs={12} lg={6} textAlign="center">
+                  {details.approval === 10 && details.deleted_at == null ? (
                     <Button
                       variant="contained"
                       sx={{ backgroundColor: theme.palette.grey[900] }}
-                     
+
                     >
                       Reject
                     </Button>
                   ) : null}
-          
-          </Grid>
-          <Grid item xs={12} lg={6} textAlign="center">
-          {details.approval === 10 && details.deleted_at == null ? (
-            <Button
-              sx={{
-                background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-                color: '#fff',
-                '&:hover': {
-                  background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-                },
-              }}
-            
-            >
-              Approve
-            </Button>
-               ) : null}
-          </Grid>
-        </Grid>
-      </Box>
 
-      <Box>
-        <Grid
-          container
-          direction={isLgUp ? 'row' : 'column'}
-          justifyContent="center"
-          alignItems="center"
-          spacing={2}
-        >
-          <Grid item xs={12} lg={6} textAlign="center">
-          { details.deleted_at === null ? (
-            <Button variant="contained" color="error" >
-              Delete
-            </Button>
-              ) : null}
-          </Grid>
-          <Grid item xs={12} lg={6} textAlign="center">
-          { details.deleted_at === null ? (
-            <Button  sx={{width: "140px"}} variant="contained" color="error" >
-              Delete Request
-            </Button>
-            ) : null}
-          </Grid>
-        </Grid>
-      </Box>
-    </Box>
+                </Grid>
+                <Grid item xs={12} lg={6} textAlign="center">
+                  {details.approval === 10 && details.deleted_at == null ? (
+                    <Button
+                      sx={{
+                        background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                        color: '#fff',
+                        '&:hover': {
+                          background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                        },
+                      }}
+
+                    >
+                      Approve
+                    </Button>
+                  ) : null}
+                </Grid>
+              </Grid>
+            </Box>
+
+            <Box>
+              <Grid
+                container
+                direction={isLgUp ? 'row' : 'column'}
+                justifyContent="center"
+                alignItems="center"
+                spacing={2}
+              >
+                <Grid item xs={12} lg={6} textAlign="center">
+                  {details.deleted_at === null ? (
+                    <Button variant="contained" color="error" >
+                      Delete
+                    </Button>
+                  ) : null}
+                </Grid>
+                <Grid item xs={12} lg={6} textAlign="center">
+                  {details.deleted_at === null ? (
+                    <Button sx={{ width: "140px" }} variant="contained" color="error" >
+                      Delete Request
+                    </Button>
+                  ) : null}
+                </Grid>
+              </Grid>
+            </Box>
+          </Box>
         </Grid>
 
-       
+
       </Grid>
     </Box>
   );

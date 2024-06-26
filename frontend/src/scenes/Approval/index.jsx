@@ -45,6 +45,11 @@ const Contacts = () => {
           month: 'long',
           day: 'numeric',
         }),
+        updated_at: new Date(item.updated_at).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }),
         birthday: new Date(item.birthday).toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
@@ -128,6 +133,16 @@ const Contacts = () => {
     {
       field: 'country',
       headerName: 'Locations',
+      flex: 1,
+    },
+    {
+      field: 'created_at',
+      headerName: 'Created At',
+      flex: 1,
+    },
+    {
+      field: 'updated_at',
+      headerName: 'Updated At',
       flex: 1,
     },
     {

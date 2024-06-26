@@ -109,7 +109,7 @@ function App() {
     "/editpromotionalcode/:id"
   ];
 
-  // Check if the current route is protected
+
   const isProtectedRoute = protectedRoutes.some((route) =>
     location.pathname.startsWith(route.split(":")[0])
   );

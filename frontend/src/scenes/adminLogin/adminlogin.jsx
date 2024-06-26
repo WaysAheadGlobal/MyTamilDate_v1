@@ -46,7 +46,7 @@ const AdminSignIn = () => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const { setCookie } = useCookies();
+  const { setCookie,getCookie } = useCookies();
   const { loginAsAdmin } = useAppContext();
   const navigate = useNavigate();
 
@@ -66,6 +66,8 @@ const AdminSignIn = () => {
 
       if (response.ok) {
         loginAsAdmin(data.token);
+        setCookie('Admintoken', data.token, 315);
+        console.log("get cook user Idddd", getCookie('Admintoken'));
         navigate("/dashboard");
       } else {
         setSnackbarMessage(data.message || 'Login failed');

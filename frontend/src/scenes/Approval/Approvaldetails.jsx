@@ -26,6 +26,55 @@ const UserDetails = () => {
   const [openModal, setOpenModal] = useState(false);
   const [reason, setReason] = useState('');
 
+  const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
+  const [images, setImages] = useState({
+    main: null,
+    first: null,
+    second: null,
+  });
+
+  const ImageURL = async () => {
+    try {
+      const response = await fetch(`${API_URL}/admin/users/media/${id}`, {
+        method: 'GET',
+      });
+      const data = await response.json();
+      console.log("datadaa", data);
+      if (response.ok) {
+        if (data[0].type === 31 || data[1].type === 31 || data[2].type === 31) {
+          const others = data.filter(image => image.type === 32);
+          const main = data.filter(image => image.type === 31)[0];
+       
+          setImages({
+            main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
+            first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
+            second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
+          })
+
+
+          console.log('imges', {
+            main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
+            first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
+            second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
+          })
+        }
+        else{
+          const others = data.filter(image => image.type === 2);
+          const main = data.filter(image => image.type === 1)[0];
+          console.log(others, main)
+          setImages({
+            main: OldImageURL +"/" + id + "/avatar/"+ main.hash + "-large" + "." + main.extension,
+            first: OldImageURL +"/" + id + "/photo/"+ others[0].hash + "-large" + "." + main.extension,
+            second: OldImageURL +"/" + id + "/photo/"+ others[1].hash  + "-large"+ "." + main.extension,
+          })
+    
+        }
+
+      }
+    } catch (error) {
+      console.error('Error saving images:', error);
+    }
+  }
   const detailsfetchData = async () => {
     try {
       const response = await fetch(`${API_URL}/admin/users/approval/${id}`);
@@ -67,6 +116,7 @@ const UserDetails = () => {
   useEffect(() => {
     quesAnsfetchData();
     detailsfetchData();
+    ImageURL();
   }, [id]);
 
   const handleRemoveFromList = () => {
@@ -169,15 +219,13 @@ const UserDetails = () => {
 
   const formatValue = (key, value) => {
     if (key.toLowerCase() === 'email') {
-      console.log(maskEmail(value))
       return maskEmail(value);
-      
     }
     if (value === null || value === undefined || value === '') {
       return 'N/A';
     }
     if (key.toLowerCase() === 'email') {
-      console.log(maskEmail(value))
+ 
       return maskEmail(value);
       
     }
@@ -201,15 +249,30 @@ const UserDetails = () => {
         <Grid item xs={12} md={4}>
           <Box display="flex" flexDirection="column" alignItems="center" mb={2} mt={2}>
             <Box mb={2}>
-              {photos.map((photo, index) => (
+              
                 <Avatar
-                  key={index}
-                  alt={`Photo ${index + 1}`}
-                  src={photo}
+              
+                  alt={`Photo`}
+                  src={images.main}
                   variant="square"
                   sx={{ width: '100%', height: '250px', borderRadius: '16px', mb: 4 }}
                 />
-              ))}
+
+                <Avatar
+                
+                alt={`Photo`}
+                src={images.first}
+                variant="square"
+                sx={{ width: '100%', height: '250px', borderRadius: '16px', mb: 4 }}
+              />
+              <Avatar
+             
+              alt={`Photo`}
+              src={images.second}
+              variant="square"
+              sx={{ width: '100%', height: '250px', borderRadius: '16px', mb: 4 }}
+            />
+            
             </Box>
             <Typography variant="h5" align="center">{`${formatValue('name', details.Name)} ${formatValue('surname', details.Surname)}`}</Typography>
             <Typography variant="subtitle1" color="textSecondary" align="center">{formatValue('status', details.status === 15 ? "Reject" : "pending")}</Typography>

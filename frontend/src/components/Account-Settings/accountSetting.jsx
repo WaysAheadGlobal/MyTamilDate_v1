@@ -39,7 +39,9 @@ export const AccountSetting = () => {
     const [showUserphone, setshowUserphone] = useState(false);
     const [showUnsubscribeEmail, setShowUnsubscribeEmail] = useState(false);
     const [showPause, setShowPause] = useState(false);
+    const [showDeleteAccount, setShowDeleteAccount] = useState(false);
     const [showPauseOption, setShowPauseOpion] = useState(false); 
+    const [showDeleteOption, setShowDeleteOpion] = useState(false); 
     const [firstName, setFirstName] = useState('Karthik');
     const [lastName, setLastName] = useState('Kumar');
     
@@ -63,11 +65,34 @@ export const AccountSetting = () => {
     const handleClosePause = () => setShowPause(false);
     const handleShowPause = () => setShowPause(true);
 
+    const handleCloseDeleteAccount = () => setShowDeleteAccount(false);
+    const handleShowDeleteAccount = () => setShowDeleteAccount(true);
+
 const GotoPrivacyPolicy = ()=>{
     navigate("/PrivacyPolicyDetails")
 }
 const Gototermandconditions = ()=>{
     navigate("/termandconditions")
+}
+
+// Delete My Account
+
+const handleDeleteAccount = ()=>{
+    handleCloseDeleteAccount();
+    handleShowDeleteOption();
+
+}
+
+const [selectedDeleteOption, setSelectedDeleteOption] = useState('');
+    const handleCloseDeleteOption = () => setShowDeleteOpion(false);
+    const handleShowDeleteOption = () => setShowDeleteOpion(true);
+    const handleDeleteAccountOption = () => {
+        setShowPauseOpion(false);
+    };
+
+const handleShowpauseModel =()=>{
+    handleCloseDeleteAccount();
+    handleShowPause();
 }
 
     // Unsubscribe Email
@@ -90,6 +115,8 @@ const Gototermandconditions = ()=>{
         setShowPauseOpion(false);
     };
 
+
+    
 
 
   
@@ -387,7 +414,7 @@ const handleSubmitphoneotp = (e) => {
                                     <Image className='userinfoicon' src={logout} />
                                 </div>
                             </div>
-                            <button className="delete-button">
+                            <button className="delete-button" onClick={handleShowDeleteAccount}>
                                 <span>Delete my Account</span>
                                 <Image className='userinfoicon' src={deleteicon} />
                             </button>
@@ -610,7 +637,7 @@ const handleSubmitphoneotp = (e) => {
                                 
                                 <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                                     <Dropdown>
-                                        <div id="dropdown-basic"  style = {{marginTop : '-20px'}} onClick={() => setshowModalcountry(true)} className='flag-box'>
+                                        <div id="dropdown-basic"  onClick={() => setshowModalcountry(true)} className='flag-box'>
                                             <Flag code={selectedCountry} style={{ width: '34px', height: '25px', marginRight: '10px' }} className='flag' />
                                             <span>{selectedCountryInfo.dialCode}</span>
                                         </div>
@@ -756,6 +783,7 @@ const handleSubmitphoneotp = (e) => {
       {/* pause my account */}
       <Modal show={showPause} onHide={handleClosePause} centered>
             <Modal.Body className="pause-modal-content">
+                
                 <div className="pause-modal-title">Pause my Account?</div>
                 <div className="pause-modal-message">
                     Your profile will be hidden and other members will not be able to see or message you. You can reactivate your account anytime.
@@ -868,6 +896,117 @@ const handleSubmitphoneotp = (e) => {
                 </div>
             </Modal.Body>
         </Modal>
+
+        {/* delete my account */}
+        <Modal show={showDeleteAccount} onHide={handleCloseDeleteAccount} centered>
+            <Modal.Body className="pause-modal-content">
+            <div style={{display : "flex"}}>
+                <Image style={{width : "24px" , height : "24px" , marginTop : "7px"}} className="fas fa-pause-circle" src={pauseicon} />
+                <div className="pause-modal-title">Pause your Account instead</div>
+                </div>
+                
+                <div className="pause-modal-message">
+                    <p>Just need a break?</p>
+                <p style={{marginTop :  "-10px"}}> Pause your account and hide your profile, and come back anytime.</p>
+               
+                </div>
+                <div className="d-flex justify-content-center">
+                    <Button variant="outline-danger" className="btn-no" onClick={handleCloseDeleteAccount}>
+                        Cancel
+                    </Button>
+                    <Button style={{backgroundColor : "#F7ECFF", color : "black", width : "140px", border: "none", borderRadius : "24px"}} onClick={handleShowpauseModel}>
+                        Pause
+                    </Button>
+                </div>
+                <div style={{marginTop : "20px"}}>
+                <Button variant="primary" className="btn-yes" onClick={handleDeleteAccount}>
+                        Delete
+                    </Button>
+                </div>
+            </Modal.Body>
+        </Modal>
+
+        <Modal show={showDeleteOption} onHide={handleCloseDeleteOption} centered>
+            <Modal.Body className="feedback-modal-content">
+                <div className="feedback-modal-title">
+                    Sorry we didn’t have what you were looking for this time!
+                </div>
+                <div className="feedback-modal-subtitle">
+                We want to improve, give us feedback and you will have a chance to win $50 CDN Amazon gift card!
+                </div>
+                <Form>
+                    <div className="feedback-options">
+                        <Form.Check
+                            type="radio"
+                            label="I met somebody on myTamilDate!"
+                            name="feedback"
+                            id="feedback1"
+                            className="feedback-option"
+                            onChange={() => setSelectedDeleteOption('option1')}
+                        />
+                        <Form.Check
+                            type="radio"
+                            label="I got too many messages from other members"
+                            name="feedback"
+                            id="feedback2"
+                            className="feedback-option"
+                            onChange={() => setSelectedDeleteOption('option2')}
+                        />
+                        <Form.Check
+                            type="radio"
+                            label="I met somebody elsewhere"
+                            name="feedback"
+                            id="feedback3"
+                            className="feedback-option"
+                            onChange={() => setSelectedDeleteOption('option3')}
+                        />
+                        <Form.Check
+                            type="radio"
+                            label="It's too expensive"
+                            name="feedback"
+                            id="feedback4"
+                            className="feedback-option"
+                            onChange={() => setSelectedDeleteOption('option4')}
+                        />
+                        <Form.Check
+                            type="radio"
+                            label="The site is hard to use"
+                            name="feedback"
+                            id="feedback5"
+                            className="feedback-option"
+                            onChange={() => setSelectedDeleteOption('option5')}
+                        />
+                        <Form.Check
+                            type="radio"
+                            label="There aren’t enough people in my area"
+                            name="feedback"
+                            id="feedback6"
+                            className="feedback-option"
+                            onChange={() => setSelectedDeleteOption('option6')}
+                        />
+                        <Form.Check
+                            type="radio"
+                            label="Others"
+                            name="feedback"
+                            id="feedback7"
+                            className="feedback-option"
+                            onChange={() => setSelectedDeleteOption('option7')}
+                        />
+                    </div>
+                    <div className="d-flex justify-content-center">
+                        <Button variant="outline-danger" className="btn-cancel-pause" onClick={handleCloseDeleteOption}>
+                            Cancel
+                        </Button>
+                        <Button variant="primary" className="btn-pause" onClick={handleDeleteAccountOption}>
+                            Delete account
+                        </Button>
+                    </div>
+                </Form>
+            </Modal.Body>
+        </Modal>
+
+
+
         </div>
     );
 };

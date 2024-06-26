@@ -8,6 +8,11 @@ const users = Router();
 // Define types for callback function
 type QueryCallback = (err: Error | null, results: any) => void;
 
+
+
+
+
+
 // Helper function to get total count of records
 const getTotalCount = (sql: string, values: any[], callback: (err: Error | null, total: number) => void): void => {
     db.query(sql, values, (err, results) => {
@@ -19,6 +24,28 @@ const getTotalCount = (sql: string, values: any[], callback: (err: Error | null,
         }
     });
 };
+
+interface MediaItem {
+    id: number;
+    hash: string;
+    extension: string;
+    type: number;
+  }
+  
+  users.get('/media/:user_id', (req: AdminRequest, res: Response) => {
+    const userId = req.params.user_id; 
+
+    const query = 'SELECT id, hash, extension, type FROM media WHERE user_id = ?';
+  
+    db.query(query, [userId], (err, results: MediaItem[]) => {
+      if (err) {
+        console.error('Error fetching media:', err);
+        return res.status(500).send('Internal Server Error');
+      }
+      res.status(200).json(results);
+    });
+  });
+  
 
 // Fetch customer data with pagination
 users.get('/customers', (req: AdminRequest, res: Response) => {

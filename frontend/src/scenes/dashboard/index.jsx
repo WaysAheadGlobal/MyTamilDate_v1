@@ -622,7 +622,7 @@ const Dashboard = () => {
         <Box  flex="1" mx={isMobile ? '0' : '10px'} mb={isMobile ? '20px' : '0'}>
           <Box display="flex" justifyContent="space-between" alignItems="center" borderBottom={`4px solid ${colors.primary[500]}`} p="15px">
             <Typography color={colors.grey[100]} variant="h6" fontWeight="600" sx={{ fontFamily: 'Poppins, sans-serif' }}>
-              Top Country
+              Top Countries
             </Typography>
           </Box>
           {locationscount.map((jobs, i) => (
