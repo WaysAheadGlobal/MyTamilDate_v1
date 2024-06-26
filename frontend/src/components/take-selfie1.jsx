@@ -33,6 +33,45 @@ export const Selfie = () => {
     const fileInputRefFirst = useRef(null);
     const fileInputRefSecond = useRef(null);
 
+    const [images, setImages] = useState({
+        main: null,
+        first: null,
+        second: null,
+    });
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const response = await fetch(`${API_URL}/customer/users/media`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${getCookie('token')}`,
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const others = data.filter(image => image.type === 32);
+                    const main = data.filter(image => image.type === 31)[0];
+                    setImages({
+                        main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
+                        first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
+                        second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
+                    })
+
+                    console.log({
+                        main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
+                        first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
+                        second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
+                    })
+                }
+            } catch (error) {
+                console.error('Error saving images:', error);
+            }
+        })()
+    }, [])
+
     const handleFileChange = (event, imageKey) => {
         const file = event.target.files[0];
         if (file) {
@@ -58,6 +97,11 @@ export const Selfie = () => {
     };
 
     const handleNextClick = async () => {
+        if (images.main && images.first && images.second) {
+            navigate("/located");
+            return;
+        }
+
         if (!selectedImages.main || !selectedImages.first || !selectedImages.second) {
             setShowModal(true);
             return;
@@ -209,13 +253,13 @@ export const Selfie = () => {
                         <Col md={12} className='selfie-box1' style={{
                             height: "24dvh"
                         }}>
-                            {!selectedImages.main && (
+                            {!(selectedImages.main || images.main) && (
                                 <>
                                     <Image className='selfie-icon' src={addplus}></Image>
                                     <span>Add main photo</span>
                                 </>
                             )}
-                            {selectedImages.main && <Image src={URL.createObjectURL(selectedImages.main)} className="user-picture1" style={{
+                            {(selectedImages.main || images.main) && <Image src={images.main ?? URL.createObjectURL(selectedImages.main)} className="user-picture1" style={{
                                 height: '100%',
                                 width: '100%',
                                 objectFit: 'contain',
@@ -232,13 +276,13 @@ export const Selfie = () => {
                         <Col md={6} className='selfie-box2' style={{
                             height: "20dvh"
                         }} onClick={() => handleClick('first')}>
-                            {!selectedImages.first && (
+                            {!(selectedImages.first || images.first) && (
                                 <>
                                     <Image className='selfie-icon' src={addplus} style={{ marginTop: '5px', objectFit: "contain", objectPosition: "center" }}></Image>
                                     <span>Add photo</span>
                                 </>
                             )}
-                            {selectedImages.first && <Image src={URL.createObjectURL(selectedImages.first)} className="user-picture2" style={{
+                            {(selectedImages.first || images.first) && <Image src={images.first ?? URL.createObjectURL(selectedImages.first)} className="user-picture2" style={{
                                 height: '100%',
                                 width: '100%',
                                 objectFit: 'contain',
@@ -253,13 +297,13 @@ export const Selfie = () => {
                         <Col md={6} className='selfie-box2' style={{
                             height: "20dvh"
                         }} onClick={() => handleClick('second')}>
-                            {!selectedImages.second && (
+                            {!(selectedImages.second || images.second) && (
                                 <>
                                     <Image className='selfie-icon' src={addplus} style={{ marginTop: '5px' }}></Image>
                                     <span>Add photo</span>
                                 </>
                             )}
-                            {selectedImages.second && <Image src={URL.createObjectURL(selectedImages.second)} className="user-picture2" style={{
+                            {(selectedImages.second || images.second) && <Image src={images.second ?? URL.createObjectURL(selectedImages.second)} className="user-picture2" style={{
                                 height: '100%',
                                 width: '100%',
                                 objectFit: 'contain',
@@ -279,8 +323,8 @@ export const Selfie = () => {
                     className='selfie-next-btn'
                     onClick={handleNextClick}
                     style={{
-                        background: (selectedImages.main || selectedImages.first || selectedImages.second) ? 'linear-gradient(90deg, #9663BF 0%, #4B164C 100%)' : ' #E5E5E5',
-                        color: (selectedImages.main || selectedImages.first || selectedImages.second) ? '#FFFFFF' : '#6C6C6C'
+                        background: 'linear-gradient(90deg, #9663BF 0%, #4B164C 100%)',
+                        color:  '#FFFFFF'
                     }}
                 >
                     Next
