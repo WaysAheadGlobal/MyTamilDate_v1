@@ -118,6 +118,73 @@ const getDateConditionJobs = (timeRange: string): string => {
     return condition;
 };
 
+dashboard.get('/sessions/avg-time', (req, res) => {
+    const timeRange = (req.query.timeRange || '24h').toString();
+    const dateCondition = getDateCondition(timeRange);
+
+    const sql = `
+        SELECT 
+            AVG(session_duration) AS avg_session_time
+        FROM 
+            (SELECT 
+                user_id, 
+                TIMESTAMPDIFF(SECOND, MIN(created_at), MAX(created_at)) AS session_duration
+             FROM audits 
+             WHERE ${dateCondition}
+             GROUP BY user_id) AS user_sessions;
+    `;
+
+    console.log('Executing SQL:', sql);
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        if (results.length === 0) {
+            res.status(404).json({ error: 'No sessions found in the specified time range' });
+            return;
+        }
+        const avgSessionTime = results[0].avg_session_time;
+        res.status(200).json({ avg_session_time: avgSessionTime });
+    });
+});
+
+
+// Route to get the average time per session
+dashboard.get('/sessions/avg-time', (req, res) => {
+    const timeRange = (req.query.timeRange || '24h').toString();
+    const dateCondition = getDateCondition(timeRange);
+
+    const sql = `
+        SELECT 
+            AVG(TIMESTAMPDIFF(SECOND, MIN(created_at), MAX(created_at))) AS avg_session_time
+        FROM 
+            (SELECT user_id, created_at 
+             FROM audits 
+             WHERE ${dateCondition}
+             GROUP BY user_id, created_at) AS user_sessions
+        GROUP BY user_id;
+    `;
+
+    console.log('Executing SQL:', sql);
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        if (results.length === 0) {
+            res.status(404).json({ error: 'No sessions found in the specified time range' });
+            return;
+        }
+        const avgSessionTime = results[0].avg_session_time;
+        res.status(200).json({ avg_session_time: avgSessionTime });
+    });
+});
+
 
 dashboard.get('/messages/count', (req: AdminRequest, res) => {
     const timeRange: string = (req.query.timeRange as string) || '24h';

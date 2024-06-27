@@ -184,7 +184,7 @@ const Dashboard = () => {
   const [messageCount, setMessageCount] = useState(0);
   const[paidMemberCount, setPaidMemberCount] = useState(0);
   const[TotalRenewal, setTotalRenewalCount] = useState(0);
-  const [timeRange, setTimeRange] = useState('month');
+  const [timeRange, setTimeRange] = useState('24h');
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -577,7 +577,7 @@ const Dashboard = () => {
           <StatCard title="Total of Renewals" value={TotalRenewal} />
           <StatCard title="Avg of Interaction Per Session" value="144" />
           <StatCard title="Avg Time Per Session" value="14" />
-          <StatCard title="Avg Time Per Session" value="14" />
+          <StatCard title="Avg days to paid conversion" value="53" />
         </Box>
       
 

@@ -309,6 +309,7 @@ auth.post('/signup', [body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'e
     }
 });
 
+
 auth.post("/verify", verifyUser, async (req: UserRequest, res) => {
 
     db.query('SELECT email FROM user_profiles WHERE user_id = ?', [req.userId], async (err, results) => {
@@ -359,7 +360,7 @@ auth.get("/verify/:token", async (req: UserRequest, res) => {
         if (results.length === 0) {
             return res.status(401).json({ message: 'Invalid token' });
         }
-
+        
         db.query('UPDATE users SET approval = 10 WHERE id = ?', [results[0].user_id], (err) => {
             if (err) {
                 console.error('Error updating data:', err);
