@@ -174,12 +174,12 @@ const UserDetails = () => {
   };
 
  
-  const handleReject = () => {
+  const handleRejectReason = () => {
     setOpenModal(true);
   };
 
   const handleRejectRequest = () => {
-    updateStatus(15);
+    updateStatus(30);
   };
 
   const handleCloseModal = () => {
@@ -221,6 +221,7 @@ const UserDetails = () => {
     if (key.toLowerCase() === 'email') {
       return maskEmail(value);
     }
+
     if (value === null || value === undefined || value === '') {
       return 'N/A';
     }
@@ -232,6 +233,10 @@ const UserDetails = () => {
     if (key.toLowerCase() === 'phone') {
       return formatPhoneNumber(value);
     }
+    if(key.toLowerCase() === 'approval'){
+      return 'Pending'
+    }
+
     if (Array.isArray(value)) {
       return value.join(', ');
     }
@@ -329,7 +334,7 @@ const UserDetails = () => {
                   <Button
                     variant="contained"
                     sx={{ backgroundColor: theme.palette.grey[900] }}
-                   
+                   onClick={handleRejectReason}
                   >
                     Reject
                   </Button>
@@ -343,7 +348,7 @@ const UserDetails = () => {
                         background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
                       },
                     }}
-                  
+                    onClick={handleApproveRequest}
                   >
                     Approve
                   </Button>

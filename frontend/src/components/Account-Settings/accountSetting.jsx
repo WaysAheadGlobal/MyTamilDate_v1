@@ -44,7 +44,7 @@ export const AccountSetting = () => {
     const [showDeleteOption, setShowDeleteOpion] = useState(false); 
     const [firstName, setFirstName] = useState('Karthik');
     const [lastName, setLastName] = useState('Kumar');
-    
+    const[showFinalDetele, setFinalDetele] = useState(false);
 
     
     const handleCloseName = () => setshowUserName(false);
@@ -68,6 +68,13 @@ export const AccountSetting = () => {
     const handleCloseDeleteAccount = () => setShowDeleteAccount(false);
     const handleShowDeleteAccount = () => setShowDeleteAccount(true);
 
+    const handleCloseDeleteOption = () => setShowDeleteOpion(false);
+    const handleShowDeleteOption = () => setShowDeleteOpion(true);
+
+
+    const handleCloseFinalDetele = () => setFinalDetele(false);
+    const handleShowFinalDetele = () => setFinalDetele(true);
+
 const GotoPrivacyPolicy = ()=>{
     navigate("/PrivacyPolicyDetails")
 }
@@ -80,19 +87,33 @@ const Gototermandconditions = ()=>{
 const handleDeleteAccount = ()=>{
     handleCloseDeleteAccount();
     handleShowDeleteOption();
-
 }
 
 const [selectedDeleteOption, setSelectedDeleteOption] = useState('');
-    const handleCloseDeleteOption = () => setShowDeleteOpion(false);
-    const handleShowDeleteOption = () => setShowDeleteOpion(true);
+    
+    
     const handleDeleteAccountOption = () => {
-        setShowPauseOpion(false);
+        handleCloseDeleteOption();
+    
+        handleShowFinalDetele();
     };
 
 const handleShowpauseModel =()=>{
     handleCloseDeleteAccount();
+    handleCloseDeleteOption();
     handleShowPause();
+}
+
+const handleGoToFinalDelete = ()=>{
+    handleCloseDeleteAccount();
+    handleCloseDeleteOption()
+    handleShowFinalDetele();
+}
+
+
+const handleFinalDetele = ()=>{
+    handleCloseDeleteOption();
+    handleCloseFinalDetele();
 }
 
     // Unsubscribe Email
@@ -919,7 +940,7 @@ const handleSubmitphoneotp = (e) => {
                     </Button>
                 </div>
                 <div style={{marginTop : "20px"}}>
-                <Button variant="primary" className="btn-yes" onClick={handleDeleteAccount}>
+                <Button variant="primary" width="300px" className="btn-yes" onClick={handleDeleteAccount}>
                         Delete
                     </Button>
                 </div>
@@ -997,14 +1018,35 @@ const handleSubmitphoneotp = (e) => {
                         <Button variant="outline-danger" className="btn-cancel-pause" onClick={handleCloseDeleteOption}>
                             Cancel
                         </Button>
-                        <Button variant="primary" className="btn-pause" onClick={handleDeleteAccountOption}>
+                        <Button variant="primary"  className="btn-pause" onClick={handleDeleteAccountOption}>
                             Delete account
                         </Button>
                     </div>
                 </Form>
             </Modal.Body>
         </Modal>
+    
+    
+        <Modal show={showFinalDetele} onHide={handleCloseFinalDetele} centered>
 
+            <Modal.Body className="pause-modal-content">
+                
+                <div className="pause-modal-title">Delete your Account?</div>
+                <div className="pause-modal-message">
+                You cannot recover your account once deleted, are you sure you want to delete your account?
+                </div>
+                <div className="d-flex justify-content-center">
+                    <Button variant="outline-danger" className="btn-no" onClick={handleCloseFinalDetele}>
+                        Cancel
+                    </Button>
+                    <Button variant="primary" className="btn-yes" onClick={handleFinalDetele}>
+                        Delete
+                    </Button>
+                </div>
+            </Modal.Body>
+        </Modal>
+
+         
 
 
         </div>

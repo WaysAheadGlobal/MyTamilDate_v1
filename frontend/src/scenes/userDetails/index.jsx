@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Grid, Typography, Button, Avatar, useMediaQuery } from '@mui/material';
+import {  Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Header from '../../components/Header1';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { API_URL } from '../../api';
 import { tokens } from "../../theme";
 
@@ -12,6 +13,7 @@ import { tokens } from "../../theme";
 const UserDetails = () => {
   const theme = useTheme();
   const [details, setDetails] = useState({});
+  const navigate = useNavigate();
   const colors = tokens(theme.palette.mode);
   const isLgUp = useMediaQuery(theme.breakpoints.up('lg'));
   const { id } = useParams();
@@ -21,6 +23,8 @@ const UserDetails = () => {
     first: null,
     second: null,
   });
+  const [openModal, setOpenModal] = useState(false);
+  const [reason, setReason] = useState('');
 
   const ImageURL = async () => {
     try {
@@ -35,6 +39,12 @@ const UserDetails = () => {
           const main = data.filter(image => image.type === 31)[0];
           console.log(others, main)
           setImages({
+            main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
+            first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
+            second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
+          })
+
+          console.log({
             main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
             first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
             second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
@@ -164,8 +174,23 @@ const UserDetails = () => {
   };
 
   const handleRejectRequest = () => {
-    updateStatus(30);
+    setOpenModal(true);
   };
+
+  const handleSaveReason =()=>{
+    // updateStatus(30);
+    setOpenModal(false);
+    navigate('/contacts')
+    
+  }
+
+  
+const handleCloseModal = ()=>{
+  setOpenModal(false);
+}
+  const handleOpenReasonModal = ()=>{
+    
+  }
 
   return (
     <Box m="20px">
@@ -436,7 +461,7 @@ const UserDetails = () => {
                     <Button
                       variant="contained"
                       sx={{ backgroundColor: theme.palette.grey[900] }}
-
+                      onClick={handleRejectRequest}
                     >
                       Reject
                     </Button>
@@ -491,6 +516,54 @@ const UserDetails = () => {
 
 
       </Grid>
+
+      <Dialog
+  open={openModal}
+  onClose={handleCloseModal}
+ 
+  fullWidth
+  sx={{
+    '& .MuiDialog-paper': {
+      width: '350px', 
+      height: '300px', 
+    }
+  }}
+>
+  <DialogTitle>What's the reason?</DialogTitle>
+  <DialogContent>
+    <TextField
+      autoFocus
+      margin="dense"
+      label="Reason"
+      type="text"
+      fullWidth
+      variant="outlined"
+      value={reason}
+      onChange={(e) => setReason(e.target.value)}
+      multiline
+      rows={5} // Adjust number of rows as needed
+      sx={{
+        '& .MuiInputBase-root': {
+          height: '150px', // Adjust height as needed
+        }
+      }}
+    />
+  </DialogContent>
+  <DialogActions  >
+    <Button onClick={handleCloseModal} variant="contained" color="error" >
+      Cancel
+    </Button>
+    <Button onClick={handleSaveReason}  sx={{
+                      background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                      color: '#fff',
+                      '&:hover': {
+                        background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                      },
+                    }}>
+      Save
+    </Button>
+  </DialogActions>
+</Dialog>
     </Box>
   );
 };
