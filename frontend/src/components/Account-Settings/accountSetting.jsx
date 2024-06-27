@@ -82,7 +82,7 @@ const Gototermandconditions = ()=>{
     navigate("/termandconditions")
 }
 
-// Delete My Account
+// Delete My Account now
 
 const handleDeleteAccount = ()=>{
     handleCloseDeleteAccount();
