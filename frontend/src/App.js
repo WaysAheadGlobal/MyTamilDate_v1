@@ -78,6 +78,8 @@ import ProfileAnswers from "./components/ProfileAnswers";
 import SmokeAndFamily from "./components/SmokeAndDrink";
 import { SignInOptions } from "./components/sign-in/sign-in-options";
 
+import UserDashboard from "./components/userflow/Dashboard";
+
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -196,8 +198,8 @@ function App() {
               <Route path="/PrivacyPolicyDetails" element={<PrivacyPolicySetting />}></Route>
               <Route path="/termandconditions" element={<TermsConditions />}></Route>
 
+              <Route path="/user/home" element={<UserDashboard />} />
             </Routes>
-
           </main>
         </div>
       </ThemeProvider>

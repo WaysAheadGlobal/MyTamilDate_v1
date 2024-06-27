@@ -350,25 +350,61 @@ auth.post("/verify", verifyUser, async (req: UserRequest, res) => {
 auth.get("/verify/:token", async (req: UserRequest, res) => {
     const { token } = req.params;
 
-    db.query('SELECT user_id FROM verification_token WHERE token = ?', [token], (err, results) => {
+    db.beginTransaction(err => {
         if (err) {
-            console.error('Error fetching data:', err);
-            return res.status(500).send('Internal Server Error');
+            console.error('Error starting transaction:', err);
+            return res.redirect(`${process.env.URL}/approve`);
         }
 
-        if (results.length === 0) {
-            return res.status(401).json({ message: 'Invalid token' });
-        }
-
-        db.query('UPDATE users SET approval = 10 WHERE id = ?', [results[0].user_id], (err) => {
+        db.query('SELECT user_id FROM verification_token WHERE token = ?', [token], (err, results) => {
             if (err) {
-                console.error('Error updating data:', err);
-                return res.status(500).send('Internal Server Error');
+                console.error('Error fetching data:', err);
+                db.rollback(err => {
+                    if (err) {
+                        console.error('Error rolling back transaction:', err);
+                    }
+                    return res.redirect(`${process.env.URL}/approve`);
+                });
             }
 
-            res.redirect(`${process.env.URL}/pending`);
+            if (results.length === 0) {
+                return res.status(401).json({ message: 'Invalid token' });
+            }
+
+            db.query('UPDATE users SET approval = 10 WHERE id = ?', [results[0].user_id], (err) => {
+                if (err) {
+                    console.error('Error updating data:', err);
+                    db.rollback(err => {
+                        if (err) {
+                            console.error('Error rolling back transaction:', err);
+                        }
+                        return res.redirect(`${process.env.URL}/approve`);
+                    });
+                }
+
+                db.query('UPDATE user_profiles SET email_verified_at = NOW() WHERE user_id = ?', [results[0].user_id], (err) => {
+                    if (err) {
+                        console.error('Error updating data:', err);
+                        db.rollback(err => {
+                            if (err) {
+                                console.error('Error rolling back transaction:', err);
+                            }
+                            return res.redirect(`${process.env.URL}/approve`);
+                        });
+                    }
+
+                    db.commit(err => {
+                        if (err) {
+                            console.error('Error committing transaction:', err);
+                            return res.status(500).send('Internal Server Error');
+                        }
+
+                        res.redirect(`${process.env.URL}/pending`);
+                    });
+                });
+            });
         });
-    });
+    })
 });
 
 export default auth;
