@@ -1,7 +1,7 @@
 import React from 'react';
 import './navbar.css';
-import heartLogo from "../../../assets/images/heart-logo.png";
-import profile from "../../../assets/images/basic-details.png";
+import heartLogo from "../../../../assets/images/heart-logo.png";
+import profile from "../../../../assets/images/basic-details.png";
 
 export default function Navbar() {
     return (

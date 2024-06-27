@@ -39,6 +39,14 @@
     justify-content: start;
     font-weight: 500;
     cursor: pointer;
+    position: relative;
+}
+
+.indicator {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    display: none;
 }
 
 .sidebar>ul>li.active {
@@ -48,6 +56,13 @@
 
 .sidebar>ul>li.active>svg>path {
     stroke: var(--active-color);
+}
+
+.sidebar>ul>li.active>.indicator {
+    position: absolute;
+    left: -1rem;
+    display: inline-block;
+    background-color: var(--active-color);
 }
 
 .sidebar button,
@@ -92,32 +107,27 @@
 
 .main-contains {
     padding: 2rem;
+    padding-bottom: 1rem;
     display: flex;
     flex-direction: column;
     height: 100vh;
     max-height: 100vh;
     overflow-y: auto;
     scrollbar-width: none;
-    min-width: 430px;
+    min-width: 520px;
+    align-items: center;
+    justify-content: center;
 }
 
 .main-contains::-webkit-scrollbar {
     display: none;
 }
 
-.main-contains > img {
+.main-contains>img {
     width: 100%;
     max-width: 12rem;
     margin-bottom: 0.25rem;
     align-self: center;
-}
-
-.children {
-    flex: 1;
-    margin-inline: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
 }
 
 .upcoming {
@@ -144,7 +154,7 @@
     justify-content: center;
 }
 
-.upcoming div > h3 {
+.upcoming div>h3 {
     font-weight: 600;
     background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
     font-size: large;
@@ -153,7 +163,42 @@
     margin: 0;
 }
 
-.upcoming div > img {
+.upcoming div>img {
     width: 100%;
     max-width: 10rem;
+}
+
+@media screen and (max-width: 1000px) {
+    .sidebar span {
+        display: none;
+    }
+
+    .sidebar button {
+        padding: 0.5rem;
+    }
+
+    .sidebar button>svg {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    .upcoming {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .sidebar {
+        display: none;
+    }
+
+    .main-contains {
+        padding: 1rem;
+        min-width: auto;
+    }
+
+    .section-container {
+        grid-template-columns: 1fr;
+        justify-content: center;
+    }
 }
