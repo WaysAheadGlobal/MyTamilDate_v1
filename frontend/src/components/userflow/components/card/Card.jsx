@@ -1,15 +1,21 @@
 import React from 'react';
 import './card.css';
 import cardImage from '../../../../assets/images/cardImage.png';
+import { useNavigate } from 'react-router-dom';
 
 export default function Card() {
+    const navigate = useNavigate();
+
     return (
-        <div className='card-container' style={{
-            backgroundImage: `url(${cardImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
-        }}>
+        <div className='card-container'
+            style={{
+                backgroundImage: `url(${cardImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+            }}
+            onClick={() => navigate(`/user/${"Aishwarya"}/${1}`) }
+        >
             <div>
                 <div className='details'>
                     <p style={{ gridColumn: "span 2 / span 2", textAlign: "center" }}>Aishwarya, 31</p>

@@ -80,6 +80,9 @@ import { SignInOptions } from "./components/sign-in/sign-in-options";
 
 import Home from "./components/userflow/screens/Home";
 import Recommendations from "./components/userflow/screens/recommendations/Recommendations";
+import Preferences from "./components/userflow/screens/preferences/Preferences";
+import ProfileDetails from "./components/userflow/screens/profile-details/ProfileDetails";
+import Chat from "./components/userflow/screens/chat/Chat";
 
 
 function App() {
@@ -201,6 +204,9 @@ function App() {
 
               <Route path="/user/home" element={<Home />} />
               <Route path="/user/recommendations" element={<Recommendations />} />
+              <Route path="/user/preferences" element={<Preferences />} />
+              <Route path="/user/:name/:id" element={<ProfileDetails />} />
+              <Route path="/user/chat/*" element={<Chat />} />
             </Routes>
           </main>
         </div>
