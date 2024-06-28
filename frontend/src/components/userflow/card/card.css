@@ -1,0 +1,41 @@
+.card-container {
+    display: flex;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.047);
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    position: relative;
+    max-width: 400px;    
+}
+
+.card-container>div:not(.menu) {
+    margin-top: auto;
+    background: linear-gradient(180deg, rgba(227, 193, 255, 0) 0%, rgba(227, 193, 255, 0) 2.86%, #4B164C 94%);
+    padding: 1.5rem;
+    font-weight: 600;
+    font-size: large;
+    color: white;
+}
+
+.options {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+}
+
+.menu {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}

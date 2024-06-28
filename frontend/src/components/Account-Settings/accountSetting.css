@@ -316,6 +316,16 @@ color: #515151;
     width: 122px;
 }
 
+.btn-cancel {
+    transition: none;
+  }
+  
+  .btn-cancel:hover {
+    background-color: inherit;
+    border-color: inherit;
+    color: inherit;
+  }
+
 .btn-save {
     background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
 

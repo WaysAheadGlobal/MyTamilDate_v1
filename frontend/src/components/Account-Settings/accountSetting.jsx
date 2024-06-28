@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './accountSetting.css';
 import { Container, Image } from 'react-bootstrap';
@@ -20,18 +20,19 @@ import { useNavigate } from 'react-router-dom';
 import { useCookies } from '../../hooks/useCookies';
 import { API_URL } from '../../api';
 import Flag from 'react-world-flags';
+import { countries } from "country-list-json";
+import { useAppContext } from '../../Context/UseContext';
+import VerifyPhoneModal from './verifyphoneotp';
+import LogoutModal from './logout';
 
 
-const countries = [
-    { code: 'US', name: 'United States', dialCode: '+1' },
-    { code: 'CA', name: 'Canada', dialCode: '+1' },
-    { code: 'IN', name: 'India', dialCode: '+91' },
-    { code: 'AU', name: 'Australia', dialCode: '+36' },
-];
+
 
 
 export const AccountSetting = () => {
     const navigate = useNavigate();
+    const {getCookie,setCookie,deleteCookie} = useCookies();
+   
     const [showUserName, setshowUserName] = useState(false);
     const [showUserEmail, setshowUserEmail] = useState(false);
     const [showUserEmailotp, setshowUserEmailotp] = useState(false);
@@ -42,11 +43,101 @@ export const AccountSetting = () => {
     const [showDeleteAccount, setShowDeleteAccount] = useState(false);
     const [showPauseOption, setShowPauseOpion] = useState(false); 
     const [showDeleteOption, setShowDeleteOpion] = useState(false); 
-    const [firstName, setFirstName] = useState('Karthik');
-    const [lastName, setLastName] = useState('Kumar');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const[showFinalDetele, setFinalDetele] = useState(false);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
 
+    // Data from the backend
+    const[NamePhoneEmail, setNamePhoneEmail] = useState({})
+    const fetchData = async () => {
+        try {
+          const response = await fetch(`${API_URL}/customer/setting/namedetails`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${getCookie('token')}`
+            }
+          });
+  
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+  
+          const data = await response.json();
+          console.log(data);
+          setFirstName(data.first_name);
+          setLastName(data.last_name);
+          setNamePhoneEmail(data);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+    useEffect(() => {
+        fetchData();
+      }, []);
+
+    // update first Name and Last Name
+      const UpdateNameAndLastName = async () => {
+        try {
+            const response = await fetch(`${API_URL}/customer/setting/namedetails`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+                body: JSON.stringify({ first_name: firstName, last_name: lastName })
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            console.log('Profile updated successfully:', data);
+            // Optionally, you can handle success actions here, such as showing a success message
+
+        } catch (error) {
+            console.error('Error updating name:', error);
+        }
+    };
+    const handleSaveFirstLastName = () => {
+        UpdateNameAndLastName();
+        fetchData();
+        handleCloseName();
+    };
+     
+     
+
+    //update Phone Number 
     
+    const UpdatePhoneNumber = async () => {
+        try {
+            const response = await fetch(`${API_URL}/customer/setting/namedetails`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+                body: JSON.stringify({ first_name: firstName})
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            console.log('Profile updated successfully:', data);
+            // Optionally, you can handle success actions here, such as showing a success message
+
+        } catch (error) {
+            console.error('Error updating name:', error);
+        }
+    };
+    
+    
+
+
     const handleCloseName = () => setshowUserName(false);
     const handleShowName = () => setshowUserName(true);
 
@@ -75,6 +166,17 @@ export const AccountSetting = () => {
     const handleCloseFinalDetele = () => setFinalDetele(false);
     const handleShowFinalDetele = () => setFinalDetele(true);
 
+    const handleShowLogout = () => setShowLogoutModal(true);
+    const handleCloseLogout = () => setShowLogoutModal(false);
+    const handleLogout = () => {
+        // Perform logout action here
+        console.log('User logged out');
+        deleteCookie('token')
+        navigate("/");
+        setShowLogoutModal(false);
+    };
+
+
 const GotoPrivacyPolicy = ()=>{
     navigate("/PrivacyPolicyDetails")
 }
@@ -82,45 +184,95 @@ const Gototermandconditions = ()=>{
     navigate("/termandconditions")
 }
 
+
 // Delete My Account now
 
-const handleDeleteAccount = ()=>{
-    handleCloseDeleteAccount();
-    handleShowDeleteOption();
-}
 
-const [selectedDeleteOption, setSelectedDeleteOption] = useState('');
-    
-    
-    const handleDeleteAccountOption = () => {
-        handleCloseDeleteOption();
-    
-        handleShowFinalDetele();
+
+    const [showFinalDelete, setShowFinalDelete] = useState(false);
+    const [selectedDeleteOption, setSelectedDeleteOption] = useState('');
+    const [deleteReason, setDeleteReason] = useState('');
+
+
+    const handleShowFinalDelete = () => setShowFinalDelete(true);
+    const handleCloseFinalDelete = () => setShowFinalDelete(false);
+
+    const handleDeleteAccount = () => {
+        handleCloseDeleteAccount();
+        handleShowDeleteOption();
     };
 
-const handleShowpauseModel =()=>{
-    handleCloseDeleteAccount();
-    handleCloseDeleteOption();
-    handleShowPause();
-}
+    const handleDeleteAccountOption = () => {
+        handleCloseDeleteOption();
+        handleShowFinalDelete();
+    };
 
-const handleGoToFinalDelete = ()=>{
-    handleCloseDeleteAccount();
-    handleCloseDeleteOption()
-    handleShowFinalDetele();
-}
+    const handleFinalDelete = async () => {
+         // Replace with the actual user ID
 
+        try {
+            // Submit delete reason
+            let response = await fetch(`${API_URL}/delete-reason`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`  // Adjust according to your authentication method
+                },
+                body: JSON.stringify({
+                    reason_id: selectedDeleteOption,
+                    reason_description: deleteReason,
+                }),
+            });
 
-const handleFinalDetele = ()=>{
-    handleCloseDeleteOption();
-    handleCloseFinalDetele();
-}
+            if (!response.ok) {
+                throw new Error('Error submitting delete reason');
+            }
+
+            console.log('Delete reason submitted successfully:', await response.json());
+
+            // Delete user account
+            response = await fetch(`${API_URL}/delete`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`  // Adjust according to your authentication method
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Error deleting user account');
+            }
+
+            console.log('User deleted successfully:', await response.json());
+            handleCloseFinalDelete();
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleShowPauseModel = () => {
+        handleCloseDeleteAccount();
+        handleCloseDeleteOption();
+        // handleShowPause(); // Assuming there's a method to show the pause model
+    };
+
+    const feedbackOptions = [
+        "There aren’t enough people in my area",
+        "The site is hard to use",
+        "It's too expensive",
+        "I got too many messages from other members",
+        "I Met Somebody On Site",
+        "I met somebody elsewhere",
+        "Others"
+    ];
+
 
     // Unsubscribe Email
     const handleCloseUnsubscribeEmail = () => setShowUnsubscribeEmail(false);
     const handleShowUnsubscribeEmail = () => setShowUnsubscribeEmail(true);
+
     const handleUnsubscribeEmail = () => {
-        setShowUnsubscribeEmail(false);
+       
         navigate("/unsubscribe")
     };
 
@@ -226,29 +378,36 @@ const handleFinalDetele = ()=>{
         }
     };
 
+
+ 
+
+
    
     // phone number update code
-
-    const [errorMessagephoneupdate, setErrorMessagephoneupdate] = useState('');
-    const [phoneNumberupdate, setPhoneNumberupdate] = useState("");
-    const [selectedCountry, setSelectedCountry] = useState('CA');
-    const [selectedCountryInfo, setSelectedCountryInfo] = useState(countries.find(country => country.code === 'CA'));
     const [showModalcountry, setshowModalcountry] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
-    const { setCookie } = useCookies();
+    const [selectedCountry, setSelectedCountry] = useState('CA');
+    const [selectedCountryInfo, setSelectedCountryInfo] = useState(countries.find(country => country.code === 'CA'));
+    const [phoneNumberupdate, setPhoneNumberupdate] = useState("");
+    const [errorMessagephoneupdate, setErrorMessagephoneupdate] = useState('');
+    const { setPhoneNumber } = useAppContext();
+    const [resendTimer, setResendTimer] = useState(120);
+   
+
     const handleCountrySelect = (countryCode) => {
         setSelectedCountry(countryCode);
         const countryInfo = countries.find(country => country.code === countryCode);
         setSelectedCountryInfo(countryInfo);
-        setPhoneNumberupdate('');
+        setPhoneNumberupdate(''); // Clear the phone number input when a country is selected
         toggleModal();
     };
 
     const filteredCountries = countries.filter(country =>
         country.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         country.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        country.dialCode.includes(searchTerm)
+        country.dial_code.includes(searchTerm)
     );
+
     const toggleModal = () => {
         setshowModalcountry(!showModalcountry);
     };
@@ -260,54 +419,73 @@ const handleFinalDetele = ()=>{
 
     const handleSubmitphone = async (e) => {
         e.preventDefault();
-        const completePhoneNumber = selectedCountryInfo.dialCode + phoneNumberupdate;
+        const completePhoneNumber = selectedCountryInfo.dial_code + phoneNumberupdate;
+        console.log('Submitting phone number:', completePhoneNumber);
         if (phoneNumberupdate.length === 0) {
-            setErrorMessage('This Phone Number is Invalid');
+            setErrorMessagephoneupdate('This Phone Number is Invalid');
         } else if (phoneNumberupdate.length < 10) {
-            setErrorMessage('Phone number must be at least 10 digits');
+            setErrorMessagephoneupdate('Phone number must be at least 10 digits');
         } else {
-            setErrorMessage('');
-            handleClosephoneotp();
-            handleShowPhoneotp();
-            // try {
-            //     const response = await fetch(`${API_URL}/user/login/otp`, {
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-Type': 'application/json',
-            //         },
-            //         body: JSON.stringify({
-            //             phone: completePhoneNumber,
-            //         }),
-            //     });
-
-            //     const result = await response.json();
-            //     if (response.ok) {
-            //         alert(result.message);
-            //         setCookie('phoneNumber', completePhoneNumber, 7);
-            //         navigate("/signinphoneotp");
-            //     } else {
-            //         setErrorMessage(result.message || 'Failed to send OTP');
-            //     }
-            // } catch (error) {
-            //     console.error('Error:', error);
-            //     setErrorMessage('An error occurred. Please try again later.');
-            // }
+            setErrorMessagephoneupdate('');
+    
+            try {
+                const response = await fetch(`${API_URL}/customer/setting/updatephone/otp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getCookie('token')}`
+                    },
+                    body: JSON.stringify({
+                        phone: completePhoneNumber,
+                    }),
+                });
+    
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                    handleShowPhoneotp();
+                } else {
+                    if (response.status === 409) {
+                        setErrorMessagephoneupdate('Phone number already exists. Please use a different number.');
+                    } else {
+                        setErrorMessagephoneupdate(result.message || 'Failed to send OTP');
+                    }
+                    console.error('Server response:', result);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                setErrorMessagephoneupdate('An error occurred. Please try again later.');
+            }
         }
     };
+    
+    
 
-//phone number OTP modal 
-
-const handleSubmitphoneotp = (e) => {
-    e.preventDefault();
-    const code = code1 + code2 + code3 + code4;
-    if (code.length !== 4) {
-        setErrorMessage('*Invalid code, please re-enter again');
-    } else {
-        setErrorMessage('');
-        handleClosePhoneotp();
-        handleShowsuccessphone();
+    const PauseMyAccount = async () => {
+        try {
+            const response = await fetch(`http://localhost:3001/api/v1/customer/setting/pause`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                }
+            });
+    
+            if (response.ok) {
+                setShowPauseOpion(false);
+                console.log("Account paused successfully");
+            } 
+            else {
+                const errorData = await response.json();
+                console.error("Failed to pause account:", errorData.message);
+            }
+        } catch (err) {
+            console.error("Error in PauseMyAccount:", err);
+        }
     }
-};
+    
+
+    
 
 
     return (
@@ -355,7 +533,7 @@ const handleSubmitphoneotp = (e) => {
                                     <span className='userleftinfo'>User name</span>
                                 </div>
                                 <div>
-                                    <span className="value">Karthik Kumar</span>
+                                    <span className="value">{NamePhoneEmail.first_name + " " + NamePhoneEmail.last_name}</span>
                                 </div>
                             </div>
                             <div className="user-info-item" onClick={handleShowPhone}>
@@ -364,7 +542,7 @@ const handleSubmitphoneotp = (e) => {
                                     <span className='userleftinfo'>Phone Number</span>
                                 </div>
                                 <div>
-                                    <span className="value">(905) 216-5247</span>
+                                    <span className="value">{NamePhoneEmail.phone}</span>
                                 </div>
                             </div>
                             <div className="user-info-item" onClick={handleShowEmail}>
@@ -373,7 +551,7 @@ const handleSubmitphoneotp = (e) => {
                                     <span className='userleftinfo'>Email</span>
                                 </div>
                                 <div>
-                                    <span className="value">Karthik19@gmail.com</span>
+                                    <span className="value">{NamePhoneEmail.email}</span>
                                 </div>
                             </div>
                             <div className="pause-button" onClick={handleShowPause}>
@@ -402,7 +580,7 @@ const handleSubmitphoneotp = (e) => {
 
                         <div className="user-info-container">
                             <div className="last-user-info-item">
-                                <div className='lastleftsideinfo' onClick={handleShowUnsubscribeEmail}>
+                                <div className='lastleftsideinfo' onClick={handleUnsubscribeEmail}>
                                     <span className='lastuserleftinfo'>Email Unsubscribe</span>
                                 </div>
                                 <div>
@@ -427,9 +605,9 @@ const handleSubmitphoneotp = (e) => {
                                 </div>
                             </div>
 
-                            <div className="last-user-info-item" style={{ border: "none" }}>
-                                <div className='lastleftsideinfo'>
-                                    <span className='lastuserleftinfo'>Logout</span>
+                            <div  className="last-user-info-item" style={{ border: "none" }} onClick={handleShowLogout}>
+                                <div className='lastleftsideinfo' >
+                                    <span className='lastuserleftinfo' >Logout</span>
                                 </div>
                                 <div>
                                     <Image className='userinfoicon' src={logout} />
@@ -482,7 +660,7 @@ const handleSubmitphoneotp = (e) => {
                     <Button variant="outline-danger" className="btn-cancel" onClick={handleCloseName}>
                         Cancel
                     </Button>
-                    <Button variant="primary" className="btn-save" onClick={handleCloseName}>
+                    <Button variant="primary" className="btn-save" onClick={handleSaveFirstLastName}>
                         Save
                     </Button>
                 </Modal.Footer>
@@ -659,8 +837,8 @@ const handleSubmitphoneotp = (e) => {
                                 <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                                     <Dropdown>
                                         <div id="dropdown-basic"  onClick={() => setshowModalcountry(true)} className='flag-box'>
-                                            <Flag code={selectedCountry} style={{ width: '34px', height: '25px', marginRight: '10px' }} className='flag' />
-                                            <span>{selectedCountryInfo.dialCode}</span>
+                                        <Flag code={selectedCountry} style={{ width: '34px', height: '25px', marginRight: '10px' }} className='flag' />
+                                        <span>{selectedCountryInfo.dial_code}</span>
                                         </div>
                                     </Dropdown>
                                     <Form.Control
@@ -698,8 +876,16 @@ const handleSubmitphoneotp = (e) => {
 
                 </Modal.Header> */}
 
-                <Modal.Body>
-                    <InputGroup className="mb-3">
+<Modal.Body style={{
+                    maxHeight: "500px",
+                    overflowY: "auto",
+                    width: "100%",
+                }}>
+                    <InputGroup className="mb-3" style={{
+                        position: 'sticky',
+                        top: '0',
+                        width: '100%',
+                    }}>
                         <FormControl
                             placeholder="Search Country"
                             aria-label="Search Country"
@@ -708,86 +894,23 @@ const handleSubmitphoneotp = (e) => {
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </InputGroup>
-                    {filteredCountries.map((country) => (
+                     {filteredCountries.map((country) => (
                         <div key={country.code} className='flag-item' onClick={() => handleCountrySelect(country.code)}>
                             <Flag code={country.code} style={{ width: '24px', height: '18px', marginRight: '10px' }} />
-                            {country.name} ({country.dialCode})
+                            {country.name} ({country.dial_code})
                         </div>
                     ))}
                 </Modal.Body>
             </Modal>
 
-            <Modal show={showUserPhoneotp} centered>
-                <Modal.Header >
-                    <Modal.Title>Verify Code</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={handleSubmit} className=''>
-                        <Container className='entercode-content' style={{ marginBottom: "100px" }}>
-                            <div>
-                                <Form.Group controlId="formCode" className='entercode-form-group'>
-
-                                    <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
-                                        <Form.Control
-                                            className={`entercode-input ${errorMessage ? 'error' : ''}`}
-                                            type="text"
-                                            ref={code1ref}
-                                            placeholder=""
-                                            value={code1}
-                                            onChange={(e) => handleCodeChange(e, setCode1, code2ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, null)}
-                                            style={{ flex: 1 }}
-                                        />
-                                        <Form.Control
-                                            className={`entercode-input ${errorMessage ? 'error' : ''}`}
-                                            type="text"
-                                            ref={code2ref}
-                                            placeholder=""
-                                            value={code2}
-                                            onChange={(e) => handleCodeChange(e, setCode2, code3ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, code1ref)}
-                                            style={{ flex: 1, marginLeft: '10px' }}
-                                        />
-                                        <Form.Control
-                                            className={`entercode-input ${errorMessage ? 'error' : ''}`}
-                                            type="text"
-                                            ref={code3ref}
-                                            placeholder=""
-                                            value={code3}
-                                            onChange={(e) => handleCodeChange(e, setCode3, code4ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, code2ref)}
-                                            style={{ flex: 1, marginLeft: '10px' }}
-                                        />
-                                        <Form.Control
-                                            className={`entercode-input ${errorMessage ? 'error' : ''}`}
-                                            type="text"
-                                            ref={code4ref}
-                                            placeholder=""
-                                            value={code4}
-                                            onChange={(e) => handleCodeChange(e, setCode4, null)}
-                                            onKeyDown={(e) => handleKeyDown(e, code3ref)}
-                                            style={{ flex: 1, marginLeft: '10px' }}
-                                        />
-                                    </div>
-                                    {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
-                                </Form.Group>
-                                <div className='resend-timer'>
-                                    <a href=''> Resend code</a>
-                                    <span>1:48sec</span>
-                                </div>
-                            </div>
-
-                        </Container>
-                        <Button variant="outline-danger" className="btn-cancel" onClick={handleClosePhoneotp}>
-                            Cancel
-                        </Button>
-                        <Button variant="primary" className="btn-save" onClick={handleSubmitphoneotp}>
-                            Save
-                        </Button>
-                    </Form>
-                </Modal.Body>
-
-            </Modal>
+            <VerifyPhoneModal
+                showUserPhoneotp={showUserPhoneotp} 
+                handleClosePhoneotp={handleClosePhoneotp} 
+                handleShowsuccessphone={handleShowsuccessphone} 
+                fetchData={fetchData}
+                setResendTimer={setResendTimer}
+                resendTimer={resendTimer}
+            />
               
             <Modal show={showsuccessphone} onHide={handleClosesuccessphone} centered>
                 <Modal.Body className="success-modal-content">
@@ -891,7 +1014,7 @@ const handleSubmitphoneotp = (e) => {
                         <Button variant="outline-danger" className="btn-cancel-pause" onClick={handleClosePauseOption}>
                             Cancel
                         </Button>
-                        <Button variant="primary" className="btn-pause" onClick={handlePauseAccountOption}>
+                        <Button variant="primary" className="btn-pause" onClick={PauseMyAccount}>
                             Pause account
                         </Button>
                     </div>
@@ -920,135 +1043,111 @@ const handleSubmitphoneotp = (e) => {
 
         {/* delete my account */}
         <Modal show={showDeleteAccount} onHide={handleCloseDeleteAccount} centered>
-            <Modal.Body className="pause-modal-content">
-            <div style={{display : "flex"}}>
-                <Image style={{width : "24px" , height : "24px" , marginTop : "7px"}} className="fas fa-pause-circle" src={pauseicon} />
-                <div className="pause-modal-title">Pause your Account instead</div>
-                </div>
-                
-                <div className="pause-modal-message">
-                    <p>Just need a break?</p>
-                <p style={{marginTop :  "-10px"}}> Pause your account and hide your profile, and come back anytime.</p>
-               
-                </div>
-                <div className="d-flex justify-content-center">
-                    <Button variant="outline-danger" className="btn-no" onClick={handleCloseDeleteAccount}>
-                        Cancel
-                    </Button>
-                    <Button style={{backgroundColor : "#F7ECFF", color : "black", width : "140px", border: "none", borderRadius : "24px"}} onClick={handleShowpauseModel}>
-                        Pause
-                    </Button>
-                </div>
-                <div style={{marginTop : "20px"}}>
-                <Button variant="primary" width="300px" className="btn-yes" onClick={handleDeleteAccount}>
-                        Delete
-                    </Button>
-                </div>
-            </Modal.Body>
-        </Modal>
-
-        <Modal show={showDeleteOption} onHide={handleCloseDeleteOption} centered>
-            <Modal.Body className="feedback-modal-content">
-                <div className="feedback-modal-title">
-                    Sorry we didn’t have what you were looking for this time!
-                </div>
-                <div className="feedback-modal-subtitle">
-                We want to improve, give us feedback and you will have a chance to win $50 CDN Amazon gift card!
-                </div>
-                <Form>
-                    <div className="feedback-options">
-                        <Form.Check
-                            type="radio"
-                            label="I met somebody on myTamilDate!"
-                            name="feedback"
-                            id="feedback1"
-                            className="feedback-option"
-                            onChange={() => setSelectedDeleteOption('option1')}
-                        />
-                        <Form.Check
-                            type="radio"
-                            label="I got too many messages from other members"
-                            name="feedback"
-                            id="feedback2"
-                            className="feedback-option"
-                            onChange={() => setSelectedDeleteOption('option2')}
-                        />
-                        <Form.Check
-                            type="radio"
-                            label="I met somebody elsewhere"
-                            name="feedback"
-                            id="feedback3"
-                            className="feedback-option"
-                            onChange={() => setSelectedDeleteOption('option3')}
-                        />
-                        <Form.Check
-                            type="radio"
-                            label="It's too expensive"
-                            name="feedback"
-                            id="feedback4"
-                            className="feedback-option"
-                            onChange={() => setSelectedDeleteOption('option4')}
-                        />
-                        <Form.Check
-                            type="radio"
-                            label="The site is hard to use"
-                            name="feedback"
-                            id="feedback5"
-                            className="feedback-option"
-                            onChange={() => setSelectedDeleteOption('option5')}
-                        />
-                        <Form.Check
-                            type="radio"
-                            label="There aren’t enough people in my area"
-                            name="feedback"
-                            id="feedback6"
-                            className="feedback-option"
-                            onChange={() => setSelectedDeleteOption('option6')}
-                        />
-                        <Form.Check
-                            type="radio"
-                            label="Others"
-                            name="feedback"
-                            id="feedback7"
-                            className="feedback-option"
-                            onChange={() => setSelectedDeleteOption('option7')}
-                        />
+                <Modal.Body className="pause-modal-content">
+                    <div style={{ display: "flex" }}>
+                        <Image style={{ width: "24px", height: "24px", marginTop: "7px" }} className="fas fa-pause-circle" src={pauseicon} />
+                        <div className="pause-modal-title">Pause your Account instead</div>
+                    </div>
+                    <div className="pause-modal-message">
+                        <p>Just need a break?</p>
+                        <p style={{ marginTop: "-10px" }}> Pause your account and hide your profile, and come back anytime.</p>
                     </div>
                     <div className="d-flex justify-content-center">
-                        <Button variant="outline-danger" className="btn-cancel-pause" onClick={handleCloseDeleteOption}>
+                        <Button variant="outline-danger" className="btn-no" onClick={handleCloseDeleteAccount}>
                             Cancel
                         </Button>
-                        <Button variant="primary"  className="btn-pause" onClick={handleDeleteAccountOption}>
-                            Delete account
+                        <Button style={{ backgroundColor: "#F7ECFF", color: "black", width: "140px", border: "none", borderRadius: "24px" }} onClick={handleShowPauseModel}>
+                            Pause
                         </Button>
                     </div>
-                </Form>
-            </Modal.Body>
-        </Modal>
-    
-    
+                    <div style={{ marginTop: "20px" }}>
+                        <Button variant="primary" width="300px" className="btn-yes" onClick={handleDeleteAccount}>
+                            Delete
+                        </Button>
+                    </div>
+                </Modal.Body>
+            </Modal>
+
+            <Modal show={showDeleteOption} onHide={handleCloseDeleteOption} centered>
+                <Modal.Body className="feedback-modal-content">
+                    <div className="feedback-modal-title">
+                        Sorry we didn’t have what you were looking for this time!
+                    </div>
+                    <div className="feedback-modal-subtitle">
+                        We want to improve, give us feedback and you will have a chance to win $50 CDN Amazon gift card!
+                    </div>
+                    <Form>
+                        <div className="feedback-options">
+                            {feedbackOptions.map((option, index) => (
+                                <Form.Check
+                                    type="radio"
+                                    label={option}
+                                    name="feedback"
+                                    id={`feedback${index + 1}`}
+                                    className="feedback-option"
+                                    key={index}
+                                    onChange={() => {
+                                        setSelectedDeleteOption(index + 1);
+                                        setDeleteReason(option);
+                                    }}
+                                />
+                            ))}
+                        </div>
+                        <div className="d-flex justify-content-center">
+                            <Button variant="outline-danger" className="btn-cancel-pause" onClick={handleCloseDeleteOption}>
+                                Cancel
+                            </Button>
+                            <Button variant="primary" className="btn-pause" onClick={handleDeleteAccountOption}>
+                                Delete account
+                            </Button>
+                        </div>
+                    </Form>
+                </Modal.Body>
+            </Modal>
+
+            <Modal show={showFinalDelete} onHide={handleCloseFinalDelete} centered>
+                <Modal.Body className="pause-modal-content">
+                    <div className="pause-modal-title">Delete your Account?</div>
+                    <div className="pause-modal-message">
+                        You cannot recover your account once deleted, are you sure you want to delete your account?
+                    </div>
+                    <div className="d-flex justify-content-center">
+                        <Button variant="outline-danger" className="btn-no" onClick={handleCloseFinalDelete}>
+                            Cancel
+                        </Button>
+                        <Button variant="primary" className="btn-yes" onClick={handleFinalDelete}>
+                            Delete
+                        </Button>
+                    </div>
+                </Modal.Body>
+            </Modal>
+
+         {/* logout my Account */}
+            
+            
         <Modal show={showFinalDetele} onHide={handleCloseFinalDetele} centered>
 
-            <Modal.Body className="pause-modal-content">
-                
-                <div className="pause-modal-title">Delete your Account?</div>
-                <div className="pause-modal-message">
-                You cannot recover your account once deleted, are you sure you want to delete your account?
-                </div>
-                <div className="d-flex justify-content-center">
-                    <Button variant="outline-danger" className="btn-no" onClick={handleCloseFinalDetele}>
-                        Cancel
-                    </Button>
-                    <Button variant="primary" className="btn-yes" onClick={handleFinalDetele}>
-                        Delete
-                    </Button>
-                </div>
-            </Modal.Body>
-        </Modal>
-
-         
-
-
+<Modal.Body className="pause-modal-content">
+    
+    <div className="pause-modal-title">Delete your Account?</div>
+    <div className="pause-modal-message">
+    You cannot recover your account once deleted, are you sure you want to delete your account?
+    </div>
+    <div className="d-flex justify-content-center">
+        <Button variant="outline-danger" className="btn-no" onClick={handleCloseFinalDetele}>
+            Cancel
+        </Button>
+        <Button variant="primary" className="btn-yes" onClick={handleFinalDelete}>
+            Delete
+        </Button>
+    </div>
+</Modal.Body>
+</Modal>
+              <LogoutModal
+              showLogoutModal={showLogoutModal}
+              handleCloseLogout={handleCloseLogout}
+              handleLogout={handleLogout}
+              />
         </div>
     );
 };
