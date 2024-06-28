@@ -33,3 +33,16 @@ nav>ul>li.active>.indicator {
     border-radius: 9999px;
     margin-top: 0.25rem;
 }
+
+@media screen and (max-width: 768px) {
+    nav {
+        width: 100%;
+        padding: 0.5rem;
+        max-width: 100%;
+    }
+
+    nav>ul {
+        gap: 0.5rem;
+    }
+    
+}

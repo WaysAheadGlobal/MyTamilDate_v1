@@ -6,7 +6,16 @@
     margin-bottom: 1rem;
     overflow: hidden;
     position: relative;
-    max-width: 400px;    
+    max-width: 400px;
+    min-height: 100%;
+    opacity: 0;
+    transform: translateX(-100px);
+    transition: transform 150ms linear;
+}
+
+.card-container.show {
+    transform: translateX(0);
+    opacity: 1;
 }
 
 .card-container>div:not(.menu) {

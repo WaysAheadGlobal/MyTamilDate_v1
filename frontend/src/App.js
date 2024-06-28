@@ -78,7 +78,8 @@ import ProfileAnswers from "./components/ProfileAnswers";
 import SmokeAndFamily from "./components/SmokeAndDrink";
 import { SignInOptions } from "./components/sign-in/sign-in-options";
 
-import UserDashboard from "./components/userflow/Dashboard";
+import Home from "./components/userflow/screens/Home";
+import Recommendations from "./components/userflow/screens/recommendations/Recommendations";
 
 
 function App() {
@@ -198,7 +199,8 @@ function App() {
               <Route path="/PrivacyPolicyDetails" element={<PrivacyPolicySetting />}></Route>
               <Route path="/termandconditions" element={<TermsConditions />}></Route>
 
-              <Route path="/user/home" element={<UserDashboard />} />
+              <Route path="/user/home" element={<Home />} />
+              <Route path="/user/recommendations" element={<Recommendations />} />
             </Routes>
           </main>
         </div>
