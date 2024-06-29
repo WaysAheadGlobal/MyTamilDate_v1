@@ -3,44 +3,6 @@ p {
     padding: 0;
 }
 
-.matchContainer {
-    display: flex;
-    gap: 2rem;
-    flex-direction: column;
-    max-width: 430px;
-    max-height: 100vh;
-    height: 100vh;
-    overflow-y: auto;
-    scrollbar-width: none;
-    padding: 2rem;
-    border-right: 2px solid #e0e0e0;
-}
-
-.nav {
-    border: 2px solid #e0e0e0;
-    border-radius: 9999px;
-}
-
-.nav>ul {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    list-style: none;
-    padding: 0.25rem;
-    margin: 0;
-}
-
-.nav>ul>li {
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    border-radius: 9999px;
-}
-
-.nav>ul>li.active {
-    background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
-    color: white;
-}
-
 .profiles {
     display: flex;
     gap: 1rem;

@@ -1,18 +1,9 @@
-import React from 'react'
-import styles from './matches.module.css'
-import Navbar from '../navbar/Navbar'
+import React from 'react';
+import styles from './matches.module.css';
 
 export default function Matches() {
     return (
-        <section className={styles.matchContainer}>
-            <div className={styles.nav}>
-                <ul>
-                    <li className={styles.active}>Matches</li>
-                    <li>Likes</li>
-                    <li>Requests</li>
-                    <li>Others</li>
-                </ul>
-            </div>
+        <>
             <p style={{
                 fontSize: "large",
                 fontWeight: "600",
@@ -48,10 +39,6 @@ export default function Matches() {
                     ))
                 }
             </div>
-            <Navbar style={{
-                width: "100%",
-                maxWidth: "100%",
-            }} />
-        </section>
+        </>
     )
 }
