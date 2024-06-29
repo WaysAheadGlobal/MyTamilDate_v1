@@ -1,0 +1,82 @@
+.cardContainer {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+ 
+
+  }
+  
+
+  
+  .pricingCard {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+   
+    text-align: center;
+    transition: transform 0.3s ease;
+    position: relative;
+    width: 115px;
+    height: 127px;
+   
+    
+    
+  }
+  
+  .pricingCard:hover {
+    transform: scale(1.25);
+    z-index: 9999;
+  }
+
+  .cardBody {
+    padding: 10px;
+  }
+  .cardBodypopular{
+    padding: 10px;
+    margin-top: -24px;
+    
+  }
+  
+  .cardTitle {
+    font-family: Poppins;
+font-size: 9.77px;
+font-weight: 500;
+line-height: 14.66px;
+text-align: center;
+
+   
+  }
+  
+  .cardPrice {
+    font-family: Poppins;
+    font-size: 16.75px;
+    font-weight: 400;
+    line-height: 25.13px;
+    letter-spacing: 0.04em;
+    text-align: left;
+    
+    
+  }
+  
+  .cardPrice span {
+    font-size: 0.5em;
+  }
+  
+  .cardText {
+    font-size:8px;
+    color: gray;
+  }
+  .mostPopular {
+    
+   
+    background:  rgba(255,107,107,1);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 10px 10px 0 0;
+margin-left: 58px;
+    
+    transform: translateX(-50%);
+    width: 115px;
+    font-size: 12px;
+  }
+  

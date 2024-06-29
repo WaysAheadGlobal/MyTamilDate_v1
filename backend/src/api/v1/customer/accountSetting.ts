@@ -1,0 +1,433 @@
+import express from 'express';
+import { db } from "../../../../db/db";
+import { verifyUser } from '../../../middleware/verifyUser';
+import { UserRequest } from '../../../types/types';
+const { body, validationResult } = require('express-validator');
+import multer from 'multer';
+import moment from 'moment';
+import crypto from 'crypto';
+import { sendOTPtoPhoneNumber, verifyOTP } from '../../../../otp';
+import sgMail from '@sendgrid/mail';
+import ejs from 'ejs';
+console.log(process.env.URL)
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/profiles');
+    },
+    filename: function (req, file, cb) {
+        cb(null, crypto.randomBytes(16).toString('hex') + file.mimetype.replace('image/', '.'));
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 5 // 5MB 
+    }
+});
+
+
+const setting = express.Router();
+
+// name update
+
+
+setting.get('/namedetails', verifyUser, (req: UserRequest, res: any) => {
+    const userId = req.userId;
+    const query = `
+    SELECT first_name, last_name, email, phone, active, deleted_at
+    FROM user_profiles
+    JOIN users ON user_profiles.user_id = users.id
+    WHERE user_profiles.user_id = ?
+`;
+     
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching user profile:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'User profile not found' });
+        }
+        const userProfile = results[0];
+        res.status(200).json(userProfile);
+    });
+});
+
+
+setting.put('/namedetails', [
+    verifyUser,
+    body('first_name').isString().notEmpty().withMessage('First name is required'),
+
+    body('last_name').optional().isString().withMessage('Last name must be a string')
+
+], (req: UserRequest, res: any) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { first_name, last_name, } = req.body;
+    const userId = req.userId;
+    console.log(userId);
+
+    const query = `
+        UPDATE user_profiles
+        SET first_name = ?, last_name = COALESCE(?, last_name),   updated_at = NOW()
+        WHERE user_id = ?
+      `;
+
+    db.query(query, [first_name, last_name, userId], (err, results) => {
+        if (err) {
+            console.error('Error updating user profile:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ message: 'User profile not found' });
+        }
+        res.status(200).json({ message: 'Profile updated successfully' });
+    });
+});
+
+
+//   update phone number
+
+setting.post('/updatephone/otp', body('phone').isMobilePhone(), verifyUser, (req: UserRequest, res: any) => {
+    const result = validationResult(req);
+
+    if (!result.isEmpty()) {
+        res.status(400).json({ message: 'Invalid phone number' });
+        return;
+    }
+    const { phone } = req.body;
+    const query = 'SELECT id FROM user_profiles WHERE phone = ?';
+    db.query(query, [phone], async (err, results) => {
+        if (err) {
+            console.log('Error fetching data:', err);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        if (results.length > 0) {
+            res.status(409).json({ message: 'This phone number is already in use. Try with a different number.' });
+            return;
+        }
+
+        try {
+            await sendOTPtoPhoneNumber({ phone });
+            res.status(200).json({ message: 'OTP sent successfully!' });
+        } catch (error) {
+            res.status(500).json({ message: 'Internal Server Error' });
+            console.error('Error sending OTP:', error);
+        }
+    });
+});
+
+setting.post('/updatephone', [body('phone').isMobilePhone(), body('otp').notEmpty()],verifyUser,  async (req: UserRequest, res: any) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ message: 'Invalid OTP' });
+    }
+    const userId = req.userId;
+    const { phone, otp } = req.body;
+    console.log(phone,otp)
+    try {
+        const otpResponse = await verifyOTP({ phone: phone, otp });
+            if (otpResponse.status !== 'approved') {
+                return res.status(401).json({ message: otpResponse.message });
+            }
+
+
+        db.beginTransaction((err) => {
+            if (err) {
+                console.error('Error starting transaction:', err);
+                return res.status(500).send('Internal Server Error');
+            }
+
+            const updateQuery = 'UPDATE user_profiles SET phone = ? WHERE user_id = ?';
+            db.query(updateQuery, [phone, userId], (err, results) => {
+                if (err) {
+                    return db.rollback(() => {
+                        console.error('Error updating phone number:', err);
+                        res.status(500).send('Internal Server Error');
+                    });
+                }
+
+                db.commit((err) => {
+                    if (err) {
+                        return db.rollback(() => {
+                            console.error('Error committing transaction:', err);
+                            res.status(500).send('Internal Server Error');
+                        });
+                    }
+
+                    res.status(200).json({ message: 'Phone number updated successfully!' });
+                });
+            });
+        });
+    } catch (error) {
+        console.error('Error validating OTP:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+//update the Email by Email confimations
+
+setting.get('/getemail', verifyUser, (req: UserRequest, res: any) => {
+    const userId = req.userId;
+
+    // Log the value for debugging
+    console.log(`Fetching email for userId: ${userId}`);
+
+    const query = 'SELECT email FROM user_profiles WHERE user_id = ?';
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching email:', err);
+            return res.status(500).json({ message: 'Internal Server Error' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'User profile not found' });
+        }
+
+        res.status(200).json({ email: results[0].email });
+    });
+});
+
+setting.put('/updateemail', verifyUser, [
+    body('email').isEmail().withMessage('Invalid email address')
+], async (req: UserRequest, res: any) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { email } = req.body;
+    const userId = req.userId;
+
+    // Log the values for debugging
+    console.log(`Updating email for userId: ${userId}, new email: ${email}`);
+
+
+    const checkEmailQuery = 'SELECT id FROM user_profiles WHERE email = ?';
+    db.query(checkEmailQuery, [email], async (err, results) => {
+        if (err) {
+            console.error('Error checking email:', err);
+            return res.status(500).json({ message: 'Internal Server Error' });
+        }
+
+        if (results.length > 0) {
+            return res.status(409).json({ message: 'This email address is already in use. Try with a different email.' });
+        }
+
+      
+        const token = crypto.randomBytes(32).toString('hex');
+        // Render the email template
+        let html;
+        console.log(`${process.env.URL}/api/v1/customer/setting/verify/${token}`)
+        try {
+            html = await ejs.renderFile("mail/templates/verify.ejs", { link: `${process.env.URL}/api/v1/customer/setting/verify/${token}` });
+        } catch (renderError) {
+            console.error('Error rendering email template:', renderError);
+            return res.status(500).json({ message: 'Internal Server Error' });
+        }
+
+        // Send verification email
+        const msg = {
+            to: email,
+            from: "mtdteam2024@gmail.com",
+            subject: "Email Verification",
+            html: html
+        };
+
+        sgMail.send(msg)
+            .then(() => {
+                // Save or update the token in the database
+                const insertTokenQuery = `
+                    INSERT INTO verification_token (user_id, token, email, created_at)
+                    VALUES (?, ?, ?, NOW())
+                    ON DUPLICATE KEY UPDATE token = VALUES(token), email = VALUES(email), created_at = VALUES(created_at)
+                `;
+                db.query(insertTokenQuery, [userId, token, email], (err) => {
+                    if (err) {
+                        console.error('Error inserting data:', err);
+                        return res.status(500).send('Internal Server Error');
+                    }
+
+                    res.status(200).json({ message: 'Verification email sent' });
+                });
+            })
+            .catch((error) => {
+                console.error('Error sending email:', error);
+                return res.status(500).send('Internal Server Error');
+            });
+    });
+});
+
+setting.get("/verify/:token", async (req, res) => {
+    const { token } = req.params;
+
+    const query = 'SELECT user_id, email FROM verification_token WHERE token = ?';
+    db.query(query, [token], (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            return res.redirect(`${process.env.URL}/accountsetting`);
+        }
+
+        if (results.length === 0) {
+            console.log('No results found for the provided token');
+            return res.status(401).json({ message: 'Invalid token' });
+        }
+
+        const { user_id: userId, email } = results[0];
+        console.log(`Fetched from verification_token: userId = ${userId}, email = ${email}`);
+
+        db.beginTransaction((err) => {
+            if (err) {
+                console.error('Error starting transaction:', err);
+                return res.redirect(`${process.env.URL}/accountsetting`);
+            }
+
+            // Update the email in user_profiles
+            const updateEmailQuery = 'UPDATE user_profiles SET email = ?, email_verified_at = NOW() WHERE user_id = ?';
+            db.query(updateEmailQuery, [email, userId], (err) => {
+                if (err) {
+                    console.error('Error updating email:', err);
+                    return db.rollback(() => res.redirect(`${process.env.URL}/accountsetting`));
+                }
+
+                // Commit the transaction
+                db.commit((err) => {
+                    if (err) {
+                        console.error('Error committing transaction:', err);
+                        return res.status(500).send('Internal Server Error');
+                    }
+
+                    console.log('Email successfully updated');
+                    res.redirect(`${process.env.URL}/accountsetting`);
+                });
+            });
+        });
+    });
+});
+
+//pause Account
+setting.put('/pause', verifyUser, async (req: UserRequest, res) => {
+    const userId = req.userId;
+
+    try {
+        
+        await db.query(`
+            UPDATE users
+            SET active = 0, updated_at = NOW()
+            WHERE id = ?
+        `, [userId]);
+
+        return res.status(200).json({ message: 'User account paused successfully' });
+    } catch (err) {
+        console.error('Error processing account pause:', err);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+setting.put('/unpause', verifyUser, async (req: UserRequest, res: any) => {
+    const userId = req.userId;
+    
+    try {
+      
+        const query2 = `
+            UPDATE users
+            SET active = 1, updated_at = NOW()
+            WHERE id = ?
+        `
+        await db.query(query2, [userId]);
+
+        return res.status(200).json({ message: 'User account paused successfully' });
+    } catch (err) {
+        console.error('Error processing account pause:', err);
+        return res.status(500).send('Internal Server Error');
+    }
+});
+
+
+
+// delete account 
+
+setting.post('/delete-reason', [
+    verifyUser,
+    body('reason_id').isInt().withMessage('Reason ID must be an integer'),
+    body('reason_description').optional().isString().withMessage('Reason description must be a string')
+], (req: UserRequest, res: any) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { reason_id, reason_description } = req.body;
+    const userId = req.userId;
+
+    const query = `
+        INSERT INTO user_delete_reasons (user_id, reason_id, reason_description, created_at, updated_at)
+        VALUES (?, ?, ?, NOW(), NOW())
+    `;
+
+    db.query(query, [userId, reason_id, reason_description], (err, results) => {
+        if (err) {
+            console.error('Error storing delete reason:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+        res.status(200).json({ message: 'Delete reason submitted successfully' });
+    });
+});
+
+setting.delete('/delete/:userId', verifyUser, async (req, res) => {
+    const userId = req.params.userId;
+
+    // Query to fetch user by ID
+    const selectUserQuery = 'SELECT * FROM users WHERE id = ?';
+    db.query(selectUserQuery, [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching user:', err);
+            return res.status(500).json({ message: 'Internal Server Error' });
+        }
+
+        const user = results[0];
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const salt = `_deleted_${moment().format('x')}`;
+
+        // Update user table
+        const updateUserQuery = `
+            UPDATE users
+            SET deleted_at = NOW(), active = false
+            WHERE id = ?
+        `;
+        db.query(updateUserQuery, [userId], (err, updateResult) => {
+            if (err) {
+                console.error('Error updating user:', err);
+                return res.status(500).json({ message: 'Internal Server Error' });
+            }
+
+            // Update user_profiles table
+            const updateProfileQuery = `
+                UPDATE user_profiles
+                SET email = CONCAT(email, ?), phone = CONCAT(phone, ?)
+                WHERE user_id = ?
+            `;
+            db.query(updateProfileQuery, [salt, salt, userId], (err, profileUpdateResult) => {
+                if (err) {
+                    console.error('Error updating profile:', err);
+                    return res.status(500).json({ message: 'Internal Server Error' });
+                }
+
+                // Handle success case
+                return res.status(200).json({ message: 'User deleted successfully' });
+            });
+        });
+    });
+});
+
+
+
+export default setting;

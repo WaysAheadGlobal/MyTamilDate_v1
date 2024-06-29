@@ -6,9 +6,7 @@
 
 .desktop-left-side,
 .desktop-Right-side,
-.account-setting-main {
-    width: 33.33%;
-}
+
 
 .desktop-left-side {
     background-color: rgb(220, 213, 213);
@@ -315,6 +313,16 @@ color: #515151;
     margin-right: 10px;
     width: 122px;
 }
+
+.btn-cancel {
+    transition: none;
+  }
+  
+  .btn-cancel:hover {
+    background-color: inherit;
+    border-color: inherit;
+    color: inherit;
+  }
 
 .btn-save {
     background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);

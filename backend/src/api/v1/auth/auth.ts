@@ -309,6 +309,7 @@ auth.post('/signup', [body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'e
     }
 });
 
+
 auth.post("/verify", verifyUser, async (req: UserRequest, res) => {
 
     db.query('SELECT email FROM user_profiles WHERE user_id = ?', [req.userId], async (err, results) => {
