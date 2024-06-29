@@ -91,7 +91,7 @@ function App() {
   const { isAdmin } = useAppContext();
   const location = useLocation();
 
-  // List of protected routes
+  // List of protected route
   const protectedRoutes = [
     "/dashboard",
     "/team",
