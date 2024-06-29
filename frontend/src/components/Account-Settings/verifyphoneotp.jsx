@@ -4,8 +4,8 @@ import { useCookies } from '../../hooks/useCookies';
 import { API_URL } from '../../api';
 
 
-const VerifyPhoneModal = ({ setResendTimer,resendTimer,fetchData, showUserPhoneotp, handleClosePhoneotp, handleShowsuccessphone }) => {
-    const [modalPhoneNumber, setModalPhoneNumber] = useState('');
+const VerifyPhoneModal = ({ modalPhoneNumber, setModalPhoneNumber, setResendTimer,resendTimer,fetchData, showUserPhoneotp, handleClosePhoneotp, handleShowsuccessphone }) => {
+    
     const [otpCode1, setOtpCode1] = useState('');
     const [otpCode2, setOtpCode2] = useState('');
     const [otpCode3, setOtpCode3] = useState('');

@@ -129,12 +129,13 @@ setting.post('/updatephone', [body('phone').isMobilePhone(), body('otp').notEmpt
     }
     const userId = req.userId;
     const { phone, otp } = req.body;
-    
+    console.log(phone,otp)
     try {
-        const otpResponse = await verifyOTP({ phone, otp });
-        if (otpResponse.status !== 'approved') {
-            return res.status(401).json({ message: 'Invalid OTP' });
-        }
+        const otpResponse = await verifyOTP({ phone: phone, otp });
+            if (otpResponse.status !== 'approved') {
+                return res.status(401).json({ message: otpResponse.message });
+            }
+
 
         db.beginTransaction((err) => {
             if (err) {

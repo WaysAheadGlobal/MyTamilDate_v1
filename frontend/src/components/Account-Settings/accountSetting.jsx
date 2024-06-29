@@ -24,6 +24,7 @@ import { countries } from "country-list-json";
 import { useAppContext } from '../../Context/UseContext';
 import VerifyPhoneModal from './verifyphoneotp';
 import LogoutModal from './logout';
+import Sidebar from '../userflow/components/sidebar/sidebar';
 
 
 
@@ -147,7 +148,7 @@ export const AccountSetting = () => {
     const handleCloseEmailotp = () => setshowUserEmailotp(false);
     const handleShowEmailotp = () => setshowUserEmailotp(true);
 
-    const handleClosephoneotp = () => setshowUserphone(false);
+    const handleClosephone = () => setshowUserphone(false);
     const handleShowPhone = () => setshowUserphone(true);
 
     const handleClosePhoneotp = () => setshowUserPhoneotp(false);
@@ -253,7 +254,7 @@ const Gototermandconditions = ()=>{
     const handleShowPauseModel = () => {
         handleCloseDeleteAccount();
         handleCloseDeleteOption();
-        // handleShowPause(); // Assuming there's a method to show the pause model
+        handleShowPause(); // Assuming there's a method to show the pause model
     };
 
     const feedbackOptions = [
@@ -392,6 +393,7 @@ const Gototermandconditions = ()=>{
     const [errorMessagephoneupdate, setErrorMessagephoneupdate] = useState('');
     const { setPhoneNumber } = useAppContext();
     const [resendTimer, setResendTimer] = useState(120);
+    const [modalPhoneNumber, setModalPhoneNumber] = useState('');
    
 
     const handleCountrySelect = (countryCode) => {
@@ -421,6 +423,7 @@ const Gototermandconditions = ()=>{
         e.preventDefault();
         const completePhoneNumber = selectedCountryInfo.dial_code + phoneNumberupdate;
         console.log('Submitting phone number:', completePhoneNumber);
+        setModalPhoneNumber(completePhoneNumber);
         if (phoneNumberupdate.length === 0) {
             setErrorMessagephoneupdate('This Phone Number is Invalid');
         } else if (phoneNumberupdate.length < 10) {
@@ -443,6 +446,7 @@ const Gototermandconditions = ()=>{
                 const result = await response.json();
                 if (response.ok) {
                     alert(result.message);
+                    handleClosephone();
                     handleShowPhoneotp();
                 } else {
                     if (response.status === 409) {
@@ -489,12 +493,12 @@ const Gototermandconditions = ()=>{
 
 
     return (
+        
+        <Sidebar>
+
+  
         <div className='account-setting-container'>
-            <Container className='desktop-left-side'>
-
-                <h1>My Tamil Date</h1>
-            </Container>
-
+           
             <Container className='account-setting-main'>
                 <Container className='account-setting-box'>
                     <Container className='logo-progressbar3'>
@@ -563,10 +567,34 @@ const Gototermandconditions = ()=>{
                             </div>
                             <Container style={{ marginTop: "20px", marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
 
-                                <div className="user-info-item">
+                                <div className="user-info-item" onClick={()=> navigate("/paymentmethod")}>
                                     <div className='leftsideinfo'>
                                         <Image className='userinfoicon' src={CreditCard} />
                                         <span className='userleftinfo'>Payment Method</span>
+                                    </div>
+                                    <div>
+                                        <span className="value"></span>
+                                    </div>
+                                </div>
+                            </Container>
+                            <Container style={{  marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
+
+                                <div className="user-info-item" onClick={()=>navigate("/billinghistory")}>
+                                    <div className='leftsideinfo'>
+                                        <Image className='userinfoicon' src={emailicon} />
+                                        <span className='userleftinfo'>Billing History</span>
+                                    </div>
+                                    <div>
+                                        <span className="value"></span>
+                                    </div>
+                                </div>
+                            </Container>
+                            <Container style={{  marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
+
+                                <div className="user-info-item">
+                                    <div className='leftsideinfo'>
+                                        <Image className='userinfoicon' src={pauseicon} />
+                                        <span className='userleftinfo'>Disable Subscription</span>
                                     </div>
                                     <div>
                                         <span className="value"></span>
@@ -627,10 +655,7 @@ const Gototermandconditions = ()=>{
                 </Container>
             </Container>
 
-            <Container className='desktop-Right-side'>
-
-                <h1>MY Tamil Date</h1>
-            </Container>
+           
 
 {/* update the Name  */}
 
@@ -854,7 +879,7 @@ const Gototermandconditions = ()=>{
                             </Form.Group>
                             <Container style={{display : "flex", justifyContent : "center" , alignItems : "center"}}>
 
-                            <Button variant="outline-danger" className="btn-cancel" onClick={handleClosephoneotp}>
+                            <Button variant="outline-danger" className="btn-cancel" onClick={handleClosephone}>
                             Cancel
                         </Button>
                         <Button variant="primary" className="btn-save" onClick={handleSubmitphone}>
@@ -910,6 +935,8 @@ const Gototermandconditions = ()=>{
                 fetchData={fetchData}
                 setResendTimer={setResendTimer}
                 resendTimer={resendTimer}
+                modalPhoneNumber={modalPhoneNumber} 
+                setModalPhoneNumber={setModalPhoneNumber}
             />
               
             <Modal show={showsuccessphone} onHide={handleClosesuccessphone} centered>
@@ -1149,5 +1176,6 @@ const Gototermandconditions = ()=>{
               handleLogout={handleLogout}
               />
         </div>
+        </Sidebar>
     );
 };
