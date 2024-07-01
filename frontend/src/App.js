@@ -77,6 +77,7 @@ import Personality from "./components/Personality";
 import ProfileAnswers from "./components/ProfileAnswers";
 import SmokeAndFamily from "./components/SmokeAndDrink";
 import { SignInOptions } from "./components/sign-in/sign-in-options";
+
 import PaymentMethod from '../src/components/Account-Settings/payment/paymentMethod'
 import Home from "./components/userflow/screens/Home";
 import Recommendations from "./components/userflow/screens/recommendations/Recommendations";
@@ -201,9 +202,9 @@ function App() {
               <Route path="/unsubscribe" element={<UnsubscribeComponent />}></Route>
               <Route path="/PrivacyPolicyDetails" element={<PrivacyPolicySetting />}></Route>
               <Route path="/termandconditions" element={<TermsConditions />}></Route>
-              <Route path="/paymentmethod" element = {<PaymentMethod/>}></Route>
-              <Route path="/billinghistory" element = {<BillingHistory/>}></Route>
-               <Route path="/selectplan" element={<Selectplan/>}></Route>
+              <Route path="/paymentmethod" element={<PaymentMethod />}></Route>
+              {/* <Route path="/billinghistory" element={<BillingHistory />}></Route> */}
+              {/* <Route path="/selectplan" element={<Selectplan />}></Route> */}
 
               <Route path="/user/home" element={<Home />} />
               <Route path="/user/recommendations" element={<Recommendations />} />

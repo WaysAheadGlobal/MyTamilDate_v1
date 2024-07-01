@@ -1,16 +1,66 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import Sidebar from '../components/sidebar/sidebar';
+import React, { useEffect, useState } from 'react';
+import { API_URL } from '../../../api';
+import { useCookies } from '../../../hooks/useCookies';
 import Card from '../components/card/Card';
+import Sidebar from '../components/sidebar/sidebar';
 
 export default function Home() {
     const [loading, setLoading] = useState(true);
-    const [arr, setArr] = useState(Array.from({ length: 4 }, (_, i) => i + 1));
+    const [page, setPage] = useState(1);
+    const cookies = useCookies();
+
+    /**
+     * @typedef {Object} Profile
+     * @property {number} id - The unique identifier for the user.
+     * @property {number} user_id - The user ID associated with the user.
+     * @property {string} first_name - The first name of the user.
+     * @property {string} last_name - The last name of the user.
+     * @property {string} birthday - The birthday of the user in ISO format.
+     * @property {string} hash - A hash string associated with the user.
+     * @property {string} extension - The file extension of the user's profile picture.
+     * @property {number} type - The type of user.
+     * @property {number} location_id - The location ID associated with the user.
+     * @property {number} job_id - The job ID associated with the user.
+     * @property {string} country - The country of the user.
+     * @property {string} continent - The continent of the user.
+     * @property {string} location_string - The location string of the user.
+     * @property {string} job - The job of the user.
+     * @property {string} created_at - The creation timestamp of the user record in ISO format.
+     */
+
+    /**
+     * @type {[Profile[], React.Dispatch<React.SetStateAction<Profile[]>>]}
+     */
+    const [profiles, setProfiles] = useState([]);
+    
+    useEffect(() => {
+        (async () => {
+            setLoading(true);
+
+            const response = await fetch(`${API_URL}customer/user/profiles?page=${page}`, {
+                headers: {
+                    'Authorization': `Bearer ${cookies.getCookie('token')}`,
+                },
+            });
+            const data = await response.json();
+            if (!data) return;
+
+            if (response.ok) {
+                setProfiles([...profiles, ...data]);
+                console.log(data);
+            }
+
+            setLoading(false);
+        })()
+    }, [page]);
 
     useEffect(() => {
-        if (arr.length === 0) return;
+        if (profiles.length === 0) return;
 
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
+                if (entry.target.classList.contains('show')) return;
+
                 entry.target.classList.toggle('show', entry.isIntersecting);
                 if (entry.isIntersecting) observer.unobserve(entry.target);
             })
@@ -26,45 +76,40 @@ export default function Home() {
         return () => {
             observer.disconnect()
         };
-    }, [arr]);
+    }, [profiles]);
 
     useEffect(() => {
-        if (arr.length === 0) return;
+        if (profiles.length === 0) return;
 
         const lastCardObserver = new IntersectionObserver(entries => {
             const lastCard = entries[0];
 
             if (!lastCard.isIntersecting) return;
-            fetchNewCard();
+
+            setPage(page + 1);
         });
         lastCardObserver.observe(Array(...document.querySelectorAll('.card-container')).at(-1));
         return () => {
             lastCardObserver.disconnect()
         };
-    }, [arr])
-
-    const fetchNewCard = useCallback(async () => {
-        setLoading(true);
-        await new Promise(resolve => setTimeout(() => { resolve(true) }, 1000));
-        setArr(prev => [...prev, Array.from({ length: 4 }, (_, i) => i + prev.length + 1)]);
-        setLoading(false);
-        window.scrollTo(0, document.body.scrollHeight);
-    })
+    }, [profiles])
 
     return (
         <Sidebar>
-            <div style={{
-                flex: "1",
-                marginInline: "auto",
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem",
-                overflowY: "auto",
-                scrollbarWidth: "none"
-            }}>
+            <div
+                style={{
+                    flex: "1",
+                    marginInline: "auto",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1rem",
+                    overflowY: "auto",
+                    scrollbarWidth: "none"
+                }}
+            >
                 {
-                    arr.map((item) => (
-                        <Card key={item} />
+                    profiles.map((profile) => (
+                        <Card key={profile.user_id} {...profile} />
                     ))
                 }
                 {

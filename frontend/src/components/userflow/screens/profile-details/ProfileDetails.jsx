@@ -1,13 +1,82 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
-import styles from './style.module.css'
-import Sidebar from '../../components/sidebar/sidebar';
-import cardImage from '../../../../assets/images/cardImage.png';
+import React, { useEffect } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
+import { useNavigate, useParams } from 'react-router-dom';
+import { API_URL } from '../../../../api';
+import { useCookies } from "../../../../hooks/useCookies";
+import Sidebar from '../../components/sidebar/sidebar';
+import styles from './style.module.css';
+import dayjs from 'dayjs';
 
 export default function ProfileDetails() {
     const params = useParams();
     const dialogRef = React.useRef(null);
+    const navigate = useNavigate();
+    const cookies = useCookies();
+
+    const getPhotoUrl = (userId, hash, extension, type) => `https://data.mytamildate.com/storage/public/uploads/user/${userId}/${type === 1 ? "avatar" : "photo"}/${hash}-large.${extension}`;
+
+    /**
+     * @typedef {Object} Photo
+     * @property {number} id - The unique identifier for the photo.
+     * @property {string} hash - The hash value of the photo.
+     * @property {string} extension - The file extension of the photo.
+     * @property {number} type - The type/category of the photo.
+     */
+
+    /**
+     * @typedef {Object} Profile
+     * @property {number} id - The unique identifier for the user.
+     * @property {number} user_id - The user's ID.
+     * @property {string} first_name - The user's first name.
+     * @property {string} last_name - The user's last name.
+     * @property {string} birthday - The user's date of birth in ISO 8601 format.
+     * @property {number} location_id - The unique identifier for the user's location.
+     * @property {number} job_id - The unique identifier for the user's job.
+     * @property {string} created_at - The date and time when the user was created in ISO 8601 format.
+     * @property {string} country - The country where the user resides.
+     * @property {string} continent - The continent where the user resides.
+     * @property {string} location_string - The string representation of the user's location.
+     * @property {string} job - The user's job title.
+     * @property {string} religion - The user's religion.
+     * @property {string} study - The user's level of study.
+     * @property {string} height - The user's height.
+     * @property {string} kids - The user's stance on having children.
+     * @property {Photo[]} photos - An array of photos associated with the user.
+     */
+
+    /** @type {[Profile, React.Dispatch<React.SetStateAction<Profile>>]} */
+    const [profile, setProfile] = React.useState({});
+    const [media, setMedia] = React.useState([]);
+
+    useEffect(() => {
+        (async () => {
+            const response = await fetch(`${API_URL}customer/user/profile/${params.id}`, {
+                headers: {
+                    'Authorization': `Bearer ${cookies.getCookie('token')}`,
+                },
+            });
+            const data = await response.json();
+            if (!data) return;
+
+            if (response.ok) {
+                setProfile(data);
+                setMedia(data.photos.map(photo => {
+                    if (photo.type === 1 || photo.type === 2) {
+                        return {
+                            type: photo.type,
+                            url: getPhotoUrl(data.user_id, photo.hash, photo.extension, photo.type),
+                        };
+                    } else {
+                        return {
+                            type: photo.type,
+                            url: `${API_URL}media/avatar/${photo.hash}.${photo.extension}`
+                        };
+                    }
+                }).sort((a, b) => a.type - b.type));
+                console.log(data);
+            }
+        })()
+    }, []);
 
     return (
         <Sidebar>
@@ -27,16 +96,14 @@ export default function ProfileDetails() {
                         <path d="M19 5L5 19M5.00001 5L19 19" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </button>
-                <Carousel fade slide controls={false}>
-                    <Carousel.Item as="div">
-                        <img src={cardImage} alt="" />
-                    </Carousel.Item>
-                    <Carousel.Item as="div">
-                        <img src={cardImage} alt="" />
-                    </Carousel.Item>
-                    <Carousel.Item as="div">
-                        <img src={cardImage} alt="" />
-                    </Carousel.Item>
+                <Carousel fade slide controls={false} interval={null} touch>
+                    {
+                        media.map((photo, index) => (
+                            <Carousel.Item key={index} as="div">
+                                <img src={photo.url} alt="" />
+                            </Carousel.Item>
+                        ))
+                    }
                 </Carousel>
             </dialog>
             <div
@@ -52,12 +119,12 @@ export default function ProfileDetails() {
                         left: "1rem",
                         backgroundColor: "transparent",
                         border: "none",
-                    }} onClick={() => window.history.back()}>
+                    }} onClick={() => navigate("/user/home")}>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M4 12L20 12M4 12L10 6M4 12L10 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </button>
-                    <img src={cardImage} alt="" width={380} height={380}
+                    <img src={media.filter(e => e.type === 1 || e.type === 31)[0]?.url} alt="" width={380} height={380}
                         style={{
                             borderRadius: "0.75rem",
                             objectFit: "cover",
@@ -66,7 +133,7 @@ export default function ProfileDetails() {
                 </div>
                 <button className={styles.photoBtn} onClick={() => dialogRef.current.showModal()}>View Photos</button>
                 <div className={styles.drawer}>
-                    <p className={styles.heading} style={{ marginTop: "0.5rem" }}>{params.name}, 31</p>
+                    <p className={styles.heading} style={{ marginTop: "0.5rem" }}>{profile.first_name} {profile.last_name ?? ""}, {dayjs().diff(profile.birthday, "y")}</p>
                     <div style={{
                         display: "flex",
                         gap: "0.5rem",
@@ -84,7 +151,7 @@ export default function ProfileDetails() {
                                 </clipPath>
                             </defs>
                         </svg>
-                        <p className={styles.subHeading}>Toronto, Canada</p>
+                        <p className={styles.subHeading}>{profile.location_string}, {profile.country}</p>
                     </div>
                     <p>
                         I get along best with people who
@@ -102,7 +169,7 @@ export default function ProfileDetails() {
                                     </linearGradient>
                                 </defs>
                             </svg>
-                            5'6"
+                            {profile.height}
                         </span>
                         <span>
                             <svg width="25" height="20" viewBox="0 0 25 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -119,7 +186,7 @@ export default function ProfileDetails() {
                                     </linearGradient>
                                 </defs>
                             </svg>
-                            Masters
+                            {profile.study}
                         </span>
                         <span>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -131,7 +198,7 @@ export default function ProfileDetails() {
                                     </linearGradient>
                                 </defs>
                             </svg>
-                            Hindu
+                            {profile.religion}
                         </span>
                         <span>
                             <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -195,7 +262,7 @@ export default function ProfileDetails() {
                                     </linearGradient>
                                 </defs>
                             </svg>
-                            Want children
+                            {profile.kids}
                         </span>
                     </div>
                     <div>
