@@ -6,7 +6,9 @@ import styles from './paymentMethod.module.css';
 import mastercard from '../../../assets/images/mastercard.png'
 
 import paymentcardedit from '../../../assets/images/paymentcardedit.png'
+import { useNavigate } from 'react-router-dom';
 const PaymentMethod = () => {
+  const navigate = useNavigate();
   return (
     <div>
       <Container className='logo-progressbar3'>
@@ -37,8 +39,8 @@ const PaymentMethod = () => {
 
 
         <Container className={styles['buttoncontainer']}>
-          <Button className={styles['btnn-save']}>
-            Save
+          <Button className={styles['btnn-save']} onClick={()=> navigate("/addpaymentmethod")}>
+            Add
           </Button>
         </Container>
       </Container>

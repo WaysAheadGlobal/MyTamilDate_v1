@@ -4,10 +4,12 @@ import styles from './PricingCarousel.module.css';
 
 const PricingCard = () => {
   return (
+
+    <Container>
     <Container className={styles.cardContainer}>
 
        
-          <div className={`${styles.pricingCard} ${styles.popularCard}`}>
+          <div className={`${styles.pricingCard}`}>
            
             <div className={styles.cardBody}>
               <h5 className={styles.cardTitle}>Premium Upgrade (1 month)</h5>
@@ -25,7 +27,7 @@ const PricingCard = () => {
       </div>
             <div className={styles.cardBodypopular} >
             
-              <h5 className={styles.cardTitle}>Premium Upgrade (6 month)</h5>
+              <h5 style={{marginTop : "15px"}} className={styles.cardTitle} >Premium Upgrade (6 month)</h5>
               <h2 className={styles.cardPrice}>$24.99 <span>CAD</span></h2>
               <p className={styles.cardText}>Save 50% per month<br/>($149.99 total)</p>
             </div>
@@ -39,9 +41,15 @@ const PricingCard = () => {
               <p className={styles.cardText}>Save 33% per month<br/>($99.99 total)</p>
             </div>
           </div>
-       
-    
+        
+ 
     </Container>
+      <Container className={styles.buttonContainer}>
+      <button className={styles.continuebutton}>
+        Continue
+ </button> 
+      </Container>
+       </Container>
   );
 }
 

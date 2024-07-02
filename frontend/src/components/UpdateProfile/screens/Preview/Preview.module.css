@@ -1,0 +1,46 @@
+.carouselContainer{
+    width: 350px;
+}
+.editpreview {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+  .tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    width: 50%; 
+    text-align: center; 
+    position: relative; 
+  }
+  
+  .active {
+    border-bottom: 2px solid ;
+    border-color: #F76A7B;
+    
+  }
+
+  .namelocation{
+    margin-top: 20px;
+  }
+  .name{
+font-size: 18px;
+font-weight: 500;
+line-height: 23.4px;
+letter-spacing: 0.04em;
+text-align: left;
+color: #515151;
+
+  }
+
+  .location{
+  
+font-size: 14px;
+font-weight: 500;
+line-height: 18.2px;
+text-align: left;
+color: #6C6C6C;
+margin-top: 5px;
+
+  }

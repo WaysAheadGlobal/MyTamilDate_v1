@@ -463,8 +463,6 @@ const Gototermandconditions = ()=>{
         }
     };
     
-    
-
     const PauseMyAccount = async () => {
         try {
             const response = await fetch(`http://localhost:3001/api/v1/customer/setting/pause`, {
@@ -488,15 +486,19 @@ const Gototermandconditions = ()=>{
         }
     }
     
-
-    
-
-
     return (
         
         <Sidebar>
 
-  
+<div style={{
+                flex: "1",
+                marginInline: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+                overflowY: "auto",
+                scrollbarWidth: "none"
+            }}>
         <div className='account-setting-container'>
            
             <Container className='account-setting-main'>
@@ -1175,6 +1177,7 @@ const Gototermandconditions = ()=>{
               handleCloseLogout={handleCloseLogout}
               handleLogout={handleLogout}
               />
+        </div>
         </div>
         </Sidebar>
     );

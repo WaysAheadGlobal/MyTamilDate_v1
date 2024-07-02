@@ -46,22 +46,7 @@ const Category = ({ title, icon, children, isCollapsed }) => {
 
   return (
     <Box>
-      {/* <Box display="flex" alignItems="center" sx={{ cursor: "pointer", mt: isCollapsed ? "30px" : "0", mb: isCollapsed ? "30px" : "0" }} onClick={handleToggle}>
-        {icon && React.cloneElement(icon, { sx: { color: colors.grey[100], marginLeft: '27px' } })}
-        {!isCollapsed && (
-          <Typography
-            variant="h6"
-            color={colors.grey[100]}
-            sx={{ m: "15px 0 5px 20px", flexGrow: 1 }}
-          >
-            {title}
-          </Typography>
-        )}
-        {!isCollapsed && (isOpen ? icon = <ExpandLessIcon /> : <ExpandMoreIcon />)}
-      </Box>
-      <Box className={`dropdown-sidebar ${isOpen ? "open" : ""}`} pl={2}>
-        {children}
-      </Box> */}
+      
       <Box
         display="flex"
         alignItems="center"

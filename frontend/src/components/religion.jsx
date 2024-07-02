@@ -15,24 +15,21 @@ const religions = [
     'Hindu', 'Catholic', 'Christian', 'Buddhist', 'Muslim', 'Jewish', 'Spiritual', 'Other', 'Prefer not to say'
 ];
 
-const languages = [
-    'Hindi', 'English',  'Tamil', 'German', 'Danish', 'French'
-];
-
 export const Religion = () => {
     const { getCookie } = useCookies();
     const [allReligions, setAllReligions] = useState([]);
     const [selectedReligion, setSelectedReligion] = useState(null);
-    const [selectedLanguage, setSelectedLanguage] = useState(null);
+    const [allLanguages, setAllLanguages] = useState([]);
+    const [selectedLanguages, setSelectedLanguages] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`${API_URL}/customer/users/religions`,{
+        fetch(`${API_URL}/customer/users/religions`, {
             method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getCookie('token')}`
-                },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
+            },
         })
             .then(response => response.json())
             .then(data => {
@@ -44,7 +41,50 @@ export const Religion = () => {
             .catch(error => {
                 console.error('Error fetching religions:', error);
             });
+
+        fetch(`${API_URL}/customer/users/language`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                setAllLanguages(data.languages);
+                console.log(allLanguages)
+            })
+            .catch(error => {
+                console.error('Error fetching languages:', error);
+            });
+
+            fetch(`${API_URL}/customer/users/userlanguage`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    setSelectedLanguages(data.selectedLanguages.map(lang => lang.language_id));
+                })
+                .catch(error => {
+                    console.error('Error fetching user languages:', error);
+                });
     }, []);
+
+
+
+    const handleLanguageClick = (languageId) => {
+        setSelectedLanguages(prevSelected => {
+            if (prevSelected.includes(languageId)) {
+                return prevSelected.filter(id => id !== languageId);
+            } else {
+                return [...prevSelected, languageId];
+            }
+        });
+    };
 
     const handleReligionClick = (e) => {
         e.preventDefault();
@@ -69,6 +109,23 @@ export const Religion = () => {
                     console.error('Error updating religion:', error);
                 });
         }
+        console.log(selectedLanguages)
+        fetch(`${API_URL}customer/users/language`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
+            },
+            
+            body: JSON.stringify({ languages: selectedLanguages }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Languages updated successfully:', data);
+            })
+            .catch(error => {
+                console.error('Error updating languages:', error);
+            });
     };
 
     return (
@@ -94,13 +151,13 @@ export const Religion = () => {
                                 <p>What is your religion?</p>
                             </Container>
                             <Container className='all-religion'>
-                                {religions.map((religion, index) => (
+                                {allReligions.map((religion, index) => (
                                     <div
                                         key={index}
-                                        className={`religion-item ${selectedReligion === religion ? 'active' : ''}`}
-                                        onClick={() => setSelectedReligion(religion)}
+                                        className={`religion-item ${selectedReligion === religion.name ? 'active' : ''}`}
+                                        onClick={() => setSelectedReligion(religion.name)}
                                     >
-                                        {religion}
+                                        {religion.name}
                                     </div>
                                 ))}
                             </Container>
@@ -111,13 +168,13 @@ export const Religion = () => {
                                 <p>What is your preferred language?</p>
                             </Container>
                             <Container className='all-lang'>
-                                {languages.map((language, index) => (
+                                {allLanguages.map((language, index) => (
                                     <div
                                         key={index}
-                                        className={`lang-item ${selectedLanguage === language ? 'active' : ''}`}
-                                        onClick={() => setSelectedLanguage(language)}
+                                        className={`lang-item ${selectedLanguages.includes(language.id) ? 'active' : ''}`}
+                                        onClick={() => handleLanguageClick(language.id)}
                                     >
-                                        {language}
+                                        {language.name}
                                     </div>
                                 ))}
                             </Container>

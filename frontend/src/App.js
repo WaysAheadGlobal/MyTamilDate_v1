@@ -14,7 +14,7 @@ import Dashboard from "./scenes/dashboard";
 import FAQ from "./scenes/faq";
 import Form from "./scenes/form";
 import Geography from "./scenes/geography";
-import Sidebar from "./scenes/global/Sidebar";
+import Sidebaradmin from "./scenes/global/Sidebar";
 import Topbar from "./scenes/global/Topbar";
 import Invoices from "./scenes/invoices";
 import Line from "./scenes/line";
@@ -83,8 +83,12 @@ import Recommendations from "./components/userflow/screens/recommendations/Recom
 import Preferences from "./components/userflow/screens/preferences/Preferences";
 import ProfileDetails from "./components/userflow/screens/profile-details/ProfileDetails";
 import Chat from "./components/userflow/screens/chat/Chat";
-
-
+import BillingHistory from './components/Account-Settings/payment/billinghistory'
+import Selectplan from './components/Account-Settings/payment/SelectPlan/selectplan'
+import AddPaymentMethod from "./components/Account-Settings/payment/addpaymentmethod";
+import Fillpaymentdetails from "./components/Account-Settings/payment/SelectPlan/FIllDetailForPayment/fillpaymentdetails";
+import UpdateProfile from "./components/UpdateProfile/screens/Profile";
+import Preview from "./components/UpdateProfile/screens/Preview/Preview";
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -128,7 +132,7 @@ function App() {
           maxWidth: "1636px",
           margin: "0 auto",
         }}>
-          {isAdmin && isProtectedRoute && <Sidebar isSidebar={isSidebar} />}
+          {isAdmin && isProtectedRoute && <Sidebaradmin isSidebar={isSidebar} />}
           <main className="content">
             {isAdmin && isProtectedRoute && <Topbar setIsSidebar={setIsSidebar} />}
             <Routes>
@@ -204,7 +208,11 @@ function App() {
               <Route path="/paymentmethod" element = {<PaymentMethod/>}></Route>
               <Route path="/billinghistory" element = {<BillingHistory/>}></Route>
                <Route path="/selectplan" element={<Selectplan/>}></Route>
-
+               <Route path="/addpaymentmethod" element = {<AddPaymentMethod/>}></Route>
+               <Route path = "/paymentdetails" element = {<Fillpaymentdetails/>}></Route>
+               <Route path="/updateprofile" element= {<UpdateProfile/>}></Route>
+               <Route path="/preview" element={<Preview/>}></Route>
+              
               <Route path="/user/home" element={<Home />} />
               <Route path="/user/recommendations" element={<Recommendations />} />
               <Route path="/user/preferences" element={<Preferences />} />

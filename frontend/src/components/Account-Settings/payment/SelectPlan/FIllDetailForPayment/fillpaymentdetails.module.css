@@ -64,6 +64,56 @@ margin-bottom: 20px;
     background-color: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
     background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
 }
+.subscriptiondetails{
+    background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+    width: 335px;
+    height: 158px;
+    gap: 0px;
+    border-radius: 12px ;
+    border: 1px solid #6C6C6C66;
+    color: white;
+ 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 30px;
+}
+.upgrade{
+    display: flex;
+ justify-content: center;
+ text-align: center;
+ gap: 5px;
+}
+.subscriptiondetails > p{
+    margin-top: 10px;
+}
+.premium{
+    width: 24px;
+    height: 24px;
+    
+    
+}
+.redeemcode{
+    border: 1px solid  #F76A7B;
+border-radius: 12px;
+align-items: center;
+display: flex;
+justify-content: center;
+margin-bottom: 30px;
+}
+.redeemcode > p{
+    padding: 12px;
+gap: 6px;
+
+font-size: 18px;
+font-weight: 500;
+line-height: 23.4px;
+text-align: center;
+
+color: #515151;
+
+}
 
 
 
@@ -100,3 +150,23 @@ p.small {
     font-size: 0.8rem;
 }
 
+.pausemodalmessageinput{
+
+padding: 16px ;
+gap: 10px;
+border-radius: 8px ;
+    border: 1px solid #6C6C6C;
+    display:flex;
+    justify-content: start;
+    align-items: start;
+    margin-bottom: 20px;
+}
+.pausemodalmessageinput > input{
+    border: none;
+
+}
+.pausemodalmessageinput > input:focus{
+    box-shadow: none; 
+    outline: none; 
+
+}
