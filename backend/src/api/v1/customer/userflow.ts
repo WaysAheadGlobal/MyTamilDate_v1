@@ -100,16 +100,16 @@ async function getUserPreferences(userId: string) {
     return new Promise((resolve, reject) => {
         db.query(`
             SELECT
-            COALESCE((SELECT g.name FROM genders g WHERE f.gender_id = g.id), (SELECT g.name FROM genders g WHERE up.want_gender = g.id)) AS gender,
+            COALESCE(f.gender_id, up.want_gender) AS gender,
             COALESCE(f.age_from, (FLOOR(DATEDIFF(NOW(), up.birthday) / 365) - 5)) AS age_from,
             COALESCE(f.age_to, (FLOOR(DATEDIFF(NOW(), up.birthday) / 365) + 10)) AS age_to,
-            COALESCE((SELECT r.name FROM religions r WHERE f.religion_id = r.id), (SELECT r.name FROM religions r WHERE up.religion_id = r.id)) AS religion,
-            COALESCE((SELECT CONCAT(l.location_string, ', ', l.country) FROM locations l WHERE fl.location_id = l.id), (SELECT CONCAT(l.location_string, ', ', l.country) FROM locations l WHERE up.location_id = l.id)) AS location,
-            COALESCE((SELECT s.name FROM studies s WHERE f.education_id = s.id), (SELECT s.name FROM studies s WHERE up.study_id = s.id)) AS education,
-            COALESCE((SELECT wk.name FROM want_kids wk WHERE f.want_kids_id = wk.id), (SELECT wk.name FROM want_kids wk WHERE up.want_kid_id = wk.id)) AS want_kids,
-            COALESCE((SELECT hk.name FROM have_kids hk WHERE f.have_kids_id = hk.id), (SELECT hk.name FROM have_kids hk WHERE up.have_kid_id = hk.id)) AS have_kids,
-            COALESCE((SELECT sm.name FROM smokes sm WHERE f.smoking_id = sm.id), (SELECT sm.name FROM smokes sm WHERE up.smoke_id = sm.id)) AS smoking,
-            COALESCE((SELECT d.name FROM drinks d WHERE f.drinks_id = d.id), (SELECT d.name FROM drinks d WHERE up.drink_id = d.id)) AS drinking
+            COALESCE(f.religion_id, up.religion_id) AS religion,
+            COALESCE((SELECT CONCAT(l.continent, ' ', l.id) FROM locations l WHERE fl.location_id = l.id), (SELECT CONCAT(l.continent, ' ', l.id) FROM locations l WHERE up.location_id = l.id), 'North America') AS location,
+            COALESCE(f.education_id, up.study_id) AS education,
+            COALESCE(f.want_kids_id, up.want_kid_id) AS want_kids,
+            COALESCE(f.have_kids_id, up.have_kid_id) AS have_kids,
+            COALESCE(f.smoking_id, up.smoke_id) AS smoking,
+            COALESCE(f.drinks_id, up.drink_id) AS drinking
             FROM user_filters uf
             INNER JOIN filters f ON f.id = uf.filter_id
             INNER JOIN user_profiles up ON up.user_id = uf.user_id
@@ -126,6 +126,24 @@ async function getUserPreferences(userId: string) {
     });
 }
 
+function getLocationOrder(userLocation: string) {
+    switch (userLocation) {
+        case 'North America':
+            return ['North America', 'Europe', 'Oceania', 'Africa', 'Asia'];
+        case 'Europe':
+            return ['Europe', 'North America', 'Oceania', 'Africa', 'Asia'];
+        case 'Oceania':
+            return ['Oceania', 'Europe', 'North America', 'Africa', 'Asia'];
+        case 'Africa':
+            return ['Africa', 'Europe', 'North America', 'Oceania', 'Asia'];
+        case 'Asia':
+            return ['Asia', 'Oceania', 'Europe', 'North America', 'Africa'];
+        default:
+            return [];
+    }
+};
+
+
 userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
     const wave = req.query.wave ? Number(req.query.wave) : 1;
     const pageNo = req.query.page ? Number(req.query.page) : 1;
@@ -140,20 +158,61 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
     let params = [] as any[];
 
     const currentUserFilters = await getUserFilters(req.userId);
+    const userPreferences: any = await getUserPreferences(req.userId);
 
-    if (currentUserFilters) {
-        // preferences on flow
+    const userLocationPreferenceOrder = getLocationOrder(userPreferences.location);
+
+    /* if (currentUserFilters) {
+        //* preferences on flow
+
+        //* 1st Wave - Without age extension and all the preferences (perfect match)
 
         query = `
+            SELECT 
+                up.id, 
+                up.user_id, 
+                up.first_name, 
+                up.last_name, 
+                up.birthday, 
+                m.hash, 
+                m.extension, 
+                m.type, 
+                up.location_id, 
+                up.job_id, 
+                up.created_at,
+                l.country,
+                l.continent,
+                l.location_string,
+                j.name as job
+            FROM user_profiles up ON dup.id = up.id 
+            JOIN media m ON up.user_id = m.user_id 
+            JOIN locations l ON up.location_id = l.id
+            JOIN jobs j ON j.id = up.job_id
+            WHERE m.type IN (1, 31)
+        `;
+
+        params = [
+            req.userId,
+            req.user.want_gender,
+            req.user.gender,
+            req.user.birthday,
+            req.user.birthday,
+            userLocationPreferenceOrder,
+            limit,
+            (pageNo - 1) * limit,
+        ];
+    } else { */
+
+    //* preferences off flow
+
+    query = `
             WITH distinct_user_ids AS (
                 SELECT DISTINCT 
                     up_inner.id 
                 FROM 
                     user_profiles up_inner 
-                INNER JOIN 
-                    media m_inner 
-                ON 
-                    up_inner.user_id = m_inner.user_id 
+                INNER JOIN media m_inner ON up_inner.user_id = m_inner.user_id 
+                INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
                 WHERE 
                     m_inner.type IN (1, 31) 
                     AND up_inner.user_id != ?
@@ -161,6 +220,7 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                     AND up_inner.want_gender = ?
                     AND DATEDIFF(NOW(), up_inner.birthday) BETWEEN (DATEDIFF(NOW(), ?) - (5 * 365)) AND (DATEDIFF(NOW(), ?) + (10 * 365))
                 ORDER BY 
+                    FIELD(l_inner.continent, ?),
                     up_inner.created_at DESC, 
                     up_inner.id DESC 
                 LIMIT ? OFFSET ?
@@ -186,82 +246,24 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
             JOIN media m ON up.user_id = m.user_id 
             JOIN locations l ON up.location_id = l.id
             JOIN jobs j ON j.id = up.job_id
-            WHERE m.type IN (1, 31) 
-            ORDER BY up.created_at DESC, up.id DESC;
+            WHERE m.type IN (1, 31)
         `;
 
-        params = [
-            req.userId,
-            req.user.want_gender,
-            req.user.gender,
-            req.user.birthday,
-            req.user.birthday,
-            limit,
-            (pageNo - 1) * limit
-        ];
-    } else {
-
-        //* preferences off flow
-
-        query = `
-            WITH distinct_user_ids AS (
-                SELECT DISTINCT 
-                    up_inner.id 
-                FROM 
-                    user_profiles up_inner 
-                INNER JOIN 
-                    media m_inner 
-                ON 
-                    up_inner.user_id = m_inner.user_id 
-                WHERE 
-                    m_inner.type IN (1, 31) 
-                    AND up_inner.user_id != ?
-                    AND up_inner.gender = ?
-                    AND up_inner.want_gender = ?
-                    AND DATEDIFF(NOW(), up_inner.birthday) BETWEEN (DATEDIFF(NOW(), ?) - (5 * 365)) AND (DATEDIFF(NOW(), ?) + (10 * 365))
-                ORDER BY 
-                    up_inner.created_at DESC, 
-                    up_inner.id DESC 
-                LIMIT ? OFFSET ?
-            )
-            SELECT 
-                up.id, 
-                up.user_id, 
-                up.first_name, 
-                up.last_name, 
-                up.birthday, 
-                m.hash, 
-                m.extension, 
-                m.type, 
-                up.location_id, 
-                up.job_id, 
-                up.created_at,
-                l.country,
-                l.continent,
-                l.location_string,
-                j.name as job
-            FROM distinct_user_ids dup
-            JOIN user_profiles up ON dup.id = up.id 
-            JOIN media m ON up.user_id = m.user_id 
-            JOIN locations l ON up.location_id = l.id
-            JOIN jobs j ON j.id = up.job_id
-            WHERE m.type IN (1, 31) 
-            ORDER BY up.created_at DESC, up.id DESC;
-        `;
-
-        params = [
-            req.userId,
-            req.user.want_gender,
-            req.user.gender,
-            req.user.birthday,
-            req.user.birthday,
-            limit,
-            (pageNo - 1) * limit
-        ];
-    }
+    params = [
+        req.userId,
+        req.user.want_gender,
+        req.user.gender,
+        req.user.birthday,
+        req.user.birthday,
+        userLocationPreferenceOrder,
+        limit,
+        (pageNo - 1) * limit,
+    ];
+    //}
 
     db.query(query, params, (err, result) => {
         if (err) {
+            console.log(err)
             res.status(500).send({ message: "Internal server error" });
             return;
         }
@@ -272,8 +274,8 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
 
 userFlowRouter.get("/profile/:id", (req: UserRequest, res) => {
     const query = `
-        SELECT
-        up.id,
+        SELECT DISTINCT
+            up.id,
             up.user_id,
             up.first_name,
             up.last_name,
@@ -290,17 +292,18 @@ userFlowRouter.get("/profile/:id", (req: UserRequest, res) => {
             g.name as height,
             wk.name as kids,
             sm.name as smoke,
-            dr.name as drink
+            dr.name as drink,
+            (SELECT GROUP_CONCAT(l.name SEPARATOR ', ') FROM user_languages ulang INNER JOIN languages l ON ulang.language_id = l.id WHERE ulang.user_id = 73637) as languages
         FROM user_profiles up 
-            INNER JOIN media m ON m.user_id = up.user_id 
-            INNER JOIN locations l ON l.id = up.location_id 
-            INNER JOIN jobs j ON up.job_id = j.id
-            INNER JOIN religions r ON r.id = up.religion_id
-            INNER JOIN studies s ON s.id = up.study_id
-            INNER JOIN growths g ON g.id = up.growth_id
-            INNER JOIN want_kids wk ON wk.id = up.want_kid_id  
-            INNER JOIN smokes sm ON sm.id = up.smoke_id
-            INNER JOIN drinks dr ON dr.id = up.drink_id  
+            LEFT JOIN media m ON m.user_id = up.user_id 
+            LEFT JOIN locations l ON l.id = up.location_id 
+            LEFT JOIN jobs j ON up.job_id = j.id
+            LEFT JOIN religions r ON r.id = up.religion_id
+            LEFT JOIN studies s ON s.id = up.study_id
+            LEFT JOIN growths g ON g.id = up.growth_id
+            LEFT JOIN want_kids wk ON wk.id = up.want_kid_id  
+            LEFT JOIN smokes sm ON sm.id = up.smoke_id
+            LEFT JOIN drinks dr ON dr.id = up.drink_id  
         WHERE up.user_id = ?;
         `;
 
@@ -318,11 +321,23 @@ userFlowRouter.get("/profile/:id", (req: UserRequest, res) => {
                 return;
             }
 
-            result[0].photos = mediaResult;
+            if (mediaResult.length !== 0) {
+                result[0].photos = mediaResult;
+            }
+
 
             db.query("SELECT p.name FROM user_personalities as up INNER JOIN personalities as p WHERE up.personality_id = p.id AND up.user_id = ?", [req.params.id], (err, personalityResult) => {
 
-                result[0].personalities = personalityResult.map((personality: { name: string }) => personality.name);
+                if (err) {
+                    console.log(err)
+                    res.status(500).send({ message: "Internal server error" });
+                    return;
+                }
+
+                if (personalityResult.length !== 0) {
+                    result[0].personalities = personalityResult.map((personality: { name: string }) => personality.name);
+                }
+
                 res.status(200).send(result[0]);
             });
 
@@ -331,9 +346,31 @@ userFlowRouter.get("/profile/:id", (req: UserRequest, res) => {
 });
 
 userFlowRouter.get("/preferences", async (req: UserRequest, res) => {
-    const preferences = await getUserPreferences(req.userId as string);
+    db.query(`
+        SELECT
+        COALESCE((SELECT g.name FROM genders g WHERE f.gender_id = g.id), (SELECT g.name FROM genders g WHERE up.want_gender = g.id)) AS gender,
+        COALESCE(f.age_from, (FLOOR(DATEDIFF(NOW(), up.birthday) / 365) - 5)) AS age_from,
+        COALESCE(f.age_to, (FLOOR(DATEDIFF(NOW(), up.birthday) / 365) + 10)) AS age_to,
+        COALESCE((SELECT r.name FROM religions r WHERE f.religion_id = r.id), (SELECT r.name FROM religions r WHERE up.religion_id = r.id)) AS religion,
+        COALESCE((SELECT CONCAT(l.location_string, ', ', l.country) FROM locations l WHERE fl.location_id = l.id), (SELECT CONCAT(l.location_string, ', ', l.country) FROM locations l WHERE up.location_id = l.id)) AS location,
+        COALESCE((SELECT s.name FROM studies s WHERE f.education_id = s.id), (SELECT s.name FROM studies s WHERE up.study_id = s.id)) AS education,
+        COALESCE((SELECT wk.name FROM want_kids wk WHERE f.want_kids_id = wk.id), (SELECT wk.name FROM want_kids wk WHERE up.want_kid_id = wk.id)) AS want_kids,
+        COALESCE((SELECT hk.name FROM have_kids hk WHERE f.have_kids_id = hk.id), (SELECT hk.name FROM have_kids hk WHERE up.have_kid_id = hk.id)) AS have_kids,
+        COALESCE((SELECT sm.name FROM smokes sm WHERE f.smoking_id = sm.id), (SELECT sm.name FROM smokes sm WHERE up.smoke_id = sm.id)) AS smoking,
+        COALESCE((SELECT d.name FROM drinks d WHERE f.drinks_id = d.id), (SELECT d.name FROM drinks d WHERE up.drink_id = d.id)) AS drinking
+        FROM user_filters uf
+        INNER JOIN filters f ON f.id = uf.filter_id
+        INNER JOIN user_profiles up ON up.user_id = uf.user_id
+        LEFT JOIN filter_locations fl ON fl.filters_id = uf.filter_id
+        WHERE uf.user_id = ?;
+    `, [req.userId], (err, result) => {
+        if (err) {
+            res.status(500).send({ message: "Internal server error" });
+            return;
+        }
 
-    res.status(200).send(preferences);
+        res.status(200).send(result[0]);
+    });
 });
 
 userFlowRouter.put("/preferences/save/age", (req: UserRequest, res) => {

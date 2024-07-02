@@ -11,12 +11,7 @@ import logo2 from "../../assets/images/logo2.png";
 import responsivebg from "../../assets/images/responsive-bg.png";
 import { useCookies } from '../../hooks/useCookies';
 import './signin.css';
-const countries = [
-    { code: 'US', name: 'United States', dialCode: '+1' },
-    { code: 'CA', name: 'Canada', dialCode: '+1' },
-    { code: 'IN', name: 'India', dialCode: '+91' },
-    { code: 'AU', name: 'Australia', dialCode: '+36' },
-];
+import { countries } from "country-list-json";
 
 export const SignIn = () => {
     const [errorMessage, setErrorMessage] = useState('');
@@ -40,7 +35,7 @@ export const SignIn = () => {
     const filteredCountries = countries.filter(country =>
         country.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         country.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        country.dialCode.includes(searchTerm)
+        country.dial_code.includes(searchTerm)
     );
     const toggleModal = () => {
         setShowModal(!showModal);
@@ -55,7 +50,7 @@ export const SignIn = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const completePhoneNumber = selectedCountryInfo.dialCode + phoneNumber;
+        const completePhoneNumber = selectedCountryInfo.dial_code + phoneNumber;
         if (phoneNumber.length === 0) {
             setErrorMessage('Please enter phone number');
         } else if (phoneNumber.length < 10) {
@@ -123,7 +118,7 @@ export const SignIn = () => {
                                     <Dropdown>
                                         <div id="dropdown-basic" onClick={() => setShowModal(true)} className='flag-box'>
                                             <Flag code={selectedCountry} style={{ width: '34px', height: '25px', marginRight: '10px' }} className='flag' />
-                                            <span>{selectedCountryInfo.dialCode}</span>
+                                            <span>{selectedCountryInfo.dial_code}</span>
                                         </div>
                                         {/* <Dropdown.Menu className='flag-menu'>
                                             {countries.map((country) => (
@@ -165,20 +160,23 @@ export const SignIn = () => {
 
                 </Container>
             </Container>
-
-
-
-
             <Modal show={showModal} onHide={() => setShowModal(false)}
                 centered
-                dialogClassName="custom-modal"
             >
                 {/* <Modal.Header closeButton>
 
                 </Modal.Header> */}
 
-                <Modal.Body>
-                    <InputGroup className="mb-3">
+                <Modal.Body style={{
+                    maxHeight: "500px",
+                    overflowY: "auto",
+                    width: "100%",
+                }}>
+                    <InputGroup className="mb-3" style={{
+                        position: 'sticky',
+                        top: '0',
+                        width: '100%',
+                    }}>
                         <FormControl
                             placeholder="Search Country"
                             aria-label="Search Country"
@@ -190,7 +188,7 @@ export const SignIn = () => {
                     {filteredCountries.map((country) => (
                         <div key={country.code} className='flag-item' onClick={() => handleCountrySelect(country.code)}>
                             <Flag code={country.code} style={{ width: '24px', height: '18px', marginRight: '10px' }} />
-                            {country.name} ({country.dialCode})
+                            {country.name} ({country.dial_code})
                         </div>
                     ))}
                 </Modal.Body>
