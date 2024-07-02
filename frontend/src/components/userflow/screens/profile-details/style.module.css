@@ -92,6 +92,43 @@
     object-fit: contain;
 }
 
+.interests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.interests>p {
+    background: #F7ECFF;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+}
+
+.personalities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.personalities>p {
+    border: 2px solid #e0e0e0;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+}
+
+.smokeDrink {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.smokeDrink>div>p:last-child {
+    border: 2px solid #e0e0e0;
+    padding: 0.5rem 1rem;
+    width: fit-content;
+    border-radius: 9999px;
+}
+
 @media screen and (max-width: 768px) {
     .gallery {
         max-width: 100%;

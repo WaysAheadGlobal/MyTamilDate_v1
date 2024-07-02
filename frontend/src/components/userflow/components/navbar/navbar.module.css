@@ -1,4 +1,4 @@
-nav {
+.nav {
     width: 70%;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 0.75rem;
@@ -7,7 +7,7 @@ nav {
     margin-inline: auto;
 }
 
-nav>ul {
+.nav>ul {
     display: flex;
     gap: 1rem;
     align-items: center;
@@ -17,11 +17,11 @@ nav>ul {
     padding: 0;
 }
 
-nav>ul>li {
+.nav>ul>li {
     cursor: pointer;
 }
 
-nav>ul>li.active>.indicator {
+.nav>ul>li.active>.indicator {
     display: block;
 }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import './navbar.css';
+import styles from './navbar.module.css';
 import heartLogo from "../../../../assets/images/heart-logo.png";
 import profile from "../../../../assets/images/basic-details.png";
 import { useNavigate } from 'react-router-dom';
@@ -32,9 +32,9 @@ export default function Navbar({ style }) {
     }, []);
 
     return (
-        <nav style={style}>
+        <nav className={styles.nav} style={style}>
             <ul>
-                <li className={pathname.includes("chat") ? "active" : ""} onClick={() => navigate("/user/chat")}>
+                <li className={pathname.includes("chat") ? styles["active"] : ""} onClick={() => navigate("/user/chat")}>
                     {
                         !pathname.includes("chat") ? (
                             <svg width="32" height="31" viewBox="0 0 32 31" fill="blue" xmlns="http://www.w3.org/2000/svg">
@@ -62,15 +62,15 @@ export default function Navbar({ style }) {
                             </svg>
                         )
                     }
-                    <div className='indicator'></div>
+                    <div className={styles['indicator']}></div>
                 </li>
-                <li className={suffix === "home" ? "active" : ""} onClick={() => navigate("/user/home")}>
+                <li className={suffix === "home" ? styles["active"] : ""} onClick={() => navigate("/user/home")}>
                     <img src={heartLogo} alt="" width={30} height={30} />
-                    <div className='indicator'></div>
+                    <div className={styles['indicator']}></div>
                 </li>
-                <li className={suffix === "account" ? "active" : ""} onClick={() => navigate("/user/account")}>
+                <li className={suffix === "account" ? styles["active"] : ""} onClick={() => navigate("/user/account")}>
                     <img src={profile} alt="" width={30} height={30} />
-                    <div className='indicator'></div>
+                    <div className={styles['indicator']}></div>
                 </li>
                 {
                     isMobile && (
@@ -80,13 +80,13 @@ export default function Navbar({ style }) {
                                     <path d="M11.5 3H13.5C14.0523 3 14.5 3.44772 14.5 4V4.56879C14.5 4.99659 14.7871 5.36825 15.1822 5.53228C15.5775 5.69638 16.0377 5.63384 16.3403 5.33123L16.7426 4.92891C17.1331 4.53838 17.7663 4.53838 18.1568 4.92891L19.571 6.34312C19.9616 6.73365 19.9615 7.36681 19.571 7.75734L19.1688 8.1596C18.8661 8.46223 18.8036 8.92247 18.9677 9.31774C19.1317 9.71287 19.5034 10 19.9313 10L20.5 10C21.0523 10 21.5 10.4477 21.5 11V13C21.5 13.5523 21.0523 14 20.5 14H19.9312C19.5034 14 19.1318 14.2871 18.9677 14.6822C18.8036 15.0775 18.8661 15.5377 19.1688 15.8403L19.571 16.2426C19.9616 16.6331 19.9616 17.2663 19.571 17.6568L18.1568 19.071C17.7663 19.4616 17.1331 19.4616 16.7426 19.071L16.3403 18.6688C16.0377 18.3661 15.5775 18.3036 15.1822 18.4677C14.7871 18.6318 14.5 19.0034 14.5 19.4312V20C14.5 20.5523 14.0523 21 13.5 21H11.5C10.9477 21 10.5 20.5523 10.5 20V19.4313C10.5 19.0034 10.2129 18.6317 9.81774 18.4677C9.42247 18.3036 8.96223 18.3661 8.6596 18.6688L8.25732 19.071C7.86679 19.4616 7.23363 19.4616 6.84311 19.071L5.42889 17.6568C5.03837 17.2663 5.03837 16.6331 5.42889 16.2426L5.83123 15.8403C6.13384 15.5377 6.19638 15.0775 6.03228 14.6822C5.86825 14.2871 5.49659 14 5.06879 14H4.5C3.94772 14 3.5 13.5523 3.5 13V11C3.5 10.4477 3.94772 10 4.5 10L5.06877 10C5.49658 10 5.86825 9.71288 6.03229 9.31776C6.1964 8.9225 6.13386 8.46229 5.83123 8.15966L5.42891 7.75734C5.03838 7.36681 5.03838 6.73365 5.42891 6.34313L6.84312 4.92891C7.23365 4.53839 7.86681 4.53839 8.25734 4.92891L8.65966 5.33123C8.96228 5.63386 9.4225 5.6964 9.81776 5.53229C10.2129 5.36825 10.5 4.99658 10.5 4.56876V4C10.5 3.44772 10.9477 3 11.5 3Z" stroke="#424242" />
                                     <path d="M14.5 12C14.5 13.1046 13.6046 14 12.5 14C11.3954 14 10.5 13.1046 10.5 12C10.5 10.8954 11.3954 10 12.5 10C13.6046 10 14.5 10.8954 14.5 12Z" stroke="#424242" />
                                 </svg>
-                                <div className='indicator'></div>
+                                <div className={styles['indicator']}></div>
                             </li>
                             <li>
                                 <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M15.5 4H18.5C19.6046 4 20.5 4.89543 20.5 6L20.5 18C20.5 19.1046 19.6046 20 18.5 20H15.5M11.5 16L15.5 12M15.5 12L11.5 8M15.5 12H3.5" stroke="#424242" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
-                                <div className='indicator'></div>
+                                <div className={styles['indicator']}></div>
                             </li>
                         </>
                     )

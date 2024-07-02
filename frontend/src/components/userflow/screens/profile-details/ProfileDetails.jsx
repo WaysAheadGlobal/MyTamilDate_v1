@@ -42,6 +42,9 @@ export default function ProfileDetails() {
      * @property {string} height - The user's height.
      * @property {string} kids - The user's stance on having children.
      * @property {Photo[]} photos - An array of photos associated with the user.
+     * @property {string[]} personalities - An array of personalities associated with the user.
+     * @property {string} smoke - The user's stance on smoking.
+     * @property {string} drink - The user's stance on drinking.
      */
 
     /** @type {[Profile, React.Dispatch<React.SetStateAction<Profile>>]} */
@@ -59,6 +62,7 @@ export default function ProfileDetails() {
             if (!data) return;
 
             if (response.ok) {
+                console.log(data)
                 setProfile(data);
                 setMedia(data.photos.map(photo => {
                     if (photo.type === 1 || photo.type === 2) {
@@ -268,6 +272,32 @@ export default function ProfileDetails() {
                     <div>
                         <p className={styles.heading}>About</p>
                         <p className={styles.subHeading}>Supportive, communicative, caring, driven and a goal-oriented partner. More like a power couple & most importantly, someone who's ready to commit and take responsibility on family life.</p>
+                    </div>
+                    <div>
+                        <p className={styles.heading}>Interest</p>
+                        <div className={styles.interests}>
+                            <p>Shopping</p>
+                            <p>Shopping</p>
+                            <p>Shopping</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p className={styles.heading}>My Personality</p>
+                        <div className={styles.personalities}>
+                            {
+                                profile.personalities?.map((personality, index) => <p key={index}>{personality}</p>)
+                            }
+                        </div>
+                    </div>
+                    <div className={styles.smokeDrink}>
+                        <div>
+                            <p className={styles.heading}>Smoking</p>
+                            <p>{profile.smoke}</p>
+                        </div>
+                        <div>
+                            <p className={styles.heading}>Drinking</p>
+                            <p>{profile.drink}</p>
+                        </div>
                     </div>
                 </div>
             </div>
