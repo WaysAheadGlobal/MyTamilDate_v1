@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from '@emotion/react';
-import { Card, CardContent, Box, Button, Typography, useTheme, useMediaQuery, Select, MenuItem } from "@mui/material";
+import { Card, CardContent, Box, Button, Typography, useTheme, useMediaQuery, Select, MenuItem, CircularProgress } from "@mui/material";
 import { tokens } from "../../theme";
 import { mockTransactions } from "../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
@@ -32,17 +32,7 @@ const transformedagedata = agedata.map(item => ({
   value: item.value,
 }));
 
-// const gendersdata = [
-//   { gender: 'Male', value: 16 },
-//   { gender: 'Female', value: 23 },
-//   { gender: 'Other', value: 12 },
-// ];
 
-// const transformedGenderData = gendersdata.map(item => ({
-//   id: item.gender,
-//   label: item.gender,
-//   value: item.value,
-// }));
 
 const cardStyle = {
   width: '320px',
@@ -76,7 +66,7 @@ const StatCard = ({ title, value }) => (
     <Card style={cardStyle}>
       <CardContent style={{ padding: 0 }}>
         <Box style={cardHeaderStyle}>
-          <Typography variant="h7" style={{ color: 'white'}}>
+          <Typography variant="h7" style={{ color: 'white', fontSize : "10px"}}>
             {title}
           </Typography>
         </Box>
@@ -170,6 +160,7 @@ const ListCard = ({ title, data }) => (
 );
 
 const Dashboard = () => {
+  const [loading, setLoading] = useState(true);
   const [ageData, setAgedata1] = useState([]);
   const [genderData, setGenderData] = useState([]);
   const[totalNewUsersignup, setTotalNewUsersignup] = useState({});
@@ -181,10 +172,11 @@ const Dashboard = () => {
   const[OldMembersSignedIn, setOldMembersSignedIn] = useState(0);
   const[TotalMatchsCount, setMatchsCount] = useState(0);
   const[TotalRequestCount, setRequestCount] = useState(0);
+  const[AvgPaidConve, setAvgPaidConversations] = useState(0);
   const [messageCount, setMessageCount] = useState(0);
   const[paidMemberCount, setPaidMemberCount] = useState(0);
   const[TotalRenewal, setTotalRenewalCount] = useState(0);
-  const [timeRange, setTimeRange] = useState('24h');
+  const [timeRange, setTimeRange] = useState('month');
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -422,25 +414,51 @@ const Dashboard = () => {
       }
     };
 
+    const AvgPaidConversations = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/admin/dashboard/users/avg-days-to-paid`, {
+          params: { timeRange }
+        });
+        setAvgPaidConversations(response.data);
+     console.log("ssssss",response.data);
+   
+      } catch (error) {
+        console.error('Error fetching message count:', error);
+      }
+    };
     
    
-  useEffect(() => {
-    getCountByGender();
-    getAgeGroup();
-    TotalNewsignUp();
-    getMessageCount();
-    TotalPayments();
-    getLikeCount();
-    getMatchCount();
-    Toptencountry();
-    PaidMemberCount();
-    TotalRenewalCount();
-    RequestCount();
-    TotalOldMembersSignedIn();
-    getTopJobs();
-  }, [timeRange]);
-
-
+    useEffect(() => {
+      const fetchDataall = async () => {
+        try {
+          setLoading(true); 
+        
+          await Promise.all([
+            getCountByGender(),
+            getAgeGroup(),
+            TotalNewsignUp(),
+            getMessageCount(),
+            TotalPayments(),
+            getLikeCount(),
+            getMatchCount(),
+            Toptencountry(),
+            PaidMemberCount(),
+            TotalRenewalCount(),
+            RequestCount(),
+            TotalOldMembersSignedIn(),
+            getTopJobs(),
+            AvgPaidConversations()
+          ]);
+          setLoading(false);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+          setLoading(false); 
+        }
+      };
+    
+      fetchDataall();
+    }, [timeRange]);
+    
   useEffect(()=>{
     Transections();
   },[])
@@ -457,6 +475,13 @@ const Dashboard = () => {
 
   
   return (
+    <>
+    {loading ? (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <CircularProgress />
+      </Box>
+    ) : (
+
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" flexDirection={isMobile ? "column" : "row"} justifyContent="space-between" alignItems="center">
@@ -525,7 +550,7 @@ const Dashboard = () => {
       </Box>
 
       {/* CONTENT GRID */}
-      <Box m="20px" mt="40px">
+      <Box  mt="40px">
         <Box
           display="grid"
           
@@ -564,7 +589,7 @@ const Dashboard = () => {
         {/* Additional Cards */}
 
 
-        <Box display="grid" gridTemplateColumns={isMobile ? "repeat(auto-fill, minmax(250px, 1fr))" : "repeat(auto-fill, minmax(250px, 1fr))"} gap="10px" mt="50px">
+        <Box display="grid" gridTemplateColumns={isMobile ? "repeat(auto-fill, minmax(250px, 1fr))" : "repeat(auto-fill, minmax(23%, 1fr))"}  mt="50px">
         <StatCard title="Total Revenue Generated" value={`CAD ${TotalPeyment}`} />
           <StatCard title="Total Old Users Signing First Time" value={OldMembersSignedIn} />
           <StatCard title="Total New Members Sign Up" value={totalNewUsersignup.total_users} />
@@ -572,10 +597,10 @@ const Dashboard = () => {
         </Box>
 
 
-        <Box display="grid" gridTemplateColumns={isMobile ? "repeat(auto-fill, minmax(250px, 1fr))" : "repeat(auto-fill, minmax(250px, 1fr))"} gap="10px" mt="20px">
+        <Box display="grid" gridTemplateColumns={isMobile ? "repeat(auto-fill, minmax(250px, 1fr))" : "repeat(auto-fill, minmax(23%, 1fr))"}  mt="20px">
           
           <StatCard title="Total of Renewals" value={TotalRenewal} />
-          <StatCard title="Avg of Interaction Per Session" value="144" />
+          <StatCard title="Avg of Interaction Per Session" value={AvgPaidConve.avg_days_to_paid_conversion} />
           <StatCard title="Avg Time Per Session" value="14" />
           <StatCard title="Avg days to paid conversion" value="53" />
         </Box>
@@ -708,6 +733,8 @@ const Dashboard = () => {
      
       
     </Box>
+     )}
+  </>
   );
 };
 

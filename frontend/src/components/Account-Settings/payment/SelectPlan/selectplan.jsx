@@ -38,10 +38,10 @@ const Selectplan = () => {
       </div>
     </div>
     </div>
-
     <div>
     <PricingCarousel/>
     </div>
+
     </div>
   );
 }

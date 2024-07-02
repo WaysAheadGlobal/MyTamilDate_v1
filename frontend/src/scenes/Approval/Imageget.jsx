@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { API_URL } from '../../api';
 
 
 const ImageGallery = () => {
@@ -24,7 +25,7 @@ const ImageGallery = () => {
             <h1>Image Gallery</h1>
             <div className="image-gallery">
                 {images.map(media => {
-                    const imageUrl = `http://localhost:3001/api/v1/admin/users/image/${media.hash}.${media.extension}`;
+                    const imageUrl = `${API_URL}/admin/users/image/${media.hash}.${media.extension}`;
                     return (
                         <img
                             key={media.id}

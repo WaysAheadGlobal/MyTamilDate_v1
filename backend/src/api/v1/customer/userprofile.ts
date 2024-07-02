@@ -171,6 +171,77 @@ profile.put('/gender', [
   });
 });
 
+profile.post('/language', [
+  verifyUser,
+  body('languages').isArray().withMessage('Languages must be an array of language IDs')
+], (req: UserRequest, res: express.Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const userId = req.userId;
+  const { languages } = req.body;
+
+  // Log the values for debugging
+  console.log(`Updating languages for userId: ${userId}, languages: ${languages}`);
+
+  // Remove existing language preferences for the user
+  const deleteQuery = 'DELETE FROM user_languages WHERE user_id = ?';
+  db.query(deleteQuery, [userId], (err) => {
+    if (err) {
+      console.error('Error deleting user languages:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    // Insert new language preferences
+    const insertQuery = 'INSERT INTO user_languages (user_id, language_id, created_at, updated_at) VALUES ?';
+    const values = languages.map((languageId: number) => [userId, languageId, new Date(), new Date()]);
+    db.query(insertQuery, [values], (err) => {
+      if (err) {
+        console.error('Error inserting user languages:', err);
+        return res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      res.status(200).json({ message: 'Languages updated successfully' });
+    });
+  });
+});
+
+profile.get('/userlanguage', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  const query = `
+    SELECT ul.language_id, l.name, l.code
+    FROM user_languages ul
+    JOIN languages l ON ul.language_id = l.id
+    WHERE ul.user_id = ?
+  `;
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching user languages:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    res.status(200).json({ selectedLanguages: results });
+  });
+});
+
+// API to get all languages
+profile.get('/language', (req: express.Request, res: express.Response) => {
+  const query = 'SELECT id, name FROM languages';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching languages:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    res.status(200).json({ languages: results });
+  });
+});
+
 
 profile.get('/gender', verifyUser, (req: UserRequest, res: any) => {
   const userId = req.userId;

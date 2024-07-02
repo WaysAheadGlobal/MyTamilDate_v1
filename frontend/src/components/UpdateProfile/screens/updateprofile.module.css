@@ -1,0 +1,33 @@
+.maincontainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 25px;
+  }
+  .profilemaincontainer{
+    width: 100%;
+    margin: auto;
+  }
+  
+  .editpreview {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-top: 20px;
+    
+  }
+  
+  .tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    width: 50%; 
+    text-align: center; 
+    position: relative; 
+  }
+  
+  .active {
+    border-bottom: 2px solid ;
+    border-color: #F76A7B;
+    
+  }
+  

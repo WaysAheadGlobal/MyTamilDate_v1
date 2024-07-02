@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
 import Header from '../../components/Header1';
@@ -9,6 +9,7 @@ import { useAppContext } from '../../Context/UseContext';
 import { API_URL } from '../../api';
 
 const Contacts = () => {
+  const [loading, setLoading] = useState(true);
   const [custmer, setCustmer] = useState([]);
   const [page, setPage] = useState(0); // Updated to use 0-based index for the page
   const [pageSize, setPageSize] = useState(25); // Default page size
@@ -82,7 +83,19 @@ const Contacts = () => {
   };
 
   useEffect(() => {
-    fetchData(page, pageSize);
+    const fetchDataloading = async () => {
+      try {
+        await Promise.all([
+    fetchData(page, pageSize)
+  ])
+  setLoading(false);
+} catch (error) {
+  console.error('Error fetching data:', error);
+  setLoading(false); 
+}
+};
+
+fetchDataloading();
   }, [page, pageSize]);
 
   const formatPhoneNumber = (phoneNumber) => {
@@ -203,7 +216,11 @@ const Contacts = () => {
           {showFullPhoneNumberemail ? 'Hide Phone Number And Email' : 'Show Phone Number And Email'}
         </Button> */}
       </Box>
-
+      {loading ? (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <CircularProgress />
+      </Box>
+    ) : (
       <Box
         m="40px 0 0 0"
         height="75vh"
@@ -254,6 +271,10 @@ const Contacts = () => {
           },
         }}
       >
+
+
+ 
+
         <DataGrid
           rows={custmer}
           columns={columns}
@@ -278,7 +299,10 @@ const Contacts = () => {
             },
           }}
         />
+     
+
       </Box>
+       )}
     </Box>
   );
 };

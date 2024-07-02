@@ -23,7 +23,6 @@ export const AppContextProvider = ({ children }) => {
   const [locations, setLocations] = useState({
     country : "",
     locations_string: ""
-
   })
 
   const [isAdmin, setIsAdmin] = useState(false);

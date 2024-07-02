@@ -117,6 +117,24 @@ const getDateConditionJobs = (timeRange: string): string => {
     }
     return condition;
 };
+// Helper function to generate date condition for user creation date
+const getUserCreationDateCondition = (timeRange: string): string => {
+    switch (timeRange) {
+        case '24h':
+            return "users.created_at > NOW() - INTERVAL 1 DAY";
+        case 'week':
+            return "users.created_at > NOW() - INTERVAL 1 WEEK";
+        case 'month':
+            return "users.created_at > NOW() - INTERVAL 1 MONTH";
+        case '3months':
+            return "users.created_at > NOW() - INTERVAL 3 MONTH";
+        case '12months':
+            return "users.created_at > NOW() - INTERVAL 12 MONTH";
+        default:
+            return "users.created_at > NOW() - INTERVAL 1 DAY"; // Default to 24 hours
+    }
+};
+
 
 dashboard.get('/sessions/avg-time', (req, res) => {
     const timeRange = (req.query.timeRange || '24h').toString();
@@ -184,6 +202,40 @@ dashboard.get('/sessions/avg-time', (req, res) => {
         res.status(200).json({ avg_session_time: avgSessionTime });
     });
 });
+
+dashboard.get('/users/avg-days-to-paid', (req, res) => {
+    const timeRange = (req.query.timeRange || '24h').toString();
+    const userCreationDateCondition = getUserCreationDateCondition(timeRange);
+
+    // Construct SQL based on the provided date condition
+    const sql = `
+        SELECT 
+            AVG(IF(users.created_at > '2021-02-13 00:00:00', DATEDIFF(payments.created_at, users.created_at), DATEDIFF(payments.created_at, '2021-02-13 00:00:00'))) AS avgDate
+        FROM 
+            users
+        JOIN 
+            payments ON payments.user_id = users.id
+        WHERE 
+            ${userCreationDateCondition};
+    `;
+
+    console.log('Executing SQL:', sql);
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        if (results.length === 0 || results[0].avgDate === null) {
+            res.status(404).json({ error: 'No data found in the specified time range' });
+            return;
+        }
+        const avgDate = results[0].avgDate;
+        res.status(200).json({ avg_days_to_paid_conversion: avgDate });
+    });
+});
+
 
 
 dashboard.get('/messages/count', (req: AdminRequest, res) => {
