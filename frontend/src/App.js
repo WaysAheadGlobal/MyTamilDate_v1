@@ -77,6 +77,7 @@ import Personality from "./components/Personality";
 import ProfileAnswers from "./components/ProfileAnswers";
 import SmokeAndFamily from "./components/SmokeAndDrink";
 import { SignInOptions } from "./components/sign-in/sign-in-options";
+
 import PaymentMethod from '../src/components/Account-Settings/payment/paymentMethod'
 import Home from "./components/userflow/screens/Home";
 import Recommendations from "./components/userflow/screens/recommendations/Recommendations";
@@ -213,6 +214,7 @@ function App() {
                <Route path="/updateprofile" element= {<UpdateProfile/>}></Route>
                <Route path="/preview" element={<Preview/>}></Route>
               
+
               <Route path="/user/home" element={<Home />} />
               <Route path="/user/recommendations" element={<Recommendations />} />
               <Route path="/user/preferences" element={<Preferences />} />

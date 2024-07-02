@@ -28,6 +28,7 @@
     overflow-y: auto;
     scrollbar-width: thin;
     padding: 1rem 3rem;
+    scroll-behavior: smooth;
 }
 
 .chatInput {

@@ -12,15 +12,6 @@ import { Container, Image, Form, Button } from 'react-bootstrap';
 
 export const SignInPhoneSuccessful = () => {
     const navigate = useNavigate();
-    const goToSigninEmail = () => {
-        navigate("/signinemail");
-    };
-
-
-
-
-
-
 
     return (
         <div className='signinphone-successful-container'>
@@ -43,33 +34,18 @@ export const SignInPhoneSuccessful = () => {
                     </Container>
                     <Container className='signinphone-successful-text-box'>
 
-                    <Container className='signinphone-successful-text'>
-                        <Image src={Approve} />
-                        <span className='signinphone-successful-t1'>
-                            Successful
-                        </span>
+                        <Container className='signinphone-successful-text'>
+                            <Image src={Approve} />
+                            <span className='signinphone-successful-t1'>
+                                Successful
+                            </span>
 
-                        <span className='signinphone-successful-t2'>
-                            Login has been successfulplease click on on continue to start discovering new people
-                        </span>
-
-
-                        <Button > Continue</Button>
-
-                       
+                            <span className='signinphone-successful-t2'>
+                                Login has been successfulplease click on on continue to start discovering new people
+                            </span>
+                            <Button onClick={() => navigate("/user/home")}>Continue</Button>
+                        </Container>
                     </Container>
-                 
-</Container>
-
-
-
-
-
-
-
-
-
-
                 </Container>
             </Container>
         </div>

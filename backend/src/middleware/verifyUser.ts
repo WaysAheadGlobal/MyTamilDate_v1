@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { db } from "../../db/db";
+import { UserRequest } from "../types/types";
 
-export const verifyUser = (req: Request & { userId?: string }, res: Response, next: NextFunction) => {
+export const verifyUser = (req: UserRequest, res: Response, next: NextFunction) => {
     if (!req.headers.authorization) {
         return res.status(401).json({ message: "Unauthorized" });
     }
@@ -14,7 +15,7 @@ export const verifyUser = (req: Request & { userId?: string }, res: Response, ne
 
     try {
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET as string);
-      console.log(decoded.userId);
+        console.log(decoded.userId);
         if (!decoded) {
             return res.status(401).json({ message: "Unauthorized" });
         }
@@ -27,8 +28,9 @@ export const verifyUser = (req: Request & { userId?: string }, res: Response, ne
             if (result.length === 0) {
                 return res.status(401).json({ message: "Unauthorized" });
             }
-            
+
             req.userId = decoded.userId;
+            req.user = result[0];
             next();
         });
     } catch (error) {

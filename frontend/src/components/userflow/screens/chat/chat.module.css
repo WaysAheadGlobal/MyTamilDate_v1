@@ -2,3 +2,17 @@
     display: grid;
     grid-template-columns: auto auto 1fr;
 }
+
+.matchContainer {
+    display: flex;
+    gap: 2rem;
+    flex-direction: column;
+    width: 420px;
+    max-width: 420px;
+    max-height: 100vh;
+    height: 100vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+    padding: 2rem;
+    border-right: 2px solid #e0e0e0;
+}

@@ -1,11 +1,334 @@
-import React from 'react';
-import styles from './preferences.module.css';
-import Sidebar from '../../components/sidebar/sidebar';
+import React, { useEffect, useState } from 'react';
+import Modal from 'react-bootstrap/Modal';
 import Button from "../../components/button/Button";
+import Sidebar from '../../components/sidebar/sidebar';
+import styles from './preferences.module.css';
+import Slider from '@mui/material/Slider';
+import './slider.css';
+import { MenuItem, Select } from '@mui/material';
+import { IoClose } from "react-icons/io5";
+import { useCookies } from '../../../../hooks/useCookies';
+import { API_URL } from '../../../../api';
+
+const Forms = {
+    Radio: ({ options, value, setValue }) => (
+        <div style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "0.5rem"
+        }}>
+            {options?.map((option, index) => (
+                <label key={index} htmlFor={option.name} className={styles.inputRadio}>
+                    <input id={option.name} value={option.id} onChange={() => setValue(option.id)} type="radio" />
+                    <p>{option.name}</p>
+                </label>
+            ))}
+        </div>
+    ),
+    Range: ({ value, setValue }) => {
+        return (
+            <>
+                <p style={{
+                    fontSize: "large",
+                    fontWeight: "500",
+                    marginTop: "-1rem"
+                }}>{value?.join(" - ")}</p>
+                <Slider
+                    value={Array.isArray(value) ? value : [20, 27]}
+                    onChange={(e, newValue) => setValue(newValue)}
+                    valueLabelDisplay="auto"
+                    disableSwap
+                    min={18}
+                />
+            </>
+        )
+    },
+    Location: ({ options, value, setValue }) => {
+        const [selectedCountry, setSelectedCountry] = useState("");
+        const [selectedCity, setSelectedCity] = useState("");
+        const [countrySelectCollasped, setCountrySelectCollasped] = useState(true);
+
+        useEffect(() => {
+            setValue(selectedCity);
+        }, [selectedCity])
+
+        return (
+            <>
+                <label htmlFor="country" className={styles.locationRadio}>
+                    <p>Select Country</p>
+                    <input type="radio" id="country" name="country-option" onClick={() => setCountrySelectCollasped(false)} />
+                </label>
+                <label htmlFor="any" className={styles.locationRadio}>
+                    <p>Any</p>
+                    <input type="radio" id="any" name="country-option" defaultChecked onClick={() => setCountrySelectCollasped(true)} />
+                </label>
+                {!countrySelectCollasped && (
+                    <>
+                        <p style={{
+                            textAlign: "start",
+                            fontSize: "large",
+                            fontWeight: "500",
+                        }}>Search nearby people</p>
+                        <Select
+                            style={{
+                                width: "100%",
+                                textAlign: "start"
+                            }}
+                            value={selectedCountry}
+                            onChange={(e) => setSelectedCountry(e.target.value)}
+                            displayEmpty
+                            placeholder='Select a country'
+                            MenuProps={{
+                                PaperProps: {
+                                    style: {
+                                        width: "9rem",
+                                        height: "12rem"
+                                    }
+                                }
+                            }}
+                        >
+                            <MenuItem value="" disabled>Select a country</MenuItem>
+                            {
+                                Object.keys(options)?.map((option, index) => (
+                                    <MenuItem
+                                        key={option}
+                                        value={option}
+                                    >
+                                        {option}
+                                    </MenuItem>
+                                ))
+                            }
+                        </Select>
+
+                        <Select
+                            style={{
+                                width: "100%",
+                                textAlign: "start"
+                            }}
+                            value={selectedCity}
+                            onChange={(e) => setSelectedCity(e.target.value)}
+                            displayEmpty
+                            MenuProps={{
+                                PaperProps: {
+                                    style: {
+                                        width: "9rem",
+                                        height: "12rem"
+                                    },
+                                }
+                            }}
+                        >
+                            <MenuItem value="" disabled>Select a city</MenuItem>
+                            {
+                                options[selectedCountry]?.map((option, index) => (
+                                    <MenuItem
+                                        key={option.id}
+                                        value={option.id}
+                                    >
+                                        {option.location_string}
+                                    </MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </>
+                )}
+            </>
+        )
+    },
+    Select: ({ options, value, setValue }) => {
+        const [selectedOption, setSelectedOption] = useState("Select a option");
+        const [open, setOpen] = useState(false);
+
+        useEffect(() => {
+            setValue(selectedOption);
+        }, [selectedOption])
+
+        return (
+            <div className={styles["select-container"]} data-open={open}>
+                <div className={styles["select-display"]} onClick={() => {
+                    setOpen(!open);
+                }} data-value={selectedOption}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        className="bi bi-chevron-down" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708" />
+                    </svg>
+                </div>
+                <ul className={styles["select-options"]}>
+                    {
+                        options?.map((option, index) => (
+                            <li
+                                key={index}
+                                style={{
+                                    textAlign: "start",
+                                }}
+                                className={selectedOption === option ? styles["selected"] : ""}
+                                onClick={() => setSelectedOption(option)}
+                            >{option.name}</li>
+                        ))
+                    }
+                </ul>
+                <div className={styles["select-backdrop"]} onClick={() => setOpen(false)}></div>
+            </div>
+        )
+    }
+}
 
 export default function Preferences() {
+    /**
+     * @typedef {Object} SelectedPreference
+     * @property {string} title
+     * @property {'select' | 'range' | 'radio' | 'location'} type
+     * @property {string} optionsApiEndpoint
+     * @property {string} saveApiEndpoint
+     */
+
+    /** @type {[SelectedPreference, React.Dispatch<React.SetStateAction<SelectedPreference>>]} */
+    const [selectedPreference, setSelectedPreference] = useState({});
+    const [selectedPreferenceOptions, setSelectedPreferenceOptions] = useState([]);
+    const [show, setShow] = useState(false);
+    const [value, setValue] = useState();
+    const cookies = useCookies();
+
+    /**
+     * @typedef {Object} Preferences
+     * @property {Number} age_from
+     * @property {Number} age_to
+     * @property {string} drinking
+     * @property {string} education
+     * @property {string} gender
+     * @property {string} have_kids
+     * @property {string} location
+     * @property {string} religion
+     * @property {string} smoking
+     * @property {string} want_kids
+     */
+
+    /** @type {[Preferences, React.Dispatch<React.SetStateAction<Preferences>>]} */
+    const [preferences, setPreferences] = useState({});
+    const [refresh, setRefresh] = useState(false);
+
+    const Form = Forms[selectedPreference.type?.charAt(0).toUpperCase() + selectedPreference.type?.slice(1)] ?? Forms.Radio;
+
+    useEffect(() => {
+        (async () => {
+            const response = await fetch(`${API_URL}customer/user/preferences`, {
+                headers: {
+                    Authorization: `Bearer ${cookies.getCookie('token')}`
+                }
+            });
+            const data = await response.json();
+            if (!data) return;
+
+            console.log(data);
+            setPreferences(data);
+        })()
+    }, [refresh])
+
+    /**
+     * @param {SelectedPreference} preference
+     * @returns {void}
+     */
+    function handlePreferenceClick(preference) {
+        setShow(true);
+        setSelectedPreference(preference);
+    }
+
+    useEffect(() => {
+        if (!selectedPreference.optionsApiEndpoint || !show) return;
+
+        (async () => {
+            const response = await fetch(`${API_URL}customer/user/preferences/options/${selectedPreference.optionsApiEndpoint}`, {
+                headers: {
+                    Authorization: `Bearer ${cookies.getCookie('token')}`
+                }
+            });
+            const data = await response.json();
+            if (!data) return;
+
+            console.log(data);
+
+            setSelectedPreferenceOptions(data);
+
+        })()
+    }, [show]);
+
+    /**
+     * 
+     * @param {React.FormEvent<HTMLFormElement>} e 
+     * @returns {Promise<void>}
+     */
+    async function handlePreferenceSave(e) {
+        e.preventDefault();
+
+        let bodyContent = { value };
+
+        if (selectedPreference.saveApiEndpoint === "age") {
+            bodyContent = {
+                age_from: value[0],
+                age_to: value[1]
+            }
+        } else if (selectedPreference.saveApiEndpoint === "location") {
+            bodyContent = {
+                location_id: value
+            }
+        }
+
+        const response = await fetch(`${API_URL}customer/user/preferences/save/${selectedPreference.saveApiEndpoint}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${cookies.getCookie('token')}`
+            },
+            body: JSON.stringify(bodyContent)
+        });
+        const data = await response.json();
+        /* if (!data) return; */
+        console.log(data)
+    }
+
     return (
         <Sidebar>
+            <Modal size='sm' centered show={show}>
+                <Modal.Body>
+                    <p style={{
+                        fontSize: "large",
+                        fontWeight: "600",
+                        margin: "0",
+                        marginBottom: "1rem"
+                    }}>{selectedPreference.title}</p>
+
+                    <form
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "1rem",
+                            minHeight: "25rem",
+                            marginTop: "1rem",
+                        }}
+                        onSubmit={handlePreferenceSave}
+                    >
+                        <Form value={value} setValue={setValue} options={selectedPreferenceOptions} />
+                        <div style={{ flexGrow: "1" }}></div>
+                        <div style={{
+                            marginTop: "1rem",
+                            display: "flex",
+                            gap: "1rem",
+                            marginInline: "auto"
+                        }}>
+                            <Button type="button" style={{
+                                backgroundClip: "text",
+                                color: "transparent",
+                                border: "2px solid #fa806d",
+                                borderRadius: "9999px"
+                            }} onClick={() => setShow(false)}>Cancel</Button>
+                            <Button style={{
+                                borderRadius: "9999px"
+                            }}>Save</Button>
+                        </div>
+                    </form>
+                </Modal.Body>
+            </Modal>
+
             <div style={{
                 height: '100%',
                 width: '100%',
@@ -44,7 +367,14 @@ export default function Preferences() {
                         </svg>
                         <p>I&apos;m interested in</p>
                         <div style={{ flexGrow: "1" }}></div>
-                        <p>Women</p>
+                        <p
+                            onClick={() => handlePreferenceClick({
+                                title: "I'm interested in",
+                                type: "radio",
+                                optionsApiEndpoint: "genders",
+                                saveApiEndpoint: "gender_id",
+                            })}
+                        >{preferences?.gender}</p>
                     </div>
                     <div className={styles.option}>
                         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -63,7 +393,14 @@ export default function Preferences() {
                         </svg>
                         <p>Age range</p>
                         <div style={{ flexGrow: "1" }}></div>
-                        <p>20-30</p>
+                        <p
+                            onClick={() => handlePreferenceClick({
+                                title: "Age Range",
+                                type: "range",
+                                optionsApiEndpoint: "",
+                                saveApiEndpoint: "age",
+                            })}
+                        >{preferences?.age_from}-{preferences?.age_to}</p>
                     </div>
                     <div className={styles.option}>
                         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -72,7 +409,14 @@ export default function Preferences() {
                         </svg>
                         <p>Religion</p>
                         <div style={{ flexGrow: "1" }}></div>
-                        <p>Open to all</p>
+                        <p
+                            onClick={() => handlePreferenceClick({
+                                title: "Religion",
+                                type: "radio",
+                                optionsApiEndpoint: "religions",
+                                saveApiEndpoint: "religion_id",
+                            })}
+                        >{preferences?.religion ?? "Open to all"}</p>
                     </div>
                     <Button style={{
                         marginTop: "2.4rem",
@@ -90,7 +434,14 @@ export default function Preferences() {
                         </svg>
                         <p>Location</p>
                         <div style={{ flexGrow: "1" }}></div>
-                        <p>Any</p>
+                        <p
+                            onClick={() => handlePreferenceClick({
+                                title: "Location",
+                                type: "location",
+                                optionsApiEndpoint: "locations",
+                                saveApiEndpoint: "location",
+                            })}
+                        >{preferences?.location ?? "Any"}</p>
                     </div>
                     <div className={styles.option}>
                         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -100,7 +451,14 @@ export default function Preferences() {
                         </svg>
                         <p>Education</p>
                         <div style={{ flexGrow: "1" }}></div>
-                        <p>Open to all</p>
+                        <p
+                            onClick={() => handlePreferenceClick({
+                                title: "Education",
+                                type: "radio",
+                                optionsApiEndpoint: "studies",
+                                saveApiEndpoint: "education_id",
+                            })}
+                        >{preferences?.education ?? "Open to all"}</p>
                     </div>
                     <div className={styles.option}>
                         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -117,7 +475,14 @@ export default function Preferences() {
                         </svg>
                         <p>Children</p>
                         <div style={{ flexGrow: "1" }}></div>
-                        <p>Open to all</p>
+                        <p
+                            onClick={() => handlePreferenceClick({
+                                title: "Kids",
+                                type: "select",
+                                optionsApiEndpoint: "want_kids",
+                                saveApiEndpoint: "want_kids_id",
+                            })}
+                        >{preferences?.want_kids ?? "Open to all"}</p>
                     </div>
                     <div className={styles.option}>
                         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -126,7 +491,14 @@ export default function Preferences() {
                         </svg>
                         <p>Family Plans</p>
                         <div style={{ flexGrow: "1" }}></div>
-                        <p>Open to all</p>
+                        <p
+                            onClick={() => handlePreferenceClick({
+                                title: "Family",
+                                type: "select",
+                                optionsApiEndpoint: "have_kids",
+                                saveApiEndpoint: "have_kids_id",
+                            })}
+                        >{preferences?.have_kids ?? "Open to all"}</p>
                     </div>
                     <div className={styles.option}>
                         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -135,7 +507,14 @@ export default function Preferences() {
                         </svg>
                         <p>Smoking</p>
                         <div style={{ flexGrow: "1" }}></div>
-                        <p>Open to all</p>
+                        <p
+                            onClick={() => handlePreferenceClick({
+                                title: "Smoking",
+                                type: "radio",
+                                optionsApiEndpoint: "smokes",
+                                saveApiEndpoint: "smoking_id",
+                            })}
+                        >{preferences?.smoking ?? "Open to all"}</p>
                     </div>
                     <div className={styles.option}>
                         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -144,7 +523,14 @@ export default function Preferences() {
                         </svg>
                         <p>Drinking</p>
                         <div style={{ flexGrow: "1" }}></div>
-                        <p>Open to all</p>
+                        <p
+                            onClick={() => handlePreferenceClick({
+                                title: "Drinking",
+                                type: "radio",
+                                optionsApiEndpoint: "drinks",
+                                saveApiEndpoint: "drinks_id",
+                            })}
+                        >{preferences?.drinking ?? "Open to all"}</p>
                     </div>
                     <Button style={{
                         borderRadius: "9999px",

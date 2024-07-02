@@ -1,26 +1,60 @@
+import dayjs from 'dayjs';
 import React from 'react';
-import './card.css';
-import cardImage from '../../../../assets/images/cardImage.png';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../../../api';
+import './card.css';
 
-export default function Card() {
+/**
+ * @typedef {Object} Profile
+ * @property {number} id - The unique identifier for the user.
+ * @property {number} user_id - The user ID associated with the user.
+ * @property {string} first_name - The first name of the user.
+ * @property {string} last_name - The last name of the user.
+ * @property {string} birthday - The birthday of the user in ISO format.
+ * @property {string} hash - A hash string associated with the user.
+ * @property {string} extension - The file extension of the user's profile picture.
+ * @property {number} type - The type of user.
+ * @property {number} location_id - The location ID associated with the user.
+ * @property {number} job_id - The job ID associated with the user.
+ * @property {string} created_at - The creation timestamp of the user record in ISO format.
+ * @property {number} job_id - The job ID associated with the user.
+ * @property {string} country - The country of the user.
+ * @property {string} continent - The continent of the user.
+ * @property {string} location_string - The location string of the user.
+ * @property {string} job - The job of the user.
+ */
+
+/**
+ * Card component to display user information.
+ * 
+ * @param {Profile} props - The properties passed to the component.
+ * @returns {JSX.Element} The Card component.
+ */
+export default function Card({ ...props }) {
     const navigate = useNavigate();
+    const image = props.type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${props.user_id}/avatar/${props.hash}-large.${props.extension}` : `${API_URL}media/avatar/${props.hash}.${props.extension}`;
 
     return (
         <div className='card-container'
             style={{
-                backgroundImage: `url(${cardImage})`,
+                backgroundImage: `url(${image})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat'
             }}
-            onClick={() => navigate(`/user/${"Aishwarya"}/${1}`) }
+            onClick={() => navigate(`/user/${props.first_name} ${props.last_name ?? ""}/${props.user_id}`)}
         >
-            <div>
-                <div className='details'>
-                    <p style={{ gridColumn: "span 2 / span 2", textAlign: "center" }}>Aishwarya, 31</p>
-                    <p style={{ position: "relative", left: "20px" }}>Model</p>
-                    <p>Toronto, Canada</p>
+            <div style={{
+                width: "100%",
+            }}>
+                <div className='details' style={{ marginLeft: "1rem", marginBottom: "1rem" }}>
+                    <p style={{ gridColumn: "span 2 / span 2", textAlign: "center" }}>{`${props.first_name} ${props.last_name ?? ""}`}, {dayjs().diff(props.birthday, "y")}</p>
+                    <p style={{
+                        fontSize: "medium",
+                    }}>{props.job}</p>
+                    <p style={{
+                        fontSize: "medium",
+                    }}>{props.location_string}, {props.country}</p>
                 </div>
                 <div className='options'>
                     <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
