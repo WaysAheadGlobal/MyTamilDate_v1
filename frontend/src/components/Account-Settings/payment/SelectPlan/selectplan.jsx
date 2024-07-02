@@ -7,17 +7,22 @@ import styles from './selectplan.module.css';
 import { IoMdArrowDropdown } from 'react-icons/io';
 import { Modal, Button, Form, Dropdown, InputGroup, FormControl } from 'react-bootstrap';
 import PricingCarousel from './plandetails';
+import Sidebar from '../../../userflow/components/sidebar/sidebar';
 
 const Selectplan = () => {
   return (
+
+    <Sidebar>
+<div style={{ flex: "1", marginInline: "auto", display: "flex", flexDirection: "column", gap: "1rem", overflowY: "auto", scrollbarWidth: "none" }}>
+ 
     <div>
       <div>
-        <Container className='logo-progressbar1'>
+       
           <Container className='logo-arrow1'>
             <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
             <Image src={logo2} alt="Logo" className='logo1' style={{ backgroundColor: 'transparent' }} />
           </Container>
-        </Container>
+       
       </div>
       <CarouselComponent />
       <div className={styles.currencyselected}>
@@ -41,8 +46,9 @@ const Selectplan = () => {
     <div>
     <PricingCarousel/>
     </div>
-
     </div>
+    </div>
+    </Sidebar>
   );
 }
 

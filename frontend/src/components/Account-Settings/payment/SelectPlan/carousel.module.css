@@ -30,7 +30,7 @@
   .carouselItem img {
     border-radius: 12px;
     transition: 1s linear;
-    width: 335px;
+    width: 375px;
     height: 285px;
   }
   
@@ -61,7 +61,7 @@
     text-align: center;
     color: white;
     left: 50%;
-    width: 94%;
+    width: 91%;
     text-align: left;
     padding-left: 6%;
     padding-right: 6%;

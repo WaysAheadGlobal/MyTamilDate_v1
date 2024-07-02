@@ -1,4 +1,4 @@
-.btnn-save {
+.btnnSave {
     background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
     color: white;
     border: none;
@@ -8,40 +8,36 @@
     font-weight: 500;
     cursor: pointer;
     margin-left: 10px;
-    width: 80%
+    width: 80%;
 }
 
-.buttoncontainer{
-    
+.buttoncontainer {
     display: flex;
     justify-content: center;
     align-items: center;
-
 }
 
-.paymentcard{
+.paymentcard {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 
-    0px 1px 3px 0px #3030301A,
-    0px 6px 6px 0px #30303017,
-    0px 13px 8px 0px #3030300D,
-    0px 23px 9px 0px #30303003,
-    0px 36px 10px 0px #30303000;
+    gap: 80px;
+    box-shadow: 0px 1px 3px 0px #3030301A, 0px 6px 6px 0px #30303017, 0px 13px 8px 0px #3030300D, 0px 23px 9px 0px #30303003, 0px 36px 10px 0px #30303000;
     border-radius: 12px;
-     background-color:  #F7ECFF;
-padding: 18px
-     ;
+    background-color: #F7ECFF;
+    padding: 18px;
 }
 
-.mastercard{
+.mastercard {
     display: flex;
-  
     align-items: center;
     gap: 12px;
 }
 
-.cardNumber{
-   margin-top: 15px;
+.cardNumber {
+    margin-top: 15px;
+}
+
+.backarrow{
+    margin-right: 100px;
 }

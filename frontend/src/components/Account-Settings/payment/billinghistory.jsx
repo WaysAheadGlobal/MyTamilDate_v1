@@ -7,22 +7,23 @@ import styles from './billinghistory.module.css';
 import mastercard from '../../../assets/images/mastercard.png'
 
 import paymentcardedit from '../../../assets/images/paymentcardedit.png'
+import Sidebar from '../../userflow/components/sidebar/sidebar';
 
 const BillingHistory = () => {
   const[showmodal, setShowModal] = useState(false);
   const handlecCloseModal = ()=> setShowModal(false)
   const handleShowModal = () => setShowModal(true);
   return (
+    <Sidebar>
+
+<div style={{ flex: "1", marginInline: "auto", display: "flex", flexDirection: "column", gap: "1rem", overflowY: "auto", scrollbarWidth: "none" }}>
     <div>
-      <Container className='logo-progressbar3'>
-        <Container className='logo-arrow3'>
-          <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
-          <h1  className='account-setting-heading'>
-            Billing History
-          </h1>
-         
-        </Container>
-       
+   
+    <Container className='logo-arrow3'>
+              <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
+              <h1 className='account-setting-heading'>My Payment Method</h1>
+            </Container>
+    
      <Container className={styles['paymentcard']} onClick={handleShowModal}>
            
       <Container>
@@ -49,7 +50,7 @@ const BillingHistory = () => {
       </Container>
 
       </Container>
-      </Container>
+     
       <Modal show={showmodal} onHide={handlecCloseModal} centered>
             <Modal.Body className="pause-modal-content">
                 <div className="pause-modal-title">Cancel Auto-Renewal on your Subscription?</div>
@@ -68,7 +69,8 @@ const BillingHistory = () => {
         </Modal>
 
     </div>
-    
+      </div>
+    </Sidebar>
   );
 }
 

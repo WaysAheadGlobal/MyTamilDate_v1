@@ -5,10 +5,11 @@ import { Image } from 'react-bootstrap';
 const Basics = ({icon, detail}) => {
   return (
     <div className={basics.box}>
-        <Image/>
-        <p>Details</p>
+        <Image width="24px" height="24px" src={icon}/>
+        <p className={basics.detail}>{detail}</p>
     </div>
   )
 }
 
-export default Basics
+export default Basics;
+

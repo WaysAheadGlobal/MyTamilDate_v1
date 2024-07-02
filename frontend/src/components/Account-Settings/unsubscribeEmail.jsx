@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './unsubscribeEmail.css'; 
 import { Form, Button, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import Sidebar from '../userflow/components/sidebar/sidebar';
 
 
 const UnsubscribeComponent = () => {
@@ -15,13 +16,18 @@ const UnsubscribeComponent = () => {
     };
 
     return (
-
+          <Sidebar>
+<div style={{
+                flex: "1",
+                marginInline: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+                overflowY: "auto",
+                scrollbarWidth: "none"
+            }}>
+       
         <div className='un-subscribe-container'>
-
-            <Container className='desktop-left-side'>
-
-                <h1>erere</h1>
-            </Container>
 
                <Container>
 
@@ -86,12 +92,11 @@ const UnsubscribeComponent = () => {
             </div>
         </Container>
 
-        <Container className='desktop-Right-side'>
-
-                <h1>erere</h1>
-            </Container>
+       
 
             </div>
+            </div>
+            </Sidebar>
     );
 };
 
