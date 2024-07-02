@@ -66,6 +66,14 @@ const Preview = () => {
             </p>
            </Container>
 
+           <Container>
+            <p>My Basics</p>
+            <Container>
+
+            </Container>
+              
+           </Container>
+
         </div>
       </div>
     </Sidebar>

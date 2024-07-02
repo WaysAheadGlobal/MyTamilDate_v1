@@ -433,7 +433,7 @@ const Dashboard = () => {
         try {
           setLoading(true); 
         
-          await Promise.all([
+          await Promise.race([
             getCountByGender(),
             getAgeGroup(),
             TotalNewsignUp(),
