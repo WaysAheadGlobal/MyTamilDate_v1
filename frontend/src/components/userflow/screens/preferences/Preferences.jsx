@@ -273,17 +273,23 @@ export default function Preferences() {
             }
         }
 
-        const response = await fetch(`${API_URL}customer/user/preferences/save/${selectedPreference.saveApiEndpoint}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${cookies.getCookie('token')}`
-            },
-            body: JSON.stringify(bodyContent)
-        });
-        const data = await response.json();
-        /* if (!data) return; */
-        console.log(data)
+        try {
+            const response = await fetch(`${API_URL}customer/user/preferences/save/${selectedPreference.saveApiEndpoint}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${cookies.getCookie('token')}`
+                },
+                body: JSON.stringify(bodyContent)
+            });
+
+            if (response.ok) {
+                setShow(false);
+                setRefresh(!refresh);
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (

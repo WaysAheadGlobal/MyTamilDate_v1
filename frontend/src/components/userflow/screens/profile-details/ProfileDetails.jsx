@@ -100,7 +100,7 @@ export default function ProfileDetails() {
                         <path d="M19 5L5 19M5.00001 5L19 19" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </button>
-                <Carousel fade slide controls={false} interval={null} touch>
+                <Carousel slide controls={false} interval={null} touch>
                     {
                         media.map((photo, index) => (
                             <Carousel.Item key={index} as="div">
@@ -254,7 +254,7 @@ export default function ProfileDetails() {
                                     </linearGradient>
                                 </defs>
                             </svg>
-                            English, Tamil
+                            {profile.languages}
                         </span>
                         <span>
                             <svg width="24" height="26" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg">
