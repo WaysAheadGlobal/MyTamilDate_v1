@@ -3,6 +3,7 @@ import { db } from "../../../../db/db";
 import { UserRequest } from "../../../types/types";
 import { verifyUser } from "../../../middleware/verifyUser";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
+import UserApprovalEnum from "../../../enums/UserApprovalEnum";
 
 const userFlowRouter = Router();
 
@@ -105,7 +106,7 @@ async function getUserPreferences(userId: string) {
             COALESCE(f.age_from, (FLOOR(DATEDIFF(NOW(), up.birthday) / 365) - 5)) AS age_from,
             COALESCE(f.age_to, (FLOOR(DATEDIFF(NOW(), up.birthday) / 365) + 10)) AS age_to,
             COALESCE(f.religion_id, up.religion_id) AS religion,
-            COALESCE((SELECT CONCAT(l.continent, ' ', l.id) FROM locations l WHERE fl.location_id = l.id), (SELECT CONCAT(l.continent, ' ', l.id) FROM locations l WHERE up.location_id = l.id), 'North America') AS location,
+            COALESCE((SELECT l.continent FROM locations l WHERE fl.location_id = l.id), (SELECT l.continent FROM locations l WHERE up.location_id = l.id), 'North America') AS location,
             COALESCE(f.education_id, up.study_id) AS education,
             COALESCE(f.want_kids_id, up.want_kid_id) AS want_kids,
             COALESCE(f.have_kids_id, up.have_kid_id) AS have_kids,
@@ -162,7 +163,7 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
     const userPreferences: any = await getUserPreferences(req.userId);
 
     const userLocationPreferenceOrder = getLocationOrder(userPreferences.location);
-
+    
     if (currentUserFilters) {
         //* preferences on flow
         //* 1st Wave - Without age extension and all the preferences (perfect match)
@@ -221,9 +222,12 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                     FROM 
                         user_profiles up_inner 
                     INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
+                    INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
                     WHERE 
-                        up_inner.user_id != ?
-                        ${whereClauses.length > 0 ? "AND " + whereClauses.join(" AND ") : ""}
+                        up_inner.user_id != ? 
+                        AND l_inner.continent IS NOT NULL
+                        AND u_inner.approval = ${UserApprovalEnum.APPROVED}
+                        ${whereClauses.length > 0 ? " AND " + whereClauses.join(" AND ") : ""}
                     ORDER BY 
                         FIELD(l_inner.continent, ?),
                         up_inner.created_at DESC, 
@@ -270,11 +274,14 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                     FROM 
                         user_profiles up_inner 
                     INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
+                    INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
                     WHERE 
                         up_inner.user_id != ?
                         AND DATEDIFF(NOW(), up_inner.birthday) BETWEEN (DATEDIFF(NOW(), ?) - (5 * 365)) AND (DATEDIFF(NOW(), ?) + (10 * 365))
                         AND up_inner.gender = ?
                         AND up_inner.want_gender = ?
+                        AND l_inner.continent IS NOT NULL
+                        AND u_inner.approval = ${UserApprovalEnum.APPROVED}
                     ORDER BY 
                         FIELD(l_inner.continent, ?),
                         up_inner.created_at DESC, 
@@ -514,16 +521,16 @@ userFlowRouter.get("/profile/:id", (req: UserRequest, res) => {
 userFlowRouter.get("/preferences", async (req: UserRequest, res) => {
     db.query<RowDataPacket[]>(`
         SELECT
-        COALESCE((SELECT g.name FROM genders g WHERE f.gender_id = g.id), (SELECT g.name FROM genders g WHERE up.want_gender = g.id)) AS gender,
-        COALESCE(f.age_from, (FLOOR(DATEDIFF(NOW(), up.birthday) / 365) - 5)) AS age_from,
-        COALESCE(f.age_to, (FLOOR(DATEDIFF(NOW(), up.birthday) / 365) + 10)) AS age_to,
-        COALESCE((SELECT r.name FROM religions r WHERE f.religion_id = r.id), (SELECT r.name FROM religions r WHERE up.religion_id = r.id)) AS religion,
-        COALESCE((SELECT CONCAT(l.location_string, ', ', l.country) FROM locations l WHERE fl.location_id = l.id), (SELECT CONCAT(l.location_string, ', ', l.country) FROM locations l WHERE up.location_id = l.id)) AS location,
-        COALESCE((SELECT s.name FROM studies s WHERE f.education_id = s.id), (SELECT s.name FROM studies s WHERE up.study_id = s.id)) AS education,
-        COALESCE((SELECT wk.name FROM want_kids wk WHERE f.want_kids_id = wk.id), (SELECT wk.name FROM want_kids wk WHERE up.want_kid_id = wk.id)) AS want_kids,
-        COALESCE((SELECT hk.name FROM have_kids hk WHERE f.have_kids_id = hk.id), (SELECT hk.name FROM have_kids hk WHERE up.have_kid_id = hk.id)) AS have_kids,
-        COALESCE((SELECT sm.name FROM smokes sm WHERE f.smoking_id = sm.id), (SELECT sm.name FROM smokes sm WHERE up.smoke_id = sm.id)) AS smoking,
-        COALESCE((SELECT d.name FROM drinks d WHERE f.drinks_id = d.id), (SELECT d.name FROM drinks d WHERE up.drink_id = d.id)) AS drinking
+        (SELECT g.name FROM genders g WHERE f.gender_id = g.id) AS gender,
+        f.age_from,
+        f.age_to,
+        (SELECT r.name FROM religions r WHERE f.religion_id = r.id) AS religion,
+        (SELECT CONCAT(l.location_string, ', ', l.country) FROM locations l WHERE fl.location_id = l.id) AS location,
+        (SELECT s.name FROM studies s WHERE f.education_id = s.id) AS education,
+        (SELECT wk.name FROM want_kids wk WHERE f.want_kids_id = wk.id) AS want_kids,
+        (SELECT hk.name FROM have_kids hk WHERE f.have_kids_id = hk.id) AS have_kids,
+        (SELECT sm.name FROM smokes sm WHERE f.smoking_id = sm.id) AS smoking,
+        (SELECT d.name FROM drinks d WHERE f.drinks_id = d.id) AS drinking
         FROM user_filters uf
         INNER JOIN filters f ON f.id = uf.filter_id
         INNER JOIN user_profiles up ON up.user_id = uf.user_id
@@ -622,7 +629,7 @@ userFlowRouter.put("/preferences/save/age", (req: UserRequest, res) => {
 });
 
 userFlowRouter.put("/preferences/save/location", (req: UserRequest, res) => {
-    const locationId = req.body.location;
+    const locationId = req.body.location_id;
 
     if (!locationId) {
         res.status(400).send({ message: "Bad request" });
@@ -631,6 +638,7 @@ userFlowRouter.put("/preferences/save/location", (req: UserRequest, res) => {
 
     db.beginTransaction(async (err) => {
         if (err) {
+            console.log(err)
             res.status(500).send({ message: "Internal server error" });
             return;
         }
@@ -644,6 +652,7 @@ userFlowRouter.put("/preferences/save/location", (req: UserRequest, res) => {
                 insertedFilter = await new Promise((resolve, reject) => {
                     db.query(`INSERT INTO filters (location_type) VALUES (?);`, [0], (err, result) => {
                         if (err) {
+                            console.log(err)
                             reject(err);
                             return;
                         }
@@ -654,8 +663,9 @@ userFlowRouter.put("/preferences/save/location", (req: UserRequest, res) => {
             }
 
             const userLocationFilter: any = await new Promise((resolve, reject) => {
-                db.query<RowDataPacket[]>(`SELECT * FROM filter_locations WHERE filter_id = ?;`, [userFilters.filter_id ?? insertedFilter.insertId], (err, result) => {
+                db.query<RowDataPacket[]>(`SELECT * FROM filter_locations WHERE filters_id = ?;`, [userFilters.filter_id ?? insertedFilter.insertId], (err, result) => {
                     if (err) {
+                        console.log(err)
                         reject(err);
                         return;
                     }
@@ -664,16 +674,20 @@ userFlowRouter.put("/preferences/save/location", (req: UserRequest, res) => {
                 });
             });
 
-            let query = `UPDATE filter_locations SET location_id = ? WHERE filter_id = ?;`;
-            let params = [locationId, userLocationFilter.filter_id];
+            let query;
+            let params;
 
             if (!userLocationFilter) {
-                query = `INSERT INTO filter_locations (location_id, filter_id) VALUES (?, ?);`;
-                params = [locationId, insertedFilter.insertId ?? userFilters.id];
+                query = `INSERT INTO filter_locations (location_id, filters_id) VALUES (?, ?);`;
+                params = [locationId, insertedFilter?.insertId ?? userFilters.id];
+            } else {
+                query = `UPDATE filter_locations SET location_id = ? WHERE filters_id = ?;`;
+                params = [locationId, userLocationFilter.filters_id];
             }
 
             db.query(query, params, async (err, result) => {
                 if (err) {
+                    console.log(err)
                     db.rollback(() => {
                         res.status(500).send({ message: "Internal server error" });
                     });
@@ -682,6 +696,7 @@ userFlowRouter.put("/preferences/save/location", (req: UserRequest, res) => {
 
                 db.commit((err) => {
                     if (err) {
+                        console.log(err)
                         db.rollback(() => {
                             res.status(500).send({ message: "Internal server error" });
                         });
@@ -692,6 +707,7 @@ userFlowRouter.put("/preferences/save/location", (req: UserRequest, res) => {
                 });
             });
         } catch (err) {
+            console.log(err)
             db.rollback(() => {
                 res.status(500).send({ message: "Internal server error" });
             });
@@ -735,11 +751,11 @@ userFlowRouter.put("/preferences/save/:field", (req: UserRequest, res) => {
             const userFilters: any = await getUserFilters(req.userId as string);
 
             let query = `UPDATE filters SET ${field} = ? WHERE id = ?;`;
-            let params = [value, userFilters.filter_id];
+            let params = [value === "any" ? null : value, userFilters.filter_id];
 
             if (!userFilters) {
                 query = `INSERT INTO filters (${field}) VALUES (?);`;
-                params = [value];
+                params = [value === "any" ? null : value];
             }
 
             db.query<ResultSetHeader>(query, params, async (err, result) => {

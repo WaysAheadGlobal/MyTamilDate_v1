@@ -3,6 +3,8 @@ import { API_URL } from '../../../api';
 import { useCookies } from '../../../hooks/useCookies';
 import Card from '../components/card/Card';
 import Sidebar from '../components/sidebar/sidebar';
+/* import { Modal } from 'react-bootstrap';
+import Button from '../components/button/Button'; */
 
 export default function Home() {
     const [loading, setLoading] = useState(true);
@@ -34,6 +36,7 @@ export default function Home() {
      */
     const [profiles, setProfiles] = useState([]);
     const [abortController, setAbortController] = useState(new AbortController());
+    /* const [show, setShow] = useState(true); */
 
     useEffect(() => {
         const storedWave = cookies.getCookie('wave');
@@ -49,8 +52,6 @@ export default function Home() {
         (async () => {
             setLoading(true);
 
-            console.log(wave)
-
             const response = await fetch(`${API_URL}customer/user/profiles?page=${page}&wave=${wave}`, {
                 headers: {
                     'Authorization': `Bearer ${cookies.getCookie('token')}`,
@@ -62,12 +63,10 @@ export default function Home() {
 
             if (response.ok) {
                 if (data.length === 0 && wave < 3) {
-                    console.log(true)
                     setWave(wave + 1);
                     cookies.setCookie('wave', wave + 1);
                 }
                 setProfiles([...profiles, ...data]);
-                console.log(data);
             }
 
             setLoading(false);
@@ -116,6 +115,43 @@ export default function Home() {
 
     return (
         <Sidebar>
+            {/* <Modal centered show={show}>
+                <Modal.Body>
+                    {
+                        wave === 2 && (
+                            <p
+                                style={{
+                                    textAlign: "center",
+                                    fontSize: "large",
+                                    fontWeight: "600",
+
+                                }}
+                            >
+                                We've shown you the users who meet your criteria. Let's help you discover some other awesome users you may not have considered!
+                            </p>
+                        )
+                    }
+                    {
+                        wave === 3 && (
+                            <p
+                                style={{
+                                    textAlign: "center",
+                                    fontSize: "large",
+                                    fontWeight: "600",
+
+                                }}
+                            >
+                                We've shown you the users who meet your criteria. Let's help you discover some other awesome users you may not have considered!
+                            </p>
+                        )
+                    }
+                </Modal.Body>
+                <Button style={{
+                    borderRadius: "9999px",
+                    marginTop: "3rem",
+                    marginInline: "auto",
+                }} onClick={() => setShow(false)}>Close</Button>
+            </Modal> */}
             <div
                 style={{
                     flex: "1",

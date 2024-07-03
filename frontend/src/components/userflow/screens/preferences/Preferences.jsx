@@ -17,9 +17,17 @@ const Forms = {
             flexWrap: "wrap",
             gap: "0.5rem"
         }}>
+            {
+                firstOption && (
+                    <label htmlFor={firstOption.label} className={styles.inputRadio}>
+                        <input id={firstOption.label} value={firstOption.value} checked={!value} onChange={() => setValue(firstOption.value)} type="radio" />
+                        <p>{firstOption.label}</p>
+                    </label>
+                )
+            }
             {options?.map((option, index) => (
                 <label key={index} htmlFor={option.name} className={styles.inputRadio}>
-                    <input id={option.name} value={option.id} onChange={() => setValue(option.id)} type="radio" />
+                    <input id={option.name} value={option.id} checked={option.id === value} onChange={() => setValue(option.id)} type="radio" />
                     <p>{option.name}</p>
                 </label>
             ))}
@@ -44,23 +52,29 @@ const Forms = {
         )
     },
     Location: ({ options, value, setValue, firstOption }) => {
-        const [selectedCountry, setSelectedCountry] = useState("");
-        const [selectedCity, setSelectedCity] = useState("");
-        const [countrySelectCollasped, setCountrySelectCollasped] = useState(true);
+        const [selectedCountry, setSelectedCountry] = useState(value.split(",")[1] ?? "");
+        const [selectedCity, setSelectedCity] = useState(value.split(",")[0] ?? "");
+        const [countrySelectCollasped, setCountrySelectCollasped] = useState(!!value);
 
         useEffect(() => {
             setValue(selectedCity);
-        }, [selectedCity])
+        }, [selectedCity]);
+
+        useEffect(() => {
+            if (!countrySelectCollasped) {
+                setValue("any");
+            }
+        }, [countrySelectCollasped])
 
         return (
             <>
                 <label htmlFor="country" className={styles.locationRadio}>
                     <p>Select Country</p>
-                    <input type="radio" id="country" name="country-option" onClick={() => setCountrySelectCollasped(false)} />
+                    <input type="radio" id="country" name="country-option" checked={value} onClick={() => setCountrySelectCollasped(false)} />
                 </label>
                 <label htmlFor="any" className={styles.locationRadio}>
                     <p>Any</p>
-                    <input type="radio" id="any" name="country-option" defaultChecked onClick={() => setCountrySelectCollasped(true)} />
+                    <input type="radio" id="any" name="country-option" value="any" checked={!value} onClick={() => setCountrySelectCollasped(true)} />
                 </label>
                 {!countrySelectCollasped && (
                     <>
@@ -135,7 +149,7 @@ const Forms = {
         )
     },
     Select: ({ options, value, setValue, firstOption }) => {
-        const [selectedOption, setSelectedOption] = useState("Select a option");
+        const [selectedOption, setSelectedOption] = useState(value ?? "Select a option");
         const [open, setOpen] = useState(false);
 
         useEffect(() => {
@@ -247,7 +261,27 @@ export default function Preferences() {
 
             console.log(data);
 
-            setSelectedPreferenceOptions(data);
+            setSelectedPreferenceOptions(data)
+
+            if (selectedPreference.saveApiEndpoint === "gender_id") {
+                setValue(preferences.gender);
+            } else if (selectedPreference.saveApiEndpoint === "age") {
+                setValue([preferences.age_from, preferences.age_to]);
+            } else if (selectedPreference.saveApiEndpoint === "location") {
+                setValue(preferences.location);
+            } else if (selectedPreference.saveApiEndpoint === "smoking_id") {
+                setValue(preferences.smoking);
+            } else if (selectedPreference.saveApiEndpoint === "drinks_id") {
+                setValue(preferences.drinking);
+            } else if (selectedPreference.saveApiEndpoint === "education_id") {
+                setValue(preferences.education);
+            } else if (selectedPreference.saveApiEndpoint === "religion_id") {
+                setValue(preferences.religion);
+            } else if (selectedPreference.saveApiEndpoint === "have_kids_id") {
+                setValue(preferences.have_kids);
+            } else if (selectedPreference.saveApiEndpoint === "want_kids_id") {
+                setValue(preferences.want_kids);
+            }
 
         })()
     }, [show]);
@@ -314,10 +348,17 @@ export default function Preferences() {
                         }}
                         onSubmit={handlePreferenceSave}
                     >
-                        <Form value={value} setValue={setValue} options={selectedPreferenceOptions} firstOption={{
-                            value: "NULL",
-                            label: "Any"
-                        }} />
+                        <Form
+                            value={value}
+                            setValue={setValue}
+                            options={selectedPreferenceOptions}
+                            firstOption={
+                                selectedPreference.optionsApiEndpoint !== "genders" ? {
+                                    value: "any",
+                                    label: selectedPreference.optionsApiEndpoint === "location" ? "Any" : "Open to all"
+                                } : null
+                            }
+                        />
                         <div style={{ flexGrow: "1" }}></div>
                         <div style={{
                             marginTop: "1rem",
