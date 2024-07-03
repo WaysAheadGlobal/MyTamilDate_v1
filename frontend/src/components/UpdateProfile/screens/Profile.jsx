@@ -29,9 +29,8 @@ const Navigate = useNavigate();
           
           <div className={profile.maincontainer}>
             <ProfileProgress completion={completion} />
-            <Image style={{ marginTop: "90px", width: "24px", height: "24px" }} src={editicon} />
+            <Image style={{ marginTop: "90px", width: "24px", height: "24px" }} onClick={()=> Navigate("/editpicture")} src={editicon} />
           </div>
-
           <div className="row d-flex justify-content-center">
             <div className="d-flex flex-column align-items-center">
               <p style={{ fontSize: '18px', color: "#515151" }}>Mandeep</p>

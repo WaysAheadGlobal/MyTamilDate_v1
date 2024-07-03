@@ -114,7 +114,7 @@ export default function Sidebar({ children }) {
                     window.location.pathname.split("/").pop() === "home" && <img src={logo} alt="" />
                 }
                 {children}
-                <Navbar />
+                {/* <Navbar /> */}
             </div>
             <aside className={styles['upcoming']}>
                 <div>
