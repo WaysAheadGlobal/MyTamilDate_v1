@@ -91,6 +91,8 @@ import Fillpaymentdetails from "./components/Account-Settings/payment/SelectPlan
 import UpdateProfile from "./components/UpdateProfile/screens/Profile";
 import Preview from "./components/UpdateProfile/screens/Preview/Preview";
 import { useCookies } from "./hooks/useCookies";
+import EditPicture from "./components/UpdateProfile/screens/PictureEdit/pictureedit";
+import UpdateAnswers from "./components/UpdateProfile/screens/EditAnswerAndQuestion/editanswer";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -100,7 +102,6 @@ function App() {
   const location = useLocation();
   const admintoken = getCookie('Admintoken')
 
-  console.log(admintoken);
   const protectedRoutes = [
     "/dashboard",
     "/team",
@@ -210,14 +211,17 @@ function App() {
               <Route path="/unsubscribe" element={<UnsubscribeComponent />}></Route>
               <Route path="/PrivacyPolicyDetails" element={<PrivacyPolicySetting />}></Route>
               <Route path="/termandconditions" element={<TermsConditions />}></Route>
-              <Route path="/paymentmethod" element={<PaymentMethod />}></Route>
-              <Route path="/billinghistory" element={<BillingHistory />}></Route>
-              <Route path="/selectplan" element={<Selectplan />}></Route>
-              <Route path="/addpaymentmethod" element={<AddPaymentMethod />}></Route>
-              <Route path="/paymentdetails" element={<Fillpaymentdetails />}></Route>
-              <Route path="/updateprofile" element={<UpdateProfile />}></Route>
-              <Route path="/preview" element={<Preview />}></Route>
+              <Route path="/paymentmethod" element = {<PaymentMethod/>}></Route>
+              <Route path="/billinghistory" element = {<BillingHistory/>}></Route>
+               <Route path="/selectplan" element={<Selectplan/>}></Route>
+               <Route path="/addpaymentmethod" element = {<AddPaymentMethod/>}></Route>
+               <Route path = "/paymentdetails" element = {<Fillpaymentdetails/>}></Route>
 
+               <Route path="/updateprofile" element= {<UpdateProfile/>}></Route>
+               <Route path="/preview" element={<Preview/>}></Route>
+               <Route path = "/editpicture" element={<EditPicture/>}></Route>
+               <Route path="/updateanswer" element={<UpdateAnswers/>}></Route>
+              
 
               <Route path="/user/home" element={<Home />} />
               <Route path="/user/recommendations" element={<Recommendations />} />

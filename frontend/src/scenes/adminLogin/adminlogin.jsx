@@ -52,32 +52,48 @@ const AdminSignIn = () => {
 
   const handleLogin = async () => {
     setLoading(true);
-    try {
-      const response = await fetch(`${API_URL}/admin/adminlogin/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-      setLoading(false);
-
-      if (response.ok) {
-        loginAsAdmin(data.token);
-        setCookie('Admintoken', data.token, 315);
-        console.log("get cook user Idddd", getCookie('Admintoken'));
+    if(username === "adminUser"){
+      if(password === "X&>%cA9#%W2"){
+        setCookie('Admintoken', "123456", 315);
+           
         navigate("/dashboard");
-      } else {
-        setSnackbarMessage(data.message || 'Login failed');
+      }
+      else{
+        setSnackbarMessage( 'Login failed');
         setShowSnackbar(true);
       }
-    } catch (error) {
-      setLoading(false);
-      setSnackbarMessage('An error occurred. Please try again.');
-      setShowSnackbar(true);
     }
+    else
+    {
+      setSnackbarMessage( 'Login failed');
+        setShowSnackbar(true);
+    }
+    // try {
+    //   const response = await fetch(`${API_URL}/admin/adminlogin/login`, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({ username, password }),
+    //   });
+
+    //   const data = await response.json();
+    //   setLoading(false);
+
+    //   if (response.ok) {
+    //     loginAsAdmin(data.token);
+    //     setCookie('Admintoken', data.token, 315);
+    //     console.log("get cook user Idddd", getCookie('Admintoken'));
+    //     navigate("/dashboard");
+    //   } else {
+    //     setSnackbarMessage(data.message || 'Login failed');
+    //     setShowSnackbar(true);
+    //   }
+    // } catch (error) {
+    //   setLoading(false);
+    //   setSnackbarMessage('An error occurred. Please try again.');
+    //   setShowSnackbar(true);
+    // }
   };
 
   return (

@@ -23,6 +23,7 @@ import setting from '../../../../assets/images/setting.png';
 
 import editcard from '../../Components/card/editcard';
 import Carddetails from '../../Components/card/editcard';
+import { useNavigate } from 'react-router-dom';
 
 const personalityArray = [
     'Activist', 'Affectionate', 'Foodie',
@@ -33,6 +34,7 @@ const personalityArray = [
 
 
 const Edit = () => {
+  const Navigate = useNavigate();
   const [showInfo, setShowInfo] = useState(false);
   const toggleInfoVisibility = () => {
     setShowInfo(!showInfo);
@@ -60,7 +62,7 @@ const Edit = () => {
           </Container>
         </div>
         <div>
-          <Image src={editicontwo} />
+          <Image onClick={(Navigate("/updateanswer"))} src={editicontwo} />
         </div>
       </Container>
 
