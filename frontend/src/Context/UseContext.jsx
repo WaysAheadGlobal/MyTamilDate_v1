@@ -43,7 +43,7 @@ export const AppContextProvider = ({ children }) => {
 
   const logout = () => {
     setIsAdmin(false);
-    deleteCookie('userId'); // Remove the admin login state from cookies
+    deleteCookie('userId'); 
   };
 
   const togglePhoneNumber = () => setShowFullPhoneNumber(!showFullPhoneNumberemail);

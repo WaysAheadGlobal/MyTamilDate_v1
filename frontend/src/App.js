@@ -90,13 +90,17 @@ import AddPaymentMethod from "./components/Account-Settings/payment/addpaymentme
 import Fillpaymentdetails from "./components/Account-Settings/payment/SelectPlan/FIllDetailForPayment/fillpaymentdetails";
 import UpdateProfile from "./components/UpdateProfile/screens/Profile";
 import Preview from "./components/UpdateProfile/screens/Preview/Preview";
+import { useCookies } from "./hooks/useCookies";
+
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
-  const { isAdmin } = useAppContext();
+  // const { isAdmin } = useAppContext();
+  const {getCookie,setCookie} = useCookies();
   const location = useLocation();
+const admintoken = getCookie('Admintoken')
 
-  // List of protected route
+console.log(admintoken);
   const protectedRoutes = [
     "/dashboard",
     "/team",
@@ -133,9 +137,9 @@ function App() {
           maxWidth: "1636px",
           margin: "0 auto",
         }}>
-          {isAdmin && isProtectedRoute && <Sidebaradmin isSidebar={isSidebar} />}
+          {admintoken && isProtectedRoute && <Sidebaradmin isSidebar={isSidebar} />}
           <main className="content">
-            {isAdmin && isProtectedRoute && <Topbar setIsSidebar={setIsSidebar} />}
+            {admintoken && isProtectedRoute && <Topbar setIsSidebar={setIsSidebar} />}
             <Routes>
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/team" element={<ProtectedRoute><Team /></ProtectedRoute>} />

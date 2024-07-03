@@ -16,6 +16,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { useAppContext } from "../../Context/UseContext";
 import "./Sidebar.css"; // Import custom CSS
+import { useCookies } from "../../hooks/useCookies";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -80,12 +81,13 @@ const Sidebar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const{deleteCookie} = useCookies();
   const [selected, setSelected] = useState("Dashboard");
   const navigate = useNavigate();
   const { loginAsAdmin, logout } = useAppContext();
 
   const handleLogout = () => {
-    logout();
+    deleteCookie("Admintoken");
     navigate("/adminlogin");
   };
 

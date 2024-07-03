@@ -12,6 +12,7 @@ const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+  const {deleteCookie} = useCookies();
   const navigate = useNavigate();
   const { loginAsAdmin, logout } = useAppContext();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -24,7 +25,7 @@ const Topbar = () => {
   };
   const handleLogout = () => {
     handleMenuClose();
-    logout();
+    deleteCookie("Admintoken");
     navigate("/adminlogin");
   };
 
@@ -45,7 +46,17 @@ const Topbar = () => {
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          <MenuItem sx={{
+             width: '90%',
+             
+            
+             mr: 6,
+             py: 1.5,
+             background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+             color: '#FFF',
+             fontWeight: 'bold',
+          marginLeft : "10px"
+          }}  onClick={handleLogout}>Logout</MenuItem>
         </Menu>
       </Box>
     </Box>
