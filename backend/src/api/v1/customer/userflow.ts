@@ -2,6 +2,7 @@ import { Router } from "express";
 import { db } from "../../../../db/db";
 import { UserRequest } from "../../../types/types";
 import { verifyUser } from "../../../middleware/verifyUser";
+import { ResultSetHeader, RowDataPacket } from "mysql2";
 
 const userFlowRouter = Router();
 
@@ -85,7 +86,7 @@ userFlowRouter.use(verifyUser);
 
 async function getUserFilters(userId: string) {
     return new Promise((resolve, reject) => {
-        db.query("SELECT uf.filter_id, f.* FROM user_filters uf INNER JOIN filters f WHERE uf.filter_id = f.id AND uf.user_id = ?;", [userId], (err, result) => {
+        db.query<RowDataPacket[]>("SELECT uf.filter_id, f.* FROM user_filters uf INNER JOIN filters f WHERE uf.filter_id = f.id AND uf.user_id = ?;", [userId], (err, result) => {
             if (err) {
                 reject(err);
                 return;
@@ -98,7 +99,7 @@ async function getUserFilters(userId: string) {
 
 async function getUserPreferences(userId: string) {
     return new Promise((resolve, reject) => {
-        db.query(`
+        db.query<RowDataPacket[]>(`
             SELECT
             COALESCE(f.gender_id, up.want_gender) AS gender,
             COALESCE(f.age_from, (FLOOR(DATEDIFF(NOW(), up.birthday) / 365) - 5)) AS age_from,
@@ -157,55 +158,220 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
     let query = "";
     let params = [] as any[];
 
-    const currentUserFilters = await getUserFilters(req.userId);
+    const currentUserFilters: any = await getUserFilters(req.userId);
     const userPreferences: any = await getUserPreferences(req.userId);
 
     const userLocationPreferenceOrder = getLocationOrder(userPreferences.location);
 
-    /* if (currentUserFilters) {
+    if (currentUserFilters) {
         //* preferences on flow
-
         //* 1st Wave - Without age extension and all the preferences (perfect match)
 
+        let whereClauses = [];
+        let queryParams = [];
+
+        if (wave === 1) {
+            console.log("first wave")
+
+            if (currentUserFilters.age_from && currentUserFilters.age_to) {
+                whereClauses.push("FLOOR(DATEDIFF(NOW(), up_inner.birthday) / 365) BETWEEN ? AND ?");
+                queryParams.push(currentUserFilters.age_from);
+                queryParams.push(currentUserFilters.age_to);
+            }
+
+            if (currentUserFilters.gender_id) {
+                whereClauses.push("up_inner.gender = ?");
+                queryParams.push(currentUserFilters.gender_id);
+            }
+
+            if (currentUserFilters.religion_id) {
+                whereClauses.push("up_inner.religion_id = ?");
+                queryParams.push(currentUserFilters.religion_id);
+            }
+
+            if (currentUserFilters.education_id) {
+                whereClauses.push("up_inner.study_id = ?");
+                queryParams.push(currentUserFilters.education_id);
+            }
+
+            if (currentUserFilters.want_kids_id) {
+                whereClauses.push("up_inner.want_kid_id = ?");
+                queryParams.push(currentUserFilters.want_kids_id);
+            }
+
+            if (currentUserFilters.have_kids_id) {
+                whereClauses.push("up_inner.have_kid_id = ?");
+                queryParams.push(currentUserFilters.have_kids_id);
+            }
+
+            if (currentUserFilters.smoking_id) {
+                whereClauses.push("up_inner.smoke_id = ?");
+                queryParams.push(currentUserFilters.smoking_id);
+            }
+
+            if (currentUserFilters.drinks_id) {
+                whereClauses.push("up_inner.drink_id = ?");
+                queryParams.push(currentUserFilters.drinks_id);
+            }
+
+            query = `
+                WITH distinct_user_ids AS (
+                    SELECT DISTINCT 
+                        up_inner.id 
+                    FROM 
+                        user_profiles up_inner 
+                    INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
+                    WHERE 
+                        up_inner.user_id != ?
+                        ${whereClauses.length > 0 ? "AND " + whereClauses.join(" AND ") : ""}
+                    ORDER BY 
+                        FIELD(l_inner.continent, ?),
+                        up_inner.created_at DESC, 
+                        up_inner.id DESC 
+                    LIMIT ? OFFSET ?
+                )
+                SELECT 
+                    up.id, 
+                    up.user_id, 
+                    up.first_name, 
+                    up.last_name, 
+                    up.birthday, 
+                    m.hash, 
+                    m.extension, 
+                    m.type, 
+                    up.location_id, 
+                    up.job_id, 
+                    up.created_at,
+                    l.country,
+                    l.continent,
+                    l.location_string,
+                    j.name as job
+                FROM distinct_user_ids dup
+                JOIN user_profiles up ON dup.id = up.id 
+                JOIN media m ON up.user_id = m.user_id 
+                JOIN locations l ON up.location_id = l.id
+                JOIN jobs j ON j.id = up.job_id
+                WHERE m.type IN (1, 31);
+            `;
+
+            params = [
+                req.userId,
+                ...queryParams,
+                userLocationPreferenceOrder,
+                limit,
+                (pageNo - 1) * limit,
+            ];
+        } else if (wave === 2) {
+            console.log("second wave")
+            query = `
+                WITH distinct_user_ids AS (
+                    SELECT DISTINCT 
+                        up_inner.id 
+                    FROM 
+                        user_profiles up_inner 
+                    INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
+                    WHERE 
+                        up_inner.user_id != ?
+                        AND DATEDIFF(NOW(), up_inner.birthday) BETWEEN (DATEDIFF(NOW(), ?) - (5 * 365)) AND (DATEDIFF(NOW(), ?) + (10 * 365))
+                        AND up_inner.gender = ?
+                        AND up_inner.want_gender = ?
+                    ORDER BY 
+                        FIELD(l_inner.continent, ?),
+                        up_inner.created_at DESC, 
+                        up_inner.id DESC 
+                    LIMIT ? OFFSET ?
+                )
+                SELECT 
+                    up.id, 
+                    up.user_id, 
+                    up.first_name, 
+                    up.last_name, 
+                    up.birthday, 
+                    m.hash, 
+                    m.extension, 
+                    m.type, 
+                    up.location_id, 
+                    up.job_id, 
+                    up.created_at,
+                    l.country,
+                    l.continent,
+                    l.location_string,
+                    j.name as job
+                FROM distinct_user_ids dup
+                JOIN user_profiles up ON dup.id = up.id 
+                JOIN media m ON up.user_id = m.user_id 
+                JOIN locations l ON up.location_id = l.id
+                JOIN jobs j ON j.id = up.job_id
+                WHERE m.type IN (1, 31);
+            `;
+
+            params = [
+                req.userId,
+                req.user.birthday,
+                req.user.birthday,
+                req.user.want_gender,
+                req.user.gender,
+                userLocationPreferenceOrder,
+                limit,
+                (pageNo - 1) * limit,
+            ];
+        } else {
+            console.log("Third wave");
+
+            query = `
+                WITH distinct_user_ids AS (
+                    SELECT DISTINCT 
+                        up_inner.id 
+                    FROM 
+                        user_profiles up_inner 
+                    INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
+                    WHERE 
+                        up_inner.user_id != ?
+                        AND up_inner.gender = ?
+                        AND up_inner.want_gender = ?
+                    ORDER BY 
+                        up_inner.created_at DESC, 
+                        up_inner.id DESC 
+                    LIMIT ? OFFSET ?
+                )
+                SELECT 
+                    up.id, 
+                    up.user_id, 
+                    up.first_name, 
+                    up.last_name, 
+                    up.birthday, 
+                    m.hash, 
+                    m.extension, 
+                    m.type, 
+                    up.location_id, 
+                    up.job_id, 
+                    up.created_at,
+                    l.country,
+                    l.continent,
+                    l.location_string,
+                    j.name as job
+                FROM distinct_user_ids dup
+                JOIN user_profiles up ON dup.id = up.id 
+                JOIN media m ON up.user_id = m.user_id 
+                JOIN locations l ON up.location_id = l.id
+                JOIN jobs j ON j.id = up.job_id
+                WHERE m.type IN (1, 31);
+            `;
+
+            params = [
+                req.userId,
+                req.user.want_gender,
+                req.user.gender,
+                limit,
+                (pageNo - 1) * limit,
+            ];
+        }
+
+    } else {
+
+        //* preferences off flow
+
         query = `
-            SELECT 
-                up.id, 
-                up.user_id, 
-                up.first_name, 
-                up.last_name, 
-                up.birthday, 
-                m.hash, 
-                m.extension, 
-                m.type, 
-                up.location_id, 
-                up.job_id, 
-                up.created_at,
-                l.country,
-                l.continent,
-                l.location_string,
-                j.name as job
-            FROM user_profiles up ON dup.id = up.id 
-            JOIN media m ON up.user_id = m.user_id 
-            JOIN locations l ON up.location_id = l.id
-            JOIN jobs j ON j.id = up.job_id
-            WHERE m.type IN (1, 31)
-        `;
-
-        params = [
-            req.userId,
-            req.user.want_gender,
-            req.user.gender,
-            req.user.birthday,
-            req.user.birthday,
-            userLocationPreferenceOrder,
-            limit,
-            (pageNo - 1) * limit,
-        ];
-    } else { */
-
-    //* preferences off flow
-
-    query = `
             WITH distinct_user_ids AS (
                 SELECT DISTINCT 
                     up_inner.id 
@@ -249,19 +415,19 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
             WHERE m.type IN (1, 31)
         `;
 
-    params = [
-        req.userId,
-        req.user.want_gender,
-        req.user.gender,
-        req.user.birthday,
-        req.user.birthday,
-        userLocationPreferenceOrder,
-        limit,
-        (pageNo - 1) * limit,
-    ];
-    //}
+        params = [
+            req.userId,
+            req.user.want_gender,
+            req.user.gender,
+            req.user.birthday,
+            req.user.birthday,
+            userLocationPreferenceOrder,
+            limit,
+            (pageNo - 1) * limit,
+        ];
+    }
 
-    db.query(query, params, (err, result) => {
+    db.query<RowDataPacket[]>(query, params, (err, result) => {
         if (err) {
             console.log(err)
             res.status(500).send({ message: "Internal server error" });
@@ -307,14 +473,14 @@ userFlowRouter.get("/profile/:id", (req: UserRequest, res) => {
         WHERE up.user_id = ?;
         `;
 
-    db.query(query, [req.params.id], (err, result) => {
+    db.query<RowDataPacket[]>(query, [req.params.id], (err, result) => {
         if (err) {
             console.log(err)
             res.status(500).send({ message: "Internal server error" });
             return;
         }
 
-        db.query("SELECT m.id, m.hash, m.extension, m.type FROM media m WHERE m.user_id = ?", [req.params.id], (err, mediaResult) => {
+        db.query<RowDataPacket[]>("SELECT m.id, m.hash, m.extension, m.type FROM media m WHERE m.user_id = ?", [req.params.id], (err, mediaResult) => {
             if (err) {
                 console.log(err)
                 res.status(500).send({ message: "Internal server error" });
@@ -326,7 +492,7 @@ userFlowRouter.get("/profile/:id", (req: UserRequest, res) => {
             }
 
 
-            db.query("SELECT p.name FROM user_personalities as up INNER JOIN personalities as p WHERE up.personality_id = p.id AND up.user_id = ?", [req.params.id], (err, personalityResult) => {
+            db.query<RowDataPacket[]>("SELECT p.name FROM user_personalities as up INNER JOIN personalities as p WHERE up.personality_id = p.id AND up.user_id = ?", [req.params.id], (err, personalityResult) => {
 
                 if (err) {
                     console.log(err)
@@ -335,7 +501,7 @@ userFlowRouter.get("/profile/:id", (req: UserRequest, res) => {
                 }
 
                 if (personalityResult.length !== 0) {
-                    result[0].personalities = personalityResult.map((personality: { name: string }) => personality.name);
+                    result[0].personalities = personalityResult.map((personality: any) => personality.name);
                 }
 
                 res.status(200).send(result[0]);
@@ -346,7 +512,7 @@ userFlowRouter.get("/profile/:id", (req: UserRequest, res) => {
 });
 
 userFlowRouter.get("/preferences", async (req: UserRequest, res) => {
-    db.query(`
+    db.query<RowDataPacket[]>(`
         SELECT
         COALESCE((SELECT g.name FROM genders g WHERE f.gender_id = g.id), (SELECT g.name FROM genders g WHERE up.want_gender = g.id)) AS gender,
         COALESCE(f.age_from, (FLOOR(DATEDIFF(NOW(), up.birthday) / 365) - 5)) AS age_from,
@@ -400,7 +566,7 @@ userFlowRouter.put("/preferences/save/age", (req: UserRequest, res) => {
                 params = [age_from, age_to];
             }
 
-            db.query(query, params, async (err, result) => {
+            db.query<ResultSetHeader>(query, params, async (err, result) => {
                 if (err) {
                     console.log(err)
                     db.rollback(() => {
@@ -413,7 +579,7 @@ userFlowRouter.put("/preferences/save/age", (req: UserRequest, res) => {
                     const addFilterIdInUserFiltersQuery = `INSERT INTO user_filters (user_id, filter_id) VALUES (?, ?);`;
                     try {
                         await new Promise((resolve, reject) => {
-                            db.query(addFilterIdInUserFiltersQuery, [req.userId, result.insertId], (err, result) => {
+                            db.query<ResultSetHeader>(addFilterIdInUserFiltersQuery, [req.userId, result.insertId], (err, result) => {
                                 if (err) {
                                     console.log(err)
                                     reject(err);
@@ -488,7 +654,7 @@ userFlowRouter.put("/preferences/save/location", (req: UserRequest, res) => {
             }
 
             const userLocationFilter: any = await new Promise((resolve, reject) => {
-                db.query(`SELECT * FROM filter_locations WHERE filter_id = ?;`, [userFilters.filter_id ?? insertedFilter.insertId], (err, result) => {
+                db.query<RowDataPacket[]>(`SELECT * FROM filter_locations WHERE filter_id = ?;`, [userFilters.filter_id ?? insertedFilter.insertId], (err, result) => {
                     if (err) {
                         reject(err);
                         return;
@@ -576,7 +742,7 @@ userFlowRouter.put("/preferences/save/:field", (req: UserRequest, res) => {
                 params = [value];
             }
 
-            db.query(query, params, async (err, result) => {
+            db.query<ResultSetHeader>(query, params, async (err, result) => {
                 if (err) {
                     console.log(err);
                     db.rollback(() => {
@@ -589,7 +755,7 @@ userFlowRouter.put("/preferences/save/:field", (req: UserRequest, res) => {
                     const addFilterIdInUserFiltersQuery = `INSERT INTO user_filters (user_id, filter_id) VALUES (?, ?);`;
                     try {
                         await new Promise((resolve, reject) => {
-                            db.query(addFilterIdInUserFiltersQuery, [req.userId, result.insertId], (err, result) => {
+                            db.query<ResultSetHeader>(addFilterIdInUserFiltersQuery, [req.userId, result.insertId], (err, result) => {
                                 if (err) {
                                     console.log(err);
                                     reject(err);
@@ -649,7 +815,7 @@ userFlowRouter.get("/preferences/options/:field", (req: UserRequest, res) => {
     }
 
     if (field === "locations") {
-        db.query("SELECT id, country, location_string FROM locations GROUP BY country, location_string;", (err, result) => {
+        db.query<RowDataPacket[]>("SELECT id, country, location_string FROM locations GROUP BY country, location_string;", (err, result) => {
             if (err) {
                 res.status(500).send({ message: "Internal server error" });
                 return;

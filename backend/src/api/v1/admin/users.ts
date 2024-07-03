@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { AdminRequest } from "../../../types/types";
 import axios from 'axios';
 import { db } from "../../../../db/db";
+import { RowDataPacket } from "mysql2";
 
 const users = Router();
 
@@ -15,7 +16,7 @@ type QueryCallback = (err: Error | null, results: any) => void;
 
 // Helper function to get total count of records
 const getTotalCount = (sql: string, values: any[], callback: (err: Error | null, total: number) => void): void => {
-    db.query(sql, values, (err, results) => {
+    db.query<RowDataPacket[]>(sql, values, (err, results) => {
         if (err) {
             console.error('Error fetching total count:', err);
             callback(err, 0);
@@ -30,22 +31,22 @@ interface MediaItem {
     hash: string;
     extension: string;
     type: number;
-  }
-  
-  users.get('/media/:user_id', (req: AdminRequest, res: Response) => {
-    const userId = req.params.user_id; 
+}
+
+users.get('/media/:user_id', (req: AdminRequest, res: Response) => {
+    const userId = req.params.user_id;
 
     const query = 'SELECT id, hash, extension, type FROM media WHERE user_id = ?';
-  
-    db.query(query, [userId], (err, results: MediaItem[]) => {
-      if (err) {
-        console.error('Error fetching media:', err);
-        return res.status(500).send('Internal Server Error');
-      }
-      res.status(200).json(results);
+
+    db.query<RowDataPacket[]>(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching media:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+        res.status(200).json(results);
     });
-  });
-  
+});
+
 
 // Fetch customer data with pagination
 users.get('/customers', (req: AdminRequest, res: Response) => {
@@ -235,7 +236,7 @@ users.get('/customers/:user_id', (req: AdminRequest, res) => {
         GROUP BY 
             up.id, qa.question_id`;
 
-    db.query(sql, [userId], (err, results) => {
+    db.query<RowDataPacket[]>(sql, [userId], (err, results) => {
         if (err) {
             console.log('Error fetching data:', err);
             res.status(500).send('Internal Server Error');
@@ -422,7 +423,7 @@ users.get('/approval/:user_id', (req: AdminRequest, res: Response) => {
             up.id
     `;
 
-    db.query(sql, [userId], (err, results) => {
+    db.query<RowDataPacket[]>(sql, [userId], (err, results) => {
         if (err) {
             console.log('Error fetching data:', err);
             res.status(500).send('Internal Server Error');
@@ -490,24 +491,24 @@ users.put('/deleteuser', (req, res) => {
 
 users.get('/media/:id', (req: AdminRequest, res: Response) => {
     const mediaId = req.params.id;
-  
+
     const query = 'SELECT * FROM media WHERE id = ?';
-    db.query(query, [mediaId], (err, results) => {
-      if (err) {
-        console.error('Error executing query:', err);
-        res.status(500).send('Server error');
-        return;
-      }
-  
-      if (results.length === 0) {
-        res.status(404).send('Media not found');
-        return;
-      }
-  
-      const media = results[0];
-      res.json(media);
+    db.query<RowDataPacket[]>(query, [mediaId], (err, results) => {
+        if (err) {
+            console.error('Error executing query:', err);
+            res.status(500).send('Server error');
+            return;
+        }
+
+        if (results.length === 0) {
+            res.status(404).send('Media not found');
+            return;
+        }
+
+        const media = results[0];
+        res.json(media);
     });
-  });
+});
 
 // Fetch user questions by user_id
 users.get('/user/questions/:user_id', (req: AdminRequest, res: Response) => {
@@ -534,7 +535,7 @@ users.get('/user/questions/:user_id', (req: AdminRequest, res: Response) => {
             res.status(500).send('Internal Server Error');
             return;
         }
-        
+
         res.status(200).json(results);
     });
 });
@@ -563,7 +564,7 @@ users.get('/user/questions/:user_id', (req: AdminRequest, res: Response) => {
             res.status(500).send('Internal Server Error');
             return;
         }
-        
+
         res.status(200).json(results);
     });
 });

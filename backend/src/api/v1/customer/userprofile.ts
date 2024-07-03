@@ -5,6 +5,7 @@ import { UserRequest } from '../../../types/types';
 const { body, validationResult } = require('express-validator');
 import multer from 'multer';
 import crypto from 'crypto';
+import { ResultSetHeader, RowDataPacket } from 'mysql2';
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -28,7 +29,7 @@ const profile = express.Router();
 profile.get('/', verifyUser, (req, res) => {
   const query = 'SELECT * FROM user_profiles';
 
-  db.query(query, (err, results) => {
+  db.query<RowDataPacket[]>(query, (err, results) => {
     if (err) {
       console.error('Error fetching data:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -54,7 +55,7 @@ profile.post('/updateemail', verifyUser, [
   console.log(`Updating email for userId: ${userId}, new email: ${email}`);
 
   const updateQuery = 'UPDATE user_profiles SET email = ?, updated_at = NOW() WHERE user_id = ?';
-  db.query(updateQuery, [email, userId], (err, results) => {
+  db.query<ResultSetHeader>(updateQuery, [email, userId], (err, results) => {
     if (err) {
       console.error('Error updating email:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -98,7 +99,7 @@ profile.put('/namedetails', [
       WHERE user_id = ?
     `;
 
-  db.query(query, [first_name, last_name, birthday, userId], (err, results) => {
+  db.query<ResultSetHeader>(query, [first_name, last_name, birthday, userId], (err, results) => {
     if (err) {
       console.error('Error updating user profile:', err);
       return res.status(500).send('Internal Server Error');
@@ -118,7 +119,7 @@ profile.get('/namedetails', verifyUser, (req: UserRequest, res: any) => {
       WHERE user_id = ?
   `;
 
-  db.query(query, [userId], (err, results) => {
+  db.query<RowDataPacket[]>(query, [userId], (err, results) => {
     if (err) {
       console.error('Error fetching user profile:', err);
       return res.status(500).send('Internal Server Error');
@@ -159,7 +160,7 @@ profile.put('/gender', [
       WHERE user_id = ?
     `;
 
-  db.query(query, [gender, want_gender, userId], (err, results) => {
+  db.query<ResultSetHeader>(query, [gender, want_gender, userId], (err, results) => {
     if (err) {
       console.error('Error updating user profile:', err);
       return res.status(500).send('Internal Server Error');
@@ -250,7 +251,7 @@ profile.get('/gender', verifyUser, (req: UserRequest, res: any) => {
       FROM user_profiles
       WHERE user_id = ?
   `;
-  db.query(query, [userId], (err, results) => {
+  db.query<RowDataPacket[]>(query, [userId], (err, results) => {
     if (err) {
       console.error('Error fetching user profile:', err);
       return res.status(500).send('Internal Server Error');
@@ -284,7 +285,7 @@ profile.post('/locations', [
 
   const query = 'INSERT INTO locations (country, location_string, created_at, updated_at) VALUES (?, ?, NOW(), NOW())';
 
-  db.query(query, [country, location_string], (err, results) => {
+  db.query<ResultSetHeader>(query, [country, location_string], (err, results) => {
     if (err) {
       console.error('Error inserting location:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -293,7 +294,7 @@ profile.post('/locations', [
     const locationId = results.insertId;
     const updateUserProfileQuery = 'UPDATE user_profiles SET location_id = ?, updated_at = NOW() WHERE user_id = ?';
 
-    db.query(updateUserProfileQuery, [locationId, userId], (err, updateResults) => {
+    db.query<ResultSetHeader>(updateUserProfileQuery, [locationId, userId], (err, updateResults) => {
       if (err) {
         console.error('Error updating user profile:', err);
         return res.status(500).json({ message: 'Internal Server Error' });
@@ -317,7 +318,7 @@ profile.get('/locations', verifyUser, (req: UserRequest, res: express.Response) 
     JOIN user_profiles ON user_profiles.location_id = locations.id
     WHERE user_profiles.user_id = ?`;
 
-  db.query(query, [userId], (err, results) => {
+  db.query<RowDataPacket[]>(query, [userId], (err, results) => {
     if (err) {
       console.error('Error fetching location:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -350,7 +351,7 @@ profile.post('/religions', [
 
   const updateUserProfileQuery = 'UPDATE user_profiles SET religion_id = ?, updated_at = NOW() WHERE user_id = ?';
 
-  db.query(updateUserProfileQuery, [religionId, userId], (err, updateResults) => {
+  db.query<ResultSetHeader>(updateUserProfileQuery, [religionId, userId], (err, updateResults) => {
     if (err) {
       console.error('Error updating user profile:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -370,13 +371,13 @@ profile.get('/religions', verifyUser, (req: UserRequest, res: express.Response) 
   const getAllReligionsQuery = 'SELECT id, name FROM religions WHERE visible = 1';
   const getUserReligionQuery = 'SELECT r.id, r.name FROM religions r JOIN user_profiles up ON r.id = up.religion_id WHERE up.user_id = ?';
 
-  db.query(getAllReligionsQuery, (err, religions) => {
+  db.query<RowDataPacket[]>(getAllReligionsQuery, (err, religions) => {
     if (err) {
       console.error('Error fetching religions:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
     }
 
-    db.query(getUserReligionQuery, [userId], (err, userReligionResults) => {
+    db.query<RowDataPacket[]>(getUserReligionQuery, [userId], (err, userReligionResults) => {
       if (err) {
         console.error('Error fetching user religion:', err);
         return res.status(500).json({ message: 'Internal Server Error' });
@@ -415,7 +416,7 @@ profile.get('/growths', verifyUser, (req: UserRequest, res: express.Response) =>
     JOIN user_profiles ON user_profiles.growth_id = growths.id 
     WHERE user_profiles.user_id = ?`;
 
-  db.query(query, [userId], (err, results) => {
+  db.query<RowDataPacket[]>(query, [userId], (err, results) => {
     if (err) {
       console.error('Error fetching growths:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -446,7 +447,7 @@ profile.post('/growths', [
 
   const updateUserProfileQuery = 'UPDATE user_profiles SET growth_id = ?, updated_at = NOW() WHERE user_id = ?';
 
-  db.query(updateUserProfileQuery, [growthId, userId], (err, updateResults) => {
+  db.query<ResultSetHeader>(updateUserProfileQuery, [growthId, userId], (err, updateResults) => {
     if (err) {
       console.error('Error updating user profile:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -478,7 +479,7 @@ profile.post('/studies', [
 
   const query = 'INSERT INTO studies (name, visible, created_at, updated_at) VALUES (?, 1, NOW(), NOW())';
 
-  db.query(query, [name], (err, results) => {
+  db.query<ResultSetHeader>(query, [name], (err, results) => {
     if (err) {
       console.error('Error inserting study:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -487,7 +488,7 @@ profile.post('/studies', [
     const studyId = results.insertId;
     const updateUserProfileQuery = 'UPDATE user_profiles SET study_id = ?, updated_at = NOW() WHERE user_id = ?';
 
-    db.query(updateUserProfileQuery, [studyId, userId], (err, updateResults) => {
+    db.query<ResultSetHeader>(updateUserProfileQuery, [studyId, userId], (err, updateResults) => {
       if (err) {
         console.error('Error updating user profile:', err);
         return res.status(500).json({ message: 'Internal Server Error' });
@@ -513,7 +514,7 @@ profile.get('/studies', verifyUser, (req: UserRequest, res: express.Response) =>
     JOIN user_profiles ON user_profiles.study_id = studies.id 
     WHERE user_profiles.user_id = ?`;
 
-  db.query(query, [userId], (err, results) => {
+  db.query<RowDataPacket[]>(query, [userId], (err, results) => {
     if (err) {
       console.error('Error fetching studies:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -539,7 +540,7 @@ profile.get('/jobs', verifyUser, (req: UserRequest, res: express.Response) => {
     JOIN user_profiles ON user_profiles.job_id = jobs.id 
     WHERE user_profiles.user_id = ?`;
 
-  db.query(query, [userId], (err, results) => {
+  db.query<RowDataPacket[]>(query, [userId], (err, results) => {
     if (err) {
       console.error('Error fetching jobs:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -571,7 +572,7 @@ profile.post('/jobs', [
 
   const query = 'INSERT INTO jobs (name, visible, created_at, updated_at) VALUES (?, 1, NOW(), NOW())';
 
-  db.query(query, [name], (err, results) => {
+  db.query<ResultSetHeader>(query, [name], (err, results) => {
     if (err) {
       console.error('Error inserting job:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -580,7 +581,7 @@ profile.post('/jobs', [
     const jobId = results.insertId;
     const updateUserProfileQuery = 'UPDATE user_profiles SET job_id = ?, updated_at = NOW() WHERE user_id = ?';
 
-    db.query(updateUserProfileQuery, [jobId, userId], (err, updateResults) => {
+    db.query<ResultSetHeader>(updateUserProfileQuery, [jobId, userId], (err, updateResults) => {
       if (err) {
         console.error('Error updating user profile:', err);
         return res.status(500).json({ message: 'Internal Server Error' });
@@ -596,7 +597,7 @@ profile.post('/jobs', [
 });
 
 profile.get('/kids-family', verifyUser, (req: UserRequest, res: express.Response) => {
-  db.query('SELECT want_kid_id, have_kid_id FROM user_profiles WHERE user_id = ?', [req.userId], (err, results) => {
+  db.query<RowDataPacket[]>('SELECT want_kid_id, have_kid_id FROM user_profiles WHERE user_id = ?', [req.userId], (err, results) => {
     if (err) {
       console.error('Error fetching kids-family:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -611,7 +612,7 @@ profile.get('/kids-family', verifyUser, (req: UserRequest, res: express.Response
 });
 
 profile.get('/smoke-drink', verifyUser, (req: UserRequest, res: express.Response) => {
-  db.query('SELECT smoke_id, drink_id FROM user_profiles WHERE user_id = ?', [req.userId], (err, results) => {
+  db.query<RowDataPacket[]>('SELECT smoke_id, drink_id FROM user_profiles WHERE user_id = ?', [req.userId], (err, results) => {
     if (err) {
       console.error('Error fetching kids-family:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -641,7 +642,7 @@ profile.post('/update-want-kids', verifyUser, [
   console.log(`Updating want_kid_id for userId: ${userId}, new want_kid_id: ${want_kid_id}`);
 
   const updateQuery = 'UPDATE user_profiles SET want_kid_id = ?, updated_at = NOW() WHERE user_id = ?';
-  db.query(updateQuery, [want_kid_id, userId], (err, results) => {
+  db.query<ResultSetHeader>(updateQuery, [want_kid_id, userId], (err, results) => {
     if (err) {
       console.error('Error updating want_kid_id:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -679,7 +680,7 @@ profile.post('/update-have-kids', verifyUser, [
   console.log(`Updating have_kid_id for userId: ${userId}, new have_kid_id: ${have_kid_id}`);
 
   const updateQuery = 'UPDATE user_profiles SET have_kid_id = ?, updated_at = NOW() WHERE user_id = ?';
-  db.query(updateQuery, [have_kid_id, userId], (err, results) => {
+  db.query<ResultSetHeader>(updateQuery, [have_kid_id, userId], (err, results) => {
     if (err) {
       console.error('Error updating have_kid_id:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -717,7 +718,7 @@ profile.post('/update-smoke', verifyUser, [
   console.log(`Updating smoke_id for userId: ${userId}, new smoke_id: ${smoke_id}`);
 
   const updateQuery = 'UPDATE user_profiles SET smoke_id = ?, updated_at = NOW() WHERE user_id = ?';
-  db.query(updateQuery, [smoke_id, userId], (err, results) => {
+  db.query<ResultSetHeader>(updateQuery, [smoke_id, userId], (err, results) => {
     if (err) {
       console.error('Error updating smoke_id:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -755,7 +756,7 @@ profile.post('/update-drink', verifyUser, [
   console.log(`Updating drink_id for userId: ${userId}, new drink_id: ${drink_id}`);
 
   const updateQuery = 'UPDATE user_profiles SET drink_id = ?, updated_at = NOW() WHERE user_id = ?';
-  db.query(updateQuery, [drink_id, userId], (err, results) => {
+  db.query<ResultSetHeader>(updateQuery, [drink_id, userId], (err, results) => {
     if (err) {
       console.error('Error updating drink_id:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -799,7 +800,7 @@ profile.get('/personalities', verifyUser, (req: UserRequest, res: express.Respon
     JOIN user_personalities up ON p.id = up.personality_id
     WHERE up.user_id = ?`;
 
-  db.query(query, [userId], (err, results) => {
+  db.query<RowDataPacket[]>(query, [userId], (err, results) => {
     if (err) {
       console.error('Error fetching personalities:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
@@ -933,7 +934,7 @@ profile.get('/answer/:questionId', verifyUser, (req: UserRequest, res: express.R
 
   const query = 'SELECT answer FROM question_answers WHERE user_id = ? AND question_id = ?';
 
-  db.query(query, [userId, questionId], (err, results) => {
+  db.query<RowDataPacket[]>(query, [userId, questionId], (err, results) => {
     if (err) {
       console.error('Error fetching answer:', err);
       return res.status(500).json({ message: 'Internal Server Error' });

@@ -4,6 +4,7 @@ import { sign } from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 import crypto from 'crypto';
+import { RowDataPacket } from 'mysql2';
 dotenv.config();
 const adminAuth = Router();
 const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS || '10', 10);
@@ -46,7 +47,7 @@ adminAuth.post('/login', (req, res) => {
     const sql = `SELECT id, username, password FROM admin_users WHERE username = ?`;
     const values = [username];
 
-    db.query(sql, values, (err, results) => {
+    db.query<RowDataPacket[]>(sql, values, (err, results) => {
         if (err) {
             console.log('Error fetching data:', err);
             res.status(500).send('Internal Server Error');

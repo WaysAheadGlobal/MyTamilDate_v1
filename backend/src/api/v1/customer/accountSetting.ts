@@ -9,6 +9,7 @@ import crypto from 'crypto';
 import { sendOTPtoPhoneNumber, verifyOTP } from '../../../../otp';
 import sgMail from '@sendgrid/mail';
 import ejs from 'ejs';
+import { ResultSetHeader, RowDataPacket } from 'mysql2';
 console.log(process.env.URL)
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -40,8 +41,8 @@ setting.get('/namedetails', verifyUser, (req: UserRequest, res: any) => {
     JOIN users ON user_profiles.user_id = users.id
     WHERE user_profiles.user_id = ?
 `;
-     
-    db.query(query, [userId], (err, results) => {
+
+    db.query<RowDataPacket[]>(query, [userId], (err, results) => {
         if (err) {
             console.error('Error fetching user profile:', err);
             return res.status(500).send('Internal Server Error');
@@ -77,7 +78,7 @@ setting.put('/namedetails', [
         WHERE user_id = ?
       `;
 
-    db.query(query, [first_name, last_name, userId], (err, results) => {
+    db.query<ResultSetHeader>(query, [first_name, last_name, userId], (err, results) => {
         if (err) {
             console.error('Error updating user profile:', err);
             return res.status(500).send('Internal Server Error');
@@ -101,7 +102,7 @@ setting.post('/updatephone/otp', body('phone').isMobilePhone(), verifyUser, (req
     }
     const { phone } = req.body;
     const query = 'SELECT id FROM user_profiles WHERE phone = ?';
-    db.query(query, [phone], async (err, results) => {
+    db.query<RowDataPacket[]>(query, [phone], async (err, results) => {
         if (err) {
             console.log('Error fetching data:', err);
             res.status(500).send('Internal Server Error');
@@ -122,19 +123,19 @@ setting.post('/updatephone/otp', body('phone').isMobilePhone(), verifyUser, (req
     });
 });
 
-setting.post('/updatephone', [body('phone').isMobilePhone(), body('otp').notEmpty()],verifyUser,  async (req: UserRequest, res: any) => {
+setting.post('/updatephone', [body('phone').isMobilePhone(), body('otp').notEmpty()], verifyUser, async (req: UserRequest, res: any) => {
     const result = validationResult(req);
     if (!result.isEmpty()) {
         return res.status(400).json({ message: 'Invalid OTP' });
     }
     const userId = req.userId;
     const { phone, otp } = req.body;
-    console.log(phone,otp)
+    console.log(phone, otp)
     try {
         const otpResponse = await verifyOTP({ phone: phone, otp });
-            if (otpResponse.status !== 'approved') {
-                return res.status(401).json({ message: otpResponse.message });
-            }
+        if (otpResponse.status !== 'approved') {
+            return res.status(401).json({ message: otpResponse.message });
+        }
 
 
         db.beginTransaction((err) => {
@@ -179,7 +180,7 @@ setting.get('/getemail', verifyUser, (req: UserRequest, res: any) => {
     console.log(`Fetching email for userId: ${userId}`);
 
     const query = 'SELECT email FROM user_profiles WHERE user_id = ?';
-    db.query(query, [userId], (err, results) => {
+    db.query<RowDataPacket[]>(query, [userId], (err, results) => {
         if (err) {
             console.error('Error fetching email:', err);
             return res.status(500).json({ message: 'Internal Server Error' });
@@ -209,7 +210,7 @@ setting.put('/updateemail', verifyUser, [
 
 
     const checkEmailQuery = 'SELECT id FROM user_profiles WHERE email = ?';
-    db.query(checkEmailQuery, [email], async (err, results) => {
+    db.query<RowDataPacket[]>(checkEmailQuery, [email], async (err, results) => {
         if (err) {
             console.error('Error checking email:', err);
             return res.status(500).json({ message: 'Internal Server Error' });
@@ -219,7 +220,7 @@ setting.put('/updateemail', verifyUser, [
             return res.status(409).json({ message: 'This email address is already in use. Try with a different email.' });
         }
 
-      
+
         const token = crypto.randomBytes(32).toString('hex');
         // Render the email template
         let html;
@@ -267,7 +268,7 @@ setting.get("/verify/:token", async (req, res) => {
     const { token } = req.params;
 
     const query = 'SELECT user_id, email FROM verification_token WHERE token = ?';
-    db.query(query, [token], (err, results) => {
+    db.query<RowDataPacket[]>(query, [token], (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             return res.redirect(`${process.env.URL}/accountsetting`);
@@ -315,14 +316,19 @@ setting.put('/pause', verifyUser, async (req: UserRequest, res) => {
     const userId = req.userId;
 
     try {
-        
-        await db.query(`
+
+        db.query(`
             UPDATE users
             SET active = 0, updated_at = NOW()
             WHERE id = ?
-        `, [userId]);
+        `, [userId], (err, result) => {
+            if (err) {
+                console.error('Error processing account pause:', err);
+                return res.status(500).json({ message: 'Internal Server Error' });
+            }
+            return res.status(200).json({ message: 'User account paused successfully' });
+        });
 
-        return res.status(200).json({ message: 'User account paused successfully' });
     } catch (err) {
         console.error('Error processing account pause:', err);
         return res.status(500).json({ message: 'Internal Server Error' });
@@ -331,9 +337,9 @@ setting.put('/pause', verifyUser, async (req: UserRequest, res) => {
 
 setting.put('/unpause', verifyUser, async (req: UserRequest, res: any) => {
     const userId = req.userId;
-    
+
     try {
-      
+
         const query2 = `
             UPDATE users
             SET active = 1, updated_at = NOW()
@@ -384,7 +390,7 @@ setting.delete('/delete/:userId', verifyUser, async (req, res) => {
 
     // Query to fetch user by ID
     const selectUserQuery = 'SELECT * FROM users WHERE id = ?';
-    db.query(selectUserQuery, [userId], (err, results) => {
+    db.query<RowDataPacket[]>(selectUserQuery, [userId], (err, results) => {
         if (err) {
             console.error('Error fetching user:', err);
             return res.status(500).json({ message: 'Internal Server Error' });

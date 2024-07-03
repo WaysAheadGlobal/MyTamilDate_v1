@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { db } from "../../db/db";
 import { UserRequest } from "../types/types";
+import { RowDataPacket } from "mysql2";
 
 export const verifyUser = (req: UserRequest, res: Response, next: NextFunction) => {
     if (!req.headers.authorization) {
@@ -20,7 +21,7 @@ export const verifyUser = (req: UserRequest, res: Response, next: NextFunction) 
             return res.status(401).json({ message: "Unauthorized" });
         }
 
-        db.query("SELECT * FROM user_profiles WHERE user_id = ?", [decoded.userId], (err, result) => {
+        db.query<RowDataPacket[]>("SELECT * FROM user_profiles WHERE user_id = ?", [decoded.userId], (err, result) => {
             if (err) {
                 return res.status(500).json({ message: "Internal server error" });
             }

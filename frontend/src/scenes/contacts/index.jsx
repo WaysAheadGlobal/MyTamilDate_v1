@@ -217,9 +217,10 @@ fetchDataloading();
         </Button> */}
       </Box>
       {loading ? (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-        <CircularProgress />
-      </Box>
+       <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+       <Typography variant="body1" mr={2}>Hang tight, we're getting things ready for you!</Typography>
+       <CircularProgress />
+     </Box>
     ) : (
       <Box
         m="40px 0 0 0"

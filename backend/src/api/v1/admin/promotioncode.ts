@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { db } from "../../../../db/db";
 import { AdminRequest } from '../../../types/types';
+import { ResultSetHeader, RowDataPacket } from 'mysql2';
 
 const promotions = Router();
 
@@ -21,7 +22,7 @@ promotions.get('/', (req: AdminRequest, res: Response) => {
         LIMIT ? OFFSET ?
     `;
 
-    db.query(countSql, (err, countResult) => {
+    db.query<RowDataPacket[]>(countSql, (err, countResult) => {
         if (err) {
             console.error('Error fetching total count:', err);
             return res.status(500).json({ message: 'Internal Server Error' });
@@ -46,7 +47,7 @@ promotions.get('/', (req: AdminRequest, res: Response) => {
 promotions.get('/:id', (req: AdminRequest, res: Response) => {
     const { id } = req.params;
     const sql = 'SELECT * FROM promotional_codes WHERE id = ? AND deleted_at IS NULL';
-    db.query(sql, [id], (err, results) => {
+    db.query<RowDataPacket[]>(sql, [id], (err, results) => {
         if (err) {
             console.log('Error fetching data:', err);
             return res.status(500).json({ message: 'Internal Server Error' });
@@ -76,7 +77,7 @@ promotions.post('/', (req: AdminRequest, res: Response) => {
     `;
     const checkValues = [promo_id];
 
-    db.query(checkSql, checkValues, (err, rows) => {
+    db.query<RowDataPacket[]>(checkSql, checkValues, (err, rows) => {
         if (err) {
             console.error('Error checking promo_id:', err);
             return res.status(500).json({ message: 'Internal Server Error' });
@@ -99,7 +100,7 @@ promotions.post('/', (req: AdminRequest, res: Response) => {
             applies_to, max_redemptions, once_per_user, stripe_id
         ];
 
-        db.query(insertSql, insertValues, (err, result) => {
+        db.query<ResultSetHeader>(insertSql, insertValues, (err, result) => {
             if (err) {
                 console.error('Error creating promotional code:', err);
                 return res.status(500).json({ message: 'Internal Server Error' });
@@ -130,7 +131,7 @@ promotions.put('/:id', (req: AdminRequest, res: Response) => {
         applies_to, max_redemptions, once_per_user, stripe_id, id
     ];
 
-    db.query(sql, values, (err, result) => {
+    db.query<ResultSetHeader>(sql, values, (err, result) => {
         if (err) {
             console.log('Error updating data:', err);
             return res.status(500).json({ message: 'Internal Server Error' });
@@ -149,7 +150,7 @@ promotions.delete('/delete/:id', (req: AdminRequest, res: Response) => {
     const { id } = req.params;
     const sql = 'UPDATE promotional_codes SET deleted_at = NOW() WHERE id = ? AND deleted_at IS NULL';
     const values = [id];
-    db.query(sql, values, (err, result) => {
+    db.query<ResultSetHeader>(sql, values, (err, result) => {
         if (err) {
             console.log('Error deleting data:', err);
             return res.status(500).json({ message: 'Internal Server Error' });

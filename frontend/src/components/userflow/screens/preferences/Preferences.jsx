@@ -11,7 +11,7 @@ import { useCookies } from '../../../../hooks/useCookies';
 import { API_URL } from '../../../../api';
 
 const Forms = {
-    Radio: ({ options, value, setValue }) => (
+    Radio: ({ options, value, setValue, firstOption }) => (
         <div style={{
             display: "flex",
             flexWrap: "wrap",
@@ -25,7 +25,7 @@ const Forms = {
             ))}
         </div>
     ),
-    Range: ({ value, setValue }) => {
+    Range: ({ value, setValue, firstOption }) => {
         return (
             <>
                 <p style={{
@@ -43,7 +43,7 @@ const Forms = {
             </>
         )
     },
-    Location: ({ options, value, setValue }) => {
+    Location: ({ options, value, setValue, firstOption }) => {
         const [selectedCountry, setSelectedCountry] = useState("");
         const [selectedCity, setSelectedCity] = useState("");
         const [countrySelectCollasped, setCountrySelectCollasped] = useState(true);
@@ -134,7 +134,7 @@ const Forms = {
             </>
         )
     },
-    Select: ({ options, value, setValue }) => {
+    Select: ({ options, value, setValue, firstOption }) => {
         const [selectedOption, setSelectedOption] = useState("Select a option");
         const [open, setOpen] = useState(false);
 
@@ -286,6 +286,7 @@ export default function Preferences() {
             if (response.ok) {
                 setShow(false);
                 setRefresh(!refresh);
+                cookies.deleteCookie('wave');
             }
         } catch (error) {
             console.error(error);
@@ -313,7 +314,10 @@ export default function Preferences() {
                         }}
                         onSubmit={handlePreferenceSave}
                     >
-                        <Form value={value} setValue={setValue} options={selectedPreferenceOptions} />
+                        <Form value={value} setValue={setValue} options={selectedPreferenceOptions} firstOption={{
+                            value: "NULL",
+                            label: "Any"
+                        }} />
                         <div style={{ flexGrow: "1" }}></div>
                         <div style={{
                             marginTop: "1rem",

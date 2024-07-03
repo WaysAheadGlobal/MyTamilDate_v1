@@ -98,9 +98,9 @@ function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
   // const { isAdmin } = useAppContext();
-  const {getCookie,setCookie} = useCookies();
+  const { getCookie, setCookie } = useCookies();
   const location = useLocation();
-const admintoken = getCookie('Admintoken')
+  const admintoken = getCookie('Admintoken')
 
   const protectedRoutes = [
     "/dashboard",

@@ -8,6 +8,7 @@ export default function Home() {
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const cookies = useCookies();
+    const [wave, setWave] = useState(1);
 
     /**
      * @typedef {Object} Profile
@@ -32,27 +33,46 @@ export default function Home() {
      * @type {[Profile[], React.Dispatch<React.SetStateAction<Profile[]>>]}
      */
     const [profiles, setProfiles] = useState([]);
-    
+    const [abortController, setAbortController] = useState(new AbortController());
+
+    useEffect(() => {
+        const storedWave = cookies.getCookie('wave');
+
+        if (storedWave) {
+            abortController.abort();
+            setAbortController(new AbortController());
+            setWave(Number(storedWave));
+        }
+    }, []);
+
     useEffect(() => {
         (async () => {
             setLoading(true);
 
-            const response = await fetch(`${API_URL}customer/user/profiles?page=${page}`, {
+            console.log(wave)
+
+            const response = await fetch(`${API_URL}customer/user/profiles?page=${page}&wave=${wave}`, {
                 headers: {
                     'Authorization': `Bearer ${cookies.getCookie('token')}`,
                 },
+                signal: abortController.signal
             });
             const data = await response.json();
             if (!data) return;
 
             if (response.ok) {
+                if (data.length === 0 && wave < 3) {
+                    console.log(true)
+                    setWave(wave + 1);
+                    cookies.setCookie('wave', wave + 1);
+                }
                 setProfiles([...profiles, ...data]);
                 console.log(data);
             }
 
             setLoading(false);
         })()
-    }, [page]);
+    }, [page, wave]);
 
     useEffect(() => {
         if (profiles.length === 0) return;
