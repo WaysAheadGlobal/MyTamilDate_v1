@@ -1,17 +1,16 @@
+import { MenuItem, Select } from '@mui/material';
+import Slider from '@mui/material/Slider';
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
+import { API_URL } from '../../../../api';
+import { useCookies } from '../../../../hooks/useCookies';
 import Button from "../../components/button/Button";
 import Sidebar from '../../components/sidebar/sidebar';
 import styles from './preferences.module.css';
-import Slider from '@mui/material/Slider';
 import './slider.css';
-import { MenuItem, Select } from '@mui/material';
-import { IoClose } from "react-icons/io5";
-import { useCookies } from '../../../../hooks/useCookies';
-import { API_URL } from '../../../../api';
 
 const Forms = {
-    Radio: ({ options, value, setValue, firstOption }) => (
+    Radio: ({ options, value, setValue, firstOption, selected }) => (
         <div style={{
             display: "flex",
             flexWrap: "wrap",
@@ -20,29 +19,30 @@ const Forms = {
             {
                 firstOption && (
                     <label htmlFor={firstOption.label} className={styles.inputRadio}>
-                        <input id={firstOption.label} value={firstOption.value} checked={!value} onChange={() => setValue(firstOption.value)} type="radio" />
+                        <input id={firstOption.label} name="radio-input" value={firstOption.value} checked={(!selected && !value) || value === "any"} onChange={() => setValue("any")} type="radio" />
                         <p>{firstOption.label}</p>
                     </label>
                 )
             }
-            {options?.map((option, index) => (
+            {Array.isArray(options) && options?.map((option, index) => (
                 <label key={index} htmlFor={option.name} className={styles.inputRadio}>
-                    <input id={option.name} value={option.id} checked={option.id === value} onChange={() => setValue(option.id)} type="radio" />
+                    <input id={option.name} value={option.id} name="radio-input" checked={option.name === selected || option.id === value} onChange={() => setValue(option.id)} type="radio" />
                     <p>{option.name}</p>
                 </label>
             ))}
         </div>
     ),
-    Range: ({ value, setValue, firstOption }) => {
+    Range: ({ value, setValue, age_from, age_to }) => {
+        console.log(value)
         return (
             <>
                 <p style={{
                     fontSize: "large",
                     fontWeight: "500",
                     marginTop: "-1rem"
-                }}>{value?.join(" - ")}</p>
+                }}>{value?.[0] ?? age_from} - {value?.[1] ?? age_to}</p>
                 <Slider
-                    value={Array.isArray(value) ? value : [20, 27]}
+                    value={Array.isArray(value) ? value : [age_from ?? 20, age_to ?? 27]}
                     onChange={(e, newValue) => setValue(newValue)}
                     valueLabelDisplay="auto"
                     disableSwap
@@ -51,10 +51,19 @@ const Forms = {
             </>
         )
     },
-    Location: ({ options, value, setValue, firstOption }) => {
-        const [selectedCountry, setSelectedCountry] = useState(value.split(",")[1] ?? "");
-        const [selectedCity, setSelectedCity] = useState(value.split(",")[0] ?? "");
-        const [countrySelectCollasped, setCountrySelectCollasped] = useState(!!value);
+    Location: ({ options, value, setValue, locationId }) => {
+        const [selectedCountry, setSelectedCountry] = useState("");
+        const [selectedCity, setSelectedCity] = useState("");
+        const [countrySelectCollasped, setCountrySelectCollasped] = useState(true);
+
+        useEffect(() => {
+            if (!locationId) return;
+
+            const val = Object.keys(options).map(option => options[option]).flat().find(option => option.id === locationId);
+            setSelectedCountry(val?.country);
+            setSelectedCity(val?.id);
+            setCountrySelectCollasped(false);
+        }, [options])
 
         useEffect(() => {
             setValue(selectedCity);
@@ -70,11 +79,11 @@ const Forms = {
             <>
                 <label htmlFor="country" className={styles.locationRadio}>
                     <p>Select Country</p>
-                    <input type="radio" id="country" name="country-option" checked={value} onClick={() => setCountrySelectCollasped(false)} />
+                    <input type="radio" id="country" name="country-option" checked={!countrySelectCollasped} onClick={() => setCountrySelectCollasped(false)} />
                 </label>
                 <label htmlFor="any" className={styles.locationRadio}>
                     <p>Any</p>
-                    <input type="radio" id="any" name="country-option" value="any" checked={!value} onClick={() => setCountrySelectCollasped(true)} />
+                    <input type="radio" id="any" name="country-option" value="any" checked={countrySelectCollasped} onClick={() => setCountrySelectCollasped(true)} />
                 </label>
                 {!countrySelectCollasped && (
                     <>
@@ -84,6 +93,7 @@ const Forms = {
                             fontWeight: "500",
                         }}>Search nearby people</p>
                         <Select
+                            key={selectedCountry}
                             style={{
                                 width: "100%",
                                 textAlign: "start"
@@ -115,6 +125,7 @@ const Forms = {
                         </Select>
 
                         <Select
+                            key={selectedCity}
                             style={{
                                 width: "100%",
                                 textAlign: "start"
@@ -148,9 +159,18 @@ const Forms = {
             </>
         )
     },
-    Select: ({ options, value, setValue, firstOption }) => {
-        const [selectedOption, setSelectedOption] = useState(value ?? "Select a option");
+    Select: ({ options, value, setValue, firstOption, selected }) => {
+        const [selectedOption, setSelectedOption] = useState("Select a option");
         const [open, setOpen] = useState(false);
+
+        useEffect(() => {
+            if (!selected) {
+                setSelectedOption("any");
+            } else {
+                setSelectedOption(options.find(option => option.name === selected)?.id);
+            }
+
+        }, [selected])
 
         useEffect(() => {
             setValue(selectedOption);
@@ -160,7 +180,7 @@ const Forms = {
             <div className={styles["select-container"]} data-open={open}>
                 <div className={styles["select-display"]} onClick={() => {
                     setOpen(!open);
-                }} data-value={selectedOption}>
+                }} data-value={selectedOption === "any" ? "Open to all" : options.find(option => option.id === selectedOption)?.name}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         className="bi bi-chevron-down" viewBox="0 0 16 16">
                         <path fill-rule="evenodd"
@@ -168,6 +188,13 @@ const Forms = {
                     </svg>
                 </div>
                 <ul className={styles["select-options"]}>
+                    <li
+                        style={{
+                            textAlign: "start",
+                        }}
+                        className={selectedOption === "any" ? styles["selected"] : ""}
+                        onClick={() => setSelectedOption("any")}
+                    >Open to all</li>
                     {
                         options?.map((option, index) => (
                             <li
@@ -175,8 +202,8 @@ const Forms = {
                                 style={{
                                     textAlign: "start",
                                 }}
-                                className={selectedOption === option ? styles["selected"] : ""}
-                                onClick={() => setSelectedOption(option)}
+                                className={selectedOption === option.id ? styles["selected"] : ""}
+                                onClick={() => setSelectedOption(option.id)}
                             >{option.name}</li>
                         ))
                     }
@@ -192,6 +219,7 @@ export default function Preferences() {
      * @typedef {Object} SelectedPreference
      * @property {string} title
      * @property {'select' | 'range' | 'radio' | 'location'} type
+     * @property {'gender' | 'age' | 'religion' | 'location' | 'education' | 'smoke' | 'drink' | 'children' | 'family'} element
      * @property {string} optionsApiEndpoint
      * @property {string} saveApiEndpoint
      */
@@ -212,6 +240,7 @@ export default function Preferences() {
      * @property {string} gender
      * @property {string} have_kids
      * @property {string} location
+     * @property {number} location_id
      * @property {string} religion
      * @property {string} smoking
      * @property {string} want_kids
@@ -220,8 +249,6 @@ export default function Preferences() {
     /** @type {[Preferences, React.Dispatch<React.SetStateAction<Preferences>>]} */
     const [preferences, setPreferences] = useState({});
     const [refresh, setRefresh] = useState(false);
-
-    const Form = Forms[selectedPreference.type?.charAt(0).toUpperCase() + selectedPreference.type?.slice(1)] ?? Forms.Radio;
 
     useEffect(() => {
         (async () => {
@@ -259,30 +286,7 @@ export default function Preferences() {
             const data = await response.json();
             if (!data) return;
 
-            console.log(data);
-
             setSelectedPreferenceOptions(data)
-
-            if (selectedPreference.saveApiEndpoint === "gender_id") {
-                setValue(preferences.gender);
-            } else if (selectedPreference.saveApiEndpoint === "age") {
-                setValue([preferences.age_from, preferences.age_to]);
-            } else if (selectedPreference.saveApiEndpoint === "location") {
-                setValue(preferences.location);
-            } else if (selectedPreference.saveApiEndpoint === "smoking_id") {
-                setValue(preferences.smoking);
-            } else if (selectedPreference.saveApiEndpoint === "drinks_id") {
-                setValue(preferences.drinking);
-            } else if (selectedPreference.saveApiEndpoint === "education_id") {
-                setValue(preferences.education);
-            } else if (selectedPreference.saveApiEndpoint === "religion_id") {
-                setValue(preferences.religion);
-            } else if (selectedPreference.saveApiEndpoint === "have_kids_id") {
-                setValue(preferences.have_kids);
-            } else if (selectedPreference.saveApiEndpoint === "want_kids_id") {
-                setValue(preferences.want_kids);
-            }
-
         })()
     }, [show]);
 
@@ -348,17 +352,52 @@ export default function Preferences() {
                         }}
                         onSubmit={handlePreferenceSave}
                     >
-                        <Form
-                            value={value}
-                            setValue={setValue}
-                            options={selectedPreferenceOptions}
-                            firstOption={
-                                selectedPreference.optionsApiEndpoint !== "genders" ? {
-                                    value: "any",
-                                    label: selectedPreference.optionsApiEndpoint === "location" ? "Any" : "Open to all"
-                                } : null
-                            }
-                        />
+                        {
+                            selectedPreference.element === "age" && (
+                                <Forms.Range
+                                    age_from={preferences.age_from}
+                                    age_to={preferences.age_to}
+                                    value={value}
+                                    setValue={setValue}
+                                />
+                            )
+                        }
+                        {
+                            selectedPreference.element === "location" && (
+                                <Forms.Location
+                                    options={selectedPreferenceOptions}
+                                    locationId={preferences.location_id}
+                                    value={value}
+                                    setValue={setValue}
+                                />
+                            )
+                        }
+                        {
+                            (selectedPreference.element === "children" || selectedPreference.element === "family") && (
+                                <Forms.Select
+                                    options={selectedPreferenceOptions}
+                                    value={value}
+                                    setValue={setValue}
+                                    selected={preferences[selectedPreference.element === "children" ? "want_kids" : "have_kids"]}
+                                />
+                            )
+                        }
+                        {
+                            (selectedPreference.element !== "age" && selectedPreference.element !== "location" && selectedPreference.element !== "children" && selectedPreference.element !== "family") && (
+                                <Forms.Radio
+                                    value={value}
+                                    setValue={setValue}
+                                    options={selectedPreferenceOptions}
+                                    firstOption={
+                                        selectedPreference.optionsApiEndpoint !== "genders" ? {
+                                            value: "any",
+                                            label: selectedPreference.optionsApiEndpoint === "location" ? "Any" : "Open to all"
+                                        } : null
+                                    }
+                                    selected={preferences[selectedPreference.element]}
+                                />
+                            )
+                        }
                         <div style={{ flexGrow: "1" }}></div>
                         <div style={{
                             marginTop: "1rem",
@@ -424,6 +463,7 @@ export default function Preferences() {
                                 type: "radio",
                                 optionsApiEndpoint: "genders",
                                 saveApiEndpoint: "gender_id",
+                                element: "gender"
                             })}
                         >{preferences?.gender}</p>
                     </div>
@@ -450,6 +490,7 @@ export default function Preferences() {
                                 type: "range",
                                 optionsApiEndpoint: "",
                                 saveApiEndpoint: "age",
+                                element: "age"
                             })}
                         >{preferences?.age_from}-{preferences?.age_to}</p>
                     </div>
@@ -466,6 +507,7 @@ export default function Preferences() {
                                 type: "radio",
                                 optionsApiEndpoint: "religions",
                                 saveApiEndpoint: "religion_id",
+                                element: "religion"
                             })}
                         >{preferences?.religion ?? "Open to all"}</p>
                     </div>
@@ -491,6 +533,7 @@ export default function Preferences() {
                                 type: "location",
                                 optionsApiEndpoint: "locations",
                                 saveApiEndpoint: "location",
+                                element: "location"
                             })}
                         >{preferences?.location ?? "Any"}</p>
                     </div>
@@ -508,6 +551,7 @@ export default function Preferences() {
                                 type: "radio",
                                 optionsApiEndpoint: "studies",
                                 saveApiEndpoint: "education_id",
+                                element: "education"
                             })}
                         >{preferences?.education ?? "Open to all"}</p>
                     </div>
@@ -532,6 +576,7 @@ export default function Preferences() {
                                 type: "select",
                                 optionsApiEndpoint: "want_kids",
                                 saveApiEndpoint: "want_kids_id",
+                                element: "children"
                             })}
                         >{preferences?.want_kids ?? "Open to all"}</p>
                     </div>
@@ -548,6 +593,7 @@ export default function Preferences() {
                                 type: "select",
                                 optionsApiEndpoint: "have_kids",
                                 saveApiEndpoint: "have_kids_id",
+                                element: "family"
                             })}
                         >{preferences?.have_kids ?? "Open to all"}</p>
                     </div>
@@ -564,6 +610,7 @@ export default function Preferences() {
                                 type: "radio",
                                 optionsApiEndpoint: "smokes",
                                 saveApiEndpoint: "smoking_id",
+                                element: "smoking"
                             })}
                         >{preferences?.smoking ?? "Open to all"}</p>
                     </div>
@@ -580,6 +627,7 @@ export default function Preferences() {
                                 type: "radio",
                                 optionsApiEndpoint: "drinks",
                                 saveApiEndpoint: "drinks_id",
+                                element: "drinking"
                             })}
                         >{preferences?.drinking ?? "Open to all"}</p>
                     </div>

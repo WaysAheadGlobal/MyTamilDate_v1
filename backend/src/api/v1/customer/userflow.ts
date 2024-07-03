@@ -526,6 +526,7 @@ userFlowRouter.get("/preferences", async (req: UserRequest, res) => {
         f.age_to,
         (SELECT r.name FROM religions r WHERE f.religion_id = r.id) AS religion,
         (SELECT CONCAT(l.location_string, ', ', l.country) FROM locations l WHERE fl.location_id = l.id) AS location,
+        fl.location_id,
         (SELECT s.name FROM studies s WHERE f.education_id = s.id) AS education,
         (SELECT wk.name FROM want_kids wk WHERE f.want_kids_id = wk.id) AS want_kids,
         (SELECT hk.name FROM have_kids hk WHERE f.have_kids_id = hk.id) AS have_kids,
@@ -538,6 +539,7 @@ userFlowRouter.get("/preferences", async (req: UserRequest, res) => {
         WHERE uf.user_id = ?;
     `, [req.userId], (err, result) => {
         if (err) {
+            console.log(err)
             res.status(500).send({ message: "Internal server error" });
             return;
         }
@@ -548,8 +550,6 @@ userFlowRouter.get("/preferences", async (req: UserRequest, res) => {
 
 userFlowRouter.put("/preferences/save/age", (req: UserRequest, res) => {
     const { age_from, age_to } = req.body;
-
-    console.log(req.body)
 
     if (!age_from || !age_to) {
         res.status(400).send({ message: "Bad request" });
