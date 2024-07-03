@@ -93,6 +93,7 @@ import Preview from "./components/UpdateProfile/screens/Preview/Preview";
 import { useCookies } from "./hooks/useCookies";
 import EditPicture from "./components/UpdateProfile/screens/PictureEdit/pictureedit";
 import UpdateAnswers from "./components/UpdateProfile/screens/EditAnswerAndQuestion/editanswer";
+import UpdatePersonality from "./components/UpdateProfile/screens/PersonalityEdit/personality";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -221,6 +222,7 @@ function App() {
                <Route path="/preview" element={<Preview/>}></Route>
                <Route path = "/editpicture" element={<EditPicture/>}></Route>
                <Route path="/updateanswer" element={<UpdateAnswers/>}></Route>
+               <Route path="/updatepersonality" element={<UpdatePersonality/>}></Route>
               
 
               <Route path="/user/home" element={<Home />} />

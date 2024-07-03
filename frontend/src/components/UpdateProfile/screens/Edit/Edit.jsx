@@ -62,7 +62,7 @@ const Edit = () => {
           </Container>
         </div>
         <div>
-          <Image onClick={(Navigate("/updateanswer"))} src={editicontwo} />
+          <Image onClick={ ()=> Navigate("/updateanswer")} src={editicontwo} />
         </div>
       </Container>
 
@@ -90,7 +90,7 @@ const Edit = () => {
           <p>Personality</p>
         </div>
         <div>
-          <Image src={editicontwo} />
+          <Image onClick={()=> Navigate("/updatepersonality")} src={editicontwo} />
         </div>
       </Container>
 

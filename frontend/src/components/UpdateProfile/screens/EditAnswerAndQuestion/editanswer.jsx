@@ -53,10 +53,10 @@ export default function UpdateAnswers() {
             <Modal show={show} onHide={() => setShow(false)} modalData={modalData} />
             <AlertModal show={alert} onHide={() => setAlert(false)} />
             
-            <Container className='job-main'>
-                <Container className='job-content'>
-                    <Container className='job-details'>
-                        <div className='your-job'>
+            <Container className={ans.jobmain}>
+                <Container className={ans.jobcontent}>
+                    <Container className={ans.jobdetails}>
+                        <div className={ans.yourjob}>
                             <Container className='job-text'>
                                 {/* <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <circle cx="20" cy="20" r="18" fill="url(#paint0_linear_778_6828)" />
@@ -157,32 +157,34 @@ export default function UpdateAnswers() {
                           
                     </Container>
                     <div style={{
+                        position : "absolute",
                         display:"flex",
-                        alignItems : "center",
+                        alignItems : "left",
                         justifyContent : "center",
-                        gap : "10px"
+                        gap : "30px",
+                        bottom: "38px"
                     }}>
-                    <Button variant="primary" type="submit" className='jobnxtbtn'  onClick={() => {
+                    <Button variant="primary" type="submit" className={ans.jobnxtbtn}  onClick={() => {
                         const answers = getCookie('answers');
-
-                        if (answers && Number(answers) >= 2) {
-                            navigate('/updateprofile');
-                        } else {
-                            setAlert(true);
-                        }
+                        navigate('/updateprofile');
+                        // if (answers && Number(answers) >= 2) {
+                        //     navigate('/updateprofile');
+                        // } else {
+                        //     setAlert(true);
+                        // }
                     }}>
-                        Save
+                      Cancel
                     </Button>
                 
 
-                    <Button variant="primary" type="submit" className='jobnxtbtn' onClick={() => {
+                    <Button variant="primary" type="submit" className={ans.jobnxtbtn2} onClick={() => {
                         const answers = getCookie('answers');
-
-                        if (answers && Number(answers) >= 2) {
-                            navigate('/updateprofile');
-                        } else {
-                            setAlert(true);
-                        }
+                        navigate('/updateprofile');
+                        // if (answers && Number(answers) >= 2) {
+                        //     navigate('/updateprofile');
+                        // } else {
+                        //     setAlert(true);
+                        // }
                     }}>
                         Save
                     </Button>
@@ -294,17 +296,23 @@ function Modal({ show, onHide, modalData, alert }) {
                     padding: "0.5rem 1rem",
                     color: "#6c6c6c",
                     fontWeight: "600",
+                    width: "130px"
                 }} onClick={() => { onHide(); setText(""); }}>
                     Close
                 </Button>
-                <Button variant="primary" style={{
-                    backgroundColor: "#F76A7B",
-                    borderColor: "#F76A7B",
-                    borderRadius: "9999px",
-                    padding: "0.5rem 1rem",
-                }} onClick={saveAnswer}>
-                    Save Changes
-                </Button>
+                <Button
+  variant="primary"
+  style={{
+    background: "linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%)",
+    borderRadius: "9999px",
+    padding: "0.5rem 1rem",
+    border : "none"
+  }}
+  onClick={saveAnswer}
+>
+  Save Changes
+</Button>
+
             </div>
         </BModal>
     )
