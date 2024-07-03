@@ -3,6 +3,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import { db } from '../../db/db';
 import { AdminRequest } from '../types/types';
 import dotenv from 'dotenv';
+import { RowDataPacket } from 'mysql2';
 
 dotenv.config();
 
@@ -30,7 +31,7 @@ export const verifyAdmin = (req: AdminRequest, res: Response, next: NextFunction
         const sql = 'SELECT id FROM admin_users WHERE remember_token = ?';
         const values = [rememberToken];
 
-        db.query(sql, values, (err, results) => {
+        db.query<RowDataPacket[]>(sql, values, (err, results) => {
             if (err) {
                 return res.status(500).json({ message: 'Internal server error' });
             }

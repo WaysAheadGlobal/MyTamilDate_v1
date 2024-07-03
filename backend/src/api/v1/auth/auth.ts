@@ -8,6 +8,7 @@ import crypto from 'crypto';
 import { verifyUser } from "../../../middleware/verifyUser";
 import sgMail from '@sendgrid/mail';
 import ejs from 'ejs';
+import { ResultSetHeader, RowDataPacket } from "mysql2";
 
 const auth = Router();
 let otpData: { phone: string, otp: string, createdAt: Date } | null = null;
@@ -136,7 +137,7 @@ auth.post('/login/otp',
         const { phone, countryCode } = req.body;
 
         const query = 'SELECT first_name FROM user_profiles WHERE phone = ?';
-        db.query(query, phone, async (err, results) => {
+        db.query<RowDataPacket[]>(query, phone, async (err, results) => {
             if (err) {
                 console.error('Error fetching data:', err);
                 return res.status(500).json({ message: 'Internal Server Error' });
@@ -180,7 +181,7 @@ auth.post('/login',
             }
 
             const query = 'SELECT id, user_id, first_name FROM user_profiles WHERE phone = ?';
-            db.query(query, [phone], (err, results) => {
+            db.query<RowDataPacket[]>(query, [phone], (err, results) => {
                 if (err) {
                     console.error('Error fetching data:', err);
                     return res.status(500).json({ message: 'Internal Server Error' });
@@ -212,7 +213,7 @@ auth.post('/signup/otp', body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US',
     const { phone } = req.body;
 
     const query = 'SELECT id FROM user_profiles WHERE phone = ?';
-    db.query(query, [phone], async (err, results) => {
+    db.query<RowDataPacket[]>(query, [phone], async (err, results) => {
         if (err) {
             console.log('Error fetching data:', err);
             res.status(500).send('Internal Server Error');
@@ -249,7 +250,7 @@ auth.post('/signup', [body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'e
         }
 
         const query = 'SELECT id FROM user_profiles WHERE phone = ?';
-        db.query(query, [phone], (err, results) => {
+        db.query<RowDataPacket[]>(query, [phone], (err, results) => {
             if (err) {
                 console.error('Error fetching data:', err);
                 return res.status(500).send('Please Try Again');
@@ -268,7 +269,7 @@ auth.post('/signup', [body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'e
                 const userQuery = `INSERT INTO users (approval, active, created_at, updated_at, incomplete_email, trial_popup_shown, is_online, last_activity, unseen_message_sent)
                 VALUES (40, 1, NOW(), NOW(), 0, 0, 0, NOW(), 0)`;
 
-                db.query(userQuery, (userErr, userResult) => {
+                db.query<ResultSetHeader>(userQuery, (userErr, userResult) => {
                     if (userErr) {
                         return db.rollback(() => {
                             console.error('Error inserting user:', userErr);
@@ -312,7 +313,7 @@ auth.post('/signup', [body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'e
 
 auth.post("/verify", verifyUser, async (req: UserRequest, res) => {
 
-    db.query('SELECT email FROM user_profiles WHERE user_id = ?', [req.userId], async (err, results) => {
+    db.query<RowDataPacket[]>('SELECT email FROM user_profiles WHERE user_id = ?', [req.userId], async (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             return res.status(500).send('Internal Server Error');
@@ -357,7 +358,7 @@ auth.get("/verify/:token", async (req: UserRequest, res) => {
             return res.redirect(`${process.env.URL}/approve`);
         }
 
-        db.query('SELECT user_id FROM verification_token WHERE token = ?', [token], (err, results) => {
+        db.query<RowDataPacket[]>('SELECT user_id FROM verification_token WHERE token = ?', [token], (err, results) => {
             if (err) {
                 console.error('Error fetching data:', err);
                 db.rollback(err => {

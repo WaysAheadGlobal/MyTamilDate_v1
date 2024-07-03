@@ -96,11 +96,11 @@ function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
   // const { isAdmin } = useAppContext();
-  const {getCookie,setCookie} = useCookies();
+  const { getCookie, setCookie } = useCookies();
   const location = useLocation();
-const admintoken = getCookie('Admintoken')
+  const admintoken = getCookie('Admintoken')
 
-console.log(admintoken);
+  console.log(admintoken);
   const protectedRoutes = [
     "/dashboard",
     "/team",
@@ -210,14 +210,14 @@ console.log(admintoken);
               <Route path="/unsubscribe" element={<UnsubscribeComponent />}></Route>
               <Route path="/PrivacyPolicyDetails" element={<PrivacyPolicySetting />}></Route>
               <Route path="/termandconditions" element={<TermsConditions />}></Route>
-              <Route path="/paymentmethod" element = {<PaymentMethod/>}></Route>
-              <Route path="/billinghistory" element = {<BillingHistory/>}></Route>
-               <Route path="/selectplan" element={<Selectplan/>}></Route>
-               <Route path="/addpaymentmethod" element = {<AddPaymentMethod/>}></Route>
-               <Route path = "/paymentdetails" element = {<Fillpaymentdetails/>}></Route>
-               <Route path="/updateprofile" element= {<UpdateProfile/>}></Route>
-               <Route path="/preview" element={<Preview/>}></Route>
-              
+              <Route path="/paymentmethod" element={<PaymentMethod />}></Route>
+              <Route path="/billinghistory" element={<BillingHistory />}></Route>
+              <Route path="/selectplan" element={<Selectplan />}></Route>
+              <Route path="/addpaymentmethod" element={<AddPaymentMethod />}></Route>
+              <Route path="/paymentdetails" element={<Fillpaymentdetails />}></Route>
+              <Route path="/updateprofile" element={<UpdateProfile />}></Route>
+              <Route path="/preview" element={<Preview />}></Route>
+
 
               <Route path="/user/home" element={<Home />} />
               <Route path="/user/recommendations" element={<Recommendations />} />

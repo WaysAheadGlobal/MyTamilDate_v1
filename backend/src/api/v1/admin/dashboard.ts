@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { AdminRequest } from "../../../types/types";
 import { db } from "../../../../db/db";
+import { RowDataPacket } from "mysql2";
 
 const dashboard = Router();
 
@@ -20,9 +21,9 @@ const getDateCondition = (timeRange: string): string => {
         case '3months':
             condition = "created_at >= NOW() - INTERVAL 3 MONTH";
             break;
-            case '12months':
-                condition = "created_at >= NOW() - INTERVAL 12 MONTH";
-                break;
+        case '12months':
+            condition = "created_at >= NOW() - INTERVAL 12 MONTH";
+            break;
         default:
             condition = "created_at >= NOW() - INTERVAL 1 DAY"; // Default to 24 hours
     }
@@ -44,9 +45,9 @@ const getDateConditionoflike = (timeRange: string): string => {
         case '3months':
             condition = "updated_at >= NOW() - INTERVAL 3 MONTH";
             break;
-            case '12months':
-                condition = "updated_at >= NOW() - INTERVAL 12 MONTH";
-                break;
+        case '12months':
+            condition = "updated_at >= NOW() - INTERVAL 12 MONTH";
+            break;
         default:
             condition = "updated_at >= NOW() - INTERVAL 1 DAY"; // Default to 24 hours
     }
@@ -154,7 +155,7 @@ dashboard.get('/sessions/avg-time', (req, res) => {
 
     console.log('Executing SQL:', sql);
 
-    db.query(sql, (err, results) => {
+    db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -188,7 +189,7 @@ dashboard.get('/sessions/avg-time', (req, res) => {
 
     console.log('Executing SQL:', sql);
 
-    db.query(sql, (err, results) => {
+    db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -221,7 +222,7 @@ dashboard.get('/users/avg-days-to-paid', (req, res) => {
 
     console.log('Executing SQL:', sql);
 
-    db.query(sql, (err, results) => {
+    db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -243,8 +244,8 @@ dashboard.get('/messages/count', (req: AdminRequest, res) => {
     const dateCondition = getDateConditionMessage(timeRange);
 
     const sql = `SELECT COUNT(*) AS total_messages FROM dncm_messages WHERE ${dateCondition}`;
-console.log('Executing SQL:', sql);
-    db.query(sql, (err, results) => {
+    console.log('Executing SQL:', sql);
+    db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -275,7 +276,7 @@ dashboard.get('/likes/count', (req: AdminRequest, res) => {
 
     console.log('Executing SQL:', sql);
 
-    db.query(sql, (err, results) => {
+    db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -304,10 +305,10 @@ dashboard.get('/matches/count', (req: AdminRequest, res) => {
         FROM matches
         WHERE \`like\` = 1 AND person_id IN (${subQuery}) AND ${dateCondition}
     `;
-    
+
     console.log('Executing SQL:', sql);
 
-    db.query(sql, (err, results) => {
+    db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -328,8 +329,8 @@ dashboard.get('/request/count', (req: AdminRequest, res) => {
     const dateCondition = getDateConditionMessage(timeRange);
 
     const sql = `SELECT COUNT(*) AS total_messages FROM dncm_messages WHERE ${dateCondition}`;
-console.log('Executing SQL:', sql);
-    db.query(sql, (err, results) => {
+    console.log('Executing SQL:', sql);
+    db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -362,7 +363,7 @@ dashboard.get('/locations/count', (req: AdminRequest, res) => {
             count DESC
         LIMIT 5`;
 
-    db.query(sql, (err, results) => {
+    db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).send('Internal Server Error');
@@ -410,7 +411,7 @@ dashboard.get('/count-by-gender', (req: AdminRequest, res) => {
         GROUP BY 
             g.name`;
 
-    db.query(sql, (err, results) => {
+    db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).send('Internal Server Error');
@@ -421,7 +422,7 @@ dashboard.get('/count-by-gender', (req: AdminRequest, res) => {
             res.status(500).send('Internal Server Error');
             return;
         }
-        const countByGender = results.reduce((acc: { [key: string]: number }, row: { gender: string, count: number }) => {
+        const countByGender = results.reduce((acc: any, row: any) => {
             acc[row.gender] = row.count;
             return acc;
         }, {});
@@ -495,7 +496,7 @@ dashboard.get('/users/count', (req: AdminRequest, res) => {
 
     const sql = `SELECT COUNT(*) AS total_users FROM users WHERE ${dateCondition}`;
 
-    db.query(sql, (err, results) => {
+    db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -518,24 +519,24 @@ dashboard.get('/payments', (req: AdminRequest, res) => {
       ORDER BY payments.created_at DESC
       LIMIT 10
     `;
-  
-    db.query(sql, (err, results) => {
-      if (err) {
-        console.error('Error fetching data:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-        return;
-      }
-  
-      if (results.length === 0) {
-        res.status(404).json({ error: 'No transactions found' });
-        return;
-      }
-  
-      res.status(200).json(results);
+
+    db.query<RowDataPacket[]>(sql, (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+
+        if (results.length === 0) {
+            res.status(404).json({ error: 'No transactions found' });
+            return;
+        }
+
+        res.status(200).json(results);
     });
-  });
-  
-  dashboard.get('/payments/count', (req: AdminRequest, res) => {
+});
+
+dashboard.get('/payments/count', (req: AdminRequest, res) => {
     const timeRange: string = (req.query.timeRange as string) || '24h';
     const dateCondition = getDateCondition(timeRange);
 
@@ -547,7 +548,7 @@ dashboard.get('/payments', (req: AdminRequest, res) => {
 
     console.log('Executing SQL:', sql);
 
-    db.query(sql, (err, results) => {
+    db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -564,7 +565,7 @@ dashboard.get('/payments', (req: AdminRequest, res) => {
     });
 });
 
-  dashboard.get('/payments/total', (req: AdminRequest, res) => {
+dashboard.get('/payments/total', (req: AdminRequest, res) => {
     const timeRange: string = (req.query.timeRange as string) || '24h';
     const dateCondition = getDateConditionpayment(timeRange);
 
@@ -576,7 +577,7 @@ dashboard.get('/payments', (req: AdminRequest, res) => {
 
     console.log('Executing SQL:', sql); // Log the SQL query for debugging
 
-    db.query(sql, (err, results) => {
+    db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -594,7 +595,7 @@ dashboard.get('/payments', (req: AdminRequest, res) => {
         }
 
         const totalPayments = results[0].total_payments;
-        const totalPaymentsCAD = Math.round(totalPayments * 1)/60; 
+        const totalPaymentsCAD = Math.round(totalPayments * 1) / 60;
         res.status(200).json({ total_payments_cad: totalPaymentsCAD });
     });
 });
@@ -612,7 +613,7 @@ dashboard.get('/renewals/count', (req, res) => {
         AND ${dateCondition}
     `;
 
-    db.query(sql,  (err, results) => {
+    db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -648,7 +649,7 @@ dashboard.get('/new-paid-members/count', (req, res) => {
     // Log the SQL query for debugging
     console.log('Executing SQL:', sql);
 
-    db.query(sql, [approvalUnknown, approvalRegistered], (err, results) => {
+    db.query<RowDataPacket[]>(sql, [approvalUnknown, approvalRegistered], (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -673,7 +674,7 @@ dashboard.get('/requests/count', (req, res) => {
     // Log the SQL query for debugging
     console.log('Executing SQL:', sql);
 
-    db.query(sql, (err, results) => {
+    db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -709,7 +710,7 @@ dashboard.get('/old-members/signed-in/count', (req, res) => {
     console.log('Approval unknown:', approvalUnknown);
     console.log('Approval registered:', approvalRegistered);
 
-    db.query(sql, [approvalUnknown, approvalRegistered], (err, results) => {
+    db.query<RowDataPacket[]>(sql, [approvalUnknown, approvalRegistered], (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Internal Server Error' });
