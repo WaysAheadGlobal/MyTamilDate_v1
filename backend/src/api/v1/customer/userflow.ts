@@ -163,11 +163,11 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
     const userPreferences: any = await getUserPreferences(req.userId);
 
     const userLocationPreferenceOrder = getLocationOrder(userPreferences.location);
-    
+
     if (currentUserFilters) {
         //* preferences on flow
         //* 1st Wave - Without age extension and all the preferences (perfect match)
-        
+
 
         let whereClauses = [];
         let queryParams = [];
@@ -566,12 +566,15 @@ userFlowRouter.put("/preferences/save/age", (req: UserRequest, res) => {
         try {
             const userFilters: any = await getUserFilters(req.userId as string);
 
-            let query = `UPDATE filters SET age_from = ?, age_to = ? WHERE id = ?;`;
-            let params = [age_from, age_to, userFilters.filter_id];
+            let query = "";
+            let params: any;
 
             if (!userFilters) {
                 query = `INSERT INTO filters (age_from, age_to) VALUES (?, ?);`;
                 params = [age_from, age_to];
+            } else {
+                query = `UPDATE filters SET age_from = ?, age_to = ? WHERE id = ?;`;
+                params = [age_from, age_to, userFilters.filter_id];
             }
 
             db.query<ResultSetHeader>(query, params, async (err, result) => {
@@ -751,12 +754,17 @@ userFlowRouter.put("/preferences/save/:field", (req: UserRequest, res) => {
         try {
             const userFilters: any = await getUserFilters(req.userId as string);
 
-            let query = `UPDATE filters SET ${field} = ? WHERE id = ?;`;
-            let params = [value === "any" ? null : value, userFilters.filter_id];
+            console.log(userFilters)
+
+            let query = "";
+            let params: any;
 
             if (!userFilters) {
                 query = `INSERT INTO filters (${field}) VALUES (?);`;
                 params = [value === "any" ? null : value];
+            } else {
+                query = `UPDATE filters SET ${field} = ? WHERE id = ?;`;
+                params = [value === "any" ? null : value, userFilters.filter_id];
             }
 
             db.query<ResultSetHeader>(query, params, async (err, result) => {
