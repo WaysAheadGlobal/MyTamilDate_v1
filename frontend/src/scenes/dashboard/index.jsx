@@ -392,11 +392,11 @@ const Dashboard = () => {
    
     const Toptencountry = async () => {
       try {
-        const response = await axios.get(`${API_URL}/admin/dashboard/locations/count`, {
+        const response = await axios.get(`${API_URL}/admin/dashboard/top-countries`, {
           params: { timeRange }
         });
         setLocationsCount(response.data);
-     console.log("jldsjfs",response.data);
+     console.log("top country",response.data);
    
       } catch (error) {
         console.error('Error fetching message count:', error);
@@ -676,7 +676,7 @@ const Dashboard = () => {
                 </Typography>
               </Box>
               <Box backgroundColor={colors.greenAccent[500]} p="5px 10px" borderRadius="4px" sx={{ fontFamily: 'Poppins, sans-serif' }}>
-                {jobs.count}
+                {jobs.user_count}
               </Box>
             </Box>
           ))}
@@ -738,6 +738,7 @@ const Dashboard = () => {
   </>
   );
 };
+
 
 
 export default Dashboard;

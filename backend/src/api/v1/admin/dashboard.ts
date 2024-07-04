@@ -136,6 +136,32 @@ const getUserCreationDateCondition = (timeRange: string): string => {
     }
 };
 
+const getDateConditionlocations = (timeRange: string, tableAlias: string = ''): string => {
+    let condition = '';
+    const prefix = tableAlias ? `${tableAlias}.` : '';
+    switch (timeRange) {
+        case '24h':
+            condition = `${prefix}created_at >= NOW() - INTERVAL 1 DAY`;
+            break;
+        case 'week':
+            condition = `${prefix}created_at >= NOW() - INTERVAL 1 WEEK`;
+            break;
+        case 'month':
+            condition = `${prefix}created_at >= NOW() - INTERVAL 1 MONTH`;
+            break;
+        case '3months':
+            condition = `${prefix}created_at >= NOW() - INTERVAL 3 MONTH`;
+            break;
+        case '12months':
+            condition = `${prefix}created_at >= NOW() - INTERVAL 12 MONTH`;
+            break;
+        default:
+            condition = `${prefix}created_at >= NOW() - INTERVAL 1 DAY`; // Default to 24 hours
+    }
+    return condition;
+};
+
+
 
 dashboard.get('/sessions/avg-time', (req, res) => {
     const timeRange = (req.query.timeRange || '24h').toString();
@@ -344,34 +370,92 @@ dashboard.get('/request/count', (req: AdminRequest, res) => {
         res.status(200).json({ total_messages: totalMessages });
     });
 });
-
-dashboard.get('/locations/count', (req: AdminRequest, res) => {
+dashboard.get('/top-countries', (req: AdminRequest, res) => {
     const timeRange: string = (req.query.timeRange as string) || '24h';
-    const dateCondition = getDateCondition(timeRange);
+    const dateCondition = getDateConditionlocations(timeRange, 'up');
 
     const sql = `
-        SELECT 
-            country, 
-            COUNT(*) as count
-        FROM 
-            locations
-        WHERE
-            ${dateCondition}
-        GROUP BY 
-            country
-        ORDER BY 
-            count DESC
-        LIMIT 5`;
+        SELECT l.country, COUNT(up.user_id) AS user_count
+        FROM user_profiles up
+        JOIN locations l ON up.location_id = l.id
+        WHERE ${dateCondition}
+        GROUP BY l.country
+        ORDER BY user_count DESC
+        LIMIT 5
+    `;
+
+    console.log('Executing SQL:', sql);
 
     db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
-            res.status(500).send('Internal Server Error');
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        if (results.length === 0) {
+            res.status(404).json({ error: 'No data found' });
             return;
         }
         res.status(200).json(results);
     });
 });
+// dashboard.get('/top-locations', (req, res) => {
+//     const limit = parseInt(req.query.limit as string, 10) || 5; // Default to 5 if not provided
+//     const timeRange = (req.query.timeRange as string) || '24h'; // Default to 24 hours if not provided
+//     const dateCondition = getDateConditionJobs(timeRange);
+
+//     const sql = `
+//         SELECT j.country AS country, COUNT(up.location_id) AS count
+//         FROM user_profiles up
+//         JOIN locations j ON up.location_id = j.id
+//         WHERE ${dateCondition}
+//         AND up.location_id IS NOT NULL
+//         GROUP BY up.location_id
+//         ORDER BY count DESC
+//         LIMIT ?
+//     `;
+
+//     db.query(sql, [limit], (err, results) => {
+//         if (err) {
+//             console.error('Error fetching data:', err);
+//             res.status(500).json({ error: 'Internal Server Error' });
+//             return;
+//         }
+
+//         res.status(200).json(results);
+//     });
+// });
+
+
+
+
+// dashboard.get('/locations/count', (req: AdminRequest, res) => {
+//     const timeRange: string = (req.query.timeRange as string) || '24h';
+//     const dateCondition = getDateCondition(timeRange);
+
+//     const sql = `
+//         SELECT 
+//             country, 
+//             COUNT(*) as count
+//         FROM 
+//             locations
+//         WHERE
+//             ${dateCondition}
+//         GROUP BY 
+//             country
+//         ORDER BY 
+//             count DESC
+//         LIMIT 5`;
+
+//     db.query<RowDataPacket[]>(sql, (err, results) => {
+//         if (err) {
+//             console.error('Error fetching data:', err);
+//             res.status(500).send('Internal Server Error');
+//             return;
+//         }
+//         res.status(200).json(results);
+//     });
+// });
 
 // dashboard.get('/matches/count', (req: AdminRequest, res) => {
 //     const timeRange: string = (req.query.timeRange as string) || '24h';
