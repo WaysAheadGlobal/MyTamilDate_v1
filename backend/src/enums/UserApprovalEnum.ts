@@ -5,3 +5,5 @@ enum UserApprovalEnum {
     REJECTED = 30,
     REGISTERED = 40
 }
+
+export default UserApprovalEnum;
