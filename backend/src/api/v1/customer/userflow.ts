@@ -112,11 +112,11 @@ async function getUserPreferences(userId: string) {
             COALESCE(f.have_kids_id, up.have_kid_id) AS have_kids,
             COALESCE(f.smoking_id, up.smoke_id) AS smoking,
             COALESCE(f.drinks_id, up.drink_id) AS drinking
-            FROM user_filters uf
-            INNER JOIN filters f ON f.id = uf.filter_id
-            INNER JOIN user_profiles up ON up.user_id = uf.user_id
+            FROM user_profiles up
+            LEFT JOIN user_filters uf ON up.user_id = uf.user_id
+            LEFT JOIN filters f ON f.id = uf.filter_id
             LEFT JOIN filter_locations fl ON fl.filters_id = uf.filter_id
-            WHERE uf.user_id = ?;
+            WHERE up.user_id =  ?;
         `, [userId], (err, result) => {
             if (err) {
                 reject(err);
@@ -163,10 +163,11 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
     const userPreferences: any = await getUserPreferences(req.userId);
 
     const userLocationPreferenceOrder = getLocationOrder(userPreferences.location);
-    
+
     if (currentUserFilters) {
         //* preferences on flow
         //* 1st Wave - Without age extension and all the preferences (perfect match)
+
 
         let whereClauses = [];
         let queryParams = [];
@@ -544,7 +545,7 @@ userFlowRouter.get("/preferences", async (req: UserRequest, res) => {
             return;
         }
 
-        res.status(200).send(result[0]);
+        res.status(200).send(result[0] ?? {});
     });
 });
 
@@ -565,12 +566,15 @@ userFlowRouter.put("/preferences/save/age", (req: UserRequest, res) => {
         try {
             const userFilters: any = await getUserFilters(req.userId as string);
 
-            let query = `UPDATE filters SET age_from = ?, age_to = ? WHERE id = ?;`;
-            let params = [age_from, age_to, userFilters.filter_id];
+            let query = "";
+            let params: any;
 
             if (!userFilters) {
                 query = `INSERT INTO filters (age_from, age_to) VALUES (?, ?);`;
                 params = [age_from, age_to];
+            } else {
+                query = `UPDATE filters SET age_from = ?, age_to = ? WHERE id = ?;`;
+                params = [age_from, age_to, userFilters.filter_id];
             }
 
             db.query<ResultSetHeader>(query, params, async (err, result) => {
@@ -750,12 +754,17 @@ userFlowRouter.put("/preferences/save/:field", (req: UserRequest, res) => {
         try {
             const userFilters: any = await getUserFilters(req.userId as string);
 
-            let query = `UPDATE filters SET ${field} = ? WHERE id = ?;`;
-            let params = [value === "any" ? null : value, userFilters.filter_id];
+            console.log(userFilters)
+
+            let query = "";
+            let params: any;
 
             if (!userFilters) {
                 query = `INSERT INTO filters (${field}) VALUES (?);`;
                 params = [value === "any" ? null : value];
+            } else {
+                query = `UPDATE filters SET ${field} = ? WHERE id = ?;`;
+                params = [value === "any" ? null : value, userFilters.filter_id];
             }
 
             db.query<ResultSetHeader>(query, params, async (err, result) => {

@@ -465,7 +465,7 @@ export default function Preferences() {
                                 saveApiEndpoint: "gender_id",
                                 element: "gender"
                             })}
-                        >{preferences?.gender}</p>
+                        >{preferences?.gender ?? "Any"}</p>
                     </div>
                     <div className={styles.option}>
                         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -492,7 +492,7 @@ export default function Preferences() {
                                 saveApiEndpoint: "age",
                                 element: "age"
                             })}
-                        >{preferences?.age_from}-{preferences?.age_to}</p>
+                        >{preferences?.age_from ? `${preferences?.age_from}-${preferences?.age_to}` : "Any"}</p>
                     </div>
                     <div className={styles.option}>
                         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
