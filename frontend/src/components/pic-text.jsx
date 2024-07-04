@@ -46,7 +46,7 @@ export const Pictext = () => {
                 justifyContent: 'space-around',
                 alignItems: 'center',
                 padding: '4rem',
-                marginTop: "1rem",
+                marginTop: "1.8rem",
                 backgroundColor: "white"
             }} ref={el => entryRefs.current[0] = el}>
                 <div className='pic1' style={{

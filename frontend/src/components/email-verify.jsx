@@ -42,7 +42,7 @@ export const EmailVerify = () => {
 
             const result = await response.json();
             if (response.ok) {
-                alert(result.message);
+               
                 navigate("/getstarted");
                 setErrorMessage('');
             } else {

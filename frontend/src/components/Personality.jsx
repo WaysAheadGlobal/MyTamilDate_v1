@@ -67,6 +67,11 @@ export default function Personality() {
     }, [hasAddedPersonality]);
 
     async function savePersonalities() {
+        if (selectedPersonalities.length < 2 || selectedPersonalities.length > 8  ) {
+            // Handle the case where there are fewer than 2 personalities selected
+            return;
+        }
+
         const response = await fetch(`${API_URL}/customer/users/personality`, {
             method: 'POST',
             headers: {
@@ -120,6 +125,7 @@ export default function Personality() {
                             <InputGroup className='job-search-bar' style={{
                                 overflow: "hidden",
                             }}>
+                               
                                 <Form.Control
                                     className='job-search'
                                     type="text"
@@ -137,6 +143,18 @@ export default function Personality() {
                                     top: "0rem",
                                 }}><IoIosSearch /></InputGroup.Text>
                             </InputGroup>
+                  <div>
+                  {selectedPersonalities.length < 3 || selectedPersonalities.length > 8 ? (
+                <p style={{
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    color: "#4E1173",
+                    lineHeight: "18.5%",
+                    marginBottom: "20px"
+                }}>Select 3-8 options</p>
+            ) : null}
+                  </div>
+                          
                             <div style={{
                                 maxHeight: "50vh",
                                 overflow: "auto",

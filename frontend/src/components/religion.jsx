@@ -148,7 +148,7 @@ export const Religion = () => {
                         <div className='your-religion'>
                             <Container className='religion-text'>
                                 <Image className='about-yourself-icon' src={religionIcon}></Image>
-                                <p>What is your religion?</p>
+                                <p>What are your religious beliefs?</p>
                             </Container>
                             <Container className='all-religion'>
                                 {allReligions.map((religion, index) => (

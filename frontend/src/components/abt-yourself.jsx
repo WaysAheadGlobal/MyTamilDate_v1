@@ -90,7 +90,7 @@ export const AbtYourself = () => {
             }
         } catch (error) {
             console.error('Error:', error);
-            setErrorMessage('Error updating profile');
+            // setErrorMessage('Error updating profile');
         }
     };
 
@@ -162,7 +162,7 @@ export const AbtYourself = () => {
                         <Form className='birthday-form' onSubmit={handleSubmit}>
                             <Form.Group controlId="formgender" className='birthday-group'>
                                 <Form.Label className='birthday-label'>What is Your Gender? *</Form.Label>
-                                <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: "24px", justifyContent: "space-evenly" }}>
+                                <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: "24px", justifyContent: "space-around" }}>
                                     <div className='gender-name'>
                                         <Button className={`gender-btn ${femaleActive ? 'active' : ''}`} onClick={handleFemaleButtonClick}>
                                             <svg width="34" height="48" viewBox="0 0 34 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -206,8 +206,8 @@ export const AbtYourself = () => {
                             </Form.Group>
 
                             <Form.Group controlId="formgender" className='birthday-group'>
-                                <Form.Label className='birthday-label'>Whom do you want to Date? *</Form.Label>
-                                <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: "space-evenly" }}>
+                                <Form.Label className='birthday-label'>Who do you want to date? *</Form.Label>
+                                <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: "space-around" }}>
                                     <Button
                                         className="prefer-whome"
                                         onClick={() => handlePrefer('female')}

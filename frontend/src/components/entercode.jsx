@@ -107,7 +107,7 @@ export const Entercode = () => {
 
                 const result = await response.json();
                 if (response.ok) {
-                    alert(result.message);
+                    // alert(result.message);
                     setResendTimer(120);
                     setErrorMessage("") 
                     setIsResendDisabled(true); 

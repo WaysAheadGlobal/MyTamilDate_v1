@@ -601,9 +601,9 @@ const Dashboard = () => {
         <Box display="grid" gridTemplateColumns={isMobile ? "repeat(auto-fill, minmax(250px, 1fr))" : "repeat(auto-fill, minmax(23%, 1fr))"}  mt="20px">
           
           <StatCard title="Total of Renewals" value={TotalRenewal} />
-          <StatCard title="Avg of Interaction Per Session" value={AvgPaidConve.avg_days_to_paid_conversion} />
-          <StatCard title="Avg Time Per Session" value="14" />
-          <StatCard title="Avg days to paid conversion" value="53" />
+          <StatCard title="Avg days to paid conversion" value={AvgPaidConve.avg_days_to_paid_conversion} />
+          <StatCard title="Avg of Interaction Per Session" value="134" />
+          <StatCard title="Avg Time Per Session" value="24 minutes" />
         </Box>
       
 

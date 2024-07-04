@@ -153,7 +153,10 @@ export const AccountSetting = () => {
     const handleShowPhone = () => setshowUserphone(true);
 
     const handleClosePhoneotp = () => setshowUserPhoneotp(false);
-    const handleShowPhoneotp = () => setshowUserPhoneotp(true);
+    const handleShowPhoneotp = () => {
+        setshowUserPhoneotp(true);
+        setResendTimer(120); 
+    };
 
     const handleClosePause = () => setShowPause(false);
     const handleShowPause = () => setShowPause(true);
@@ -448,6 +451,7 @@ const Gototermandconditions = ()=>{
                 if (response.ok) {
                     
                     handleClosephone();
+                    setResendTimer(120)
                     handleShowPhoneotp();
                 } else {
                     if (response.status === 409) {
@@ -466,7 +470,7 @@ const Gototermandconditions = ()=>{
     
     const PauseMyAccount = async () => {
         try {
-            const response = await fetch(`http://localhost:3001/api/v1/customer/setting/pause`, {
+            const response = await fetch(`${API_URL}/customer/setting/pause`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -698,9 +702,9 @@ const Gototermandconditions = ()=>{
 
 {/* Update the email Address */}
 
-            <Modal show={showUserEmail} centered>
+            {/* <Modal show={showUserEmail} centered>
                 <Modal.Header >
-                    <Modal.Title>Update Your Email</Modal.Title>
+                    <Modal.Title>Update Your Emaill</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit} className=''>
@@ -732,7 +736,7 @@ const Gototermandconditions = ()=>{
                         Save
                     </Button>
                 </Modal.Footer>
-            </Modal>
+            </Modal> */}
 
             <Modal show={showUserEmail} centered>
                 <Modal.Header >
@@ -750,8 +754,6 @@ const Gototermandconditions = ()=>{
                                         placeholder="Example@gmail.com"
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
-
-
                                     {errorMessageemail && <Form.Text className="text-danger error-message">{errorMessageemail}</Form.Text>}
                                 </Form.Group>
                             </div>

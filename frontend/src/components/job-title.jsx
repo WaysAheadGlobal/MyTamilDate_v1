@@ -100,7 +100,7 @@ export const JobTitle = () => {
                         <div className='your-job'>
                             <Container className='job-text'>
                                 <Image className='about-yourself-icon' src={job} alt="Job Icon" />
-                                <p>What type of job are you looking for?</p>
+                                <p>What’s your job title?</p>
                             </Container>
                             <InputGroup className='job-search-bar'>
                                 <Form.Control

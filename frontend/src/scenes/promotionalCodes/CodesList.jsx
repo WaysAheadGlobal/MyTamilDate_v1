@@ -8,7 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { API_URL } from '../../api';
 const Contacts = () => {
   const [activeCodes, setActiveCodes] = useState([]);
-  const [pageSize, setPageSize] = useState(50); // Keep pageSize fixed
+  const [pageSize, setPageSize] = useState(50); 
   const [pageNo, setPageNo] = useState(0);
   const [total, setTotal] = useState(0);
   const navigate = useNavigate();
@@ -139,14 +139,16 @@ const Contacts = () => {
             backgroundColor: "#605f61", // Lavender gradient background
             color: '#fff', // Text color white
             borderBottom: "none",
+            
           },
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
-            fontSize: "14px", // Adjust the font size
+          
             fontWeight: "Medium", // Make the font bold
           },
           "& .name-column--cell": {
             color: colors.greenAccent[300],
+           
           },
           "& .MuiDataGrid-virtualScroller": {
             // backgroundColor: colors.primary[400],
