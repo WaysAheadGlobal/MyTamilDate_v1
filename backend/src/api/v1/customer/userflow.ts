@@ -112,11 +112,11 @@ async function getUserPreferences(userId: string) {
             COALESCE(f.have_kids_id, up.have_kid_id) AS have_kids,
             COALESCE(f.smoking_id, up.smoke_id) AS smoking,
             COALESCE(f.drinks_id, up.drink_id) AS drinking
-            FROM user_filters uf
-            INNER JOIN filters f ON f.id = uf.filter_id
-            INNER JOIN user_profiles up ON up.user_id = uf.user_id
+            FROM user_profiles up
+            LEFT JOIN user_filters uf ON up.user_id = uf.user_id
+            LEFT JOIN filters f ON f.id = uf.filter_id
             LEFT JOIN filter_locations fl ON fl.filters_id = uf.filter_id
-            WHERE uf.user_id = ?;
+            WHERE up.user_id =  ?;
         `, [userId], (err, result) => {
             if (err) {
                 reject(err);
@@ -167,6 +167,7 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
     if (currentUserFilters) {
         //* preferences on flow
         //* 1st Wave - Without age extension and all the preferences (perfect match)
+        
 
         let whereClauses = [];
         let queryParams = [];
