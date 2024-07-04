@@ -60,6 +60,7 @@ export default function Home() {
             });
             const data = await response.json();
             if (!data) return;
+            console.log(data)
 
             if (response.ok) {
                 if (data.length === 0 && wave < 3) {
