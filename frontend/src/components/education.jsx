@@ -82,76 +82,77 @@ export const Education = () => {
                         </div>
                     </Container>
                     <Container className='education-details'>
-                        <div className='your-education'>
-                            <Container className='education-text'>
-                                <Image className='about-yourself-icon' src={edu} alt="Education Icon" />
-                                <p>What’s the highest level you’ve attained?</p>
-                            </Container>
-                            <Container className='all-education'>
-                                <div className="outer-div">
-                                    <div className="first-div">
-                                        <div className="inner-div">
-                                            <div
-                                                onClick={() => setSelectedOption("Associates")}
-                                                className="sub-inner-div"
-                                                style={{
-                                                    backgroundColor: selectedOption === "Associates" ? '#F7ECFF' : 'transparent',
-                                                }}
-                                            >Associates</div>
-                                            <div
-                                                onClick={() => setSelectedOption("Bachelors")}
-                                                className="sub-inner-div"
-                                                style={{
-                                                    backgroundColor: selectedOption === "Bachelors" ? '#F7ECFF' : 'transparent',
-                                                }}
-                                            >Bachelors</div>
-                                        </div>
-                                        <div className="inner-div">
-                                            <div
-                                                onClick={() => setSelectedOption("Doctorate")}
-                                                className="sub-inner-div"
-                                                style={{
-                                                    backgroundColor: selectedOption === "Doctorate" ? '#F7ECFF' : 'transparent',
-                                                }}
-                                            >Doctorate</div>
-                                            <div
-                                                onClick={() => setSelectedOption("High school")}
-                                                className="sub-inner-div"
-                                                style={{
-                                                    backgroundColor: selectedOption === "High school" ? '#F7ECFF' : 'transparent',
-                                                }}
-                                            >High school</div>
-                                        </div>
-                                        <div className="inner-div">
-                                            <div
-                                                onClick={() => setSelectedOption("Masters")}
-                                                className="sub-inner-div"
-                                                style={{
-                                                    backgroundColor: selectedOption === "Masters" ? '#F7ECFF' : 'transparent',
-                                                }}
-                                            >Masters</div>
-                                            <div
-                                                onClick={() => setSelectedOption("Trade school")}
-                                                className="sub-inner-div"
-                                                style={{
-                                                    backgroundColor: selectedOption === "Trade school" ? '#F7ECFF' : 'transparent',
-                                                }}
-                                            >Trade school</div>
-                                        </div>
-                                    </div>
-                                    <div
-                                        onClick={() => setSelectedOption("Prefer not to say")}
-                                        className="second-div"
-                                        style={{
-                                            backgroundColor: selectedOption === "Prefer not to say" ? '#F7ECFF' : 'transparent',
-                                        }}
-                                    >
-                                        Prefer not to say
-                                    </div>
-                                </div>
-                            </Container>
-                        </div>
-                    </Container>
+    <div className='your-education'>
+        <Container className='education-text'>
+            <Image className='about-yourself-icon' src={edu} alt="Education Icon" />
+            <p>What’s the highest level you’ve attained?</p>
+        </Container>
+        <Container className='all-education'>
+            <div className="outer-div">
+                <div className="first-div">
+                    <div className="inner-div">
+                        <div
+                            onClick={() => setSelectedOption("High school")}
+                            className="sub-inner-div"
+                            style={{
+                                backgroundColor: selectedOption === "High school" ? '#F7ECFF' : 'transparent',
+                            }}
+                        >High school</div>
+                        <div
+                            onClick={() => setSelectedOption("Trade school")}
+                            className="sub-inner-div"
+                            style={{
+                                backgroundColor: selectedOption === "Trade school" ? '#F7ECFF' : 'transparent',
+                            }}
+                        >Trade school</div>
+                    </div>
+                    <div className="inner-div">
+                        <div
+                            onClick={() => setSelectedOption("Associates")}
+                            className="sub-inner-div"
+                            style={{
+                                backgroundColor: selectedOption === "Associates" ? '#F7ECFF' : 'transparent',
+                            }}
+                        >Associates</div>
+                        <div
+                            onClick={() => setSelectedOption("Bachelors")}
+                            className="sub-inner-div"
+                            style={{
+                                backgroundColor: selectedOption === "Bachelors" ? '#F7ECFF' : 'transparent',
+                            }}
+                        >Bachelors</div>
+                    </div>
+                    <div className="inner-div">
+                        <div
+                            onClick={() => setSelectedOption("Masters")}
+                            className="sub-inner-div"
+                            style={{
+                                backgroundColor: selectedOption === "Masters" ? '#F7ECFF' : 'transparent',
+                            }}
+                        >Masters</div>
+                        <div
+                            onClick={() => setSelectedOption("Doctorate")}
+                            className="sub-inner-div"
+                            style={{
+                                backgroundColor: selectedOption === "Doctorate" ? '#F7ECFF' : 'transparent',
+                            }}
+                        >Doctorate</div>
+                    </div>
+                </div>
+                <div
+                    onClick={() => setSelectedOption("Prefer not to say")}
+                    className="second-div"
+                    style={{
+                        backgroundColor: selectedOption === "Prefer not to say" ? '#F7ECFF' : 'transparent',
+                    }}
+                >
+                    Prefer not to say
+                </div>
+            </div>
+        </Container>
+    </div>
+</Container>
+
                     <Button variant="primary" type="submit" className='education-nxt-btn' onClick={saveEducation}>
                         Next
                     </Button>

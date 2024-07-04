@@ -323,8 +323,11 @@ export const Selfie = () => {
                     className='selfie-next-btn'
                     onClick={handleNextClick}
                     style={{
-                        background: 'linear-gradient(90deg, #9663BF 0%, #4B164C 100%)',
-                        color:  '#FFFFFF'
+                        background: "#E5E5E5",
+                        
+
+                        // background: 'linear-gradient(90deg, #9663BF 0%, #4B164C 100%)',
+                        color:  '#6C6C6C'
                     }}
                 >
                     Next

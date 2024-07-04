@@ -82,7 +82,7 @@ profile.put('/namedetails', [
   verifyUser,
   body('first_name').isString().notEmpty().withMessage('First name is required'),
   body('birthday').isDate().withMessage('Birthday must be a valid date'),
-  body('last_name').optional().isString().withMessage('Last name must be a string')
+  body('last_name').optional().isString().withMessage('Name must be a text')
 
 ], (req: UserRequest, res: any) => {
   const errors = validationResult(req);

@@ -97,10 +97,11 @@ export const BasicDetails = () => {
       .then(response => response.json())
       .then(data => {
         if (data.errors) {
+
           setErrorMessage(data.errors.map(error => error.msg).join(', '));
         } else {
           setErrorMessage('');
-          alert('Profile updated successfully');
+          // alert('Profile updated successfully');
           console.log(data);
           navigate("/abtyourself");
         }
@@ -189,7 +190,7 @@ export const BasicDetails = () => {
                     
                   </div>
                 </div>
-                {age !== null && <span className='calculated-age'>Your age is {age}</span>}
+                {age !== null && age !== 54 && <span className='calculated-age'>Your age is {age}</span>}
               </Form.Group>
 
               <Button variant="primary" type="submit" className='basic-details-btn'>

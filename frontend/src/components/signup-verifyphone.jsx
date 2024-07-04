@@ -70,7 +70,7 @@ export const SignupPhone = () => {
 
                 const result = await response.json();
                 if (response.ok) {
-                    alert(result.message);
+                    
                     setCookie('phoneNumber', completePhoneNumber, 7);
                     navigate("/entercode");
                 } else {
