@@ -4,7 +4,7 @@ import { useCookies } from '../../hooks/useCookies';
 import { API_URL } from '../../api';
 
 
-const VerifyPhoneModal = ({ modalPhoneNumber, setModalPhoneNumber, setResendTimer,resendTimer,fetchData, showUserPhoneotp, handleClosePhoneotp, handleShowsuccessphone }) => {
+const VerifyPhoneModal = ({errorMessagephone,seterrorMessagephone, modalPhoneNumber, setModalPhoneNumber, setResendTimer,resendTimer,fetchData, showUserPhoneotp, handleClosePhoneotp, handleShowsuccessphone }) => {
     
     const [otpCode1, setOtpCode1] = useState('');
     const [otpCode2, setOtpCode2] = useState('');
@@ -102,7 +102,7 @@ const VerifyPhoneModal = ({ modalPhoneNumber, setModalPhoneNumber, setResendTime
         e.preventDefault();
         if (resendTimer === 0) {
             try {
-                const response = await fetch(`${API_URL}/customer/setting/updatephone/otp`, {
+                const response = await fetch(`${API_URL}customer/setting/updatephone/otp`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -113,11 +113,11 @@ const VerifyPhoneModal = ({ modalPhoneNumber, setModalPhoneNumber, setResendTime
 
                 const result = await response.json();
                 if (response.ok) {
-                    alert(result.message);
-                    setResendTimer(120); // Reset timer to 2 minutes on successful resend
-                    setIsResendDisabled(true); // Disable resend button after OTP is sent
+                  
+                    setResendTimer(120); 
+                    setIsResendDisabled(true); 
                 } else {
-                    setOtpErrorMessage(result.message || 'Failed to send OTP');
+                    seterrorMessagephone(result.message || 'Failed to send OTP');
                 }
             } catch (error) {
                 console.error('Error:', error);

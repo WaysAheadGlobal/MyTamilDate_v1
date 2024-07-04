@@ -223,7 +223,7 @@ function App() {
                <Route path = "/editpicture" element={<EditPicture/>}></Route>
                <Route path="/updateanswer" element={<UpdateAnswers/>}></Route>
                <Route path="/updatepersonality" element={<UpdatePersonality/>}></Route>
-              
+            
 
               <Route path="/user/home" element={<Home />} />
               <Route path="/user/recommendations" element={<Recommendations />} />

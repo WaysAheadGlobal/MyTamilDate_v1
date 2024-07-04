@@ -135,6 +135,7 @@ export const AccountSetting = () => {
             console.error('Error updating name:', error);
         }
     };
+    const [errorMessagephone, setErrorMessagephone] = useState('');
     
     
 
@@ -445,7 +446,7 @@ const Gototermandconditions = ()=>{
     
                 const result = await response.json();
                 if (response.ok) {
-                    alert(result.message);
+                    
                     handleClosephone();
                     handleShowPhoneotp();
                 } else {
@@ -497,12 +498,13 @@ const Gototermandconditions = ()=>{
                 flexDirection: "column",
                 gap: "1rem",
                 overflowY: "auto",
-                scrollbarWidth: "none"
+                scrollbarWidth: "none",
+                marginTop: "-50px"
             }}>
         <div className='account-setting-container'>
            
-            <Container className='account-setting-main'>
-                <Container className='account-setting-box'>
+            <div className='account-setting-main'>
+                <div className='account-setting-box'>
                     <Container className='logo-progressbar3'>
 
                         <Container className='logo-arrow3'>
@@ -654,8 +656,8 @@ const Gototermandconditions = ()=>{
 
                         </div>
                     </Container>
-                </Container>
-            </Container>
+                </div>
+            </div>
 
            
 
@@ -684,9 +686,9 @@ const Gototermandconditions = ()=>{
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="outline-danger" className="btn-cancel" onClick={handleCloseName}>
+                    <button  className="btn-cancel" onClick={handleCloseName}>
                         Cancel
-                    </Button>
+                    </button>
                     <Button variant="primary" className="btn-save" onClick={handleSaveFirstLastName}>
                         Save
                     </Button>
@@ -869,7 +871,7 @@ const Gototermandconditions = ()=>{
                                         </div>
                                     </Dropdown>
                                     <Form.Control
-                                        className={`num-verify-input ${errorMessage ? 'error' : ''}`}
+                                        className={`num-verify-input ${errorMessagephoneupdate ? 'error' : ''}`}
                                         type="text"
                                         placeholder="(905)258-2258"
                                         value={phoneNumberupdate}
@@ -877,13 +879,13 @@ const Gototermandconditions = ()=>{
                                         style={{ flex: 1, marginLeft: '10px' }}
                                     />
                                 </div>
-                                {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
+                                {errorMessagephoneupdate && <Form.Text className="text-danger error-message">{errorMessagephoneupdate}</Form.Text>}
                             </Form.Group>
                             <Container style={{display : "flex", justifyContent : "center" , alignItems : "center"}}>
 
-                            <Button variant="outline-danger" className="btn-cancel" onClick={handleClosephone}>
+                            <button  className="btn-cancel" onClick={handleClosephone}>
                             Cancel
-                        </Button>
+                        </button>
                         <Button variant="primary" className="btn-save" onClick={handleSubmitphone}>
                             Save
                         </Button>
@@ -939,6 +941,8 @@ const Gototermandconditions = ()=>{
                 resendTimer={resendTimer}
                 modalPhoneNumber={modalPhoneNumber} 
                 setModalPhoneNumber={setModalPhoneNumber}
+                errorMessagephone={errorMessagephone}
+                seterrorMessagephone = {errorMessagephone}
             />
               
             <Modal show={showsuccessphone} onHide={handleClosesuccessphone} centered>

@@ -11,7 +11,7 @@ import { useAppContext } from '../Context/UseContext';
 import { useCookies } from '../hooks/useCookies';
 import { API_URL } from '../api';
 
-export const AbtYourself = () => {
+export const UpdateGender = () => {
     const { userDetails, setUserDetails } = useAppContext();
     const { getCookie } = useCookies();
     const navigate = useNavigate();
