@@ -32,7 +32,7 @@ export async function sendOTPtoPhoneNumber({ phone }: PhoneNumberDetails): Promi
   const otp = randomInt(1000, 9999).toString(); 
   try {
     const message = await client.messages.create({
-      body: `Your MTD OTP is ${otp}`,
+      body: `Your MTD Code is: ${otp}`,
       from: '+16473609147', // Your Twilio phone number
       to: phone
     });

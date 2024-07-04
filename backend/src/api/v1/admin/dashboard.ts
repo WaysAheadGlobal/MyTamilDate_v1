@@ -370,6 +370,7 @@ dashboard.get('/request/count', (req: AdminRequest, res) => {
         res.status(200).json({ total_messages: totalMessages });
     });
 });
+
 dashboard.get('/top-countries', (req: AdminRequest, res) => {
     const timeRange: string = (req.query.timeRange as string) || '24h';
     const dateCondition = getDateConditionlocations(timeRange, 'up');
