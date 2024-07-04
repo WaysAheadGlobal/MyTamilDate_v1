@@ -270,42 +270,29 @@ profile.get('/gender', verifyUser, (req: UserRequest, res: any) => {
 //add locations and update user_profile with locations_id
 profile.post('/locations', [
   verifyUser,
-  body('country').isString().notEmpty().withMessage('Country is required'),
-  body('location_string').isString().notEmpty().withMessage('Location string is required'),
+  body('location_id').isInt().withMessage('Location ID is required'),
 ], (req: UserRequest, res: express.Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { country, location_string } = req.body;
+  const { location_id } = req.body;
   const userId = req.userId;
 
-  console.log(`UserId: ${userId}, Country: ${country}, Location String: ${location_string}`);
+  const query = 'UPDATE user_profiles SET location_id = ?, updated_at = NOW() WHERE user_id = ?';
 
-  const query = 'INSERT INTO locations (country, location_string, created_at, updated_at) VALUES (?, ?, NOW(), NOW())';
-
-  db.query<ResultSetHeader>(query, [country, location_string], (err, results) => {
+  db.query<ResultSetHeader>(query, [location_id, userId], (err, results) => {
     if (err) {
       console.error('Error inserting location:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
     }
 
-    const locationId = results.insertId;
-    const updateUserProfileQuery = 'UPDATE user_profiles SET location_id = ?, updated_at = NOW() WHERE user_id = ?';
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: 'User profile not found' });
+    }
 
-    db.query<ResultSetHeader>(updateUserProfileQuery, [locationId, userId], (err, updateResults) => {
-      if (err) {
-        console.error('Error updating user profile:', err);
-        return res.status(500).json({ message: 'Internal Server Error' });
-      }
-
-      if (updateResults.affectedRows === 0) {
-        return res.status(404).json({ message: 'User profile not found' });
-      }
-
-      res.status(200).json({ message: 'Location added and user profile updated successfully' });
-    });
+    res.status(200).json({ message: 'Location added and user profile updated successfully' });
   });
 });
 
@@ -313,10 +300,11 @@ profile.get('/locations', verifyUser, (req: UserRequest, res: express.Response) 
   const userId = req.userId;
 
   const query = `
-    SELECT locations.country, locations.location_string
-    FROM locations
-    JOIN user_profiles ON user_profiles.location_id = locations.id
-    WHERE user_profiles.user_id = ?`;
+    SELECT l.id, l.country, l.location_string, l.continent
+    FROM locations l
+    JOIN user_profiles up ON l.id = up.location_id
+    WHERE up.user_id = ?
+  `;
 
   db.query<RowDataPacket[]>(query, [userId], (err, results) => {
     if (err) {
@@ -329,6 +317,33 @@ profile.get('/locations', verifyUser, (req: UserRequest, res: express.Response) 
     }
 
     res.status(200).json(results[0]);
+  });
+});
+
+profile.get('/location-options', verifyUser, (req: UserRequest, res: express.Response) => {
+  const query = `SELECT id, country, location_string, continent FROM locations`;
+
+  db.query<RowDataPacket[]>(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching location:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Location not found' });
+    }
+
+    const locations = results.reduce((acc: any, location: any) => {
+      if (!location.continent) return acc;
+
+      if (!acc[location.country]) {
+        acc[location.country] = [];
+      }
+      acc[location.country].push(location);
+      return acc;
+    }, {})
+
+    res.status(200).json(locations);
   });
 });
 

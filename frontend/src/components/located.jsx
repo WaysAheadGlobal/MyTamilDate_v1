@@ -11,89 +11,45 @@ import { useCookies } from '../hooks/useCookies';
 import { API_URL } from '../api';
 
 
-const countryOptions = [
-  { value: 'United States', label: 'United States' },
-  { value: 'Canada', label: 'Canada' },
-  { value: 'India', label: 'India' },
-  { value: 'Australia', label: 'Australia' },
-  { value: 'United Kingdom', label: 'United Kingdom' },
-  { value: 'France', label: 'France' },
-  { value: 'Germany', label: 'Germany' },
-];
-
-const cityOptions = {
-  'United States': [
-    { value: 'New York', label: 'New York' },
-    { value: 'Los Angeles', label: 'Los Angeles' },
-    { value: 'Chicago', label: 'Chicago' },
-    // Add more cities as needed
-  ],
-  'Canada': [
-    { value: 'Toronto', label: 'Toronto' },
-    { value: 'Vancouver', label: 'Vancouver' },
-    { value: 'Montreal', label: 'Montreal' },
-    // Add more cities as needed
-  ],
-  'India': [
-    { value: 'Delhi', label: 'Delhi' },
-    { value: 'Mumbai', label: 'Mumbai' },
-    { value: 'Bangalore', label: 'Bangalore' },
-    { value: 'Chennai', label: 'Chennai' },
-    // Add more cities as needed
-  ],
-  'Australia': [
-    { value: 'Sydney', label: 'Sydney' },
-    { value: 'Melbourne', label: 'Melbourne' },
-    { value: 'Brisbane', label: 'Brisbane' },
-    // Add more cities as needed
-  ],
-  'United Kingdom': [
-    { value: 'London', label: 'London' },
-    { value: 'Manchester', label: 'Manchester' },
-    { value: 'Edinburgh', label: 'Edinburgh' },
-    // Add more cities as needed
-  ],
-  'France': [
-    { value: 'Paris', label: 'Paris' },
-    { value: 'Lyon', label: 'Lyon' },
-    { value: 'Marseille', label: 'Marseille' },
-    // Add more cities as needed
-  ],
-  'Germany': [
-    { value: 'Berlin', label: 'Berlin' },
-    { value: 'Munich', label: 'Munich' },
-    { value: 'Frankfurt', label: 'Frankfurt' },
-    // Add more cities as needed
-  ],
-};
-
 export const Located = () => {
   const navigate = useNavigate();
   const { getCookie } = useCookies();
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
-  const [locationData, setLocationData] = useState({ country: '', location_string: '' });
+  const [countryOptions, setCountryOptions] = useState([]);
+  const [options, setOptions] = useState([]);
 
   useEffect(() => {
-    // Fetch existing location data on component mount
-    fetch(`${API_URL}/customer/users/locations`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getCookie('token')}`
-      },
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.country && data.location_string) {
-          setSelectedCountry(countryOptions.find(country => country.label === data.country));
-          setSelectedCity({ value: data.location_string, label: data.location_string });
-          const foundCity = cityOptions[data.country].find(city => city.label === data.location_string);
-          setSelectedCity(foundCity);
-        }
-      })
-      .catch(error => console.error('Error fetching location:', error));
+    (async () => {
+      const response = await fetch(`${API_URL}/customer/users/location-options`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getCookie('token')}`
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      setOptions(data);
+      setCountryOptions(Object.keys(data));
+    })()
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      const response = await fetch(`${API_URL}/customer/users/locations`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getCookie('token')}`
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      setSelectedCountry(data.country);
+      setSelectedCity(data.id);
+    })()
+  }, [])
 
   const handleCountrySelect = (country) => {
     setSelectedCountry(country);
@@ -118,8 +74,7 @@ export const Located = () => {
       },
 
       body: JSON.stringify({
-        country: selectedCountry.label,
-        location_string: selectedCity.label,
+        location_id: selectedCity,
       }),
     })
       .then(response => response.json())
@@ -156,11 +111,11 @@ export const Located = () => {
               <div className='scroll-container-vertical'>
                 {countryOptions.map((country) => (
                   <div
-                    key={country.value}
+                    key={country}
                     className={`scroll-item ${selectedCountry === country ? 'selected' : ''}`}
                     onClick={() => handleCountrySelect(country)}
                   >
-                    {country.label}
+                    {country}
                   </div>
                 ))}
               </div>
@@ -169,13 +124,13 @@ export const Located = () => {
               <Container className='located-city'>
                 <p>Select city</p>
                 <div className='scroll-container-vertical'>
-                  {cityOptions[selectedCountry.value].map((city) => (
+                  {options[selectedCountry].map((city) => (
                     <div
-                      key={city.value}
-                      className={`scroll-item ${selectedCity === city ? 'selected' : ''}`}
-                      onClick={() => handleCitySelect(city)}
+                      key={city.id}
+                      className={`scroll-item ${selectedCity === city.id ? 'selected' : ''}`}
+                      onClick={() => handleCitySelect(city.id)}
                     >
-                      {city.label}
+                      {city.location_string}
                     </div>
                   ))}
                 </div>
