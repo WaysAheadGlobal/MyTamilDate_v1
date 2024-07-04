@@ -479,7 +479,7 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
 
             let html;
             try {
-                html = await ejs.renderFile("mail/templates/approve.ejs", { link: `${process.env.URL}/api/v1/home` });
+                html = await ejs.renderFile("mail/templates/approve.ejs", { link: `${process.env.URL}/user/home` });
             } catch (renderError) {
                 console.error('Error rendering email template:', renderError);
                 return res.status(500).json({ message: 'Internal Server Error' });
