@@ -545,7 +545,7 @@ userFlowRouter.get("/preferences", async (req: UserRequest, res) => {
             return;
         }
 
-        res.status(200).send(result[0]);
+        res.status(200).send(result[0] ?? {});
     });
 });
 
