@@ -381,14 +381,14 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
 
         query = `
             WITH distinct_user_ids AS (
-                SELECT DISTINCT 
+                SELECT
                     up_inner.id 
                 FROM 
                     user_profiles up_inner 
                 INNER JOIN media m_inner ON up_inner.user_id = m_inner.user_id 
                 INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
                 WHERE 
-                    m_inner.type IN (1, 31) 
+                    m_inner.type IN (1, 31) AND m_inner.hash IS NOT NULL
                     AND up_inner.user_id != ?
                     AND up_inner.gender = ?
                     AND up_inner.want_gender = ?
