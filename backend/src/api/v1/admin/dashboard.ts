@@ -578,8 +578,16 @@ dashboard.get('/users/count', (req: AdminRequest, res) => {
     const timeRange: string = (req.query.timeRange as string) || '24h';
     const dateCondition = getDateCondition(timeRange);
 
-    const sql = `SELECT COUNT(*) AS total_users FROM users WHERE ${dateCondition}`;
-
+    // const sql = `SELECT COUNT(*) AS total_users FROM users WHERE ${dateCondition}`;
+    const sql = `
+    SELECT COUNT(*) AS total_users
+    FROM users
+    WHERE deleted_at IS NULL
+    AND ${dateCondition}
+    AND old_id IS NULL
+    AND approval != '10'
+    AND approval != '40'
+`;
     db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
@@ -772,19 +780,29 @@ dashboard.get('/requests/count', (req, res) => {
 
 dashboard.get('/old-members/signed-in/count', (req, res) => {
     const timeRange: string = (req.query.timeRange as string) || '24h';
-    const dateCondition = getDateConditionoflike(timeRange);
+    const dateCondition = getDateCondition(timeRange);
 
-    const sql = `
-        SELECT COUNT(*) AS total_old_members_signed_in
-        FROM users
-        WHERE 
-            old_id IS NOT NULL
-            AND old_login_at IS NOT NULL
-            AND ${dateCondition}
-            AND approval != ?
-            AND approval != ?
-            AND deleted_at IS NULL
-    `;
+    // const sql = `
+    //     SELECT COUNT(*) AS total_old_members_signed_in
+    //     FROM users
+    //     WHERE 
+    //         old_id IS NOT NULL
+    //         AND old_login_at IS NOT NULL
+    //         AND ${dateCondition}
+    //         AND approval != ?
+    //         AND approval != ?
+    //         AND deleted_at IS NULL
+    // `;
+
+    const sql =`SELECT COUNT(*) AS total_old_members_signed_in
+FROM users
+WHERE deleted_at IS NULL
+AND old_id IS NOT NULL
+AND old_login_at IS NOT NULL
+AND ${dateCondition}
+AND approval != '15'
+AND approval != '40';
+`
 
     const approvalUnknown = 15; // Replace with the actual value for unknown approval status
     const approvalRegistered = 40; // Replace with the actual value for registered approval status
@@ -794,7 +812,7 @@ dashboard.get('/old-members/signed-in/count', (req, res) => {
     console.log('Approval unknown:', approvalUnknown);
     console.log('Approval registered:', approvalRegistered);
 
-    db.query<RowDataPacket[]>(sql, [approvalUnknown, approvalRegistered], (err, results) => {
+    db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Internal Server Error' });

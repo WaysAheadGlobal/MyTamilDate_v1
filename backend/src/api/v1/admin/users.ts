@@ -3,7 +3,8 @@ import { AdminRequest } from "../../../types/types";
 import axios from 'axios';
 import { db } from "../../../../db/db";
 import { RowDataPacket } from "mysql2";
-
+import ejs from 'ejs';
+import sgMail from '@sendgrid/mail';
 const users = Router();
 
 // Define types for callback function
@@ -442,25 +443,69 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
     const { id, approval } = req.body;
 
     if (!id || !approval) {
-        res.status(400).send('Bad Request: Missing user_id or status');
-        return;
+        return res.status(400).send('Bad Request: Missing user_id or status');
     }
 
-    const updateStatusSql = `
-        UPDATE users
-        SET approval = ?
-        WHERE id = ?
+    const getUserEmailSql = `
+        SELECT up.email
+        FROM users u
+        JOIN user_profiles up ON u.id = up.user_id
+        WHERE u.id = ?
     `;
 
-    db.query(updateStatusSql, [approval, id], (err: Error | null, result: any) => {
+    db.query(getUserEmailSql, [id], (err: Error | null, results: any) => {
         if (err) {
-            console.log('Error updating status:', err);
-            res.status(500).send('Internal Server Error');
-            return;
+            console.error('Error fetching email:', err);
+            return res.status(500).send('Internal Server Error');
         }
-        res.status(200).send('Status updated successfully');
+
+        if (results.length === 0) {
+            return res.status(404).send('User not found');
+        }
+
+        const email = results[0].email;
+
+        const updateStatusSql = `
+            UPDATE users
+            SET approval = ?
+            WHERE id = ?
+        `;
+
+        db.query(updateStatusSql, [approval, id], async (err: Error | null, result: any) => {
+            if (err) {
+                console.error('Error updating status:', err);
+                return res.status(500).send('Internal Server Error');
+            }
+
+            let html;
+            try {
+                html = await ejs.renderFile("mail/templates/approve.ejs", { link: `${process.env.URL}/api/v1/home` });
+            } catch (renderError) {
+                console.error('Error rendering email template:', renderError);
+                return res.status(500).json({ message: 'Internal Server Error' });
+            }
+
+            // Send verification email
+            const msg = {
+                to: email,
+                from: "mtdteam2024@gmail.com",
+                subject: "Approval Notification",
+                html: html
+            };
+
+            sgMail.send(msg)
+                .then(() => {
+                    console.log("Approval email sent successfully");
+                    return res.status(200).send('Status updated successfully and email sent');
+                })
+                .catch((error) => {
+                    console.error('Error sending email:', error);
+                    return res.status(500).send('Internal Server Error');
+                });
+        });
     });
 });
+
 
 // delete the User
 users.put('/deleteuser', (req, res) => {
