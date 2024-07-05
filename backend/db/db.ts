@@ -6,3 +6,9 @@ export const db = mysql.createConnection({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME
 });
+
+db.addListener('error', (error) => {
+    db.destroy();
+    console.error('Database error:', error);
+    process.exit(1);
+});

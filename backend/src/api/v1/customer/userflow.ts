@@ -69,6 +69,18 @@ function getLocationOrder(userLocation: string) {
     }
 };
 
+async function deleteAllDiscoverySkip(userId: string) {
+    return new Promise((resolve, reject) => {
+        db.query("DELETE FROM discovery_skip WHERE user_id = ?", [userId], (err, result) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            resolve(result);
+        });
+    });
+}
 
 userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
     const wave = req.query.wave ? Number(req.query.wave) : 1;
@@ -154,6 +166,7 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                         AND u_inner.approval = ${UserApprovalEnum.APPROVED}
                         ${whereClauses.length > 0 ? " AND " + whereClauses.join(" AND ") : ""}
                         AND l_inner.continent IN (?)
+                        AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
                     ORDER BY 
                         FIELD(l_inner.continent, ?),
                         up_inner.created_at DESC, 
@@ -175,7 +188,8 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                     l.country,
                     l.continent,
                     l.location_string,
-                    j.name as job
+                    j.name as job,
+                    (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
                 FROM distinct_user_ids dup
                 JOIN user_profiles up ON dup.id = up.id 
                 JOIN media m ON up.user_id = m.user_id 
@@ -188,9 +202,11 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                 req.userId,
                 ...queryParams,
                 userLocationPreferenceOrder,
+                req.userId,
                 userLocationPreferenceOrder,
                 limit,
                 (pageNo - 1) * limit,
+                req.userId
             ];
         } else if (wave === 2) {
             console.log("second wave")
@@ -210,6 +226,7 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                         AND l_inner.continent IS NOT NULL
                         AND u_inner.approval = ${UserApprovalEnum.APPROVED}
                         AND l_inner.continent IN (?)
+                        AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
                     ORDER BY 
                         FIELD(l_inner.continent, ?),
                         up_inner.created_at DESC, 
@@ -231,7 +248,8 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                     l.country,
                     l.continent,
                     l.location_string,
-                    j.name as job
+                    j.name as job,
+                    (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
                 FROM distinct_user_ids dup
                 JOIN user_profiles up ON dup.id = up.id 
                 JOIN media m ON up.user_id = m.user_id 
@@ -247,9 +265,11 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                 req.user.want_gender,
                 req.user.gender,
                 userLocationPreferenceOrder,
+                req.userId,
                 userLocationPreferenceOrder,
                 limit,
                 (pageNo - 1) * limit,
+                req.userId
             ];
         } else {
             console.log("Third wave");
@@ -265,6 +285,7 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                         up_inner.user_id != ?
                         AND up_inner.gender = ?
                         AND up_inner.want_gender = ?
+                        AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
                     ORDER BY 
                         up_inner.created_at DESC, 
                         up_inner.id DESC 
@@ -285,7 +306,8 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                     l.country,
                     l.continent,
                     l.location_string,
-                    j.name as job
+                    j.name as job,
+                    (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
                 FROM distinct_user_ids dup
                 JOIN user_profiles up ON dup.id = up.id 
                 JOIN media m ON up.user_id = m.user_id 
@@ -298,8 +320,10 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                 req.userId,
                 req.user.want_gender,
                 req.user.gender,
+                req.userId,
                 limit,
                 (pageNo - 1) * limit,
+                req.userId
             ];
         }
 
@@ -322,6 +346,7 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                     AND up_inner.want_gender = ?
                     AND DATEDIFF(NOW(), up_inner.birthday) BETWEEN (DATEDIFF(NOW(), ?) - (5 * 365)) AND (DATEDIFF(NOW(), ?) + (10 * 365))
                     AND l_inner.continent IN (?)
+                    AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
                 ORDER BY 
                     FIELD(l_inner.continent, ?),
                     up_inner.created_at DESC, 
@@ -343,7 +368,8 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                 l.country,
                 l.continent,
                 l.location_string,
-                j.name as job
+                j.name as job,
+                (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
             FROM distinct_user_ids dup
             JOIN user_profiles up ON dup.id = up.id 
             JOIN media m ON up.user_id = m.user_id 
@@ -359,9 +385,11 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
             req.user.birthday,
             req.user.birthday,
             userLocationPreferenceOrder,
+            req.userId,
             userLocationPreferenceOrder,
             limit,
             (pageNo - 1) * limit,
+            req.userId
         ];
     }
 
@@ -530,6 +558,7 @@ userFlowRouter.put("/preferences/save/age", (req: UserRequest, res) => {
                                 resolve(result);
                             });
                         });
+
                     } catch (err) {
                         db.rollback(() => {
                             res.status(500).send({ message: "Internal server error" });
@@ -537,6 +566,8 @@ userFlowRouter.put("/preferences/save/age", (req: UserRequest, res) => {
                         return;
                     }
                 }
+
+                await deleteAllDiscoverySkip(req.userId as string);
 
                 db.commit((err) => {
                     if (err) {
@@ -628,6 +659,8 @@ userFlowRouter.put("/preferences/save/location", (req: UserRequest, res) => {
                     return;
                 }
 
+                await deleteAllDiscoverySkip(req.userId as string);
+
                 db.commit((err) => {
                     if (err) {
                         console.log(err)
@@ -684,8 +717,6 @@ userFlowRouter.put("/preferences/save/:field", (req: UserRequest, res) => {
         try {
             const userFilters: any = await getUserFilters(req.userId as string);
 
-            console.log(userFilters)
-
             let query = "";
             let params: any;
 
@@ -728,6 +759,8 @@ userFlowRouter.put("/preferences/save/:field", (req: UserRequest, res) => {
                         return;
                     }
                 }
+
+                await deleteAllDiscoverySkip(req.userId as string);
 
                 db.commit((err) => {
                     if (err) {

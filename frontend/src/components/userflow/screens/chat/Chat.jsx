@@ -27,10 +27,10 @@ export default function Chat() {
                 {
                     pathname.at(-1) === "chat" && <Matches />
                 }
-
                 {
                     Object.keys(components).includes(suffix) && React.createElement(components[suffix])
                 }
+                <div style={{ marginTop: "auto" }}></div>
                 <Navbar style={{
                     width: "100%",
                     maxWidth: "100%",

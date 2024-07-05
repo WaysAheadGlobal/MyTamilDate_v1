@@ -1,10 +1,16 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './requests.module.css'
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function Requests() {
     const navigate = useNavigate();
     const searchParams = useSearchParams();
+    const [requests, setRequests] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+
+    }, [])
 
     return (
         <>

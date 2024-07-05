@@ -41,8 +41,9 @@
     overflow-y: auto;
     overflow-x: hidden;
     display: grid;
-    gap: 1rem;
+    gap: 1.5rem 1rem;
     grid-template-columns: repeat(2, auto);
+    grid-template-rows: max-content;
     scrollbar-width: none;
 }
 
@@ -56,16 +57,30 @@
 }
 
 .profiles>div>div {
+    width: 100%;
     margin-top: auto;
     background: linear-gradient(360deg, #000000 -5.83%, rgba(0, 0, 0, 0) 100%);
     padding: 1rem;
     color: white;
 
-    &>p:first-child{
+    &>p:first-child {
         font-weight: 600;
     }
 
-    &>p:last-child{
+    &>p:last-child {
         font-size: smaller;
     }
+}
+
+.chatPlaceholder {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 31.2px;
+    text-align: center;
 }
