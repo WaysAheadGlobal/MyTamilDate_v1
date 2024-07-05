@@ -486,20 +486,23 @@ dashboard.get('/count-by-gender', (req: AdminRequest, res) => {
 
     const sql = `
         SELECT
-    p.gender AS gender,
-    COUNT(p.id) AS count
-FROM
-    user_profiles p
-WHERE
-   ${dateCondition}
-    AND p.gender IS NOT NULL
-GROUP BY
-    p.gender
-ORDER BY
-    count DESC`;
+            g.name AS gender,
+            COUNT(p.id) AS count
+        FROM
+            user_profiles p
+        JOIN
+            genders g ON p.gender = g.id
+        WHERE
+            ${dateCondition}
+            AND p.gender IS NOT NULL
+        GROUP BY
+            g.name
+        ORDER BY
+            count DESC
+    `;
 
+    console.log('Executing SQL:', sql);
 
- console.log(sql);
     db.query<RowDataPacket[]>(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
@@ -511,14 +514,15 @@ ORDER BY
             res.status(500).send('Internal Server Error');
             return;
         }
-        const countByGender = results.reduce((acc: any, row: any) => {
+
+        const countByGender = results.reduce((acc: Record<string, number>, row: any) => {
             acc[row.gender] = row.count;
             return acc;
         }, {});
+
         res.status(200).json(countByGender);
     });
 });
-
 
 dashboard.get('/top-jobs', (req, res) => {
     const limit = parseInt(req.query.limit as string, 10) || 5; // Default to 5 if not provided
@@ -729,7 +733,7 @@ dashboard.get('/renewals/count', (req :AdminRequest, res) => {
         const dateCondition = getDateCondition(timeRange);
 
     const sql = `
-        SELECT COUNT(*) AS total_renewals
+        SELECT COUNT(1) AS total_renewals
         FROM Payments
         WHERE amount != 0
           AND price_id = ?
@@ -745,7 +749,7 @@ dashboard.get('/renewals/count', (req :AdminRequest, res) => {
             res.status(500).json({ error: 'Internal Server Error' });
             return;
         }
-
+        
         
         res.status(200).json({results });
     });
