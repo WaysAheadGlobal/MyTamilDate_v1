@@ -357,8 +357,8 @@ const Dashboard = () => {
           params: { timeRange }
         });
         console.log('API Response:', response.data); // Log the full response
-        setTotalRenewalCount(response.data.total_renewals);
-        console.log('TotalRenewal:', response.data.total_renewals); // Ensure this matches what you see in Postman
+        setTotalRenewalCount(response.data.results[0].total_renewals);
+        console.log('TotalRenewal:', response.data.results[0].total_renewals); // Ensure this matches what you see in Postman
       } catch (error) {
         console.error('Error fetching like count:', error);
       }
