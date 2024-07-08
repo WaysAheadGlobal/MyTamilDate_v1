@@ -42,6 +42,15 @@ export default function Card({ ...props }) {
 
     async function handleIconButtonClick(type) {
         console.log(type);
+        if (type === "chat") {
+            navigate(`/user/chat/with/${props.first_name}`, {
+                state: {
+                    user_id: props.user_id,
+                    type: "request"
+                }
+            });
+            return;
+        }
         const response = await fetch(`${API_URL}customer/matches/${type}`, {
             method: "POST",
             body: JSON.stringify({

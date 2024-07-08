@@ -1,7 +1,11 @@
-import React, { useEffect } from 'react'
-import styles from './chatbox.module.css'
 import dayjs from 'dayjs';
+import React, { useEffect } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
+import { useLocation } from 'react-router-dom';
+import { API_URL } from '../../../../api';
+import { useCookies } from '../../../../hooks/useCookies';
+import styles from './chatbox.module.css';
+import io from "socket.io-client";
 
 export default function ChatBox() {
     /**
@@ -21,8 +25,11 @@ export default function ChatBox() {
 
     const [messages, setMessages] = React.useState({});
     const [text, setText] = React.useState("");
+    const cookies = useCookies();
+    const location = useLocation();
+    const [socket, setSocket] = React.useState(null);
 
-    useEffect(() => {
+    /* useEffect(() => {
         setMessages({
             "2021-10-01": [
                 {
@@ -73,7 +80,7 @@ export default function ChatBox() {
                 }
             ]
         })
-    }, []);
+    }, []); */
 
     useEffect(() => {
         const chatContainer = document.querySelector(`.${styles.chatContainer}`);
@@ -99,6 +106,62 @@ export default function ChatBox() {
         }
     }
 
+    async function requestChat() {
+        console.log(location.state)
+        const response = await fetch(`${API_URL}customer/chat/request`, {
+            method: "POST",
+            body: JSON.stringify({
+                participantId: location.state.user_id,
+                message: text,
+                conversationId: sessionStorage.getItem("conversationId")
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookies.getCookie('token')}`
+            }
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+            console.log(data);
+            sessionStorage.setItem("conversationId", data.conversationId);
+        }
+    }
+
+    useEffect(() => {
+        const socket = io("http://localhost:3001");
+        setSocket(socket);
+
+        return () => {
+            socket.disconnect();
+        }
+    }, []);
+
+    useEffect(() => {
+        if (socket) {
+            socket.emit('join-room', sessionStorage.getItem("conversationId"));
+        }
+    }, [socket])
+
+    useEffect(() => {
+        if (socket) {
+            socket.on('receive-message', (data) => {
+                console.log(data);
+                setMessages({
+                    ...messages,
+                    [dayjs().format("YYYY-MM-DD")]: [
+                        ...(messages[dayjs().format("YYYY-MM-DD")] ? messages[dayjs().format("YYYY-MM-DD")] : []),
+                        {
+                            sender: "other",
+                            message: data,
+                            time: dayjs().format("h:mm A")
+                        }
+                    ]
+                });
+            });
+        }
+    })
+
     /**
      * 
      * @param {React.FormEvent<HTMLFormElement>} e 
@@ -108,17 +171,28 @@ export default function ChatBox() {
         e.preventDefault();
         if (!text || !text.split(" ").join("")) return;
 
-        setMessages({
-            ...messages,
-            [dayjs().format("YYYY-MM-DD")]: [
-                ...(messages[dayjs().format("YYYY-MM-DD")] ? messages[dayjs().format("YYYY-MM-DD")] : []),
-                {
-                    sender: "you",
+        if (location.state?.type === "request") {
+            await requestChat();
+        } else {
+            if (socket) {
+                socket.emit('send-message', {
                     message: text,
-                    time: dayjs().format("h:mm A")
-                }
-            ]
-        });
+                    roomId: sessionStorage.getItem("conversationId")
+                });
+                setMessages({
+                    ...messages,
+                    [dayjs().format("YYYY-MM-DD")]: [
+                        ...(messages[dayjs().format("YYYY-MM-DD")] ? messages[dayjs().format("YYYY-MM-DD")] : []),
+                        {
+                            sender: "you",
+                            message: text,
+                            time: dayjs().format("h:mm A")
+                        }
+                    ]
+                });
+            }
+        }
+
 
         setText("");
     }
@@ -126,8 +200,9 @@ export default function ChatBox() {
     return (
         <section className={styles.chatbox}>
             <div className={styles.chatHeader}>
-                <img src="https://via.placeholder.com/75" alt="profile" />
-                <p>John Doe</p>
+                {/* <img src="https://via.placeholder.com/75" alt="profile" /> */}
+                <img src={location.state?.img ?? ""} alt="profile" />
+                <p>{location.state?.name ?? ""}</p>
                 <div style={{ flexGrow: "1" }}></div>
                 <Dropdown>
                     <Dropdown.Toggle

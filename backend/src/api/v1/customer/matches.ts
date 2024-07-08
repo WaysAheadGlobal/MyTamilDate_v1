@@ -182,7 +182,7 @@ matches.post("/skip", (req: UserRequest, res) => {
 
 matches.post("/undo", (req: UserRequest, res) => {
     const userId = req.userId;
-    
+
     db.beginTransaction(err => {
         if (err) {
             console.log(err);
@@ -250,8 +250,70 @@ matches.post("/undo", (req: UserRequest, res) => {
     })
 });
 
-matches.post("/chat", (req: UserRequest, res) => {
+matches.get("/chat/received", (req: UserRequest, res) => { });
 
+matches.get("/chat/sent", (req: UserRequest, res) => {
+    const query = `
+        WITH messages as (
+            SELECT DISTINCT conversation_id FROM dncm_messages WHERE sender_id = ?
+        ) SELECT 
+            m.conversation_id,
+            dc.owner_id,
+            dp.participant_id,
+            dp.joined_at,
+            CONCAT(up.first_name, ' ', up.last_name) as name,
+            dc.created_at
+        FROM messages m
+        INNER JOIN dncm_conversations dc ON dc.id = m.conversation_id
+        INNER JOIN dncm_participants dp ON dp.conversation_id = m.conversation_id
+        INNER JOIN user_profiles up ON up.user_id = dp.participant_id
+        WHERE dp.participant_id != ? AND dp.joined_at = 0;
+    `;
+
+    const params = [req.userId, req.userId];
+
+    db.query<RowDataPacket[]>(query, params, (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("Failed to get sent conversations");
+            return;
+        }
+
+        res.status(200).send(result);
+    });
+});
+
+matches.get("/chat/received_", (req: UserRequest, res) => {
+    console.log("first");
+
+    const query = `
+        WITH messages as (
+            SELECT DISTINCT conversation_id FROM dncm_messages WHERE sender_id != ?
+        ) SELECT 
+            m.conversation_id,
+            dc.owner_id,
+            dp.participant_id,
+            dp.joined_at,
+            CONCAT(up.first_name, ' ', up.last_name) as name,
+            dc.created_at
+        FROM messages m
+        INNER JOIN dncm_conversations dc ON dc.id = m.conversation_id
+        INNER JOIN dncm_participants dp ON dp.conversation_id = m.conversation_id
+        INNER JOIN user_profiles up ON up.user_id = dp.participant_id
+        WHERE dp.participant_id = ? AND dp.joined_at = 0;
+    `;
+
+    const params = [req.userId, req.userId];
+
+    db.query<RowDataPacket[]>(query, params, (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("Failed to get received conversations");
+            return;
+        }
+
+        res.status(200).send(result);
+    });
 });
 
 export default matches;

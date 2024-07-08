@@ -4,6 +4,7 @@ import { useCookies } from '../../../../hooks/useCookies';
 import { API_URL } from '../../../../api';
 import { Skeleton } from '@mui/material';
 import chatPlaceholder from '../../../../assets/images/chatPlaceholder.svg';
+import { useNavigate } from 'react-router-dom';
 
 export default function Matches() {
     const [matches, setMatches] = useState([]);
@@ -11,6 +12,7 @@ export default function Matches() {
     const [loadingMatches, setLoadingMatches] = useState(true);
     const cookies = useCookies();
     const [page, setPage] = useState(1);
+    const navigate = useNavigate();
 
     const getImageURL = (type, hash, extension, userId) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}` : `${API_URL}media/avatar/${hash}.${extension}`;
 
@@ -53,6 +55,36 @@ export default function Matches() {
         };
     }, [matches])
 
+    async function getRoom(userId, name, img) {
+        try {
+            const response = await fetch(`${API_URL}customer/chat/create-room`, {
+                method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${cookies.getCookie("token")}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    participantId: userId
+                })
+            });
+            const data = await response.json();
+            console.log(data);
+
+            if (response.ok) {
+                sessionStorage.setItem("conversationId", data.conversationId);
+                navigate(`/user/chat/with/${name}`, {
+                    state: {
+                        name,
+                        img
+                    }
+                })
+            }
+
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     return (
         <>
             <p style={{
@@ -89,7 +121,7 @@ export default function Matches() {
             <div className={styles.profiles}>
                 {
                     Array.isArray(matches) && matches.map((match) => (
-                        <div key={match.user_id} className='profile'>
+                        <div key={match.user_id} className='profile' onClick={() => getRoom(match.user_id, match.first_name, getImageURL(match.type, match.hash, match.extension, match.user_id))}>
                             <img
                                 src={getImageURL(match.type, match.hash, match.extension, match.user_id)}
                                 alt="profile"

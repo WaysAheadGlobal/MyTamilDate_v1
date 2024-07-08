@@ -70,6 +70,24 @@ export default function Likes() {
         };
     }, [likes]);
 
+    async function handleLike(userId) {
+        const response = await fetch(`${API_URL}customer/matches/like`, {
+            method: "POST",
+            body: JSON.stringify({
+                personId: userId
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookies.getCookie('token')}`
+            }
+        });
+        const data = await response.json();
+        if (response.ok) {
+            console.log(data);
+            alert(data.message);
+        }
+    }
+
     return (
         <>
             <ul className={styles.nav}>
@@ -125,11 +143,20 @@ export default function Likes() {
                 }
                 {
                     Array.isArray(likes) && likes.map((like, i) => (
-                        <div key={i} className='like' style={{
-                            backgroundImage: `url(${getImageURL(like.type, like.hash, like.extension, like.user_id)})`,
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                        }}>
+                        <div
+                            key={i}
+                            className='like'
+                            style={{
+                                backgroundImage: `url(${getImageURL(like.type, like.hash, like.extension, like.user_id)})`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                            }}
+                            onDoubleClick={(e) => {
+                                e.preventDefault();
+                                if (searchParams[0].get("t") === "r")
+                                    handleLike(like.user_id);
+                            }}
+                        >
                             <div>
                                 <p>{like.first_name} {like.last_name}</p>
                                 <p>{like.job}, {like.country}</p>

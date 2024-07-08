@@ -1,29 +1,110 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styles from './requests.module.css'
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useCookies } from '../../../../hooks/useCookies';
+import { API_URL } from '../../../../api';
+import dayjs from 'dayjs';
 
 export default function Requests() {
     const navigate = useNavigate();
     const searchParams = useSearchParams();
+    const cookies = useCookies();
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const observerRef = useRef(null);
+    const [currentRequests, setCurrentRequests] = useState([]);
+
+    const fetchRequests = useCallback(async () => {
+        const path = searchParams[0].get("t") === "s" ? "sent" : "received_";
+        try {
+            setLoading(true);
+            const response = await fetch(`${API_URL}customer/matches/chat/${path}?page=${page}`, {
+                headers: {
+                    'Authorization': `Bearer ${cookies.getCookie("token")}`
+                }
+            });
+            const data = await response.json();
+            console.log(data);
+            if (response.ok) {
+                setRequests([...requests, ...data]);
+                setCurrentRequests(data);
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }, [page, searchParams[0].get("t"), cookies.getCookie("token")]);
 
     useEffect(() => {
+        fetchRequests();
+    }, [page, searchParams[0].get("t")]);
 
-    }, [])
+    useEffect(() => {
+        if (currentRequests.length < 10) return;
+
+        if (observerRef.current) observerRef.current.disconnect();
+
+        const lastRequestElement = document.querySelector('.request:last-child');
+
+        if (lastRequestElement) {
+            observerRef.current = new IntersectionObserver((entries) => {
+                const lastRequest = entries[0];
+                if (lastRequest.isIntersecting) {
+                    setPage((prevPage) => prevPage + 1);
+                    observerRef.current.unobserve(lastRequest.target);
+                }
+            });
+            observerRef.current.observe(lastRequestElement);
+        }
+
+        return () => {
+            if (observerRef.current) {
+                observerRef.current.disconnect();
+            }
+        };
+    }, [requests]);
+
+    /**
+     * 
+     * @param {string | Date} date
+     * @returns {string} 
+     */
+    function getDateDifference(date) {
+        const today = dayjs();
+        const messageDate = dayjs(date);
+        const diff = today.diff(messageDate, 'day');
+
+        if (diff === 0) {
+            return "Today";
+        } else if (diff === 1) {
+            return "Yesterday";
+        } else {
+            return messageDate.format("DD/MM/YYYY");
+        }
+    }
 
     return (
         <>
             <ul className={styles.nav}>
                 <li
-                    onClick={() => navigate("?t=r")}
+                    onClick={() => {
+                        navigate("?t=r");
+                        setPage(1);
+                        setRequests([]);
+                    }}
                     className={(searchParams[0].get("t") === "r" || !searchParams[0].get("t")) ? styles.active : ""}
                 >
                     Received
                     <div className={styles.indicator}></div>
                 </li>
                 <li
-                    onClick={() => navigate("?t=s")}
+                    onClick={() => {
+                        navigate("?t=s");
+                        setPage(1);
+                        setRequests([]);
+                    }}
                     className={searchParams[0].get("t") === "s" ? styles.active : ""}
                 >
                     Sent
@@ -33,11 +114,11 @@ export default function Requests() {
             <div className={styles.messagesContainer}>
                 {
                     (searchParams[0].get("t") === "r" || !searchParams[0].get("t")) ? (
-                        Array(10).fill(0).map((_, i) => (
-                            <div key={i} className={styles.message}>
+                        Array.isArray(requests) && requests.map((request, i) => (
+                            <div key={i} className={[styles.message, "request"].join(" ")}>
                                 <img src="https://via.placeholder.com/75" alt="profile" />
                                 <div>
-                                    <p>John Doe</p>
+                                    <p>{request.name}</p>
                                     <p>Lorem ipsum dolor sit</p>
                                 </div>
                                 <div style={{ flexGrow: "1" }}></div>
@@ -118,8 +199,8 @@ export default function Requests() {
                             </div>
                         ))
                     ) : (
-                        Array(10).fill(0).map((_, i) => (
-                            <div key={i} className={styles.message}>
+                        Array.isArray(requests) && requests.map((request) => (
+                            <div key={request.conversationId} className={[styles.message, "request"].join(" ")}>
                                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M4.39052 7.05752C4.63181 6.81623 4.96514 6.66699 5.33333 6.66699H26.6667C27.0349 6.66699 27.3682 6.81623 27.6095 7.05752M4.39052 7.05752C4.14924 7.2988 4 7.63214 4 8.00033V24.0003C4 24.7367 4.59695 25.3337 5.33333 25.3337H26.6667C27.403 25.3337 28 24.7367 28 24.0003V8.00033C28 7.63214 27.8508 7.2988 27.6095 7.05752M4.39052 7.05752L14.1144 16.7813C15.1558 17.8227 16.8442 17.8227 17.8856 16.7813L27.6095 7.05752" stroke="#6C6C6C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
@@ -127,14 +208,14 @@ export default function Requests() {
                                     <p style={{
                                         fontWeight: "500",
                                         color: "#6c6c6c"
-                                    }}>You requested to chat with Vlada</p>
+                                    }}>You requested to chat with {request.name}</p>
                                 </div>
                                 <div style={{ flexGrow: "1" }}></div>
                                 <p style={{
                                     fontSize: "smaller",
                                     color: "#6c6c6c",
                                     fontWeight: "500"
-                                }}>1 days ago</p>
+                                }}>{getDateDifference(new Date(request.created_at))}</p>
                             </div>
                         ))
                     )
