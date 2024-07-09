@@ -128,9 +128,9 @@ export const Pictext = () => {
                 }}>
                     <h4 style={{ fontWeight: "bold" }}>Meet like-minded people from your community</h4>
                     <p style={{
-                        fontSize: "20px",
+                        fontSize: "18px",
                         lineHeight: mobile ? '30px' : "36px",
-                        textAlign: "left"
+                        textAlign: "justify",
                     }}>Connect with others who truly understand your unique quirks, share your passions, and appreciate your inside jokes and who value what makes you, you.</p>
                 </div>
                 <div className='pic1' style={{
