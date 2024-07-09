@@ -146,6 +146,31 @@ const UserDetails = () => {
     }
   };
 
+  const updateStatusReject = async (newStatus) => {
+    try {
+      const response = await fetch(`${API_URL}/admin/users/updatestatus`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: id, approval: newStatus , message : reason}),
+      });
+
+      if (!response.ok) {
+        const errorDetails = await response.text(); // Get error details for debugging
+        throw new Error(`Failed to update status: ${errorDetails}`);
+      }
+     
+      // Fetch updated details after updating the status
+      await detailsfetchData();
+      handleCloseModal();
+      navigate('/approval')
+      console.log("Status updated successfully");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleDeleteRequest = async () => {
     try {
       const response = await fetch(`${API_URL}/admin/users/deleteuser`, {
@@ -188,8 +213,8 @@ const UserDetails = () => {
   };
 
   const handleSaveReason = () => {
-    updateStatus(30);
-    handleCloseModal();
+    updateStatusReject(30);
+    
   };
 
   

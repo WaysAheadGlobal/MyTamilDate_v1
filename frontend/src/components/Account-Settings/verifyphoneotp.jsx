@@ -86,7 +86,7 @@ const VerifyPhoneModal = ({
 
         const result = await response.json();
         if (response.ok) {
-        //   alert(result.message);
+     
           fetchData();
           setResendTimer(120);
           setIsResendDisabled(true);

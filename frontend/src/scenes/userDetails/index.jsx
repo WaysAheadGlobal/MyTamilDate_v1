@@ -24,7 +24,9 @@ const UserDetails = () => {
     second: null,
   });
   const [openModal, setOpenModal] = useState(false);
-  const [reason, setReason] = useState('');
+  const [reason, setReason] = useState('gg');
+
+  console.log(reason);
 
   const ImageURL = async () => {
     try {
@@ -113,6 +115,31 @@ const UserDetails = () => {
     }
   };
 
+  const updateStatusReject = async (newStatus) => {
+    try {
+      const response = await fetch(`${API_URL}/admin/users/updatestatus`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: id, approval: newStatus , message : reason}),
+      });
+
+      if (!response.ok) {
+        const errorDetails = await response.text(); // Get error details for debugging
+        throw new Error(`Failed to update status: ${errorDetails}`);
+      }
+     
+      // Fetch updated details after updating the status
+      await fetchData();
+      setOpenModal(false);
+      navigate('/contacts')
+      console.log("Status updated successfully");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleDeleteRequest = async () => {
     try {
       const response = await fetch(`${API_URL}/admin/users/deleteuser`, {
@@ -157,6 +184,7 @@ const UserDetails = () => {
     20: 'Approved',
     30: 'Rejected User',
     40: 'Incomplete Registration',
+    25: 'Update Profile'
   };
 
   status = 'N/A';
@@ -179,8 +207,8 @@ const UserDetails = () => {
 
   const handleSaveReason =()=>{
     // updateStatus(30);
-    setOpenModal(false);
-    navigate('/contacts')
+    updateStatusReject(30)
+    
     
   }
 

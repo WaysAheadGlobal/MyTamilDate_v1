@@ -84,7 +84,7 @@ export default function SmokeAndFamily() {
             await Promise.all([saveSmoke(), saveDrink()]);
             navigate('/approve');
         } catch (error) {
-            alert('Error saving kids and family');
+          
             console.error('Error saving kids and family:', error);
         }
     }

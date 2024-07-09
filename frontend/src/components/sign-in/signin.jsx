@@ -70,7 +70,7 @@ export const SignIn = () => {
 
                 const result = await response.json();
                 if (response.ok) {
-                    alert(result.message);
+                
                     setCookie('phoneNumber', completePhoneNumber, 7);
                     if (searchParams[0].get('next') === "verify") {
                         navigate("/" + searchParams[0].get('next'));

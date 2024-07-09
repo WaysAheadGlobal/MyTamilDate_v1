@@ -60,7 +60,10 @@ export const Education = () => {
         if (response.ok) {
             goTojobTitle();
         } else {
-            alert(data.message);
+            console.log(data.message
+
+            )
+            
         }
     }
 

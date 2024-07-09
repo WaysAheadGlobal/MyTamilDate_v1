@@ -30,6 +30,29 @@ const getDateCondition = (timeRange: string): string => {
     return condition;
 };
 
+const getDateConditionage = (timeRange: string): string => {
+    let condition = '';
+    switch (timeRange) {
+        case '24h':
+            condition = "p.created_at >= NOW() - INTERVAL 1 DAY";
+            break;
+        case 'week':
+            condition = "p.created_at >= NOW() - INTERVAL 1 WEEK";
+            break;
+        case 'month':
+            condition = "p.created_at > NOW() - INTERVAL 1 MONTH";
+            break;
+        case '3months':
+            condition = "p.created_at >= NOW() - INTERVAL 3 MONTH";
+            break;
+        case '12months':
+            condition = "p.created_at >= NOW() - INTERVAL 12 MONTH";
+            break;
+        default:
+            condition = "p.created_at >= NOW() - INTERVAL 1 DAY"; // Default to 24 hours
+    }
+    return condition;
+};
 const getDateConditionoflike = (timeRange: string): string => {
     let condition = '';
     switch (timeRange) {
@@ -550,35 +573,78 @@ dashboard.get('/top-jobs', (req, res) => {
         res.status(200).json(results);
     });
 });
+
+// dashboard.get('/users/age-group', (req: AdminRequest, res) => {
+//     const timeRange: string = (req.query.timeRange as string) || '24h';
+//     const dateCondition = getDateCondition(timeRange);
+
+//     const sql = `
+//         SELECT 
+//             CASE
+//                 WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 18 AND 24 THEN '18-24'
+//                 WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 25 AND 30 THEN '25-30'
+//                 WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 31 AND 40 THEN '31-40'
+//                 ELSE '41+'
+//             END AS age_group,
+//             COUNT(*) AS count
+//         FROM 
+//             user_profiles
+//         WHERE
+//             TIMESTAMPDIFF(YEAR, birthday, CURDATE()) >= 18
+//             AND ${dateCondition}
+//         GROUP BY 
+//             age_group
+//         ORDER BY 
+//             age_group`;
+//  console.log(sql)
+//     db.query(sql, (err, results) => {
+//         if (err) {
+//             console.error('Error fetching data:', err);
+//             res.status(500).json({ error: 'Internal Server Error' });
+//             return;
+//         }
+//         console.log(results)
+//         res.status(200).json(results);
+//     });
+// });
+
+
 dashboard.get('/users/age-group', (req: AdminRequest, res) => {
     const timeRange: string = (req.query.timeRange as string) || '24h';
-    const dateCondition = getDateCondition(timeRange);
+    const dateCondition = getDateConditionage(timeRange);
 
     const sql = `
-        SELECT 
+        SELECT
             CASE
-                WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 18 AND 24 THEN '18-24'
-                WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 25 AND 30 THEN '25-30'
-                WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 31 AND 40 THEN '31-40'
-                ELSE '41+'
+                WHEN age BETWEEN 18 AND 24 THEN '18-24'
+                WHEN age BETWEEN 25 AND 30 THEN '25-30'
+                WHEN age BETWEEN 31 AND 40 THEN '31-40'
+                WHEN age >= 41 THEN '41+'
+                ELSE 'Other'
             END AS age_group,
             COUNT(*) AS count
-        FROM 
-            user_profiles
-        WHERE
-            TIMESTAMPDIFF(YEAR, birthday, CURDATE()) >= 18
-            AND ${dateCondition}
-        GROUP BY 
-            age_group
-        ORDER BY 
-            age_group`;
- console.log(sql)
+        FROM (
+            SELECT 
+                TIMESTAMPDIFF(YEAR, p.birthday, CURDATE()) AS age
+            FROM user_profiles p
+            JOIN users u ON p.user_id = u.id
+            WHERE ${dateCondition}
+              AND u.deleted_at IS NULL
+              AND u.approval != 15
+              AND u.approval != 40
+        ) AS subquery
+        GROUP BY age_group
+        ORDER BY age_group`;
+
+    console.log(sql);
+
     db.query(sql, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Internal Server Error' });
             return;
         }
+        console.log(results);
         res.status(200).json(results);
     });
 });

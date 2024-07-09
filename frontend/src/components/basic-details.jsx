@@ -101,7 +101,7 @@ export const BasicDetails = () => {
           setErrorMessage(data.errors.map(error => error.msg).join(', '));
         } else {
           setErrorMessage('');
-          // alert('Profile updated successfully');
+       
           console.log(data);
           navigate("/abtyourself");
         }
