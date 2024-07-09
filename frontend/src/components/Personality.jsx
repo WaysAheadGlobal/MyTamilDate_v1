@@ -86,7 +86,8 @@ export default function Personality() {
         if (response.ok) {
             navigate("/profile-answers");
         } else {
-            alert(data.message);
+         
+            console.log(data.massage)
         }
     }
 

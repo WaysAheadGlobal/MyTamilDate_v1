@@ -90,7 +90,7 @@ export default function KidsAndFamily() {
             await Promise.all([saveHaveKids(), saveWantKids()]);
             navigate('/smoke-drink');
         } catch (error) {
-            alert('Error saving kids and family');
+          
             console.error('Error saving kids and family:', error);
         }
     }

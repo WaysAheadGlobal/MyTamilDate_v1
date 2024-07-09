@@ -22,7 +22,7 @@ export default function ApproveEmail() {
             });
 
             if (response.ok) {
-                alert('Mail sent successfully! Please check your email.');
+                console.log('Mail sent successfully! Please check your email.');
             }
         } catch (err) {
             console.error(err);

@@ -6,10 +6,11 @@ const { body, validationResult } = require('express-validator');
 import multer from 'multer';
 import moment from 'moment';
 import crypto from 'crypto';
-import { sendOTPtoPhoneNumber, verifyOTP } from '../../../../otp';
+import { sendOTPtoPhoneNumber, verifyOTP  } from '../../../../otp';
 import sgMail from '@sendgrid/mail';
 import ejs from 'ejs';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
+import { getOTPFromDBByEmail, insertOTPInDBByEmail } from '../../../../otpbyEmail';
 console.log(process.env.URL)
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -194,22 +195,135 @@ setting.get('/getemail', verifyUser, (req: UserRequest, res: any) => {
     });
 });
 
-setting.put('/updateemail', verifyUser, [
-    body('email').isEmail().withMessage('Invalid email address')
-], async (req: UserRequest, res: any) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
+// setting.put('/updateemail', verifyUser, [
+//     body('email').isEmail().withMessage('Invalid email address')
+// ], async (req: UserRequest, res: any) => {
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//         return res.status(400).json({ errors: errors.array() });
+//     }
 
+//     const { email } = req.body;
+//     const userId = req.userId;
+
+//     // Log the values for debugging
+//     console.log(`Updating email for userId: ${userId}, new email: ${email}`);
+
+
+//     const checkEmailQuery = 'SELECT id FROM user_profiles WHERE email = ?';
+//     db.query<RowDataPacket[]>(checkEmailQuery, [email], async (err, results) => {
+//         if (err) {
+//             console.error('Error checking email:', err);
+//             return res.status(500).json({ message: 'Internal Server Error' });
+//         }
+
+//         if (results.length > 0) {
+//             return res.status(409).json({ message: 'This email address is already in use. Try with a different email.' });
+//         }
+
+
+//         const token = crypto.randomBytes(32).toString('hex');
+//         // Render the email template
+//         let html;
+//         console.log(`${process.env.URL}/api/v1/customer/setting/verify/${token}`)
+//         try {
+//             html = await ejs.renderFile("mail/templates/verify.ejs", { link: `${process.env.URL}/api/v1/customer/setting/verify/${token}` });
+//         } catch (renderError) {
+//             console.error('Error rendering email template:', renderError);
+//             return res.status(500).json({ message: 'Internal Server Error' });
+//         }
+
+//         // Send verification email
+//         const msg = {
+//             to: email,
+//             from: "mtdteam2024@gmail.com",
+//             subject: "Email Verification",
+//             html: html
+//         };
+
+//         sgMail.send(msg)
+//             .then(() => {
+//                 // Save or update the token in the database
+//                 const insertTokenQuery = `
+//                     INSERT INTO verification_token (user_id, token, email, created_at)
+//                     VALUES (?, ?, ?, NOW())
+//                     ON DUPLICATE KEY UPDATE token = VALUES(token), email = VALUES(email), created_at = VALUES(created_at)
+//                 `;
+//                 db.query(insertTokenQuery, [userId, token, email], (err) => {
+//                     if (err) {
+//                         console.error('Error inserting data:', err);
+//                         return res.status(500).send('Internal Server Error');
+//                     }
+
+//                     res.status(200).json({ message: 'Verification email sent' });
+//                 });
+//             })
+//             .catch((error) => {
+//                 console.error('Error sending email:', error);
+//                 return res.status(500).send('Internal Server Error');
+//             });
+//     });
+// });
+
+// setting.get("/verify/:token", async (req, res) => {
+//     const { token } = req.params;
+
+//     const query = 'SELECT user_id, email FROM verification_token WHERE token = ?';
+//     db.query<RowDataPacket[]>(query, [token], (err, results) => {
+//         if (err) {
+//             console.error('Error fetching data:', err);
+//             return res.redirect(`${process.env.URL}/accountsetting`);
+//         }
+
+//         if (results.length === 0) {
+//             console.log('No results found for the provided token');
+//             return res.status(401).json({ message: 'Invalid token' });
+//         }
+
+//         const { user_id: userId, email } = results[0];
+//         console.log(`Fetched from verification_token: userId = ${userId}, email = ${email}`);
+
+//         db.beginTransaction((err) => {
+//             if (err) {
+//                 console.error('Error starting transaction:', err);
+//                 return res.redirect(`${process.env.URL}/accountsetting`);
+//             }
+
+//             // Update the email in user_profiles
+//             const updateEmailQuery = 'UPDATE user_profiles SET email = ?, email_verified_at = NOW() WHERE user_id = ?';
+//             db.query(updateEmailQuery, [email, userId], (err) => {
+//                 if (err) {
+//                     console.error('Error updating email:', err);
+//                     return db.rollback(() => res.redirect(`${process.env.URL}/accountsetting`));
+//                 }
+
+//                 // Commit the transaction
+//                 db.commit((err) => {
+//                     if (err) {
+//                         console.error('Error committing transaction:', err);
+//                         return res.status(500).send('Internal Server Error');
+//                     }
+
+//                     console.log('Email successfully updated');
+//                     res.redirect(`${process.env.URL}/accountsetting`);
+//                 });
+//             });
+//         });
+//     });
+// });
+
+function generateOTP() {
+    return Math.floor(1000 + Math.random() * 9000).toString(); 
+}
+
+
+// Send OTP to email  and update it
+setting.post('/request-email-update',verifyUser, async (req:UserRequest, res:any) => {
     const { email } = req.body;
     const userId = req.userId;
-
-    // Log the values for debugging
-    console.log(`Updating email for userId: ${userId}, new email: ${email}`);
-
-
-    const checkEmailQuery = 'SELECT id FROM user_profiles WHERE email = ?';
+    const otp = generateOTP();
+   
+        const checkEmailQuery = 'SELECT id FROM user_profiles WHERE email = ?';
     db.query<RowDataPacket[]>(checkEmailQuery, [email], async (err, results) => {
         if (err) {
             console.error('Error checking email:', err);
@@ -219,97 +333,86 @@ setting.put('/updateemail', verifyUser, [
         if (results.length > 0) {
             return res.status(409).json({ message: 'This email address is already in use. Try with a different email.' });
         }
-
-
-        const token = crypto.randomBytes(32).toString('hex');
-        // Render the email template
+        
+    try {
+        console.log('email otp',otp);
+        await insertOTPInDBByEmail(otp, email);
+        
         let html;
-        console.log(`${process.env.URL}/api/v1/customer/setting/verify/${token}`)
         try {
-            html = await ejs.renderFile("mail/templates/verify.ejs", { link: `${process.env.URL}/api/v1/customer/setting/verify/${token}` });
+            html = await ejs.renderFile("mail/templates/otp.ejs", { otp: otp });
         } catch (renderError) {
             console.error('Error rendering email template:', renderError);
             return res.status(500).json({ message: 'Internal Server Error' });
         }
 
-        // Send verification email
         const msg = {
             to: email,
             from: "mtdteam2024@gmail.com",
-            subject: "Email Verification",
+            subject: "Approval Notification",
             html: html
         };
 
         sgMail.send(msg)
             .then(() => {
-                // Save or update the token in the database
-                const insertTokenQuery = `
-                    INSERT INTO verification_token (user_id, token, email, created_at)
-                    VALUES (?, ?, ?, NOW())
-                    ON DUPLICATE KEY UPDATE token = VALUES(token), email = VALUES(email), created_at = VALUES(created_at)
-                `;
-                db.query(insertTokenQuery, [userId, token, email], (err) => {
-                    if (err) {
-                        console.error('Error inserting data:', err);
-                        return res.status(500).send('Internal Server Error');
-                    }
-
-                    res.status(200).json({ message: 'Verification email sent' });
-                });
+                console.log("Approval email sent successfully");
+                return res.status(200).send('Status updated successfully and email sent');
             })
             .catch((error) => {
                 console.error('Error sending email:', error);
                 return res.status(500).send('Internal Server Error');
             });
-    });
-});
+    } catch (error) {
+        console.error('Error sending OTP:', error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+    }
+)})
 
-setting.get("/verify/:token", async (req, res) => {
-    const { token } = req.params;
+setting.put("/verifyotp",verifyUser, async(req: UserRequest, res: any) => {
+    const userID = req.userId;
+    console.log(userID);
+    const { email, otp } = req.body;
 
-    const query = 'SELECT user_id, email FROM verification_token WHERE token = ?';
-    db.query<RowDataPacket[]>(query, [token], (err, results) => {
-        if (err) {
-            console.error('Error fetching data:', err);
-            return res.redirect(`${process.env.URL}/accountsetting`);
+    try {
+        const verify = await getOTPFromDBByEmail(otp, email);
+
+        if (!verify) {
+            return res.status(400).json({ message: 'Invalid OTP' });
         }
 
-        if (results.length === 0) {
-            console.log('No results found for the provided token');
-            return res.status(401).json({ message: 'Invalid token' });
-        }
+        const updateSql = `UPDATE user_profiles SET email = ?, updated_at = NOW() WHERE user_id = ?`;
+        const params = [email, userID];
+        console.log('SQL Query:', updateSql);
+        console.log('Params:', params);
 
-        const { user_id: userId, email } = results[0];
-        console.log(`Fetched from verification_token: userId = ${userId}, email = ${email}`);
-
-        db.beginTransaction((err) => {
+        db.query(updateSql, params, (err, results:any) => {
             if (err) {
-                console.error('Error starting transaction:', err);
-                return res.redirect(`${process.env.URL}/accountsetting`);
+                console.log('Error executing update query:', err);
+                return res.status(500).json({ message: 'Internal Server Error' });
+            }
+            console.log('Update results:', results);
+            if (results.affectedRows === 0) {
+                return res.status(404).json({ message: 'User not found' });
             }
 
-            // Update the email in user_profiles
-            const updateEmailQuery = 'UPDATE user_profiles SET email = ?, email_verified_at = NOW() WHERE user_id = ?';
-            db.query(updateEmailQuery, [email, userId], (err) => {
+            // Fetch the updated user details
+            const selectSql = `SELECT * FROM user_profiles WHERE user_id = ?`;
+            db.query(selectSql, [userID], (err, userResults: RowDataPacket[]) => {
                 if (err) {
-                    console.error('Error updating email:', err);
-                    return db.rollback(() => res.redirect(`${process.env.URL}/accountsetting`));
+                    console.log('Error fetching updated user details:', err);
+                    return res.status(500).json({ message: 'Internal Server Error' });
                 }
-
-                // Commit the transaction
-                db.commit((err) => {
-                    if (err) {
-                        console.error('Error committing transaction:', err);
-                        return res.status(500).send('Internal Server Error');
-                    }
-
-                    console.log('Email successfully updated');
-                    res.redirect(`${process.env.URL}/accountsetting`);
-                });
+                console.log('Updated user details:', userResults);
+                return res.status(200).json({ message: 'Email Updated Successfully', user: userResults[0] });
             });
         });
-    });
+    } catch (error) {
+        console.log('Error in OTP verification:', error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
 });
+
 
 //pause Account
 setting.put('/pause', verifyUser, async (req: UserRequest, res) => {
@@ -353,7 +456,6 @@ setting.put('/unpause', verifyUser, async (req: UserRequest, res: any) => {
         return res.status(500).send('Internal Server Error');
     }
 });
-
 
 
 // delete account 

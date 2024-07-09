@@ -440,11 +440,12 @@ users.get('/approval/:user_id', (req: AdminRequest, res: Response) => {
 
 // Add the PUT endpoint to update the status
 users.put('/updatestatus', (req: AdminRequest, res: Response) => {
-    const { id, approval } = req.body;
+    const { id, approval, message } = req.body;
 
     if (!id || !approval) {
         return res.status(400).send('Bad Request: Missing user_id or status');
     }
+    console.log(message);
 
     const getUserEmailSql = `
         SELECT up.email
@@ -470,41 +471,179 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
             SET approval = ?
             WHERE id = ?
         `;
-
-        db.query(updateStatusSql, [approval, id], async (err: Error | null, result: any) => {
-            if (err) {
-                console.error('Error updating status:', err);
-                return res.status(500).send('Internal Server Error');
-            }
-
-            let html;
-            try {
-                html = await ejs.renderFile("mail/templates/approve.ejs", { link: `${process.env.URL}/user/home` });
-            } catch (renderError) {
-                console.error('Error rendering email template:', renderError);
-                return res.status(500).json({ message: 'Internal Server Error' });
-            }
-
-            // Send verification email
-            const msg = {
-                to: email,
-                from: "mtdteam2024@gmail.com",
-                subject: "Approval Notification",
-                html: html
-            };
-
-            sgMail.send(msg)
-                .then(() => {
-                    console.log("Approval email sent successfully");
-                    return res.status(200).send('Status updated successfully and email sent');
-                })
-                .catch((error) => {
-                    console.error('Error sending email:', error);
+        if (approval === 20) {
+            db.query(updateStatusSql, [approval, id], async (err: Error | null, result: any) => {
+                if (err) {
+                    console.error('Error updating status:', err);
                     return res.status(500).send('Internal Server Error');
-                });
-        });
+                }
+
+                let html;
+                try {
+                    html = await ejs.renderFile("mail/templates/approve.ejs", { link: `${process.env.URL}/user/home` });
+                } catch (renderError) {
+                    console.error('Error rendering email template:', renderError);
+                    return res.status(500).json({ message: 'Internal Server Error' });
+                }
+
+                // Send verification email
+                const msg = {
+                    to: email,
+                    from: "mtdteam2024@gmail.com",
+                    subject: "Approval Notification",
+                    html: html
+                };
+
+                sgMail.send(msg)
+                    .then(() => {
+                        console.log("Approval email sent successfully");
+                        return res.status(200).send('Status updated successfully and email sent');
+                    })
+                    .catch((error) => {
+                        console.error('Error sending email:', error);
+                        return res.status(500).send('Internal Server Error');
+                    });
+            });
+        }
+        else if (approval === 30) {
+
+            const insertRejectReasonSql = `
+            INSERT INTO reject_reasons (reason, created_at, updated_at)
+            VALUES (?, NOW(), NOW())
+        `;
+
+            db.query(insertRejectReasonSql, [message], (err: Error | null, result: any) => {
+                if (err) {
+                    console.error('Error inserting reject reason:', err);
+                    return res.status(500).send('Internal Server Error');
+                }
+
+                const reasonId = result.insertId;
+
+                // Check if the user already exists in the rejects table
+                const checkUserInRejectsSql = `
+                SELECT id FROM rejects WHERE user_id = ?
+            `;
+
+                db.query(checkUserInRejectsSql, [id], (err: Error | null, results: any) => {
+                    if (err) {
+                        console.error('Error checking user in rejects:', err);
+                        return res.status(500).send('Internal Server Error');
+                    }
+                    if (results.length === 0) {
+                        // User not in rejects table, insert new record
+                        const insertRejectSql = `
+                        INSERT INTO rejects (user_id, reason_id, created_at, updated_at)
+                        VALUES (?, ?, NOW(), NOW())
+                    `;
+
+                        db.query(insertRejectSql, [id, reasonId], async (err: Error | null, result: any) => {
+                            if (err) {
+                                console.error('Error inserting into rejects:', err);
+                                return res.status(500).send('Internal Server Error');
+                            }
+
+                            db.query(updateStatusSql, [approval, id], async (err: Error | null, result: any) => {
+                                if (err) {
+                                    console.error('Error updating status:', err);
+                                    return res.status(500).send('Internal Server Error');
+                                }
+                                console.log(result);
+                            let html;
+                            try {
+                                html = await ejs.renderFile("mail/templates/reject.ejs", { link: `${process.env.URL}/not-approved`, message: message });
+                            } catch (renderError) {
+                                console.error('Error rendering email template:', renderError);
+                                return res.status(500).json({ message: 'Internal Server Error' });
+                            }
+
+                            // Send verification email
+                            const msg = {
+                                to: email,
+                                from: "mtdteam2024@gmail.com",
+                                subject: "Approval Rejected Notification",
+                                html: html
+                            };
+
+
+                          
+                            sgMail.send(msg)
+                                .then(() => {
+                                    console.log("Reject email sent successfully");
+                                    return res.status(200).send('Status updated successfully and email sent');
+                                })
+                                .catch((error) => {
+                                    console.error('Error sending email:', error);
+                                    return res.status(500).send('Internal Server Error');
+                                });
+                            })
+                        })
+                    }
+
+                    else {
+                        const updateRejectSql = `
+                                UPDATE rejects SET reason_id = ?, updated_at = NOW() WHERE user_id = ?
+                            `;
+
+                        db.query(updateRejectSql, [reasonId, id], async (err: Error | null, result: any) => {
+                            if (err) {
+                                console.error('Error updating rejects:', err);
+                                return res.status(500).send('Internal Server Error');
+                            }
+                            db.query(updateStatusSql, [approval, id], async (err: Error | null, result: any) => {
+                                if (err) {
+                                    console.error('Error updating status:', err);
+                                    return res.status(500).send('Internal Server Error');
+                                }
+
+                            let html;
+                            try {
+                                html = await ejs.renderFile("mail/templates/reject.ejs", { link: `${process.env.URL}/not-approved`, message: message });
+                            } catch (renderError) {
+                                console.error('Error rendering email template:', renderError);
+                                return res.status(500).json({ message: 'Internal Server Error' });
+                            }
+
+                            // Send verification email
+                            const msg = {
+                                to: email,
+                                from: "mtdteam2024@gmail.com",
+                                subject: "Approval Rejected Notification",
+                                html: html
+                            };
+
+
+                            console.log(msg)
+                            sgMail.send(msg)
+                                .then(() => {
+                                    console.log("Reject email sent successfully");
+                                    return res.status(200).send('Status updated successfully and email sent');
+                                })
+                                .catch((error) => {
+                                    console.error('Error sending email:', error);
+                                    return res.status(500).send('Internal Server Error');
+                                });
+
+                        })
+                    })
+
+                    }
+
+
+                })
+            })
+            // db.query(updateStatusSql, [approval, id], async (err: Error | null, result: any) => {
+            //     if (err) {
+            //         console.error('Error updating status:', err);
+            //         return res.status(500).send('Internal Server Error');
+            //     }
+            // });
+
+
+        }
     });
 });
+
 
 
 
@@ -772,18 +911,18 @@ users.get('/paymentstatuu', (req: AdminRequest, res: Response) => {
     });
 });
 
-users.get('/image/:hash.:extension', async (req: Request, res: Response) => {
-    const { hash, extension } = req.params;
-    try {
-        const response = await axios.get(`https://mytamildate.com/home/${hash}.${extension}`, {
-            responseType: 'stream'
-        });
-        response.data.pipe(res);
-    } catch (error) {
-        console.error('Error fetching image:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
+// users.get('/image/:hash.:extension', async (req: Request, res: Response) => {
+//     const { hash, extension } = req.params;
+//     try {
+//         const response = await axios.get(`https://mytamildate.com/home/${hash}.${extension}`, {
+//             responseType: 'stream'
+//         });
+//         response.data.pipe(res);
+//     } catch (error) {
+//         console.error('Error fetching image:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// });
 
 
 

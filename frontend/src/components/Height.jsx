@@ -80,7 +80,7 @@ export default function Height() {
             if (response.ok) {
                 navigate("/personality");
             } else {
-                alert(data.message);
+                console.log(data.message);
             }
         } catch (error) {
             console.error('Error saving location:', error);

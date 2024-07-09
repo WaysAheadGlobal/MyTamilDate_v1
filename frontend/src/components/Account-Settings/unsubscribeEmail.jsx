@@ -11,7 +11,7 @@ const UnsubscribeComponent = () => {
     const navigate = useNavigate();
     const handleUnsubscribe = () => {
         // Add your logic to unsubscribe here
-        alert(`Unsubscribed from: ${selectedOption}`);
+      
         navigate("/accoutsetting");
     };
 

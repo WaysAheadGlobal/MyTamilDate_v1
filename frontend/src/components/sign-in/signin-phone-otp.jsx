@@ -144,7 +144,7 @@ export const SignInPhoneOTP = () => {
 
                 const result = await response.json();
                 if (response.ok) {
-                    alert(result.message);
+                  
                     setResendTimer(120); // Reset timer to 2 minutes on successful resend
                     setIsResendDisabled(true); // Disable resend button after OTP is sent
                 } else {

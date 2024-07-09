@@ -76,7 +76,7 @@ export const JobTitle = () => {
         if (response.ok) {
             navigate("/height");
         } else {
-            alert(data.message);
+            console.log(data.message);
         }
     }
 
