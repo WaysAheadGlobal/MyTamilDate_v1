@@ -5,6 +5,8 @@ import { API_URL } from '../../../../api';
 import './card.css';
 import IconButton from './IconButton';
 import { useCookies } from '../../../../hooks/useCookies';
+import ladyIcon from '../../../../assets/images/ladyIcon.png';
+import { FaLocationDot } from "react-icons/fa6";
 
 /**
  * @typedef {Object} Profile
@@ -17,7 +19,6 @@ import { useCookies } from '../../../../hooks/useCookies';
  * @property {string} extension - The file extension of the user's profile picture.
  * @property {number} type - The type of user.
  * @property {number} location_id - The location ID associated with the user.
- * @property {number} job_id - The job ID associated with the user.
  * @property {string} created_at - The creation timestamp of the user record in ISO format.
  * @property {number} job_id - The job ID associated with the user.
  * @property {string} country - The country of the user.
@@ -25,6 +26,9 @@ import { useCookies } from '../../../../hooks/useCookies';
  * @property {string} location_string - The location string of the user.
  * @property {string} job - The job of the user.
  * @property {boolean} like - The like status of the user.
+ * 
+ * @property {Profile[]} profiles - The profiles of the user.
+ * @property {React.Dispatch<React.SetStateAction<Profile[]>>} setProfiles - The setProfiles function to update the profiles.
  */
 
 /**
@@ -39,6 +43,7 @@ export default function Card({ ...props }) {
     const cookies = useCookies();
     const cardRef = useRef(null);
     const [liked, setLiked] = useState(props.like);
+    const { profiles, setProfiles } = props;
 
     async function handleIconButtonClick(type) {
         console.log(type);
@@ -66,12 +71,30 @@ export default function Card({ ...props }) {
         if (response.ok) {
             console.log(data);
 
+            if (type === "undo") {
+                const undoUser = data.user;
+                const currentProfileIdx = profiles.findIndex(profile => profile.user_id === props.user_id);
+                console.log([
+                    profiles.slice(0, currentProfileIdx),
+                    undoUser,
+                    profiles.slice(currentProfileIdx)
+                ])
+                setProfiles([
+                    ...profiles.slice(0, currentProfileIdx),
+                    undoUser,
+                    ...profiles.slice(currentProfileIdx)
+                ]);
+                return;
+            }
+
             if (type === "skip") {
                 cardRef.current.style.transform = "translateX(-100%)";
                 cardRef.current.style.transition = "transform 0.25s ease-in-out";
-                setTimeout(() => {
+                /* setTimeout(() => {
                     cardRef.current.remove();
-                }, 250);
+                }, 250); */
+                setProfiles(profiles.filter(profile => profile.user_id !== props.user_id));
+                return;
             }
         }
     }
@@ -86,23 +109,45 @@ export default function Card({ ...props }) {
             }}
             onClick={() => navigate(`/user/${props.first_name} ${props.last_name ?? ""}/${props.user_id}`)}
         >
+            <span style={{
+                position: "absolute",
+                top: "1rem",
+                left: "1rem",
+            }}>
+                <IconButton type='undo' onClick={(e) => {
+                    e.stopPropagation();
+                    handleIconButtonClick("undo");
+                }} />
+            </span>
             <div style={{
                 width: "100%",
             }}>
-                <div className='details' style={{ marginLeft: "1rem", marginBottom: "1rem" }}>
-                    <p style={{ gridColumn: "span 2 / span 2", textAlign: "center" }}>{`${props.first_name} ${props.last_name ?? ""}`}, {dayjs().diff(props.birthday, "y")}</p>
-                    <p style={{
-                        fontSize: "medium",
-                    }}>{props.job}</p>
-                    <p style={{
-                        fontSize: "medium",
-                    }}>{props.location_string}, {props.country}</p>
+                <div className='details' style={{ marginLeft: "1rem", marginBottom: "2rem" }}>
+                    <p>{`${props.first_name} ${props.last_name ?? ""}`}, {dayjs().diff(props.birthday, "y")}</p>
+                    <div style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        gap: "0.5rem"
+                    }}>
+                        <img src={ladyIcon} alt="icon" width={30} height={30} />
+                        <p style={{
+                            fontSize: "medium",
+                        }}>{props.job}</p>
+                    </div>
+                    <div style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        gap: "0.5rem"
+                    }}>
+                        <FaLocationDot size={25} />
+                        <p style={{
+                            fontSize: "medium",
+                        }}>{props.location_string}, {props.country}</p>
+                    </div>
                 </div>
                 <div className='options'>
-                    <IconButton type='undo' onClick={(e) => {
-                        e.stopPropagation();
-                        handleIconButtonClick("undo");
-                    }} />
                     <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
                         e.stopPropagation();
                         setLiked(!liked);
@@ -112,10 +157,10 @@ export default function Card({ ...props }) {
                         e.stopPropagation();
                         handleIconButtonClick("skip");
                     }} />
-                    <IconButton type='chat' onClick={(e) => {
+                    {/* <IconButton type='chat' onClick={(e) => {
                         e.stopPropagation();
                         handleIconButtonClick("chat");
-                    }} />
+                    }} /> */}
                 </div>
             </div>
             <div className='menu'>

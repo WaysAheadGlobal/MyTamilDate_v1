@@ -425,6 +425,7 @@ export default function Preferences() {
                 flex: '1',
                 overflowY: 'auto',
                 scrollbarWidth: 'none',
+                padding: "2rem"
             }}>
                 <p style={{
                     fontSize: "large",

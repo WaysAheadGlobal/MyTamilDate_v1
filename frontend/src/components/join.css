@@ -51,7 +51,7 @@
 
 .future-first-line {
   font-family: "Poppins";
-  
+
   font-size: 40px;
   font-weight: 600;
   line-height: 60px;
@@ -96,7 +96,7 @@
     font-weight: 700;
     line-height: 60px;
     font-family: "Poppins";
-    
+
 
   }
 
@@ -169,6 +169,11 @@
 
   .future-header-text {
     align-items: center;
+  }
+
+  .future-first-line {
+    font-size: 20px;
+    line-height: 30px;
   }
 
 }

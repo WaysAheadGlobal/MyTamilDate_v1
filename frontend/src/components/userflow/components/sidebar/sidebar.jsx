@@ -6,6 +6,7 @@ import styles from './sidebar.module.css';
 import Navbar from '../navbar/Navbar';
 import heartLogo from "../../../../assets/images/heart-logo.png";
 import { useNavigate } from 'react-router-dom';
+import profilePic from "../../../../assets/images/profilepic.png";
 
 export default function Sidebar({ children }) {
     const [isMobile, setIsMobile] = useState(false);
@@ -110,18 +111,23 @@ export default function Sidebar({ children }) {
                 </div>
             </aside>
             <div className={styles['main-contains']}>
-                {
-                    window.location.pathname.split("/").pop() === "home" && <img src={logo} alt="" />
-                }
                 {children}
-                <Navbar />
             </div>
             <aside className={styles['upcoming']}>
-                <div>
-                    <h3>Astrology</h3>
-                    <p>Love's destiny whispered by the stars. Unveiled with our groundbreaking astrology tool</p>
-                    <img src={astrology} alt="" style={{ maxWidth: "7rem" }} />
-                    <button className={styles['recommendation']}>Upcoming</button>
+                <div className={styles.profile}>
+                    <div className={styles.imgContainer} style={{
+                        "--profile-completed": "80%"
+                    }}>
+                        <div className={styles.innerCircle}>
+                            <img src={profilePic} alt="" />
+                        </div>
+                    </div>
+                    <p style={{
+
+                    }}>Kartik Kumar</p>
+                    <p>80% Profile complete</p>
+                    <p>Complete your profile for better matches</p>
+                    <button className={styles['recommendation']}>Update</button>
                 </div>
                 <div style={{ borderTop: "2px solid #e0e0e0" }}>
                     <h3>Your buddy mate</h3>

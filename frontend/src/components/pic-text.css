@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: column;
     margin: auto;
-
 }
 
 .pic1-text1 {
@@ -17,8 +16,6 @@
     background-repeat: no-repeat;
     gap: 50px;
     background-size: cover;
-    
-    
     background-color: #FAF3F0;
     /* background-image: url(../assets/images/pic-text-bg.png); */
 }
@@ -35,7 +32,7 @@
     background-repeat: no-repeat;
     gap: 50px;
     background-size: cover;
-   
+
 }
 
 .pic1 {
@@ -55,7 +52,7 @@
 
     color: #333333;
     font-family: "Poppins";
-    
+
     font-size: xx-large;
     font-weight: 600;
 
@@ -63,7 +60,7 @@
 
 .discover-love {
     font-family: "Poppins";
-    
+
     font-size: xx-large;
     font-weight: 600;
     color: #4E1173;
@@ -75,8 +72,8 @@
     font-family: "Inter";
     font-size: 20px;
     font-weight: 600;
-    line-height: 34px;
-    text-align: justify;
+    line-height: 22px;
+    text-align: start;
     color: #4E1173;
     display: inline-block;
     width: fit-content;
@@ -87,7 +84,7 @@
     font-family: "Inter", sans-serif;
     font-size: 20px;
     font-weight: 400;
-    text-align: justify;
+    text-align: start;
     color: #5E5E5E;
     margin-top: 20px;
 
@@ -123,7 +120,7 @@
 
 
 .c1 {
-  
+
 
     width: 100%;
     height: 100%;
@@ -139,7 +136,7 @@
         flex-direction: column;
         padding-left: 15px;
         padding-right: 15px;
-        
+
 
         padding-top: 20px;
         padding-bottom: 20px;
