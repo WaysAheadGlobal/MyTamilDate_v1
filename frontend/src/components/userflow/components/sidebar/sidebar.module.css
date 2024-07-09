@@ -1,5 +1,4 @@
 :root {
-    --active-color: #4e1173;
     --profile-completed: 80%;
 }
 
@@ -17,7 +16,7 @@
     flex-direction: column;
     max-height: 100vh;
     height: 100vh;
-    padding: 2rem;
+    padding-block: 2rem;
     border-right: 2px solid #e0e0e0;
 }
 
@@ -25,15 +24,16 @@
     width: 100%;
     margin-bottom: 2rem;
     max-width: 12rem;
+    margin-inline: auto;
 }
 
 .sidebar>ul {
     margin-left: -1.5rem;
-    margin-block: 1rem;
+    margin-block: 1rem;    
 }
 
 .sidebar>ul>li {
-    margin-top: 1rem;
+    margin-top: 1.25rem;
     display: flex;
     gap: 1rem;
     align-items: center;
@@ -41,6 +41,7 @@
     font-weight: 500;
     cursor: pointer;
     position: relative;
+    margin-inline: 2rem;
 }
 
 .indicator {
@@ -51,19 +52,21 @@
 }
 
 .sidebar>ul>li.active {
-    color: var(--active-color);
+    color: transparent;
+    background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+    background-clip: text;
     font-weight: 600;
 }
 
 .sidebar>ul>li.active>svg>path {
-    stroke: var(--active-color);
+    stroke: #FC8C66;
 }
 
 .sidebar>ul>li.active>.indicator {
     position: absolute;
     left: -1rem;
     display: inline-block;
-    background-color: var(--active-color);
+    background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
 }
 
 .sidebar button,
@@ -77,6 +80,14 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+}
+
+.sidebar button {
+    margin-inline: 2rem;
+}
+
+.recommendation {
+    padding: 0.5rem 2rem 0.5rem 0.5rem !important;
 }
 
 .upgradeBtn {
@@ -104,6 +115,7 @@
     gap: 1rem;
     align-items: center;
     font-weight: 500;
+    margin-inline: 2rem;
 }
 
 .main-contains {

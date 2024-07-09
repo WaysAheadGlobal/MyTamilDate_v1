@@ -15,11 +15,11 @@ export const Pictext = () => {
 
 
     useEffect(() => {
-        if (window.innerWidth < 768) {
+        if (window.innerWidth < 1070) {
             setMobile(true);
         }
         window.addEventListener('resize', () => {
-            if (window.innerWidth < 768) {
+            if (window.innerWidth < 1070) {
                 setMobile(true);
             } else {
                 setMobile(false);
@@ -78,13 +78,20 @@ export const Pictext = () => {
                     maxWidth: '30rem',
                     display: 'flex',
                     flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    justifyContent: mobile ? 'center' : "flex-start",
+                    alignItems: mobile ? 'center' : "flex-start",
+                    textAlign: "justify",
                     position: 'relative'
                 }}>
                     {
                         !mobile && (
-                            <>
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: "26rem",
+                            }}>
                                 <h4><span className='discover-love' style={{
                                     fontFamily: "PT serif, sans-serif",
                                 }}>Discover Love with</span></h4>
@@ -96,14 +103,17 @@ export const Pictext = () => {
                                     fontFamily: "PT serif, sans-serif",
                                 }}>myTamilDate</h4>
                                 <img src={arrow} alt="Arrow" width={200} height={200} style={{ position: "absolute", top: "1.5rem" }} />
-                            </>
+                            </div>
                         )
                     }
                     <p style={{
-                        lineHeight: mobile ? '26px' : "36px",
-                        marginTop: '1rem'
+                        fontSize: "18px",
+                        lineHeight: mobile ? '30px' : "36px",
+                        marginTop: '1rem',
+                        textAlign: "justify",
+                        width: !mobile ? "28rem" : ""
                     }}>A surprise engagement at a myTamilDate couple's photoshoot! Find out how <span style={{ color: '#4E1173', fontWeight: "bold" }}>Abi & John</span> Bonded Over Faith & Their Tamil-German-British Connection.</p>
-                    <a href='https://tamilculture.com/mytamildate-success-abi-john-bonded-over-faith-their-tamil-german-british-connection' className='view-success-btn' style={{ alignSelf: "center", marginTop: "1rem" }}>View Success Story</a>
+                    <a href='https://tamilculture.com/mytamildate-success-abi-john-bonded-over-faith-their-tamil-german-british-connection' className='view-success-btn' style={{ marginTop: "1rem" }}>View Success Story</a>
                 </div>
             </div>
 
@@ -118,8 +128,10 @@ export const Pictext = () => {
                 }}>
                     <h4 style={{ fontWeight: "bold" }}>Meet like-minded people from your community</h4>
                     <p style={{
-                        lineHeight: mobile ? '26px' : "36px"
-                    }}>Connect with individuals in your local Tamil community who share similar interests, values, and cultural backgrounds, fostering a sense of belonging.</p>
+                        fontSize: "20px",
+                        lineHeight: mobile ? '30px' : "36px",
+                        textAlign: "left"
+                    }}>Connect with others who truly understand your unique quirks, share your passions, and appreciate your inside jokes and who value what makes you, you.</p>
                 </div>
                 <div className='pic1' style={{
                     width: "auto"
@@ -155,8 +167,10 @@ export const Pictext = () => {
                 }}>
                     <h4 style={{ fontWeight: "bold" }}>Discover meaningful connections</h4>
                     <p style={{
-                        lineHeight: mobile ? '26px' : "36px"
-                    }}>Build deep and meaningful relationships with others who understand and appreciate your Tamil heritage, creating bonds that go beyond superficial interactions.</p>
+                        fontSize: "20px",
+                        lineHeight: mobile ? '30px' : "36px",
+                        textAlign: "justify"
+                    }}>Meet people who share your interests, values, and that undeniable spark who are also looking for a meaningful match. Whether they're around the corner or across the globe, we'll help you find your match.</p>
                 </div>
             </div>
         </div>
