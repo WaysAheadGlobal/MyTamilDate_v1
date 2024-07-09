@@ -1,18 +1,17 @@
-import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import React from 'react';
 import './theirstories.css';
 
-import { Container, Button } from 'react-bootstrap';
+import { Button, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 import st1 from '../assets/images/st1.png';
 import st2 from '../assets/images/st2.png';
 import st3 from '../assets/images/st3.png';
 
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import { Image } from 'react-bootstrap';
-import Carousel from 'react-bootstrap/Carousel';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 
 export const TheirStories = () => {
     const navigate = useNavigate();

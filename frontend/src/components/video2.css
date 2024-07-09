@@ -114,11 +114,14 @@
     }
 
     .vid2 {
-        width: 15rem;
-
         img {
             object-fit: cover;
+            width: 16rem;
         }
+    }
+
+    .vid2:nth-child(2) {
+        margin-inline: -12rem;
     }
 
     .video2-main span {

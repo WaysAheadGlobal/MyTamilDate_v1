@@ -45,22 +45,25 @@ export const Pictext = () => {
                     {
                         mobile && (
                             <div style={{
+                                marginTop: "-1rem",
                                 display: 'flex',
                                 flexDirection: 'column',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                marginBottom: '6rem'
+                                marginBottom: '4rem'
                             }}>
                                 <h4><span className='discover-love' style={{
                                     fontFamily: "PT serif, sans-serif",
+                                    fontSize: "24px"
                                 }}>Discover Love with</span></h4>
                                 <h4 style={{
                                     background: 'linear-gradient(360deg, #F87077 0%, #FB8968 100%)',
                                     color: 'transparent',
                                     backgroundClip: 'text',
                                     fontFamily: "PT serif, sans-serif",
+                                    fontSize: "24px"
                                 }}>myTamilDate</h4>
-                                <img src={arrow} alt="Arrow" width={200} height={200} style={{ position: "absolute", top: "1.5rem" }} />
+                                <img src={arrow} alt="Arrow" width={200} height={200} style={{ position: "absolute", top: "-11px" }} />
                             </div>
                         )
                     }
@@ -68,7 +71,7 @@ export const Pictext = () => {
                         width: '24rem',
                         height: '100%',
                         objectFit: 'cover',
-                        paddingInline: '1rem'
+                        paddingInline: '2rem'
                     }} />
                 </div>
                 <div className='text1' style={{
@@ -97,7 +100,7 @@ export const Pictext = () => {
                         )
                     }
                     <p style={{
-                        lineHeight: '26px',
+                        lineHeight: mobile ? '26px' : "36px",
                         marginTop: '1rem'
                     }}>A surprise engagement at a myTamilDate couple's photoshoot! Find out how <span style={{ color: '#4E1173', fontWeight: "bold" }}>Abi & John</span> Bonded Over Faith & Their Tamil-German-British Connection.</p>
                     <a href='https://tamilculture.com/mytamildate-success-abi-john-bonded-over-faith-their-tamil-german-british-connection' className='view-success-btn' style={{ alignSelf: "center", marginTop: "1rem" }}>View Success Story</a>
@@ -113,9 +116,9 @@ export const Pictext = () => {
                 <div className='text1' style={{
                     maxWidth: '30rem',
                 }}>
-                    <h4>Meet like-minded people from your community</h4>
+                    <h4 style={{ fontWeight: "bold" }}>Meet like-minded people from your community</h4>
                     <p style={{
-                        lineHeight: '26px'
+                        lineHeight: mobile ? '26px' : "36px"
                     }}>Connect with individuals in your local Tamil community who share similar interests, values, and cultural backgrounds, fostering a sense of belonging.</p>
                 </div>
                 <div className='pic1' style={{
@@ -125,7 +128,7 @@ export const Pictext = () => {
                         width: '24rem',
                         height: '100%',
                         objectFit: 'cover',
-                        paddingInline: '1rem'
+                        paddingInline: '2rem'
                     }} />
                 </div>
             </div>
@@ -144,15 +147,15 @@ export const Pictext = () => {
                         width: '24rem',
                         height: '100%',
                         objectFit: 'cover',
-                        paddingInline: '1rem'
+                        paddingInline: '2rem'
                     }} />
                 </div>
                 <div className='text1' style={{
                     maxWidth: '30rem',
                 }}>
-                    <h4>Discover meaningful connections</h4>
+                    <h4 style={{ fontWeight: "bold" }}>Discover meaningful connections</h4>
                     <p style={{
-                        lineHeight: '26px'
+                        lineHeight: mobile ? '26px' : "36px"
                     }}>Build deep and meaningful relationships with others who understand and appreciate your Tamil heritage, creating bonds that go beyond superficial interactions.</p>
                 </div>
             </div>
