@@ -3,6 +3,7 @@ import { API_URL } from '../../../api';
 import { useCookies } from '../../../hooks/useCookies';
 import Card from '../components/card/Card';
 import Sidebar from '../components/sidebar/sidebar';
+import { useSearchParams } from 'react-router-dom';
 /* import { Modal } from 'react-bootstrap';
 import Button from '../components/button/Button'; */
 
@@ -29,6 +30,7 @@ export default function Home() {
      * @property {string} location_string - The location string of the user.
      * @property {string} job - The job of the user.
      * @property {string} created_at - The creation timestamp of the user record in ISO format.
+     * @property {boolean} like - The like status of the user.
      */
 
     /**

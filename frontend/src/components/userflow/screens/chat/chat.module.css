@@ -5,7 +5,7 @@
 
 .matchContainer {
     display: flex;
-    gap: 2rem;
+    gap: 1.25rem;
     flex-direction: column;
     width: 420px;
     max-width: 420px;

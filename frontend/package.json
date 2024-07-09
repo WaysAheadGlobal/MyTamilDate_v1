@@ -52,6 +52,7 @@
     "react-swipeable": "^7.0.1",
     "react-world-flags": "^1.6.0",
     "slick-carousel": "^1.8.1",
+    "socket.io-client": "^4.7.5",
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"
   },
