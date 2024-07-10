@@ -35,6 +35,7 @@ updateprofile.post("/mediaupdate",
   ]),
   async (req: UserRequest, res: express.Response) => {
     const userId = req.userId;
+    const mediaId = req.body.media_id;
     
 
     if (!req.files) {
@@ -63,18 +64,20 @@ updateprofile.post("/mediaupdate",
         return res.status(400).send('Invalid file type.');
     }
 
-    const query = 'INSERT INTO media_update (user_id, hash, extension, type, meta, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const query = 'INSERT INTO media_update (user_id,media_id, hash, extension, type, meta, created_at, updated_at) VALUES (?,?, ?, ?, ?, ?, ?, ?)';
     const values = [
       userId,
+      mediaId,
       file.filename.split(".")[0],
       file.mimetype.split("/")[1],
       type,
       JSON.stringify(file),
       new Date(),
-      new Date()
+      new Date(),
+    
     ];
 
-    db.query(query, [...values, userId], (err, results) => {
+    db.query(query, values, (err, results) => {
       if (err) {
         console.error('Error inserting media:', err);
         return res.status(500).send('Internal Server Error');

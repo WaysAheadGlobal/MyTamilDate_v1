@@ -104,7 +104,7 @@ const Navigate = useNavigate();
           </div>
           <div className="row d-flex justify-content-center">
             <div className="d-flex flex-column align-items-center">
-              <p style={{ fontSize: '18px', color: "#515151" }}>Mandeep</p>
+              <p style={{ fontSize: '18px', color: "#515151" }}>Niladitya</p>
               <p style={{ fontSize: '14px', color: "#6C6C6C" }}>{completion}% complete</p>
             </div>
 
