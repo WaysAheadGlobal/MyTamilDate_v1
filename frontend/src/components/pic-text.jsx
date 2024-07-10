@@ -131,7 +131,7 @@ export const Pictext = () => {
                         fontSize: "18px",
                         lineHeight: mobile ? '30px' : "36px",
                         textAlign: "justify",
-                    }}>Connect with others who truly understand your unique quirks, share your passions, and appreciate your inside jokes and who value what makes you, you.</p>
+                    }}>Connect with others who truly understand your unique quirks, share your passions, and appreciate your inside jokes and who value what makes you.</p>
                 </div>
                 <div className='pic1' style={{
                     width: "auto"
