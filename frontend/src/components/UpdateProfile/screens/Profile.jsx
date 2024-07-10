@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Image } from 'react-bootstrap';
 import Sidebar from '../../userflow/components/sidebar/sidebar';
 import profile from './updateprofile.module.css'; 
@@ -8,12 +8,83 @@ import editicon from '../../../assets/images/editicon.png';
 import Edit from './Edit/Edit';
 import Preview from './Preview/Preview';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../../api';
+import { useCookies } from '../../../hooks/useCookies';
 
 const UpdateProfile = () => {
   const [activeTab, setActiveTab] = useState('edit');
+  const{getCookie} = useCookies();
 const Navigate = useNavigate();
   const completion = 40;
+  const id = getCookie('userId')
 
+  const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
+  const [images, setImages] = useState({
+    main: null,
+    first: null,
+    second: null,
+  });
+
+  const [images2, setImages2] = useState({
+    main: null,
+    first: null,
+    second: null,
+  });
+
+  const ImageURL = async () => {
+    try {
+      const response = await fetch(`${API_URL}/customer/update/media`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${getCookie('token')}`
+      }
+      });
+      const data = await response.json();
+      console.log("datadaa", data);
+      if (response.ok) {
+        if (data[0].type === 31 || data[1].type === 31 || data[2].type === 31) {
+          const others = data.filter(image => image.type === 32);
+          const main = data.filter(image => image.type === 31)[0];
+       
+          setImages2({
+            main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
+            first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
+            second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
+          })
+
+
+          console.log('imges', {
+            main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
+            first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
+            second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
+          })
+        }
+        else{
+          const others = data.filter(image => image.type === 2);
+          const main = data.filter(image => image.type === 1)[0];
+          console.log(others, main)
+          setImages2({
+            main: OldImageURL +"/" + id + "/avatar/"+ main.hash + "-large" + "." + main.extension,
+            first: OldImageURL +"/" + id + "/photo/"+ others[0].hash + "-large" + "." + main.extension,
+            second: OldImageURL +"/" + id + "/photo/"+ others[1].hash  + "-large"+ "." + main.extension,
+          })
+
+          console.log({
+            main: OldImageURL +"/" + id + "/avatar/"+ main.hash + "-large" + "." + main.extension,
+            first: OldImageURL +"/" + id + "/photo/"+ others[0].hash + "-large" + "." + main.extension,
+            second: OldImageURL +"/" + id + "/photo/"+ others[1].hash  + "-large"+ "." + main.extension,
+          })
+    
+        }
+
+      }
+    } catch (error) {
+      console.error('Error saving images:', error);
+    }
+  }
+  useEffect(() => {
+    ImageURL();
+  }, [ ]);
   return (
     <Sidebar>
       <div style={{
@@ -28,13 +99,13 @@ const Navigate = useNavigate();
         <div className={profile.profilemaincontainer}>
           
           <div className={profile.maincontainer}>
-            <ProfileProgress completion={completion} />
+            <ProfileProgress completion={completion} profilepic={images2.main} />
             <Image style={{ marginTop: "90px", width: "24px", height: "24px" }} onClick={()=> Navigate("/editpicture")} src={editicon} />
           </div>
           <div className="row d-flex justify-content-center">
             <div className="d-flex flex-column align-items-center">
               <p style={{ fontSize: '18px', color: "#515151" }}>Mandeep</p>
-              <p style={{ fontSize: '14px', color: "#6C6C6C" }}>{completion}% profile complete</p>
+              <p style={{ fontSize: '14px', color: "#6C6C6C" }}>{completion}% complete</p>
             </div>
 
             <div className={profile.editpreview}>

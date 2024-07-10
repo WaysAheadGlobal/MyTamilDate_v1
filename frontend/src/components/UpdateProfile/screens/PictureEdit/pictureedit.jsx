@@ -6,7 +6,7 @@ import questionmark from '../../../../assets/images/questionmark.png';
 import Sidebar from '../../../userflow/components/sidebar/sidebar';
 import profilepic from '../../../../assets/images/profilepic.png';
 import deleteicon from '../../../../assets/images/deleteicon.png'
-import editlogo from '../../../../assets/images/editlogo.png'
+import editlogo from '../../../../assets/images/editicon2.png'
 import { API_URL } from '../../../../api';
 import { useCookies } from '../../../../hooks/useCookies';
 import { useNavigate } from 'react-router-dom';
@@ -24,8 +24,6 @@ const EditPicture = () => {
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [currentImageKey, setCurrentImageKey] = useState(null);
-  
- 
   const [loading, setLoading] = useState(false);
 
   const fileInputRefMain = useRef(null);
@@ -36,7 +34,6 @@ const EditPicture = () => {
   };
 
   const id = getCookie('userId')
-
   const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
   const [images, setImages] = useState({
     main: null,
@@ -267,7 +264,7 @@ const getCroppedImg = (imageSrc, crop) => {
       scrollbarWidth: "none"
     }}>
       <div className={picture.container}>
-        <p className={picture.componentname}>Update Your Profile</p>
+        <p className={picture.componentname}>Your Profile</p>
         <Image
           onClick={toggleInfoVisibility}
           style={{ cursor: 'pointer' }}

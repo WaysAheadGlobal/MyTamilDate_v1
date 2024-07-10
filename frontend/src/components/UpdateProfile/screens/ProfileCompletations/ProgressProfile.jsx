@@ -2,7 +2,7 @@ import React from 'react';
 import './ProgressCircles.css'; // Import the CSS file
 import profilepic from '../../../../assets/images/profilepic.png'
 import { Image } from 'react-bootstrap';
-const ProfileProgress = ({ completion }) => {
+const ProfileProgress = ({ completion,profilepic }) => {
   const progressClass = completion > 50 ? 'over50' : '';
 
   const leftStyle = {
