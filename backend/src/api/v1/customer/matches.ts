@@ -231,7 +231,7 @@ matches.post("/undo", (req: UserRequest, res) => {
                     return;
                 }
 
-                db.commit(err => {
+                db.query<RowDataPacket[]>("SELECT up.id, up.user_id, up.first_name, up.last_name, up.location_id, up.birthday, up.created_at, j.name as job, l.location_string, l.country, m.hash, m.extension, m.type FROM user_profiles up INNER JOIN jobs j ON j.id = up.job_id INNER JOIN locations l ON l.id = up.location_id INNER JOIN media m ON m.user_id = up.user_id WHERE up.user_id = ? AND m.type IN (1, 31)", [personId], (err, result) => {
                     if (err) {
                         console.log(err);
                         res.status(500).send("Failed to undo");
@@ -243,7 +243,20 @@ matches.post("/undo", (req: UserRequest, res) => {
                         return;
                     }
 
-                    res.status(200).json({ message: "Undo successful" });
+                    db.commit(err => {
+                        if (err) {
+                            console.log(err);
+                            res.status(500).send("Failed to undo");
+                            db.rollback((err) => {
+                                if (err) {
+                                    console.log(err);
+                                }
+                            });
+                            return;
+                        }
+
+                        res.status(200).json({ message: "Undo successful", user: result[0] });
+                    });
                 });
             });
         });

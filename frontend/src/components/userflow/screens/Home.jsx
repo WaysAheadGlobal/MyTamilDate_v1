@@ -163,12 +163,12 @@ export default function Home() {
                     flexDirection: "column",
                     gap: "1rem",
                     overflowY: "auto",
-                    scrollbarWidth: "none"
+                    scrollbarWidth: "none",
                 }}
             >
                 {
                     profiles.map((profile) => (
-                        <Card key={profile.user_id} {...profile} />
+                        <Card key={profile.user_id} {...profile} profiles={profiles} setProfiles={setProfiles} />
                     ))
                 }
                 {
