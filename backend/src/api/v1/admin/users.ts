@@ -283,9 +283,14 @@ users.get('/approval', (req: AdminRequest, res: Response) => {
         JOIN 
             users uso ON up.user_id = uso.id
         LEFT JOIN 
+            media_update mu ON up.user_id = mu.user_id
+        LEFT JOIN 
             locations loc ON up.location_id = loc.id
         WHERE 
-            uso.approval = 10 AND uso.deleted_at IS NULL AND uso.active = 1
+            (uso.approval = 10 AND uso.deleted_at IS NULL AND uso.active = 1)
+            OR mu.user_id IS NOT NULL
+        GROUP BY
+            up.user_id
         ORDER BY 
             up.created_at DESC
         LIMIT ? OFFSET ?
@@ -417,7 +422,7 @@ users.get('/approval/:user_id', (req: AdminRequest, res: Response) => {
             personalities p ON upers.personality_id = p.id
         WHERE 
             up.user_id = ?
-            AND uso.approval = 10 
+            
             AND uso.deleted_at IS NULL 
             AND uso.active = 1
         GROUP BY 
@@ -678,6 +683,27 @@ users.get('/media/:id', (req: AdminRequest, res: Response) => {
     const mediaId = req.params.id;
 
     const query = 'SELECT * FROM media WHERE id = ?';
+    db.query<RowDataPacket[]>(query, [mediaId], (err, results) => {
+        if (err) {
+            console.error('Error executing query:', err);
+            res.status(500).send('Server error');
+            return;
+        }
+
+        if (results.length === 0) {
+            res.status(404).send('Media not found');
+            return;
+        }
+
+        const media = results[0];
+        res.json(media);
+    });
+});
+
+users.get('/mediaupdate/:id', (req: AdminRequest, res: Response) => {
+    const mediaId = req.params.id;
+
+    const query = 'SELECT * FROM media_update WHERE id = ?';
     db.query<RowDataPacket[]>(query, [mediaId], (err, results) => {
         if (err) {
             console.error('Error executing query:', err);

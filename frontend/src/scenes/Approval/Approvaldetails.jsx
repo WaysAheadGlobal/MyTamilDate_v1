@@ -67,9 +67,7 @@ const UserDetails = () => {
             first: OldImageURL +"/" + id + "/photo/"+ others[0].hash + "-large" + "." + main.extension,
             second: OldImageURL +"/" + id + "/photo/"+ others[1].hash  + "-large"+ "." + main.extension,
           })
-    
         }
-
       }
     } catch (error) {
       console.error('Error saving images:', error);

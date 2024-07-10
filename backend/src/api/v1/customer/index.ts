@@ -16,6 +16,4 @@ customer.use("/user", userFlowRouter);
 customer.use("/update",updateprofile )
 customer.use("/matches", matches);
 customer.use("/chat", chat);
-
-
 export default customer;
