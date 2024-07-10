@@ -29,7 +29,7 @@
 
 .sidebar>ul {
     margin-left: -1.5rem;
-    margin-block: 1rem;    
+    margin-block: 1rem;
 }
 
 .sidebar>ul>li {
@@ -86,7 +86,7 @@
     margin-inline: 2rem;
 }
 
-.recommendation {
+.sidebar .recommendation {
     padding: 0.5rem 2rem 0.5rem 0.5rem !important;
 }
 
@@ -157,7 +157,7 @@
 
 .upcoming>div {
     padding-inline: 2rem;
-    padding-block: 2rem;
+    padding-block: 1.25rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -193,6 +193,30 @@
     color: transparent;
     background-clip: text;
     margin: 0;
+}
+
+.suggestions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.suggestions>div:first-child {
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 31.2px;
+    text-align: left;
+    color: #515151;
+
+    p:last-child {
+        text-decoration: underline;
+        font-size: 14px;
+    }
 }
 
 @media screen and (max-width: 1000px) {

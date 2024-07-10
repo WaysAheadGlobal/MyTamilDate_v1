@@ -99,7 +99,7 @@ align-items: center; */
     height: 100%;
     border-radius: 4px;
 
-    background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+    background: #4e1173 !important;
 }
 
 .religion-text {
@@ -151,7 +151,7 @@ align-items: center; */
 .all-lang {
     display: flex;
     flex-wrap: wrap;
-    max-height: 20dvh;
+    max-height: 19dvh;
     /* Adjust height to show 4 items initially */
     overflow-y: auto;
     /* border: 1px solid #6C6C6C; */
@@ -296,5 +296,10 @@ align-items: center; */
 
     .religion-content {
         width: 100%;
+    }
+
+    .all-lang,
+    .all-religion {
+        max-height: 21vh;
     }
 }

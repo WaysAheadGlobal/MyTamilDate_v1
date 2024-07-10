@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import logo from "../../../../assets/images/MTDlogo.png";
-import ai from "../../../../assets/images/ai.png";
-import astrology from "../../../../assets/images/astrology.png";
-import styles from './sidebar.module.css';
-import Navbar from '../navbar/Navbar';
-import heartLogo from "../../../../assets/images/heart-logo.png";
 import { useNavigate } from 'react-router-dom';
+import logo from "../../../../assets/images/MTDlogo.png";
+import heartLogo from "../../../../assets/images/heart-logo.png";
 import profilePic from "../../../../assets/images/profilepic.png";
+import UserProfileProvider from '../context/UserProfileContext';
+import styles from './sidebar.module.css';
+import Suggestions from './suggestions';
 
 export default function Sidebar({ children }) {
     const [isMobile, setIsMobile] = useState(false);
@@ -84,7 +83,7 @@ export default function Sidebar({ children }) {
                         </svg>
                         <span>Profile</span>
                     </li>
-                    <li className={suffix === "account-settings" ? styles["active"] : ""} onClick={() => navigate("/user/account-settings")}>
+                    <li className={suffix === "accoutsetting" ? styles["active"] : ""} onClick={() => navigate("/accoutsetting")}>
                         <div className={styles['indicator']}></div>
                         <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12.8333 4H15.1667C15.811 4 16.3333 4.52233 16.3333 5.16667V5.83025C16.3333 6.32935 16.6683 6.76296 17.1293 6.95433C17.5904 7.14578 18.1273 7.07281 18.4803 6.71977L18.9497 6.25039C19.4053 5.79478 20.144 5.79478 20.5996 6.25039L22.2495 7.90031C22.7051 8.35592 22.7051 9.09461 22.2495 9.55022L21.7802 10.0195C21.4271 10.3726 21.3542 10.9095 21.5456 11.3707C21.737 11.8317 22.1707 12.1667 22.6698 12.1667L23.3333 12.1667C23.9777 12.1667 24.5 12.689 24.5 13.3333V15.6667C24.5 16.311 23.9777 16.8333 23.3333 16.8333H22.6698C22.1707 16.8333 21.737 17.1683 21.5457 17.6293C21.3542 18.0904 21.4272 18.6273 21.7802 18.9804L22.2496 19.4497C22.7052 19.9053 22.7052 20.644 22.2496 21.0996L20.5996 22.7496C20.144 23.2052 19.4053 23.2052 18.9497 22.7496L18.4804 22.2802C18.1273 21.9272 17.5904 21.8542 17.1293 22.0457C16.6683 22.237 16.3333 22.6707 16.3333 23.1698V23.8333C16.3333 24.4777 15.811 25 15.1667 25H12.8333C12.189 25 11.6667 24.4777 11.6667 23.8333V23.1698C11.6667 22.6707 11.3317 22.237 10.8707 22.0456C10.4095 21.8542 9.8726 21.9271 9.51953 22.2802L9.05021 22.7495C8.59459 23.2052 7.8559 23.2052 7.40029 22.7495L5.75037 21.0996C5.29476 20.644 5.29476 19.9053 5.75037 19.4497L6.21977 18.9803C6.57281 18.6273 6.64578 18.0904 6.45433 17.6293C6.26296 17.1683 5.82935 16.8333 5.33025 16.8333H4.66667C4.02233 16.8333 3.5 16.311 3.5 15.6667V13.3333C3.5 12.689 4.02233 12.1667 4.66667 12.1667L5.33023 12.1667C5.82934 12.1667 6.26296 11.8317 6.45434 11.3707C6.6458 10.9096 6.57283 10.3727 6.21977 10.0196L5.75039 9.55023C5.29478 9.09462 5.29478 8.35592 5.75039 7.90031L7.40031 6.2504C7.85592 5.79479 8.59461 5.79479 9.05023 6.2504L9.5196 6.71977C9.87266 7.07283 10.4096 7.1458 10.8707 6.95434C11.3317 6.76296 11.6667 6.32934 11.6667 5.83022V5.16667C11.6667 4.52233 12.189 4 12.8333 4Z" stroke="#515151" stroke-width="2" />
@@ -148,18 +147,19 @@ export default function Sidebar({ children }) {
                         </div>
                     </div>
                     <p style={{
-
+                        fontSize: "18px"
                     }}>Kartik Kumar</p>
-                    <p>80% Profile complete</p>
-                    <p>Complete your profile for better matches</p>
+                    <p style={{
+                        marginTop: "-0.5rem",
+                        fontSize: "14px"
+                    }}>80% Profile complete</p>
+                    <p style={{
+                        fontSize: "14px",
+                        fontWeight: "600"
+                    }}>Complete your profile for better matches</p>
                     <button className={styles['recommendation']}>Update</button>
                 </div>
-                <div style={{ borderTop: "2px solid #e0e0e0" }}>
-                    <h3>Your buddy mate</h3>
-                    <p> Your AI buddy keeps you connected with the ones you loved for.</p>
-                    <img src={ai} alt="" />
-                    <button className={styles['recommendation']}>Upcoming</button>
-                </div>
+                <Suggestions />
             </aside>
         </section>
     )
@@ -212,7 +212,7 @@ export function MobileSidebar() {
                         <path d="M21 22.3264C21 20.4366 19.633 17.9999 17.5 18H10.5C8.367 17.9999 7 20.4366 7 22.3264M3.5 14.5C3.5 8.70101 8.20101 4 14 4C19.799 4 24.5 8.70101 24.5 14.5C24.5 20.299 19.799 25 14 25C8.20101 25 3.5 20.299 3.5 14.5ZM17.5 11C17.5 12.933 15.933 14.5 14 14.5C12.067 14.5 10.5 12.933 10.5 11C10.5 9.067 12.067 7.5 14 7.5C15.933 7.5 17.5 9.067 17.5 11Z" stroke="#515151" stroke-width="2" />
                     </svg>
                 </li>
-                <li className={suffix === "account-settings" ? styles["active"] : ""} onClick={() => navigate("/user/account-settings")}>
+                <li className={suffix === "accoutsetting" ? styles["active"] : ""} onClick={() => navigate("/accoutsetting")}>
                     <div className={styles['indicator']}></div>
                     <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12.8333 4H15.1667C15.811 4 16.3333 4.52233 16.3333 5.16667V5.83025C16.3333 6.32935 16.6683 6.76296 17.1293 6.95433C17.5904 7.14578 18.1273 7.07281 18.4803 6.71977L18.9497 6.25039C19.4053 5.79478 20.144 5.79478 20.5996 6.25039L22.2495 7.90031C22.7051 8.35592 22.7051 9.09461 22.2495 9.55022L21.7802 10.0195C21.4271 10.3726 21.3542 10.9095 21.5456 11.3707C21.737 11.8317 22.1707 12.1667 22.6698 12.1667L23.3333 12.1667C23.9777 12.1667 24.5 12.689 24.5 13.3333V15.6667C24.5 16.311 23.9777 16.8333 23.3333 16.8333H22.6698C22.1707 16.8333 21.737 17.1683 21.5457 17.6293C21.3542 18.0904 21.4272 18.6273 21.7802 18.9804L22.2496 19.4497C22.7052 19.9053 22.7052 20.644 22.2496 21.0996L20.5996 22.7496C20.144 23.2052 19.4053 23.2052 18.9497 22.7496L18.4804 22.2802C18.1273 21.9272 17.5904 21.8542 17.1293 22.0457C16.6683 22.237 16.3333 22.6707 16.3333 23.1698V23.8333C16.3333 24.4777 15.811 25 15.1667 25H12.8333C12.189 25 11.6667 24.4777 11.6667 23.8333V23.1698C11.6667 22.6707 11.3317 22.237 10.8707 22.0456C10.4095 21.8542 9.8726 21.9271 9.51953 22.2802L9.05021 22.7495C8.59459 23.2052 7.8559 23.2052 7.40029 22.7495L5.75037 21.0996C5.29476 20.644 5.29476 19.9053 5.75037 19.4497L6.21977 18.9803C6.57281 18.6273 6.64578 18.0904 6.45433 17.6293C6.26296 17.1683 5.82935 16.8333 5.33025 16.8333H4.66667C4.02233 16.8333 3.5 16.311 3.5 15.6667V13.3333C3.5 12.689 4.02233 12.1667 4.66667 12.1667L5.33023 12.1667C5.82934 12.1667 6.26296 11.8317 6.45434 11.3707C6.6458 10.9096 6.57283 10.3727 6.21977 10.0196L5.75039 9.55023C5.29478 9.09462 5.29478 8.35592 5.75039 7.90031L7.40031 6.2504C7.85592 5.79479 8.59461 5.79479 9.05023 6.2504L9.5196 6.71977C9.87266 7.07283 10.4096 7.1458 10.8707 6.95434C11.3317 6.76296 11.6667 6.32934 11.6667 5.83022V5.16667C11.6667 4.52233 12.189 4 12.8333 4Z" stroke="#515151" stroke-width="2" />

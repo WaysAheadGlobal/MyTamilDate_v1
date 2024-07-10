@@ -1,17 +1,20 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
 import { BrowserRouter } from "react-router-dom";
-import { AppContextProvider, ContextProvider } from "./Context/UseContext";
+import App from "./App";
+import { AppContextProvider } from "./Context/UseContext";
+import UserProfileProvider from "./components/userflow/components/context/UserProfileContext";
+import "./index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <AppContextProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <UserProfileProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </UserProfileProvider>
     </AppContextProvider>
   </React.StrictMode>
 );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './located.css';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ import responsivebg from "../assets/images/responsive-bg.png";
 import location from "../assets/images/location.png";
 import { useCookies } from '../hooks/useCookies';
 import { API_URL } from '../api';
+import { FaAngleDown } from "react-icons/fa6";
 
 
 export const Located = () => {
@@ -18,6 +19,10 @@ export const Located = () => {
   const [selectedCity, setSelectedCity] = useState(null);
   const [countryOptions, setCountryOptions] = useState([]);
   const [options, setOptions] = useState([]);
+  const [countrySearch, setCountrySearch] = useState('');
+  const [citySearch, setCitySearch] = useState('');
+  const countrySelectRef = useRef(null);
+  const citySelectRef = useRef(null);
 
   useEffect(() => {
     (async () => {
@@ -106,33 +111,89 @@ export const Located = () => {
             <p>Where are you located?</p>
           </Container>
           <Container className='located-details'>
-            <Container className='located-country'>
-              <p>Select a country</p>
+            <Container ref={countrySelectRef} className='located-country collasped'>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }} onClick={() => {
+                countrySelectRef.current.classList.toggle("collasped");
+              }}>
+                <input type="text" placeholder='Select a country' value={countrySearch} onChange={(e) => setCountrySearch(e.currentTarget.value)} />
+                <FaAngleDown size={16} style={{ marginRight: "1rem" }} />
+              </div>
               <div className='scroll-container-vertical'>
-                {countryOptions.map((country) => (
+                {!countrySearch && countryOptions.map((country) => (
                   <div
                     key={country}
                     className={`scroll-item ${selectedCountry === country ? 'selected' : ''}`}
-                    onClick={() => handleCountrySelect(country)}
+                    onClick={() => {
+                      handleCountrySelect(country)
+                      setCountrySearch(country)
+                      countrySelectRef.current.classList.add("collasped");
+                    }}
                   >
                     {country}
                   </div>
                 ))}
+                {
+                  countrySearch && countryOptions.filter(country => country?.toLowerCase().includes(countrySearch.toLowerCase())).map((country) => (
+                    <div
+                      key={country}
+                      className={`scroll-item ${selectedCountry === country ? 'selected' : ''}`}
+                      onClick={() => {
+                        handleCountrySelect(country)
+                        setCountrySearch(country)
+                        countrySelectRef.current.classList.add("collasped");
+                      }}
+                    >
+                      {country}
+                    </div>
+                  ))
+                }
               </div>
             </Container>
             {selectedCountry && (
-              <Container className='located-city'>
-                <p>Select city</p>
+              <Container ref={citySelectRef} className='located-city collasped'>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }} onClick={() => {
+                  citySelectRef.current.classList.toggle("collasped");
+                }}>
+                  <input type="text" placeholder='Select a city' value={citySearch} onChange={(e) => setCitySearch(e.currentTarget.value)} />
+                  <FaAngleDown size={16} style={{ marginRight: "1rem" }} />
+                </div>
                 <div className='scroll-container-vertical'>
-                  {options[selectedCountry].map((city) => (
+                  {!citySearch && options[selectedCountry]?.map((city) => (
                     <div
                       key={city.id}
                       className={`scroll-item ${selectedCity === city.id ? 'selected' : ''}`}
-                      onClick={() => handleCitySelect(city.id)}
+                      onClick={() => {
+                        handleCitySelect(city.id)
+                        setCitySearch(city.location_string)
+                        citySelectRef.current.classList.add("collasped");
+                      }}
                     >
                       {city.location_string}
                     </div>
                   ))}
+                  {
+                    citySearch && options[selectedCountry].filter(city => city.location_string?.toLowerCase().includes(citySearch.toLowerCase())).map((city) => (
+                      <div
+                        key={city.id}
+                        className={`scroll-item ${selectedCity === city.id ? 'selected' : ''}`}
+                        onClick={() => {
+                          handleCitySelect(city.id)
+                          setCitySearch(city.location_string)
+                          citySelectRef.current.classList.add("collasped");
+                        }}
+                      >
+                        {city.location_string}
+                      </div>
+                    ))
+                  }
                 </div>
               </Container>
             )}

@@ -29,7 +29,7 @@ export const Pictext = () => {
 
     return (
         <div className='pic-text-main' style={{
-            paddingInline: '2rem',
+            paddingInline: mobile ? "1rem" : '2rem',
         }} ref={picTextMainRef}>
             <div className='pic1-text1 lineht ani' style={{
                 display: 'flex',
@@ -71,7 +71,7 @@ export const Pictext = () => {
                         width: '24rem',
                         height: '100%',
                         objectFit: 'cover',
-                        paddingInline: '2rem'
+                        paddingInline: '1rem'
                     }} />
                 </div>
                 <div className='text1' style={{
@@ -140,7 +140,7 @@ export const Pictext = () => {
                         width: '24rem',
                         height: '100%',
                         objectFit: 'cover',
-                        paddingInline: '2rem'
+                        paddingInline: '1rem'
                     }} />
                 </div>
             </div>
@@ -159,7 +159,7 @@ export const Pictext = () => {
                         width: '24rem',
                         height: '100%',
                         objectFit: 'cover',
-                        paddingInline: '2rem'
+                        paddingInline: '1rem'
                     }} />
                 </div>
                 <div className='text1' style={{
@@ -167,7 +167,7 @@ export const Pictext = () => {
                 }}>
                     <h4 style={{ fontWeight: "bold" }}>Discover meaningful connections</h4>
                     <p style={{
-                        fontSize: "20px",
+                        fontSize: "18px",
                         lineHeight: mobile ? '30px' : "36px",
                         textAlign: "justify"
                     }}>Meet people who share your interests, values, and that undeniable spark who are also looking for a meaningful match. Whether they're around the corner or across the globe, we'll help you find your match.</p>
