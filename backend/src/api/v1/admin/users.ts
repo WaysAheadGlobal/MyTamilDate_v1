@@ -37,7 +37,20 @@ interface MediaItem {
 users.get('/media/:user_id', (req: AdminRequest, res: Response) => {
     const userId = req.params.user_id;
 
-    const query = 'SELECT id, hash, extension, type FROM media WHERE user_id = ?';
+    const query = `
+        SELECT 
+            COALESCE(mu.media_id, m.id) AS id,
+            m.user_id,
+            COALESCE(mu.type, m.type) AS type,
+            COALESCE(mu.hash, m.hash) AS hash,
+            COALESCE(mu.extension, m.extension) AS extension,
+            COALESCE(mu.meta, m.meta) AS meta,
+            COALESCE(mu.created_at, m.created_at) AS created_at,
+            COALESCE(mu.updated_at, m.updated_at) AS updated_at
+        FROM media m
+        LEFT JOIN media_update mu ON m.id = mu.media_id
+        WHERE m.user_id = ?
+    `;
 
     db.query<RowDataPacket[]>(query, [userId], (err, results) => {
         if (err) {
@@ -47,6 +60,21 @@ users.get('/media/:user_id', (req: AdminRequest, res: Response) => {
         res.status(200).json(results);
     });
 });
+
+users.get('/mediaupdate/:user_id', (req: AdminRequest, res: Response) => {
+    const userId = req.params.user_id;
+    const query = 'SELECT id, hash, extension, type,media_id FROM media_update WHERE user_id = ?';
+    db.query<RowDataPacket[]>(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching media:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+        res.status(200).json(results);
+    });
+});
+
+
+
 
 
 // Fetch customer data with pagination

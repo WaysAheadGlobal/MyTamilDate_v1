@@ -16,6 +16,7 @@ const EditPicture = () => {
   const{getCookie} = useCookies();
   const [showInfo, setShowInfo] = useState(false);
   const navigate = useNavigate();
+  const[data, setData] = useState([]);
   const [selectedImages, setSelectedImages] = useState({ main: null, first: null, second: null });
   const [showModal, setShowModal] = useState(false);
   const [showCropModal, setShowCropModal] = useState(false);
@@ -25,7 +26,8 @@ const EditPicture = () => {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [currentImageKey, setCurrentImageKey] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const[mediaid, setMediaId] = useState(null);
+  
   const fileInputRefMain = useRef(null);
   const fileInputRefFirst = useRef(null);
   const fileInputRefSecond = useRef(null);
@@ -35,17 +37,15 @@ const EditPicture = () => {
 
   const id = getCookie('userId')
   const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
-  const [images, setImages] = useState({
-    main: null,
-    first: null,
-    second: null,
-  });
+
 
   const [images2, setImages2] = useState({
     main: null,
     first: null,
     second: null,
   });
+
+
 
   const ImageURL = async () => {
     try {
@@ -56,6 +56,7 @@ const EditPicture = () => {
       }
       });
       const data = await response.json();
+      setData(data);
       console.log("datadaa", data);
       if (response.ok) {
         if (data[0].type === 31 || data[1].type === 31 || data[2].type === 31) {
@@ -114,24 +115,27 @@ const EditPicture = () => {
     }
 };
 
+
+
 const handleClick = (imageKey) => {
+  let mediaId = null;
   if (imageKey === 'main') {
+      mediaId = data.find(image => image.type === 31)?.id;
       fileInputRefMain.current.click();
   } else if (imageKey === 'first') {
+      mediaId = data.find(image => image.type === 32)?.id;
       fileInputRefFirst.current.click();
   } else if (imageKey === 'second') {
+      mediaId = data.filter(image => image.type === 32)[1]?.id;
       fileInputRefSecond.current.click();
   }
+  console.log(mediaId);
+  setMediaId(mediaId); 
 };
 
 
 const handleNextClick = async () => {
- 
-
- 
-
   setLoading(true);
-
   const formData = new FormData();
   if(selectedImages.main !== null){
 
@@ -146,6 +150,10 @@ const handleNextClick = async () => {
     formData.append('second', selectedImages.second);
   }
 
+  if (mediaid) {
+    formData.append('media_id', mediaid); 
+}
+
   try {
       const response = await fetch(`${API_URL}/customer/update/mediaupdate`, {
           method: 'POST',
@@ -156,7 +164,7 @@ const handleNextClick = async () => {
       });
 
       const data = await response.json();
-
+       formData = new FormData();
       console.log(data);
   } catch (error) {
       console.error('Error saving images:', error);
@@ -187,8 +195,8 @@ const handleCropSave = () => {
               ...selectedImages,
               [currentImageKey]: new File([croppedImage], window.crypto.randomUUID(), { type: 'image/jpeg' })
           })
-
           setShowCropModal(false);
+          
           console.log(selectedImages);
           console.log('Cropped image saved successfully');
       })
@@ -244,10 +252,12 @@ const getCroppedImg = (imageSrc, crop) => {
 };
 
 
-
   useEffect(() => {
     ImageURL();
-    handleNextClick();
+    if(selectedImages){
+
+      handleNextClick();
+    }
   }, [  selectedImages]);
 
 

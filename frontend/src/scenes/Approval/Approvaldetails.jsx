@@ -73,6 +73,76 @@ const UserDetails = () => {
       console.error('Error saving images:', error);
     }
   }
+
+  const [images2, setImages2] = useState({
+    main: null,
+    first: null,
+    second: null,
+  });
+
+ const ImageURL2 = async () => {
+  try {
+    const response = await fetch(`${API_URL}/admin/users/mediaupdate/${id}`, {
+      method: 'GET',
+    });
+    const data = await response.json();
+    console.log("data", data);
+
+    if (response.ok) {
+      let images = {
+        main: null,
+        first: null,
+        second: null,
+      };
+
+      if (data.length === 0) {
+        console.log("No images available.");
+      } else {
+        const mainImage = data.find(image => image.type === 31);
+        const otherImages = data.filter(image => image.type === 32);
+
+        if (mainImage) {
+          images.main = `${API_URL}media/avatar/${mainImage.hash}.${mainImage.extension}`;
+        }
+
+        if (otherImages.length > 0) {
+          if (otherImages[0]) {
+            images.first = `${API_URL}media/avatar/${otherImages[0].hash}.${otherImages[0].extension}`;
+          }
+          if (otherImages[1]) {
+            images.second = `${API_URL}media/avatar/${otherImages[1].hash}.${otherImages[1].extension}`;
+          }
+        }
+
+        if (!mainImage && otherImages.length === 0) {
+          // Handling old image URLs
+          const mainOldImage = data.find(image => image.type === 1);
+          const otherOldImages = data.filter(image => image.type === 2);
+
+          if (mainOldImage) {
+            images.main = `${OldImageURL}/${id}/avatar/${mainOldImage.hash}-large.${mainOldImage.extension}`;
+          }
+
+          if (otherOldImages.length > 0) {
+            if (otherOldImages[0]) {
+              images.first = `${OldImageURL}/${id}/photo/${otherOldImages[0].hash}-large.${otherOldImages[0].extension}`;
+            }
+            if (otherOldImages[1]) {
+              images.second = `${OldImageURL}/${id}/photo/${otherOldImages[1].hash}-large.${otherOldImages[1].extension}`;
+            }
+          }
+        }
+      }
+
+      setImages2(images);
+      console.log('images', images);
+    }
+  } catch (error) {
+    console.error('Error saving images:', error);
+  }
+};
+
+
   const detailsfetchData = async () => {
     try {
       const response = await fetch(`${API_URL}/admin/users/approval/${id}`);
@@ -115,6 +185,7 @@ const UserDetails = () => {
     quesAnsfetchData();
     detailsfetchData();
     ImageURL();
+    ImageURL2();
   }, [id]);
 
   const handleRemoveFromList = () => {
