@@ -27,6 +27,7 @@ const EditPicture = () => {
   const [currentImageKey, setCurrentImageKey] = useState(null);
   const [loading, setLoading] = useState(false);
   const[mediaid, setMediaId] = useState(null);
+  const[type, setType] = useState(32);
   
   const fileInputRefMain = useRef(null);
   const fileInputRefFirst = useRef(null);
@@ -122,12 +123,15 @@ const handleClick = (imageKey) => {
   if (imageKey === 'main') {
       mediaId = data.find(image => image.type === 31)?.id;
       fileInputRefMain.current.click();
+      setType(31)
   } else if (imageKey === 'first') {
       mediaId = data.find(image => image.type === 32)?.id;
       fileInputRefFirst.current.click();
+      setType(32)
   } else if (imageKey === 'second') {
       mediaId = data.filter(image => image.type === 32)[1]?.id;
       fileInputRefSecond.current.click();
+      setType(32)
   }
   console.log(mediaId);
   setMediaId(mediaId); 
@@ -154,6 +158,9 @@ const handleNextClick = async () => {
     formData.append('media_id', mediaid); 
 }
 
+if(type){
+  formData.append('type', type);
+}
   try {
       const response = await fetch(`${API_URL}/customer/update/mediaupdate`, {
           method: 'POST',
@@ -164,7 +171,7 @@ const handleNextClick = async () => {
       });
 
       const data = await response.json();
-       formData = new FormData();
+      setSelectedImages({main: null, first: null, second: null})
       console.log(data);
   } catch (error) {
       console.error('Error saving images:', error);

@@ -10,7 +10,6 @@ import Preview from './Preview/Preview';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../../../api';
 import { useCookies } from '../../../hooks/useCookies';
-
 const UpdateProfile = () => {
   const [activeTab, setActiveTab] = useState('edit');
   const{getCookie} = useCookies();

@@ -36,7 +36,7 @@ updateprofile.post("/mediaupdate",
   async (req: UserRequest, res: express.Response) => {
     const userId = req.userId;
     const mediaId = req.body.media_id;
-    
+    const type = req.body.type
 
     if (!req.files) {
       return res.status(400).send('No files were uploaded.');
@@ -51,18 +51,18 @@ updateprofile.post("/mediaupdate",
     const file = (req.files as any)[fileKey][0];
 
     // Assign type based on the field name
-    let type;
-    switch (fileKey) {
-      case 'main':
-        type = 31;
-        break;
-      case 'first':
-      case 'second':
-        type = 32;
-        break;
-      default:
-        return res.status(400).send('Invalid file type.');
-    }
+    // let type;
+    // switch (fileKey) {
+    //   case 'main':
+    //     type = 31;
+    //     break;
+    //   case 'first':
+    //   case 'second':
+    //     type = 32;
+    //     break;
+    //   default:
+    //     return res.status(400).send('Invalid file type.');
+    // }
 
     const query = 'INSERT INTO media_update (user_id,media_id, hash, extension, type, meta, created_at, updated_at) VALUES (?,?, ?, ?, ?, ?, ?, ?)';
     const values = [
