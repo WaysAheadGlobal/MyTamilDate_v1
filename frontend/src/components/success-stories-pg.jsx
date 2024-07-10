@@ -27,7 +27,7 @@ export const SuccessPage = () => {
             <Container fluid className='success-pg-team'>
                 <Container className='success-pg-text'>
 
-                    <p className='success-pg-heading' >Success Stories</p>
+                    <p className='success-pg-heading'>Success Stories</p>
                     <p className='success-pg-sub'>Matches are made daily & serious relationships are created monthly across North America, Europe & more on MTD! Get to know some of our couples.</p>
                 </Container>
                 <Container className='team-content'>
@@ -99,53 +99,9 @@ export const SuccessPage = () => {
                         </Col>
                     </Row>
                 </Container>
-
             </Container>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             <Join />
             <Footer />
-
-
-
         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     );
 }

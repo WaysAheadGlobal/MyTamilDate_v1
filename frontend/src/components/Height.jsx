@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './located.css';
 import { useNavigate } from 'react-router-dom';
@@ -9,12 +9,14 @@ import responsivebg from "../assets/images/responsive-bg.png";
 import location from "../assets/images/location.png";
 import { useCookies } from '../hooks/useCookies';
 import { API_URL } from '../api';
+import { FaAngleDown } from 'react-icons/fa6';
 
 export default function Height() {
     const navigate = useNavigate();
     const { getCookie } = useCookies();
     const [selectedHeight, setSelectedHeight] = useState({});
     const [heights, setHeights] = useState([]);
+    const locationSelectRef = useRef(null);
 
     useEffect(() => {
         // Fetch existing location data on component mount
@@ -108,16 +110,28 @@ export default function Height() {
                         <p>How tall are you?</p>
                     </Container>
                     <Container className='located-details'>
-                        <Container className='located-country' style={{
+                        <Container ref={locationSelectRef} className='located-country collasped' style={{
                             overflow: 'hidden',
+                            "--select-options-container-height": '20rem',
                         }}>
-                            <input type="text" value={selectedHeight.name} readOnly style={{
-                                paddingInline: '0.5rem',
-                                paddingBlock: '0.75rem',
-                                width: '100%',
-                                border: "none",
-                                fontSize: "large"
-                            }} />
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                }}
+
+                                onClick={() => { locationSelectRef.current.classList.toggle('collasped') }}
+                            >
+                                <input type="text" value={selectedHeight.name} readOnly style={{
+                                    paddingInline: '0.5rem',
+                                    paddingBlock: '0.75rem',
+                                    width: '100%',
+                                    border: "none",
+                                    fontSize: "large"
+                                }} />
+                                <FaAngleDown size={16} style={{ marginRight: "1rem" }} />
+                            </div>
                             <div className='scroll-container-vertical' style={{
                                 height: '13rem',
                                 maxHeight: '13rem',
@@ -126,7 +140,10 @@ export default function Height() {
                                     <div
                                         key={height.id}
                                         className={`scroll-item ${selectedHeight === height ? 'selected' : ''}`}
-                                        onClick={() => handleHeightSelect(height)}
+                                        onClick={() => {
+                                            handleHeightSelect(height)
+                                            locationSelectRef.current.classList.add("collasped");
+                                        }}
                                     >
                                         {height.name}
                                     </div>

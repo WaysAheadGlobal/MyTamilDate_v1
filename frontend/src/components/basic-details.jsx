@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './basic-details.css';
+import dayjs from 'dayjs';
+import React, { useEffect, useState } from 'react';
+import { Button, Container, Form, Image } from 'react-bootstrap';
+import { FaRegCalendar } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
-import { Container, Image, Form, Button } from 'react-bootstrap';
 import { useAppContext } from '../Context/UseContext';
-import backarrow from "../assets/images/backarrow.jpg";
-import logo from "../assets/images/MTDlogo.png";
-import calender from "../assets/images/calender.jpg";
-import responsivebg from "../assets/images/responsive-bg.png";
-import basicdetails from "../assets/images/basic-details.png";
-import { useCookies } from '../hooks/useCookies';
 import { API_URL } from '../api';
+import logo from "../assets/images/MTDlogo.png";
+import backarrow from "../assets/images/backarrow.jpg";
+import basicdetails from "../assets/images/basic-details.png";
+import responsivebg from "../assets/images/responsive-bg.png";
+import { useCookies } from '../hooks/useCookies';
+import './basic-details.css';
+import { Popper } from '@mui/material';
 
 export const BasicDetails = () => {
   const { getCookie } = useCookies();
@@ -20,6 +24,12 @@ export const BasicDetails = () => {
   const [age, setAge] = useState(null);
   const navigate = useNavigate();
   const token = getCookie('token');
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
 
   useEffect(() => {
     // Fetch user profile details on mount
@@ -58,8 +68,7 @@ export const BasicDetails = () => {
     }));
   };
 
-  const handleBirthdayChange = (e) => {
-    const value = e.target.value;
+  const handleBirthdayChange = (value) => {
     setUserDetails(prevDetails => ({
       ...prevDetails,
       birthday: value
@@ -101,7 +110,7 @@ export const BasicDetails = () => {
           setErrorMessage(data.errors.map(error => error.msg).join(', '));
         } else {
           setErrorMessage('');
-       
+
           console.log(data);
           navigate("/abtyourself");
         }
@@ -117,90 +126,123 @@ export const BasicDetails = () => {
   };
 
   return (
-    <div className='basicdetails-container'>
-      <div className='basic-details-bg'>
-        <Image className='responsive-bg' src={responsivebg}></Image>
-      </div>
-      <Container className='basicdetails-main'>
-        <Container className='basicdetails-content'>
-          <Container className='logo-progressbar4'>
-            <Container className='logo-arrow4'>
-              <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
-              <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <div className='basicdetails-container'>
+        <div className='basic-details-bg'>
+          <Image className='responsive-bg' src={responsivebg}></Image>
+        </div>
+        <Container className='basicdetails-main'>
+          <Container className='basicdetails-content'>
+            <Container className='logo-progressbar4'>
+              <Container className='logo-arrow4'>
+                <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
+                <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
+              </Container>
+              <div className='track-btn4'>
+                <div></div>
+              </div>
             </Container>
-            <div className='track-btn4'>
-              <div></div>
-            </div>
-          </Container>
-          <Container className='basic-details-text'>
-            <Image className='basic-detail-icon' src={basicdetails}></Image>
-            <p>Tell us about yourself</p>
-          </Container>
-          <Container className='basic-details-details'>
-            <Form onSubmit={handleSubmit} className='basic-details-form'>
-              <Form.Group controlId="formName" className='basic-details-group'>
-                <Form.Label className='basic-details-label'>What's your name?</Form.Label>
-                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                  <Form.Control
-                    className={`basic-details-input custom-input ${errorMessage ? 'error' : ''}`}
-                    type="text"
-                    placeholder="First name"
-                    value={userDetails.first_name || ''}
-                    onChange={handleNameChange}
-                    style={{ flex: 1 }}
-                  />
-                </div>
-                {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
-              </Form.Group>
-
-              <Form.Group controlId="formLastName" className='basic-details-group purplebox'>
-                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                  <Form.Control
-                    className="basic-details-input-verify custom-input"
-                    type="text"
-                    placeholder="Last name (Optional)"
-                    value={userDetails.last_name || ''}
-                    onChange={handleLastNameChange}
-                    style={{ flex: 1, marginTop: '12px', marginBottom: '24px' }}
-                  />
-                  <div className="last-name-why-div">
-                    <Button className='last-name-why' onClick={toggleInfoVisibility}>
-                      ?
-                    </Button>
+            <Container className='basic-details-text'>
+              <Image className='basic-detail-icon' src={basicdetails}></Image>
+              <p>Tell us about yourself</p>
+            </Container>
+            <Container className='basic-details-details'>
+              <Form onSubmit={handleSubmit} className='basic-details-form'>
+                <Form.Group controlId="formName" className='basic-details-group'>
+                  <Form.Label className='basic-details-label'>What's your name?</Form.Label>
+                  <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                    <Form.Control
+                      className={`basic-details-input custom-input ${errorMessage ? 'error' : ''}`}
+                      type="text"
+                      placeholder="First name"
+                      value={userDetails.first_name || ''}
+                      onChange={handleNameChange}
+                      style={{ flex: 1 }}
+                    />
                   </div>
-                </div>
-                <Container className={`why-info ${showInfo ? '' : 'why-info-hidden'}`}>
-                  <span>Why last name?</span>
-                  <p>It helps us to build a trusted and authentic community for you and others. Only your first name is shown publicly.</p>
-                </Container>
-              </Form.Group>
+                  {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
+                </Form.Group>
 
-              <Form.Group controlId="formBirthday" className='basic-details-group'>
-                <Form.Label className='basic-details-label'>When is Your Birthday?</Form.Label>
-                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                  <Form.Control
-                    className={`basic-details-input-verify custom-input ${errorMessage ? 'error' : ''}`}
-                    type="date"
-                    placeholder="Day / Month / Year"
-                    value={userDetails.birthday || ''}
-                    onChange={handleBirthdayChange}
-                    style={{ flex: 1 }}
-                  />
-                  <div className="birthday-div">
-                    
+                <Form.Group controlId="formLastName" className='basic-details-group purplebox'>
+                  <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                    <Form.Control
+                      className="basic-details-input-verify custom-input"
+                      type="text"
+                      placeholder="Last name (Optional)"
+                      value={userDetails.last_name || ''}
+                      onChange={handleLastNameChange}
+                      style={{ flex: 1, marginTop: '12px', marginBottom: '24px' }}
+                    />
+                    <div className="last-name-why-div">
+                      <Button className='last-name-why' onClick={toggleInfoVisibility}>
+                        ?
+                      </Button>
+                    </div>
                   </div>
-                </div>
-                {age !== null && age !== 54 && <span className='calculated-age'>Your age is {age}</span>}
-              </Form.Group>
+                  <Container className={`why-info ${showInfo ? '' : 'why-info-hidden'}`}>
+                    <span>Why last name?</span>
+                    <p>It helps us to build a trusted and authentic community for you and others. Only your first name is shown publicly.</p>
+                  </Container>
+                </Form.Group>
 
-              <Button variant="primary" type="submit" className='basic-details-btn'>
-                Next
-              </Button>
-            </Form>
+                <Form.Group controlId="formBirthday" className='basic-details-group'>
+                  <Form.Label className='basic-details-label'>When is Your Birthday?</Form.Label>
+                  <div style={{ display: 'flex', alignItems: 'center', width: '100%', position: "relative" }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                        cursor: 'pointer',
+                        border: '1px solid black',
+                        borderRadius: '10px',
+                        overflow: 'hidden',
+                      }}
+                      onClick={handleClick}
+                    >
+                      <Form.Control
+                        className={`basic-details-input-verify custom-input ${errorMessage ? 'error' : ''}`}
+                        type="text"
+                        placeholder="Day / Month / Year"
+                        value={userDetails.birthday || ''}
+                        style={{ flex: 1, border: 0, cursor: 'pointer' }}
+                        readOnly
+                      />
+                      <FaRegCalendar style={{
+                        marginRight: '10px',
+                      }} />
+                    </div>
+                    <Popper
+                      sx={{
+                        backgroundColor: 'white',
+                        zIndex: 9999,
+                        borderRadius: "10px",
+                        border: "1px solid black",
+                      }} open={open}
+                      anchorEl={anchorEl}
+                      placement='bottom-start'
+                    >
+                      <DateCalendar
+                        onChange={(value) => {
+                          handleBirthdayChange(dayjs(value).format('YYYY-MM-DD'));
+                        }}
+                        disableFuture
+                      />
+                    </Popper>
+                  </div>
+                  {age !== null && age !== 54 && <span className='calculated-age'>Your age is {age}</span>}
+                </Form.Group>
+
+                <Button variant="primary" type="submit" className='basic-details-btn'>
+                  Next
+                </Button>
+              </Form>
+            </Container>
           </Container>
         </Container>
-      </Container>
-    </div>
+      </div>
+    </LocalizationProvider>
   );
 }
 

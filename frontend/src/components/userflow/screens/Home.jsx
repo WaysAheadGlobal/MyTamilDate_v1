@@ -4,6 +4,7 @@ import { useCookies } from '../../../hooks/useCookies';
 import Card from '../components/card/Card';
 import Sidebar from '../components/sidebar/sidebar';
 import { useSearchParams } from 'react-router-dom';
+import { useUserProfile } from '../components/context/UserProfileContext';
 /* import { Modal } from 'react-bootstrap';
 import Button from '../components/button/Button'; */
 
@@ -36,7 +37,8 @@ export default function Home() {
     /**
      * @type {[Profile[], React.Dispatch<React.SetStateAction<Profile[]>>]}
      */
-    const [profiles, setProfiles] = useState([]);
+    /* const [profiles, setProfiles] = useState([]); */
+    const { profiles, setProfiles } = useUserProfile();
     const [abortController, setAbortController] = useState(new AbortController());
     /* const [show, setShow] = useState(true); */
 
