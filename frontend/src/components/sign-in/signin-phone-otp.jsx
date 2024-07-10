@@ -112,6 +112,7 @@ export const SignInPhoneOTP = () => {
                     setErrorMessage("") 
                     setIsResendDisabled(true); 
                     setCookie('token', result.token, 15);
+                    setCookie('userId',  result.token,15);
                     if (result.Result && result.Result.length > 0) {
                         setCookie('Name', result.Result[0].first_name, 20);
                     }

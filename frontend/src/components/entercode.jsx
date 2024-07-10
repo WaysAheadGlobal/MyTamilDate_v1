@@ -112,6 +112,7 @@ export const Entercode = () => {
                     setErrorMessage("") 
                     setIsResendDisabled(true); 
                     setCookie('token', result.token, 15);
+                    setCookie('userId',  result.token,15);
                     goToEmailVerify();
                 } else {
                     setErrorMessage(result.message || 'Failed to send OTP');

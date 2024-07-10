@@ -25,6 +25,68 @@ const upload = multer({
 
 const updateprofile = express.Router();
 
+
+updateprofile.post("/mediaupdate",
+  verifyUser,
+  upload.fields([
+    { name: 'main', maxCount: 1 },
+    { name: 'first', maxCount: 1 },
+    { name: 'second', maxCount: 1 },
+  ]),
+  async (req: UserRequest, res: express.Response) => {
+    const userId = req.userId;
+    
+
+    if (!req.files) {
+      return res.status(400).send('No files were uploaded.');
+    }
+
+    const fileKeys = Object.keys(req.files);
+    if (fileKeys.length === 0) {
+      return res.status(400).send('No files were uploaded.');
+    }
+
+    const fileKey = fileKeys[0];
+    const file = (req.files as any)[fileKey][0];
+
+    // Assign type based on the field name
+    let type;
+    switch (fileKey) {
+      case 'main':
+        type = 31;
+        break;
+      case 'first':
+      case 'second':
+        type = 32;
+        break;
+      default:
+        return res.status(400).send('Invalid file type.');
+    }
+
+    const query = 'INSERT INTO media_update (user_id, hash, extension, type, meta, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const values = [
+      userId,
+      file.filename.split(".")[0],
+      file.mimetype.split("/")[1],
+      type,
+      JSON.stringify(file),
+      new Date(),
+      new Date()
+    ];
+
+    db.query(query, [...values, userId], (err, results) => {
+      if (err) {
+        console.error('Error inserting media:', err);
+        return res.status(500).send('Internal Server Error');
+      }
+      res.status(200).json({ message: 'Media uploaded successfully' });
+    });
+  }
+);
+
+
+
+
 updateprofile.post("/media",
     verifyUser,
     upload.fields([

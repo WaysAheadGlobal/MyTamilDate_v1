@@ -308,12 +308,14 @@ export const Selfie = () => {
                                 width: '100%',
                                 objectFit: 'contain',
                             }} alt="Selected" fluid />}
+                            
                             <input
                                 type="file"
                                 ref={fileInputRefSecond}
                                 onChange={(e) => handleFileChange(e, 'second')}
                                 style={{ display: 'none' }}
                             />
+
                         </Col>
                     </Row>
                 </Container>
