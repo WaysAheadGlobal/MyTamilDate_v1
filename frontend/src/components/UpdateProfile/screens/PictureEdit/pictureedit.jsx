@@ -271,7 +271,9 @@ const getCroppedImg = (imageSrc, crop) => {
       flexDirection: "column",
       gap: "1rem",
       overflowY: "auto",
-      scrollbarWidth: "none"
+      scrollbarWidth: "none",
+      padding : "2rem"
+      
     }}>
       <div className={picture.container}>
         <p className={picture.componentname}>Your Profile</p>
