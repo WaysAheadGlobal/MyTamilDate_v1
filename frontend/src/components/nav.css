@@ -36,4 +36,17 @@
     display: flex;
     align-items: center;
   }
+
+  .nav-link-container .nav-link {
+    width: 100%;
+  }
+
+  .nav-link-container .nav-link:not(:last-child) {
+    border-bottom: 1px solid #e0e0e0e0;
+  }
+
+  .Navbar-container .nav-link-container .nav-link.active-link {
+    color: #FC8C66;
+    text-decoration: none;
+  }
 }
