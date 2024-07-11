@@ -9,109 +9,10 @@ import { verifyUser } from "../../../middleware/verifyUser";
 import sgMail from '@sendgrid/mail';
 import ejs from 'ejs';
 import { ResultSetHeader, RowDataPacket } from "mysql2";
+import { getOTPFromDBByEmail, insertOTPInDBByEmail } from "../../../../otpbyEmail";
 
 const auth = Router();
 let otpData: { phone: string, otp: string, createdAt: Date } | null = null;
-
-// Route to test Twilio connection
-// auth.get('/test-twilio', async (req, res) => {
-//     const isConnected = await testTwilioConnection();
-//     if (isConnected) {
-//         res.status(200).send('Twilio connection successful');
-//     } else {
-//         res.status(500).send('Twilio connection failed');
-//     }
-// });
-
-// Route to send OTP for login
-// auth.post('/login/otp', 
-//     [
-//         body('phone').notEmpty().withMessage('Phone number is required'),
-//     ],
-//     async (req:any, res:any) => {
-//         const errors = validationResult(req);
-//         if (!errors.isEmpty()) {
-//             return res.status(400).json({ errors: errors.array() });
-//         }
-
-//         const { phone } = req.body;
-
-//         const query = 'SELECT first_name FROM user_profiles WHERE phone = ?';
-//         db.query(query, [phone], async (err, results) => {
-//             if (err) {
-//                 console.error('Error fetching data:', err);
-//                 return res.status(500).json({ message: 'Internal Server Error' });
-//             }
-
-//             if (results.length === 0) {
-//                 return res.status(401).json({ message: 'Invalid phone' });
-//             }
-
-//             try {
-//                 const otp = Math.floor(1000 + Math.random() * 9000).toString();
-//                 console.log(`Generated OTP for ${phone}: ${otp}`);
-
-//                 // Example logic for sending OTP via Twilio
-//                 await sendOTPtoPhoneNumber({ phone });
-
-//                 // Save the OTP in a temporary storage (e.g., session, database)
-//                 otpData = {
-//                     phone: phone,
-//                     otp: otp,
-//                     createdAt: new Date()
-//                 };
-
-//                 return res.status(200).json({ message: 'Your OTP Is' , otp: otp });
-//             } catch (error) {
-//                 console.error('Error sending OTP:', error);
-//                 return res.status(500).json({ message: 'Internal Server Error' });
-//             }
-//         });
-//     }
-// );
-
-// Route to verify OTP and login
-// auth.post('/login', 
-//     [
-//         body('phone').notEmpty().withMessage('Phone number is required'),
-//         body('otp').notEmpty().withMessage('OTP is required')
-//     ],
-//     async (req:any, res:any) => {
-//         const errors = validationResult(req);
-//         if (!errors.isEmpty()) {
-//             return res.status(400).json({ errors: errors.array() });
-//         }
-
-//         const { phone, otp } = req.body;
-
-//         try {
-//             // Retrieve and validate the OTP from storage
-//             if (!otpData || otpData.phone !== phone || otpData.otp !== otp) {
-//                 return res.status(401).json({ message: 'Invalid OTP' });
-//             }
-
-//             const query = 'SELECT id, first_name FROM user_profiles WHERE phone = ?';
-//             db.query(query, [phone], (err, results) => {
-//                 if (err) {
-//                     console.error('Error fetching data:', err);
-//                     return res.status(500).json({ message: 'Internal Server Error' });
-//                 }
-
-//                 if (results.length === 0) {
-//                     return res.status(401).json({ message: 'Invalid phone' });
-//                 }
-
-//                 const jwt = sign({ phone: phone, userId: results[0].id }, process.env.JWT_SECRET as string, { expiresIn: '30 days' });
-//                 return res.status(200).json({ message: 'Login successful!', token: jwt, result: results[0] });
-//             });
-//         } catch (error) {
-//             console.error('Error validating OTP:', error);
-//             return res.status(500).json({ message: 'Internal Server Error' });
-//         }
-//     }
-// );
-
-
 
 // Route to send OTP for login
 auth.get('/test-twilio', async (req, res) => {
@@ -200,6 +101,111 @@ auth.post('/login',
         }
     }
 );
+
+auth.post("/login/email-otp", async (req, res) => {
+    const { email } = req.body;
+
+    db.query<RowDataPacket[]>('SELECT id FROM user_profiles WHERE email = ?', [email], async (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+
+        if (results.length === 0) {
+            return res.status(401).json({ message: 'Please signup first' });
+        }
+
+        try {
+            const otp = Math.floor(1000 + Math.random() * 9000).toString();
+            console.log(`Generated OTP for ${email}: ${otp}`);
+
+            await insertOTPInDBByEmail(otp, email);
+
+
+            let html;
+            try {
+                html = await ejs.renderFile("mail/templates/otp.ejs", { otp: otp });
+            } catch (renderError) {
+                console.error('Error rendering email template:', renderError);
+                return res.status(500).json({ message: 'Internal Server Error' });
+            }
+
+            const msg = {
+                to: email,
+                from: "mtdteam2024@gmail.com",
+                subject: "MTD Login Code",
+                html: html
+            };
+
+            sgMail.send(msg)
+                .then(() => {
+                    console.log("Approval email sent successfully");
+                    return res.status(200).send('Status updated successfully and email sent');
+                })
+                .catch((error) => {
+                    console.error('Error sending email:', error);
+                    return res.status(500).send('Internal Server Error');
+                });
+
+        } catch (error) {
+            console.error('Error sending OTP:', error);
+            return res.status(500).json({ message: 'Internal Server Error' });
+        }
+    });
+});
+
+auth.post("/login/email", async (req, res) => {
+    const { email, otp } = req.body;
+    const usingGoogle = req.body.usingGoogle;
+
+    if (usingGoogle) {
+        const query = 'SELECT id, user_id, first_name FROM user_profiles WHERE email = ?';
+        db.query<RowDataPacket[]>(query, [email], (err, results) => {
+            if (err) {
+                console.error('Error fetching data:', err);
+                return res.status(500).json({ message: 'Internal Server Error' });
+            }
+
+            if (results.length === 0) {
+                return res.status(401).json({ message: 'Invalid email' });
+            }
+
+            const jwt = sign({ email: email, userId: results[0].user_id }, process.env.JWT_SECRET as string, { expiresIn: '30 days' });
+
+            return res.status(200).json({ message: 'Login successful!', token: jwt, Result: results });
+        });
+        return;
+    }
+
+    try {
+        const verify = await getOTPFromDBByEmail(otp, email);
+
+        if (!verify) {
+            return res.status(400).json({ message: 'Invalid OTP' });
+        }
+
+        const query = 'SELECT id, user_id, first_name FROM user_profiles WHERE email = ?';
+
+        db.query<RowDataPacket[]>(query, [email], (err, results) => {
+            if (err) {
+                console.error('Error fetching data:', err);
+                return res.status(500).json({ message: 'Internal Server Error' });
+            }
+
+            if (results.length === 0) {
+                return res.status(401).json({ message: 'Invalid email' });
+            }
+
+            const jwt = sign({ email: email, userId: results[0].user_id }, process.env.JWT_SECRET as string, { expiresIn: '30 days' });
+
+            return res.status(200).json({ message: 'Login successful!', token: jwt, Result: results });
+        });
+
+    } catch (error) {
+        console.error('Error validating OTP:', error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
 
 // Route to send OTP for signup
 auth.post('/signup/otp', body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'en-AU']), async (req, res) => {
