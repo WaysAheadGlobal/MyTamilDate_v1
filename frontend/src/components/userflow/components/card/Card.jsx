@@ -7,6 +7,7 @@ import IconButton from './IconButton';
 import { useCookies } from '../../../../hooks/useCookies';
 import ladyIcon from '../../../../assets/images/ladyIcon.png';
 import { FaLocationDot } from "react-icons/fa6";
+import { useUserProfile } from '../context/UserProfileContext';
 
 /**
  * @typedef {Object} Profile
@@ -43,7 +44,7 @@ export default function Card({ ...props }) {
     const cookies = useCookies();
     const cardRef = useRef(null);
     const [liked, setLiked] = useState(props.like);
-    const { profiles, setProfiles } = props;
+    const { profiles, setProfiles } = useUserProfile();
 
     async function handleIconButtonClick(type) {
         console.log(type);
@@ -153,6 +154,9 @@ export default function Card({ ...props }) {
                         setLiked(!liked);
                         handleIconButtonClick("like");
                     }} />
+                    <IconButton
+                        type={"details"}
+                    />
                     <IconButton type='skip' onClick={(e) => {
                         e.stopPropagation();
                         handleIconButtonClick("skip");

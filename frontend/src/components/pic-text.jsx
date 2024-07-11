@@ -107,7 +107,7 @@ export const Pictext = () => {
                         )
                     }
                     <p style={{
-                        fontSize: "18px",
+                        fontSize: "clamp(16px, 4vw, 18px)",
                         lineHeight: mobile ? '30px' : "36px",
                         marginTop: '1rem',
                         textAlign: "justify",
@@ -128,7 +128,7 @@ export const Pictext = () => {
                 }}>
                     <h4 style={{ fontWeight: "bold" }}>Meet like-minded people from your community</h4>
                     <p style={{
-                        fontSize: "18px",
+                        fontSize: "clamp(16px, 4vw, 18px)",
                         lineHeight: mobile ? '30px' : "36px",
                         textAlign: "justify",
                     }}>Connect with others who truly understand your unique quirks, share your passions, and appreciate your inside jokes and who value what makes you.</p>
@@ -167,7 +167,7 @@ export const Pictext = () => {
                 }}>
                     <h4 style={{ fontWeight: "bold" }}>Discover meaningful connections</h4>
                     <p style={{
-                        fontSize: "18px",
+                        fontSize: "clamp(16px, 4vw, 18px)",
                         lineHeight: mobile ? '30px' : "36px",
                         textAlign: "justify"
                     }}>Meet people who share your interests, values, and that undeniable spark who are also looking for a meaningful match. Whether they're around the corner or across the globe, we'll help you find your match.</p>

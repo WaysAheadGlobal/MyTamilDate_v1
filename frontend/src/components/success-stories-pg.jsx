@@ -27,8 +27,13 @@ export const SuccessPage = () => {
             <Container fluid className='success-pg-team'>
                 <Container className='success-pg-text'>
 
-                    <p className='success-pg-heading'>Success Stories</p>
-                    <p className='success-pg-sub'>Matches are made daily & serious relationships are created monthly across North America, Europe & more on MTD! Get to know some of our couples.</p>
+                    <p className='success-pg-heading' style={{
+                        fontSize: "clamp(30px, 5vw, 40px)"
+                    }}>Success Stories</p>
+                    <p className='success-pg-sub' style={{
+                        fontSize: "clamp(16px, 4vw, 20px)",
+                        textAlign: 'center'
+                    }}>Matches are made daily & serious relationships are created monthly across North America, Europe & more on MTD! Get to know some of our couples.</p>
                 </Container>
                 <Container className='team-content'>
                     <Row fluid className="team-row">

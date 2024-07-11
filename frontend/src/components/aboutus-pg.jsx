@@ -28,7 +28,9 @@ export const AboutUsPage = () => {
                                 <Image fluid className='abt1-image' src={abtbg} />
                                 <div className="abt1-detail">
                                     <p>ABOUT US</p>
-                                    <h3>myTamilDate.com has been the most trusted dating community for single Tamils around the world for close to a decade! We&apos;re the premiere dating site for diaspora Tamils and have the largest membership base in Canada, USA, UK & more.</h3>
+                                    <h3 style={{
+                                        marginTop: "1em"
+                                    }}>myTamilDate.com has been the most trusted dating community for single Tamils around the world for close to a decade! We&apos;re the premiere dating site for diaspora Tamils and have the largest membership base in Canada, USA, UK & more.</h3>
                                 </div>
                             </div>
                         </Col>
@@ -47,10 +49,14 @@ export const AboutUsPage = () => {
                     </div>
                     <div className='abt2-mid'>
                         <div className='abt2-txt'>
-                            <p>
+                            <p style={{
+                                fontSize: "clamp(30px, 5vw, 40px)"
+                            }}>
                                 Proven Success
                             </p>
-                            <span>
+                            <span style={{
+                                fontSize: "clamp(16px, 4vw, 20px)"
+                            }}>
                                 We&apos;ve been helping single Tamils meet, date and marry for years. On their own terms & their own timelines.
                             </span>
                         </div>
@@ -69,47 +75,60 @@ export const AboutUsPage = () => {
                         <a href="https://tamilculture.com/mytamildate-success-abi-john-bonded-over-faith-their-tamil-german-british-connection">Read their story</a>
 
                     </div>
-
-
                 </Container>
 
 
 
 
 
-                <Container className='abt3-main'>
-                    <p >Benefits of myTamilDate</p>
-                    <Container className='abt3-main-content'>
-                        <Container className='abt3-one'>
-
+                <div className='abt3-main'>
+                    <p style={{
+                        fontSize: "clamp(30px, 5vw, 40px)"
+                    }} >Benefits of myTamilDate</p>
+                    <div className='abt3-main-content' style={{
+                        gap: "1rem"
+                    }}>
+                        <div className='abt3-one'>
                             <div className='abt3-top'>
                                 <img className="abt3-img" src={survey}></img>
                                 <div className='abt3-text'>
-                                    <span >Trust & Authenticity</span>
-                                    <p>We manually verify every profile to ensure authenticity. Phone verification
+                                    <span style={{
+                                        fontSize: "clamp(26px, 5vw, 30px)",
+                                    }} >Trust & Authenticity</span>
+                                    <p style={{
+                                        fontSize: "clamp(16px, 4vw, 18px)",
+                                        textAlign: 'justify'
+                                    }}>We manually verify every profile to ensure authenticity. Phone verification
                                         is also required for added security.</p>
                                 </div>
                             </div>
-
-
                             <div className='abt3-bottom'>
                                 <img className="abt3-img" src={agent}></img>
                                 <div className='abt3-text'>
-                                    <span >Safety & Protection</span>
-                                    <p>We prioritize creating a safe and trusted community, ensuring your platform experience
+                                    <span style={{
+                                        fontSize: "clamp(26px, 5vw, 30px)",
+                                    }} >Safety & Protection</span>
+                                    <p style={{
+                                        fontSize: "clamp(16px, 4vw, 18px)",
+                                        textAlign: 'justify'
+                                    }}>We prioritize creating a safe and trusted community, ensuring your platform experience
                                         and personal data protection.</p>
 
                                 </div>
                             </div>
 
-                        </Container>
-                        <Container className='abt3-one'>
-
+                        </div>
+                        <div className='abt3-one'>
                             <div className='abt3-top'>
                                 <img className="abt3-img" src={property}></img>
                                 <div className='abt3-text'>
-                                    <span >Flexible Platform</span>
-                                    <p>We’re built for mobile first and enhanced for desktop too! The best part? You don’t have to download yet another app.</p>
+                                    <span style={{
+                                        fontSize: "clamp(26px, 5vw, 30px)",
+                                    }} >Flexible Platform</span>
+                                    <p style={{
+                                        fontSize: "clamp(16px, 4vw, 18px)",
+                                        textAlign: 'justify'
+                                    }}>We’re built for mobile first and enhanced for desktop too! The best part? You don’t have to download yet another app.</p>
                                 </div>
                             </div>
 
@@ -117,34 +136,18 @@ export const AboutUsPage = () => {
                             <div className='abt3-bottom abt3-cus'>
                                 <img className="abt3-img" src={moving}></img>
                                 <div className='abt3-text'>
-                                    <span >Personalized Service</span>
-                                    <p>We care about your dating life like a good friend, offering profile help, messaging tips, and date ideas!</p>
+                                    <span style={{
+                                        fontSize: "clamp(26px, 5vw, 30px)",
+                                    }} >Personalized Service</span>
+                                    <p style={{
+                                        fontSize: "clamp(16px, 4vw, 18px)",
+                                        textAlign: 'justify'
+                                    }}>We care about your dating life like a good friend, offering profile help, messaging tips, and date ideas!</p>
                                 </div>
                             </div>
-
-
-                        </Container>
-
-
-
-
-
-
-
-
-
-                    </Container>
-
-
-
-
-
-                </Container>
-
-
-
-
-
+                        </div>
+                    </div>
+                </div>
 
                 <Container className='abt4-main'>
                     <a href='https://www.instagram.com/reel/C4Bg5EWJZ8P/'>

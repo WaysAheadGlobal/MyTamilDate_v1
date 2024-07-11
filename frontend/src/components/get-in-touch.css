@@ -46,8 +46,8 @@
     padding: 30px;
     display: flex;
     border-radius: 20px;
-    border: 2px solid #E3C1FF;
-    background: #F9F1FF;
+    box-shadow: 5px 5px 20px 0px #00000033;
+    border: 2px solid #dddddd;
     align-items: center;
     justify-content: center;
     gap: 50px;
@@ -248,7 +248,7 @@ width: 100%; */
     }
 
 
-    
+
 
 
     .getintouch-main p {
@@ -263,6 +263,7 @@ width: 100%; */
 
 
     }
+
     .getintouch-content {
         padding: 20px;
         display: flex;
