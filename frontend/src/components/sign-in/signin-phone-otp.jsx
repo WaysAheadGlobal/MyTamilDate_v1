@@ -19,7 +19,7 @@ export const SignInPhoneOTP = () => {
     const navigate = useNavigate();
 
     const goToSignsuccessful = () => {
-        navigate("/signinphonesuccessful");
+        navigate("/user/home");
     };
 
     // State for OTP code inputs
@@ -133,7 +133,7 @@ export const SignInPhoneOTP = () => {
         e.preventDefault();
         if (resendTimer === 0) {
             try {
-                const response = await fetch('http://localhost:3001/api/v1/user/login/otp', {
+                const response = await fetch(`${API_URL}/user/login/otp`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

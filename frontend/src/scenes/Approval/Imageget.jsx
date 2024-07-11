@@ -9,7 +9,7 @@ const ImageGallery = () => {
     useEffect(() => {
         const fetchImages = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/v1/admin/users/paymentstatuu');
+                const response = await axios.get(`${API_URL}/admin/users/paymentstatuu`);
                 setImages(response.data);
                 console.log(response.data);
             } catch (error) {

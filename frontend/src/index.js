@@ -5,16 +5,20 @@ import App from "./App";
 import { AppContextProvider } from "./Context/UseContext";
 import UserProfileProvider from "./components/userflow/components/context/UserProfileContext";
 import "./index.css";
+import { GoogleOAuthProvider } from "@react-oauth/google"
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <AppContextProvider>
-      <UserProfileProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </UserProfileProvider>
-    </AppContextProvider>
-  </React.StrictMode>
+  <GoogleOAuthProvider clientId={process.env.REACT_APP_GCID}>
+    <React.StrictMode>
+      <AppContextProvider>
+        <UserProfileProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </UserProfileProvider>
+      </AppContextProvider>
+    </React.StrictMode>
+  </GoogleOAuthProvider>
 );
