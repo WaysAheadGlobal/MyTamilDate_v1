@@ -41,7 +41,7 @@ export const SignInOptions = () => {
             const resData = await res.json();
             
             if (res.ok) {
-                cookies.setCookie('token', resData.token);
+                cookies.setCookie('token', resData.token, 30);
                 cookies.setCookie('userId', resData.Result[0].user_id);                
                 navigate('/user/home');
             }

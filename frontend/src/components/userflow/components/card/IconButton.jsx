@@ -90,7 +90,7 @@ const Icons = {
                 <path d="M14.5469 16.9256H52.3869V54.7656H14.5469V16.9256Z" fill="white" />
             </mask>
             <g mask="url(#mask0_778_15726)">
-                <path d="M17.6016 29.1994C17.6016 20.4374 29.7343 17.1901 33.4675 27.3332C37.2007 17.1901 49.3334 20.4374 49.3334 29.1994C49.3334 38.7191 33.4675 50.7891 33.4675 50.7891C33.4675 50.7891 17.6016 38.7191 17.6016 29.1994Z"  fill="white" />
+                <path d="M17.6016 29.1994C17.6016 20.4374 29.7343 17.1901 33.4675 27.3332C37.2007 17.1901 49.3334 20.4374 49.3334 29.1994C49.3334 38.7191 33.4675 50.7891 33.4675 50.7891C33.4675 50.7891 17.6016 38.7191 17.6016 29.1994Z" fill="white" />
             </g>
         </g>
         <defs>
@@ -102,7 +102,56 @@ const Icons = {
                 <rect width="47.84" height="47.84" fill="white" transform="translate(6.57227 7.11133)" />
             </clipPath>
         </defs>
-    </svg>
+    </svg>,
+    details: <div style={{
+        position: "relative",
+        width: "fit-content",
+    }}>
+        <svg width="79" height="74" viewBox="0 0 79 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g filter="url(#filter0_dddd_3448_10075)">
+                <circle cx="39.2588" cy="31.2588" r="29.2588" fill="url(#paint0_linear_3448_10075)" />
+            </g>
+            <defs>
+                <filter id="filter0_dddd_3448_10075" x="0.247071" y="0.0494142" width="78.0215" height="95.5768" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                    <feOffset dy="1.95059" />
+                    <feGaussianBlur stdDeviation="1.95059" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.1 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_3448_10075" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                    <feOffset dy="5.85176" />
+                    <feGaussianBlur stdDeviation="2.92588" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.09 0" />
+                    <feBlend mode="normal" in2="effect1_dropShadow_3448_10075" result="effect2_dropShadow_3448_10075" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                    <feOffset dy="13.6541" />
+                    <feGaussianBlur stdDeviation="3.90117" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.05 0" />
+                    <feBlend mode="normal" in2="effect2_dropShadow_3448_10075" result="effect3_dropShadow_3448_10075" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                    <feOffset dy="25.3576" />
+                    <feGaussianBlur stdDeviation="4.87646" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0 0.388235 0 0 0 0.01 0" />
+                    <feBlend mode="normal" in2="effect3_dropShadow_3448_10075" result="effect4_dropShadow_3448_10075" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect4_dropShadow_3448_10075" result="shape" />
+                </filter>
+                <linearGradient id="paint0_linear_3448_10075" x1="10" y1="31.2588" x2="68.5176" y2="31.2588" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#FC8C66" />
+                    <stop offset="1" stop-color="#F76A7B" />
+                </linearGradient>
+            </defs>
+        </svg>
+        <svg style={{
+            position: "absolute",
+            top: "0.8rem",
+            left: "1.25rem"
+        }} width="39" height="37" viewBox="0 0 39 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9.12152 9.00583C9.33883 9.00583 9.55269 9.08861 9.70791 9.25418L18.9487 18.8539L28.1895 9.25419C28.4896 8.94292 28.9967 8.92305 29.3209 9.21114C29.6452 9.49923 29.6659 9.986 29.3658 10.2973L19.5351 20.5063C19.2316 20.8208 18.6624 20.8208 18.3589 20.5063L8.53168 10.294C8.23159 9.98269 8.25229 9.49591 8.57653 9.20782C8.73175 9.07206 8.92836 9.00583 9.12152 9.00583Z" fill="white" />
+            <path d="M9.12152 18.4668C9.33883 18.4668 9.55269 18.5496 9.70791 18.7151L18.9487 28.3115L28.1895 18.7118C28.4896 18.4005 28.9967 18.3807 29.3209 18.6688C29.6452 18.9569 29.6659 19.4436 29.3658 19.7549L19.5351 29.9672C19.2316 30.2818 18.6624 30.2818 18.3589 29.9672L8.53168 19.7549C8.23159 19.4436 8.25229 18.9569 8.57653 18.6688C8.73175 18.533 8.92836 18.4668 9.12152 18.4668Z" fill="white" />
+        </svg>
+    </div>
+
 }
 
 export default function IconButton({ type, onClick }) {

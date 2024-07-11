@@ -26,6 +26,7 @@ export const BasicDetails = () => {
   const token = getCookie('token');
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const [adulthood, setAdulthood] = useState(true);
 
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -92,6 +93,11 @@ export const BasicDetails = () => {
 
     if (userDetails.first_name.trim() === '') {
       setErrorMessage('*Please fill in all required fields');
+      return;
+    }
+
+    if (dayjs().diff(dayjs(userDetails.birthday), 'years') < 18) {
+      setAdulthood(false);
       return;
     }
 
@@ -232,6 +238,7 @@ export const BasicDetails = () => {
                     </Popper>
                   </div>
                   {age !== null && age !== 54 && <span className='calculated-age'>Your age is {age}</span>}
+                  {!adulthood && userDetails.birthday && <p className="text-danger error-message">You must be at least 18 years old</p>}
                 </Form.Group>
 
                 <Button variant="primary" type="submit" className='basic-details-btn'>

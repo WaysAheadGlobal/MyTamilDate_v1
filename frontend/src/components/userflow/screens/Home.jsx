@@ -37,7 +37,7 @@ export default function Home() {
     /**
      * @type {[Profile[], React.Dispatch<React.SetStateAction<Profile[]>>]}
      */
-    /* const [profiles, setProfiles] = useState([]); */
+    
     const { profiles, setProfiles } = useUserProfile();
     const [abortController, setAbortController] = useState(new AbortController());
     /* const [show, setShow] = useState(true); */
