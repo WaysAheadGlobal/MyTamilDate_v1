@@ -12,11 +12,12 @@ import { API_URL } from '../../../api';
 import { useCookies } from '../../../hooks/useCookies';
 const UpdateProfile = () => {
   const [activeTab, setActiveTab] = useState('edit');
+  const[profileCompletion, setProfileCompletion] = useState(10)
+  const[Profile, setProfileData] = useState({});
   const{getCookie} = useCookies();
 const Navigate = useNavigate();
   const completion = 40;
   const id = getCookie('userId')
-
   const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
   const [images, setImages] = useState({
     main: null,
@@ -81,8 +82,55 @@ const Navigate = useNavigate();
       console.error('Error saving images:', error);
     }
   }
+
+  const GetprofileCompletion = async()=>{
+     try{
+      const response = await fetch(`${API_URL}/customer/update/profileCompletion`,
+        {
+          method : 'GET',
+          headers: {
+            'Authorization': `Bearer ${getCookie('token')}`
+        }
+      }
+    );
+    const data = await response.json();
+
+    if(response.ok){
+      setProfileCompletion(data.completionPercentage);
+      console.log(profileCompletion);
+    }
+     }
+     catch(err){
+      console.log(err);
+     }
+  }
+
+  const ProfileDetails = async()=>{
+    try{
+     const response = await fetch(`${API_URL}/customer/update/profileDetails`,
+       {
+         method : 'GET',
+         headers: {
+           'Authorization': `Bearer ${getCookie('token')}`
+       }
+     }
+   );
+   const data = await response.json();
+
+   if(response.ok){
+    setProfileData(data)
+    console.log(data)
+   }
+    }
+    catch(err){
+     console.log(err);
+    }
+ }
+
   useEffect(() => {
     ImageURL();
+    GetprofileCompletion();
+    ProfileDetails();
   }, [ ]);
   return (
     <Sidebar>
@@ -101,7 +149,7 @@ const Navigate = useNavigate();
           <div className={profile.maincontainer}>
             {/* <ProfileProgress completion={completion} profilepic={images2.main} /> */}
             <div className={profile.imgContainer} style={{
-                        "--profile-completed": "80%"
+                        "--profile-completed": `${profileCompletion}%`
                     }}>
                         <div className={profile.innerCircle}>
                             <img className={profile.profilepicimg} src={images2.main} alt="" />
@@ -111,8 +159,8 @@ const Navigate = useNavigate();
           </div>
           <div className="row d-flex justify-content-center">
             <div className="d-flex flex-column align-items-center">
-              <p style={{ fontSize: '18px', color: "#515151" }}>Niladitya</p>
-              <p style={{ fontSize: '14px', color: "#6C6C6C" }}>80% complete</p>
+              <p style={{ fontSize: '18px', color: "#515151" }}>{Profile.Name} {Profile.Surname}</p>
+              <p style={{ fontSize: '14px', color: "#6C6C6C" }}>  {profileCompletion}% complete</p>
             </div>
 
             <div className={profile.editpreview}>

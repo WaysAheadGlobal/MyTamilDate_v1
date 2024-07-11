@@ -851,8 +851,6 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
 });
 
 
-
-
 // delete the User
 users.put('/deleteuser', (req, res) => {
     const { id } = req.body;

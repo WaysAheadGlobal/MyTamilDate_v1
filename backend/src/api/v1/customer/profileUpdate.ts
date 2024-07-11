@@ -84,9 +84,6 @@ updateprofile.post("/mediaupdate",
   }
 );
 
-
-
-
 updateprofile.post("/media",
     verifyUser,
     upload.fields([
@@ -327,6 +324,185 @@ updateprofile.get('/personality-options', (req: UserRequest, res: express.Respon
       });
     });
   });
+
+
+  //profile Completion track
+  updateprofile.get('/profileCompletion', verifyUser,(req:UserRequest, res: express.Response) => {
+    const userId = req.userId;
+    const sql = `SELECT * FROM user_profiles WHERE user_id = ?`;
+  
+    db.query(sql, [userId], (err, results:any) => {
+      if (err) {
+        console.error('Error retrieving user profile data:', err);
+        return res.status(500).send('Internal Server Error');
+      }
+  
+      if (results.length === 0) {
+        return res.status(404).send('User profile not found');
+      }
+  
+      const profile = results[0];
+
+      // const completionPercentage = calculateCompletionPercentage(profile);
+      const totalFields = 18; // Number of fields used to calculate completion
+      let completedFields = 0;
+    
+      // List of fields to consider for profile completion
+      const fields = [
+        'first_name', 'last_name', 'email', 'phone', 'birthday',
+        'location_id', 'gender', 'want_gender', 'study_id', 'job_id',
+        'growth_id', 'religion_id', 'want_kid_id', 'have_kid_id',
+        'smoke_id', 'drink_id'
+      ];
+    
+      fields.forEach(field => {
+        if (profile[field] !== null && profile[field] !== undefined && profile[field] !== '') {
+          completedFields++;
+        }
+      });
+    
+    const   completionPercentage=  Math.floor((completedFields / totalFields) * 100);
+  
+      res.status(200).json({ completionPercentage });
+    });
+  });
+
+  //All details of Profile
+  updateprofile.get('/profileDetails',verifyUser, (req: UserRequest, res: express.Response) => {
+    const userId = req.userId;
+    console.log(userId);
+
+    const sql = `
+        SELECT 
+            up.first_name AS Name,
+            up.last_name AS Surname,
+            up.email AS Email,
+            uso.approval AS Approval,
+            DATE_FORMAT(up.email_verified_at, '%Y-%m-%d') AS 'EmailVerifiedAt',
+            up.phone AS Phone,
+            DATE_FORMAT(up.birthday, '%Y-%m-%d') AS Birthday,
+            loc.country AS Country,
+            CASE up.gender 
+                WHEN 1 THEN 'Male' 
+                WHEN 2 THEN 'Female' 
+                ELSE 'Other' 
+            END AS Gender,
+            CASE up.want_gender 
+                WHEN 1 THEN 'Male' 
+                WHEN 2 THEN 'Female' 
+                ELSE 'Other' 
+            END AS 'Preferred Gender',
+            st.name AS 'StudyField',
+            j.name AS 'JobTitle',
+            g.name AS 'Height',
+            r.name AS Religion,
+            wk.name AS 'WantChildren',
+            hk.name AS 'HaveChildren',
+            s.name AS 'Smoker',
+            d.name AS 'Drinker',
+            DATE_FORMAT(up.created_at, '%Y-%m-%d') AS 'ProfileCreatedAt',
+            DATE_FORMAT(up.updated_at, '%Y-%m-%d') AS 'ProfileUpdatedAt',
+            
+            GROUP_CONCAT(DISTINCT p.name) AS 'Personalities'
+        FROM 
+            user_profiles up
+        JOIN 
+            users uso ON up.user_id = uso.id
+        LEFT JOIN 
+            locations loc ON up.location_id = loc.id
+        LEFT JOIN 
+            studies st ON up.study_id = st.id
+        LEFT JOIN 
+            jobs j ON up.job_id = j.id
+        LEFT JOIN 
+            growths g ON up.growth_id = g.id
+        LEFT JOIN 
+            religions r ON up.religion_id = r.id
+        LEFT JOIN 
+            want_kids wk ON up.want_kid_id = wk.id
+        LEFT JOIN 
+            have_kids hk ON up.have_kid_id = hk.id
+        LEFT JOIN 
+            smokes s ON up.smoke_id = s.id
+        LEFT JOIN 
+            drinks d ON up.drink_id = d.id
+        LEFT JOIN 
+            user_personalities upers ON up.user_id = upers.user_id
+        LEFT JOIN 
+            personalities p ON upers.personality_id = p.id
+        WHERE 
+            up.user_id = ?
+            
+            AND uso.deleted_at IS NULL 
+            AND uso.active = 1
+        GROUP BY 
+            up.id
+    `;
+
+    db.query<RowDataPacket[]>(sql, [userId], (err, results) => {
+        if (err) {
+            console.log('Error fetching data:', err);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        if (results.length === 0) {
+            res.status(404).send('User not found');
+            return;
+        }
+        res.status(200).json(results[0]);
+    });
+});
+
+updateprofile.get('/userlanguage', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  const query = `
+    SELECT ul.language_id, l.name, l.code
+    FROM user_languages ul
+    JOIN languages l ON ul.language_id = l.id
+    WHERE ul.user_id = ?
+  `;
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching user languages:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    res.status(200).json({ selectedLanguages: results });
+  });
+});
+
+// Fetch user questions by user_id
+updateprofile.get('/questions', (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  const sql = `
+      SELECT 
+          qa.question_id,
+          q.text AS question,
+          qa.answer,
+          qa.created_at,
+          qa.updated_at
+      FROM 
+          question_answers qa
+      JOIN 
+          questions q ON qa.question_id = q.id
+      WHERE 
+          qa.user_id = ?
+  `;
+
+  db.query(sql, [userId], (err: Error | null, results: any) => {
+      if (err) {
+          console.error('Error fetching data:', err);
+          res.status(500).send('Internal Server Error');
+          return;
+      }
+
+      res.status(200).json(results);
+  });
+});
+
 
   export default updateprofile;
 

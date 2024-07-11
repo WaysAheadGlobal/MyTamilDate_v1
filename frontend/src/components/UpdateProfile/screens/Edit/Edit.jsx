@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Image } from 'react-bootstrap';
 import edit from './edit.module.css';
 import questionmark from '../../../../assets/images/questionmark.png';
@@ -24,6 +24,8 @@ import setting from '../../../../assets/images/setting.png';
 import editcard from '../../Components/card/editcard';
 import Carddetails from '../../Components/card/editcard';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../../../api';
+import { useCookies } from '../../../../hooks/useCookies';
 
 const personalityArray = [
     'Activist', 'Affectionate', 'Foodie',
@@ -36,9 +38,77 @@ const personalityArray = [
 const Edit = () => {
   const Navigate = useNavigate();
   const [showInfo, setShowInfo] = useState(false);
+  const[Profile, setProfileData] = useState({});
+  const[language, setLanguage] = useState([]);
+  const{getCookie} = useCookies();
   const toggleInfoVisibility = () => {
     setShowInfo(!showInfo);
   };
+
+
+  const ProfileDetails = async()=>{
+    try{
+     const response = await fetch(`${API_URL}/customer/update/profileDetails`,
+       {
+         method : 'GET',
+         headers: {
+           'Authorization': `Bearer ${getCookie('token')}`
+       }
+     }
+   );
+   const data = await response.json();
+
+   if(response.ok){
+    setProfileData(data)
+    console.log(data)
+   }
+    }
+    catch(err){
+     console.log(err);
+    }
+ }
+
+ const LanguageDetails = async()=>{
+  try{
+   const response = await fetch(`${API_URL}/customer/update/userlanguage`,
+     {
+       method : 'GET',
+       headers: {
+         'Authorization': `Bearer ${getCookie('token')}`
+     }
+   }
+ );
+ const data = await response.json();
+
+ if(response.ok){
+  setLanguage(data)
+  console.log(data)
+ }
+  }
+  catch(err){
+   console.log(err);
+  }
+}
+const calculateAge = (birthday) => {
+  const birthDate = new Date(birthday);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+
+  // If the current month is before the birth month, or it's the birth month but the current day is before the birth day, subtract one year
+  if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+
+  return age;
+};
+
+
+  useEffect(() => {
+   
+    ProfileDetails();
+    LanguageDetails();
+  }, [ ]);
 
   return (
     <div>
@@ -93,37 +163,46 @@ const Edit = () => {
           <Image onClick={()=> Navigate("/updatepersonality")} src={editicontwo} />
         </div>
       </Container>
-
        <Container className={edit.personalityarray}>
-      {personalityArray.map((personality, index) => (
+      {Profile.Personalities ?  Profile.Personalities.map((personality, index) => (
         <div key={index} className={edit.tag}>
           {personality}
         </div>
-      ))}
+      ))  : "No Personalities Added "}
     </Container>
 
    <button className={edit.upgradebutton}>Update <span><Image src={update}/></span> </button>
 
    <Container>
-  <Carddetails icon={age }title="Age" detail="24" />
-  <Carddetails icon={gender }title="Gender" detail="Male" />
-  <Carddetails icon={locationedit }title="Location" detail="Canada" />
-  <Carddetails icon={relisionedit }title="Relision" detail="Hindu" />
-  <Carddetails icon={educationedit }title="Education" detail="Master" />
+   <Carddetails 
+  icon={age} 
+  title="Age" 
+  detail={Profile.Birthday ? calculateAge(Profile.Birthday) : "N/A"} 
+/>
+  <Carddetails icon={gender }title="Gender" detail={Profile.Gender ? Profile.Gender : "N/A"} />
+  <Carddetails icon={locationedit }title="Location" detail={Profile.Country ? Profile.Country : "N/A" }  />
+  <Carddetails icon={relisionedit }title="Relision" detail={Profile.Religion ? Profile.Religion : "N/A"} />
+  <Carddetails icon={educationedit }title="Education" detail={Profile.StudyField ? Profile.StudyField : "N/A"} />
    </Container>
 
    <Container>
    <button className={edit.upgradebutton}>Expand All <span><Image src={update}/></span> </button>
    </Container>
    <Container>
-   <Carddetails icon={carear }title="Career" detail="Designer" />
-  <Carddetails icon={height }title="Height" detail="6'0" />
-  <Carddetails icon={language }title="Language" detail="English Tamil" />
-  <Carddetails icon={intersts }title="Interrests" detail="View all" />
-  <Carddetails icon={kids }title="What about kids" detail="No" />
-  <Carddetails icon={familplantwo }title="Family plans" detail="Want children" />
-  <Carddetails icon={smoking }title="Do you smoke?" detail="No" />
-  <Carddetails icon={drinktwo }title="Do you drink" detail="Yes" />
+   <Carddetails icon={carear }title="Career" detail={Profile.StudyField ? Profile.StudyField : "N/A"} />
+  <Carddetails icon={height }title="Height" detail={Profile.Height ? Profile.Height : "N/A"} />
+  <Carddetails 
+  icon={intersts} 
+  title="Language" 
+  detail={language && language.length > 0 ? language.map((e, i) => (
+    <span key={i}>{e}</span>
+  )) : "N/A"} 
+/>
+  <Carddetails icon={intersts }title="Interrests" detail={Profile.PreferredGender ? Profile.PreferredGender : "N/A"} />
+  <Carddetails icon={kids }title="What about kids" detail={Profile.HaveChildren ? Profile.HaveChildren : "N/A"} />
+  <Carddetails icon={familplantwo }title="Family plans" detail={Profile.WantChildren ? Profile.WantChildren : "N/A"} />
+  <Carddetails icon={smoking }title="Do you smoke?" detail={Profile.Smoker ? Profile.Smoker : "N/A"}/>
+  <Carddetails icon={drinktwo }title="Do you drink" detail={Profile.Drinker ? Profile.Drinker : "N/A"} />
 
    </Container>
    <Container>
