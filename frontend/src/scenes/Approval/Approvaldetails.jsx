@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Grid, Typography, Button, Avatar, useMediaQuery, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useNavigate, useParams } from 'react-router-dom';
+import { json, useNavigate, useParams } from 'react-router-dom';
 import Header from '../../components/Header1'; // Adjust path as per your project structure
 import { tokens } from '../../theme'; // Adjust path as per your project structure
 import { API_URL } from '../../api';
@@ -14,6 +14,7 @@ const photos = [
 
 const UserDetails = () => {
   const [details, setDetails] = useState(null);
+  const[update, setUpdate] = useState(false);
   const theme = useTheme();
   const isXsUp = useMediaQuery(theme.breakpoints.up('xs'));
   const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
@@ -178,12 +179,89 @@ const UserDetails = () => {
       setQuesAns([]);
     }
   };
+
+  const GetUserFromUpdateMedia = async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/v1/admin/users/UpdateRequestedUser/${id}`);
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          console.error('Resource not found');
+          return;
+        }
+        throw new Error(`Failed to update media data: ${response.statusText}`);
+      }
+  
+      const data = await response.json(); 
+      console.log(data);
+  
+      if (data.length !== 0) {
+        setUpdate(true);
+        console.log(update);
+      } else {
+        setUpdate(false); 
+      }
+    } catch (err) {
+      console.error('Internal Server Error:', err);
+    }
+  };
+  
+  const RejectedMediaUpdate = async (userId) => {
+    try {
+      const response = await fetch(`${API_URL}/admin/users/deleteMediaUpdate/${id}`, {
+        method: 'DELETE'
+      });
+  
+      if (!response.ok) {
+        if (response.status === 404) {
+          console.error('No data found for this user.');
+          return;
+        }
+        throw new Error('Failed to delete media update data');
+      }
+  
+      const data = await response.json();
+      console.log('Delete response:', data);
+  
+     navigate('/approval')
+    
+    } catch (error) {
+      console.error('Error:', error);
+    
+    }
+  };
+  
+  const Updateanddeletemedia = async () => {
+    try {
+      const response = await fetch(`${API_URL}/admin/users/replaceMediaData/${id}`, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json', 
+        }
+      });
+  
+      if (!response.ok) {
+        if (response.status === 404) {
+          console.error('Resource not found');
+     
+          return;
+        }
+        throw new Error(`Failed to update media data: ${response.statusText}`);
+      } else {
+        console.log("Data updated successfully");
+        navigate('/approval')
+      }
+    } catch (err) {
+      console.error('Error occurred while updating media data:', err);
+    }
+  };
   
   
 
   useEffect(() => {
     quesAnsfetchData();
     detailsfetchData();
+    GetUserFromUpdateMedia();
     ImageURL();
     ImageURL2();
   }, [id]);
@@ -267,7 +345,7 @@ const UserDetails = () => {
     updateStatus(20);
   };
 
- 
+
   const handleRejectReason = () => {
     setOpenModal(true);
   };
@@ -283,10 +361,15 @@ const UserDetails = () => {
 
   const handleSaveReason = () => {
     updateStatusReject(30);
-    
   };
 
-  
+  const handleAcceptUpdate =()=>{
+    Updateanddeletemedia();
+  }
+
+  const handleRejectUpdate = ()=>{
+    RejectedMediaUpdate();
+  }
 
   const formatKey = (key) => {
     return key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
@@ -417,7 +500,38 @@ const UserDetails = () => {
           </Grid>
           <Box display="flex" gap="8px" flexDirection={isLgUp ? 'row' : 'column'} alignItems="center" justifyContent="center">
             <Box>
-              <Grid
+            {
+          update ? (<Grid
+            container
+            direction={isLgUp ? 'row' : 'column'}
+            justifyContent="center"
+            alignItems="center"
+            spacing={2}
+          >
+            <Grid item xs={12} lg={6} textAlign="center">
+              <Button
+                variant="contained"
+                sx={{ backgroundColor: theme.palette.grey[900] }}
+               onClick={handleRejectUpdate}
+              >
+                Reject
+              </Button>
+            </Grid>
+            <Grid item xs={12} lg={6} textAlign="center">
+              <Button
+                sx={{
+                  background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                  color: '#fff',
+                  '&:hover': {
+                    background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                  },
+                }}
+                onClick={handleAcceptUpdate}
+              >
+                Update
+              </Button>
+            </Grid>
+          </Grid>) : (  <Grid
                 container
                 direction={isLgUp ? 'row' : 'column'}
                 justifyContent="center"
@@ -447,7 +561,10 @@ const UserDetails = () => {
                     Approve
                   </Button>
                 </Grid>
-              </Grid>
+              </Grid>)
+          }
+
+            
             </Box>
             <Box>
               <Grid

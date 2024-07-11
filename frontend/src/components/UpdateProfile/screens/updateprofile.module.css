@@ -8,7 +8,25 @@
     width: 100%;
     margin: auto;
   }
-  
+  .imgContainer {
+    border-radius: 9999px;
+    background: conic-gradient(white calc(100% - var(--profile-completed)), #00b007 0%);
+    padding: 0.25rem;
+}
+.innerCircle {
+  border-radius: 9999px;
+  background-color: white;
+  padding: 0.25rem;
+}
+
+.profilepicimg {
+  border-radius: 9999px;
+  width: 100px;
+  height: 100px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
   .editpreview {
     display: flex;
     align-items: center;

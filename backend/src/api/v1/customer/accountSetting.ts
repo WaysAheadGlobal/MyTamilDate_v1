@@ -316,7 +316,6 @@ function generateOTP() {
     return Math.floor(1000 + Math.random() * 9000).toString(); 
 }
 
-
 // Send OTP to email  and update it
 setting.post('/request-email-update',verifyUser, async (req:UserRequest, res:any) => {
     const { email } = req.body;

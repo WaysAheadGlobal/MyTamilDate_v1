@@ -93,18 +93,26 @@ const Navigate = useNavigate();
         flexDirection: "column",
         gap: "1rem",
         overflowY: "auto",
-        scrollbarWidth: "none"
+        scrollbarWidth: "none",
+        padding : "2rem"
       }}>
         <div className={profile.profilemaincontainer}>
           
           <div className={profile.maincontainer}>
-            <ProfileProgress completion={completion} profilepic={images2.main} />
+            {/* <ProfileProgress completion={completion} profilepic={images2.main} /> */}
+            <div className={profile.imgContainer} style={{
+                        "--profile-completed": "80%"
+                    }}>
+                        <div className={profile.innerCircle}>
+                            <img className={profile.profilepicimg} src={images2.main} alt="" />
+                        </div>
+                    </div>
             <Image style={{ marginTop: "90px", width: "24px", height: "24px" }} onClick={()=> Navigate("/editpicture")} src={editicon} />
           </div>
           <div className="row d-flex justify-content-center">
             <div className="d-flex flex-column align-items-center">
               <p style={{ fontSize: '18px', color: "#515151" }}>Niladitya</p>
-              <p style={{ fontSize: '14px', color: "#6C6C6C" }}>{completion}% complete</p>
+              <p style={{ fontSize: '14px', color: "#6C6C6C" }}>80% complete</p>
             </div>
 
             <div className={profile.editpreview}>

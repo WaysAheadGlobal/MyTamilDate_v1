@@ -28,7 +28,8 @@ color: #515151;
     padding: 10px;
     z-index: 12;
     position: absolute;
-    top: 65px;
+    top: 30px;
+    margin-right: 50px;
     /* Adjust to position correctly below the "About me" */
     transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
     overflow: hidden;

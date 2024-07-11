@@ -75,6 +75,181 @@ users.get('/mediaupdate/:user_id', (req: AdminRequest, res: Response) => {
 
 
 
+users.post("/replaceMediaData/:user_id", async (req: AdminRequest, res: Response) => {
+    const userId = req.params.user_id;
+  
+    // Step 1: Query the media table by user_id
+    const mediaQuery = 'SELECT * FROM media WHERE user_id = ?';
+    db.query<RowDataPacket[]>(mediaQuery, [userId], (mediaErr, mediaResults) => {
+      if (mediaErr) {
+        console.error('Error querying media table:', mediaErr);
+        return res.status(500).send('Internal Server Error');
+      }
+  
+      if (mediaResults.length === 0) {
+        return res.status(404).send('No media found for this user.');
+      }
+  
+      // Step 2: Loop through each media record and check if it exists in media_update table
+      let mediaProcessed = 0;
+      mediaResults.forEach(mediaRecord => {
+        const mediaId = mediaRecord.id;
+  
+        const updateQuery = 'SELECT * FROM media_update WHERE media_id = ?';
+        db.query<RowDataPacket[]>(updateQuery, [mediaId], (updateErr, updateResults) => {
+          if (updateErr) {
+            console.error('Error querying media_update table:', updateErr);
+            return res.status(500).send('Internal Server Error');
+          }
+  
+          if (updateResults.length > 0) {
+            const updatedMedia = updateResults[0];
+  
+            // Step 3: Replace the data in the media table with the data from the media_update table
+            const replaceQuery = `
+              UPDATE media 
+              SET 
+                user_id = ?, 
+                type = ?, 
+                hash = ?, 
+                extension = ?, 
+                meta = ?, 
+                created_at = ?, 
+                updated_at = ? 
+              WHERE id = ?`;
+  
+            const replaceValues = [
+              updatedMedia.user_id,
+              updatedMedia.type,
+              updatedMedia.hash,
+              updatedMedia.extension,
+              updatedMedia.meta,
+              updatedMedia.created_at,
+              updatedMedia.updated_at,
+              mediaRecord.id
+            ];
+  
+            db.query(replaceQuery, replaceValues, (replaceErr, replaceResults) => {
+              mediaProcessed++;
+  
+              if (replaceErr) {
+                console.error('Error replacing media data:', replaceErr);
+                return res.status(500).send('Internal Server Error');
+              }
+  
+              // Check if all media records have been processed
+              if (mediaProcessed === mediaResults.length) {
+                // Step 4: Delete the data from the media_update table for the given user_id
+                const deleteQuery = 'DELETE FROM media_update WHERE user_id = ?';
+                db.query(deleteQuery, [userId], (deleteErr, deleteResults) => {
+                  if (deleteErr) {
+                    console.error('Error deleting data from media_update table:', deleteErr);
+                    return res.status(500).send('Internal Server Error');
+                  }
+  
+                  return res.status(200).json({ message: 'Media data replaced and update data deleted successfully' });
+                });
+              }
+            });
+          } else {
+            mediaProcessed++;
+  
+            // Check if all media records have been processed
+            if (mediaProcessed === mediaResults.length) {
+              // Step 4: Delete the data from the media_update table for the given user_id
+              const deleteQuery = 'DELETE FROM media_update WHERE user_id = ?';
+              db.query(deleteQuery, [userId], (deleteErr, deleteResults) => {
+                if (deleteErr) {
+                  console.error('Error deleting data from media_update table:', deleteErr);
+                  return res.status(500).send('Internal Server Error');
+                }
+  
+                return res.status(200).json({ message: 'Media data replaced and update data deleted successfully' });
+              });
+            }
+          }
+        });
+      });
+    });
+  });
+
+
+  
+users.get('/UpdateRequestedUser/:user_id',(req: AdminRequest, res: Response)=>{
+    const userId = req.params.user_id;
+
+    const sql = `select id from media_update where user_id = ?`
+    db.query(sql,[userId],(err, results)=>{
+         if(err){
+            console.error('Error replacing media data:', err);
+            return res.status(500).send('Internal Server Error');
+         }
+         res.status(200).json(results);
+    })
+  })
+
+
+users.delete('/deleteMediaUpdate/:user_id', (req: AdminRequest, res: Response) => {
+    const userId = req.params.user_id;
+    const deleteQuery = 'DELETE FROM media_update WHERE user_id = ?';
+  
+    db.query(deleteQuery, [userId], async (err, results: any) => {
+      if (err) {
+        console.error('Error deleting data from media_update table:', err);
+        return res.status(500).send('Internal Server Error');
+      }
+  
+      if (results.affectedRows === 0) {
+        return res.status(404).send('No data found for this user.');
+      }
+  
+      let html: string;
+      try {
+        html = await ejs.renderFile("mail/templates/updatereject.ejs", { link: `${process.env.URL}/user/home` });
+      } catch (renderError) {
+        console.error('Error rendering email template:', renderError);
+        return res.status(500).json({ message: 'Internal Server Error' });
+      }
+  
+      const getUserEmailSql = `
+        SELECT up.email
+        FROM users u
+        JOIN user_profiles up ON u.id = up.user_id
+        WHERE u.id = ?
+      `;
+  
+      db.query(getUserEmailSql, [userId], (err: Error | null, results: any) => {
+        if (err) {
+          console.error('Error fetching email:', err);
+          return res.status(500).send('Internal Server Error');
+        }
+  
+        if (results.length === 0) {
+          return res.status(404).send('User not found');
+        }
+  
+        const email = results[0].email;
+  
+        // Send verification email
+        const msg = {
+          to: email,
+          from: "mtdteam2024@gmail.com",
+          subject: "Update Request Notification",
+          html: html
+        };
+  
+        sgMail.send(msg)
+          .then(() => {
+            console.log("Approval email sent successfully");
+            return res.status(200).json({ message: 'Data deleted successfully and email sent' });
+          })
+          .catch((error) => {
+            console.error('Error sending email:', error);
+            return res.status(500).send('Internal Server Error');
+          });
+      });
+    });
+  });
 
 
 // Fetch customer data with pagination
@@ -278,8 +453,6 @@ users.get('/customers/:user_id', (req: AdminRequest, res) => {
         res.status(200).json(results);
     });
 });
-
-
 
 users.get('/approval', (req: AdminRequest, res: Response) => {
     const { limit, pageNo } = req.query;
