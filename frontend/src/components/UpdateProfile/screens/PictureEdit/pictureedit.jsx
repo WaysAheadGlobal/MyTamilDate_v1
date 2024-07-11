@@ -14,7 +14,7 @@ import Cropper from 'react-easy-crop';
 
 const EditPicture = () => {
   const{getCookie} = useCookies();
-  const [showInfo, setShowInfo] = useState(false);
+  const [showInfo, setShowInfo] = useState(true);
   const navigate = useNavigate();
   const[data, setData] = useState([]);
   const [selectedImages, setSelectedImages] = useState({ main: null, first: null, second: null });
@@ -45,7 +45,6 @@ const EditPicture = () => {
     first: null,
     second: null,
   });
-
 
 
   const ImageURL = async () => {
@@ -101,7 +100,6 @@ const EditPicture = () => {
     }
   }
 
- 
   const handleFileChange = (event, imageKey) => {
     const file = event.target.files[0];
     if (file) {

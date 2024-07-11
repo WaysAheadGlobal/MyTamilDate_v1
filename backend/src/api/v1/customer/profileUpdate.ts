@@ -49,20 +49,16 @@ updateprofile.post("/mediaupdate",
 
     const fileKey = fileKeys[0];
     const file = (req.files as any)[fileKey][0];
+    const checkQuery = 'SELECT * FROM media_update WHERE media_id = ?';
+    db.query(checkQuery, [mediaId], (err, results:any) => {
+      if (err) {
+        console.error('Error checking media_id:', err);
+        return res.status(500).send('Internal Server Error');
+      }
 
-    // Assign type based on the field name
-    // let type;
-    // switch (fileKey) {
-    //   case 'main':
-    //     type = 31;
-    //     break;
-    //   case 'first':
-    //   case 'second':
-    //     type = 32;
-    //     break;
-    //   default:
-    //     return res.status(400).send('Invalid file type.');
-    // }
+      if (results.length > 0) {
+        return res.status(400).send('Image already sent for admin approval.');
+      }
 
     const query = 'INSERT INTO media_update (user_id,media_id, hash, extension, type, meta, created_at, updated_at) VALUES (?,?, ?, ?, ?, ?, ?, ?)';
     const values = [
@@ -84,6 +80,7 @@ updateprofile.post("/mediaupdate",
       }
       res.status(200).json({ message: 'Media uploaded successfully' });
     });
+    })
   }
 );
 
