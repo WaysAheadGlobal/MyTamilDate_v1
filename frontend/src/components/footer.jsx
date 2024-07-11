@@ -13,78 +13,77 @@ import { Container, Image, Form, Button } from 'react-bootstrap';
 
 
 
-export const Footer= () => {
+export const Footer = () => {
 
 
     return (
-        <>
- <div>
-        <div class='footer-main'>
-            <div class="foot-content">
-                <div class="foot-logo-txt">
-                   <Image src={logo2} className='foot-logo'></Image>
-                   <p>myTamilDate (MTD) is a leading dating community for the global Tamil diaspora. Join today to find your special someone!</p>
-
-                </div>
-
-
-
-
-                <div class='flinks'>
-                    {/* <span class="link-heading">Links</span> */}
-
-                    <a  href="/SuccessPage" class='linkf'>Success Stories </a>
-                    <a  href="https://tamilculture.com/user/mytamildatecom" class='linkf'> Blogs</a>
-                    <a  href="/aboutus" class='linkf'> About Us</a>
-                    <a  href="/GetInTouch" class='linkf'> Contact Us</a>
-      
-
-
-                </div>
-                <div class='flinks'>
-
-                    {/* <span class="link-heading">Links</span> */}
-
-                    <a   href="/FaqPage"   class='linkf'> FAQs</a>
-                    <a target="_blank" href="/Tnc" class='linkf'> Terms & Conditions </a>
-                    <a  href="/PrivacyPolicy" class='linkf'> Privacy Policy</a>
-            
-
-                </div>
-
-                <div class='flinks'>
-                    <span class="link-heading">Social Links</span>
-
-                    <div class='social '>
-                        <a  href="https://www.linkedin.com/company/5349365/admin/feed/posts/"   class='linkf'>
-                         <Image className="socio" src={lin}></Image>
-                        </a>
-                        <a  href="https://www.instagram.com/mytamildate/"   class='linkf'>
-                        <Image className="socio" src={gram}></Image>
-                        </a>
-                        <a href="https://www.tiktok.com/@mytamildate?lang=en"   class='linkf'>
-                        <Image className="socio" src={tiktok}></Image>
-                        </a>
+        <div>
+            <div className='footer-main'>
+                <div className="foot-content">
+                    <div className="foot-logo-txt">
+                        <Image src={logo2} className='foot-logo'></Image>
+                        <p style={{
+                            textAlign: 'justify',
+                        }}>myTamilDate (MTD) is a leading dating community for the global Tamil diaspora. Join today to find your special someone!</p>
 
                     </div>
 
 
 
 
+                    <div className='flinks'>
+                        {/* <span className="link-heading">Links</span> */}
+
+                        <a href="/SuccessPage" className='linkf'>Success Stories </a>
+                        <a href="https://tamilculture.com/user/mytamildatecom" className='linkf'> Blogs</a>
+                        <a href="/aboutus" className='linkf'> About Us</a>
+                        <a href="/GetInTouch" className='linkf'> Contact Us</a>
+
+
+
+                    </div>
+                    <div className='flinks'>
+
+                        {/* <span className="link-heading">Links</span> */}
+
+                        <a href="/FaqPage" className='linkf'> FAQs</a>
+                        <a target="_blank" href="/Tnc" className='linkf'> Terms & Conditions </a>
+                        <a href="/PrivacyPolicy" className='linkf'> Privacy Policy</a>
+
+
+                    </div>
+
+                    <div className='flinks'>
+                        <span className="link-heading">Social Links</span>
+
+                        <div className='social '>
+                            <a href="https://www.linkedin.com/company/5349365/admin/feed/posts/" className='linkf'>
+                                <Image className="socio" src={lin}></Image>
+                            </a>
+                            <a href="https://www.instagram.com/mytamildate/" className='linkf'>
+                                <Image className="socio" src={gram}></Image>
+                            </a>
+                            <a href="https://www.tiktok.com/@mytamildate?lang=en" className='linkf'>
+                                <Image className="socio" src={tiktok}></Image>
+                            </a>
+
+                        </div>
+
+
+
+
+                    </div>
                 </div>
-            </div>
-            <div class="copyrights">
-                <div class="copy-content">
-                    <span class="copy-text">© 2024 myTamilDate | All Rights Reserved</span>
+                <div className="copyrights">
+                    <div className="copy-content">
+                        <span className="copy-text">© 2024 myTamilDate | All Rights Reserved</span>
 
-    
+
+
+                    </div>
 
                 </div>
-
             </div>
         </div>
-    </div>
-            
-        </>
     );
 }
