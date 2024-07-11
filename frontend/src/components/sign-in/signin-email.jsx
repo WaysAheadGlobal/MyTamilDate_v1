@@ -10,21 +10,19 @@ import message from "../../assets/images/message.png";
 
 import mail from "../../assets/images/Gmail.jpg";
 import { Container, Image, Form, Button } from 'react-bootstrap';
+import { API_URL } from '../../api';
 
 export const SignInEmail = () => {
 
 
 
     const navigate = useNavigate();
-    const goToSignupEmailOTP = () => {
-        navigate("/signinemailotp");
-    };
 
     const [errorMessage, setErrorMessage] = useState('');
     const [email, setEmail] = useState('');
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
 
@@ -36,16 +34,29 @@ export const SignInEmail = () => {
             return;
         }
 
+        const response = await fetch(`${API_URL}/user/login/email-otp`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email
+            })
+        });
+        const data = await response.json();
 
-        console.log('Email submitted:', email);
+        if (!response.ok) {
+            setErrorMessage(data.message);
+            return;
+        }
 
-
+        navigate("/signinemailotp", {
+            state: {
+                email: email
+            }
+        });
         setEmail('');
         setErrorMessage('');
-        navigate("/getstarted");
-
-
-
     };
 
     return (
@@ -90,7 +101,7 @@ export const SignInEmail = () => {
                                 </Form.Group>
 
                             </div>
-                            <Button variant="primary" type="submit" className='signin-emailverify-btn' onClick={goToSignupEmailOTP}>
+                            <Button variant="primary" type="submit" className='signin-emailverify-btn' onClick={handleSubmit}>
                                 Next
                             </Button>
                         </Container>

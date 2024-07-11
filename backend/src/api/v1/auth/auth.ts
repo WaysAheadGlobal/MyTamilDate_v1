@@ -140,7 +140,7 @@ auth.post("/login/email-otp", async (req, res) => {
             sgMail.send(msg)
                 .then(() => {
                     console.log("Approval email sent successfully");
-                    return res.status(200).send('Status updated successfully and email sent');
+                    return res.status(200).json({ message: 'Status updated successfully and email sent' });
                 })
                 .catch((error) => {
                     console.error('Error sending email:', error);
