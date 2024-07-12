@@ -10,6 +10,7 @@ import sgMail from '@sendgrid/mail';
 import ejs from 'ejs';
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { getOTPFromDBByEmail, insertOTPInDBByEmail } from "../../../../otpbyEmail";
+import UserApprovalEnum from "../../../enums/UserApprovalEnum";
 
 const auth = Router();
 let otpData: { phone: string, otp: string, createdAt: Date } | null = null;
@@ -81,7 +82,7 @@ auth.post('/login',
                 return res.status(401).json({ message: otpResponse.message });
             }
 
-            const query = 'SELECT id, user_id, first_name FROM user_profiles WHERE phone = ?';
+            const query = 'SELECT up.id, up.user_id, up.first_name, u.approved FROM user_profiles up INNER JOIN users u ON u.id = up.user_id WHERE phone = ?';
             db.query<RowDataPacket[]>(query, [phone], (err, results) => {
                 if (err) {
                     console.error('Error fetching data:', err);
@@ -93,7 +94,12 @@ auth.post('/login',
                 }
 
                 const jwt = sign({ phone: phone, userId: results[0].user_id }, process.env.JWT_SECRET as string, { expiresIn: '30 days' });
-                return res.status(200).json({ message: 'Login successful!', token: jwt, Result: results });
+                return res.status(200).json({
+                    message: 'Login successful!',
+                    token: jwt,
+                    Result: results,
+                    approved: UserApprovalEnum[results[0].approved]
+                });
             });
         } catch (error) {
             console.error('Error validating OTP:', error);
@@ -159,7 +165,7 @@ auth.post("/login/email", async (req, res) => {
     const usingGoogle = req.body.usingGoogle;
 
     if (usingGoogle) {
-        const query = 'SELECT id, user_id, first_name FROM user_profiles WHERE email = ?';
+        const query = 'SELECT up.id, up.user_id, up.first_name, u.approval FROM user_profiles up INNER JOIN users u ON u.id = up.user_id WHERE email = ?';
         db.query<RowDataPacket[]>(query, [email], (err, results) => {
             if (err) {
                 console.error('Error fetching data:', err);
@@ -172,7 +178,12 @@ auth.post("/login/email", async (req, res) => {
 
             const jwt = sign({ email: email, userId: results[0].user_id }, process.env.JWT_SECRET as string, { expiresIn: '30 days' });
 
-            return res.status(200).json({ message: 'Login successful!', token: jwt, Result: results });
+            return res.status(200).json({
+                message: 'Login successful!',
+                token: jwt,
+                Result: results,
+                approved: UserApprovalEnum[results[0].approval]
+            });
         });
         return;
     }
@@ -184,8 +195,7 @@ auth.post("/login/email", async (req, res) => {
             return res.status(400).json({ message: 'Invalid OTP' });
         }
 
-        const query = 'SELECT id, user_id, first_name FROM user_profiles WHERE email = ?';
-
+        const query = 'SELECT up.id, up.user_id, up.first_name, u.approval FROM user_profiles up INNER JOIN users u ON u.id = up.user_id WHERE email = ?';
         db.query<RowDataPacket[]>(query, [email], (err, results) => {
             if (err) {
                 console.error('Error fetching data:', err);
@@ -198,7 +208,12 @@ auth.post("/login/email", async (req, res) => {
 
             const jwt = sign({ email: email, userId: results[0].user_id }, process.env.JWT_SECRET as string, { expiresIn: '30 days' });
 
-            return res.status(200).json({ message: 'Login successful!', token: jwt, Result: results });
+            return res.status(200).json({
+                message: 'Login successful!',
+                token: jwt,
+                Result: results,
+                approved: UserApprovalEnum[results[0].approval]
+            });
         });
 
     } catch (error) {
@@ -413,6 +428,21 @@ auth.get("/verify/:token", async (req: UserRequest, res) => {
             });
         });
     })
+});
+
+auth.get("/check-approval", verifyUser, async (req: UserRequest, res) => {
+    db.query<RowDataPacket[]>('SELECT approval FROM users WHERE id = ?', [req.userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+
+        if (results.length === 0) {
+            return res.status(401).json({ message: 'Invalid user' });
+        }
+
+        res.status(200).json({ approval: UserApprovalEnum[results[0].approval] });
+    }); 
 });
 
 export default auth;

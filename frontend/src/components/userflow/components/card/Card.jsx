@@ -8,6 +8,7 @@ import { useCookies } from '../../../../hooks/useCookies';
 import ladyIcon from '../../../../assets/images/ladyIcon.png';
 import { FaLocationDot } from "react-icons/fa6";
 import { useUserProfile } from '../context/UserProfileContext';
+import ProfileDetails from './ProfileDetails';
 
 /**
  * @typedef {Object} Profile
@@ -45,6 +46,7 @@ export default function Card({ ...props }) {
     const cardRef = useRef(null);
     const [liked, setLiked] = useState(props.like);
     const { profiles, setProfiles } = useUserProfile();
+    const detailsRef = useRef(null);
 
     async function handleIconButtonClick(type) {
         console.log(type);
@@ -88,12 +90,9 @@ export default function Card({ ...props }) {
                 return;
             }
 
-            if (type === "skip") {
+            if (type === "skip" || type === "like") {
                 cardRef.current.style.transform = "translateX(-100%)";
                 cardRef.current.style.transition = "transform 0.25s ease-in-out";
-                /* setTimeout(() => {
-                    cardRef.current.remove();
-                }, 250); */
                 setProfiles(profiles.filter(profile => profile.user_id !== props.user_id));
                 return;
             }
@@ -101,85 +100,122 @@ export default function Card({ ...props }) {
     }
 
     return (
-        <div ref={cardRef} className='card-container'
-            style={{
-                backgroundImage: `url(${image})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat'
-            }}
-            onClick={() => navigate(`/user/${props.first_name} ${props.last_name ?? ""}/${props.user_id}`)}
-        >
-            <span style={{
-                position: "absolute",
-                top: "1rem",
-                left: "1rem",
-            }}>
-                <IconButton type='undo' onClick={(e) => {
-                    e.stopPropagation();
-                    handleIconButtonClick("undo");
-                }} />
-            </span>
-            <div style={{
-                width: "100%",
-            }}>
-                <div className='details' style={{ marginLeft: "1rem", marginBottom: "2rem" }}>
-                    <p>{`${props.first_name} ${props.last_name ?? ""}`}, {dayjs().diff(props.birthday, "y")}</p>
-                    <div style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                        gap: "0.5rem"
-                    }}>
-                        <img src={ladyIcon} alt="icon" width={30} height={30} />
-                        <p style={{
-                            fontSize: "medium",
-                        }}>{props.job}</p>
-                    </div>
-                    <div style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                        gap: "0.5rem"
-                    }}>
-                        <FaLocationDot size={25} />
-                        <p style={{
-                            fontSize: "medium",
-                        }}>{props.location_string}, {props.country}</p>
-                    </div>
-                </div>
-                <div className='options'>
-                    <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
+        <div className='card-and-details-container'>
+            <div ref={cardRef} className='card-container'
+                style={{
+                    backgroundImage: `url(${image})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat'
+                }}
+                onClick={() => navigate(`/user/${props.first_name} ${props.last_name ?? ""}/${props.user_id}`)}
+            >
+                <span style={{
+                    position: "absolute",
+                    top: "1rem",
+                    left: "1rem",
+                }}>
+                    <IconButton type='undo' onClick={(e) => {
                         e.stopPropagation();
-                        setLiked(!liked);
-                        handleIconButtonClick("like");
+                        handleIconButtonClick("undo");
                     }} />
-                    <IconButton
-                        type={"details"}
-                    />
-                    <IconButton type='skip' onClick={(e) => {
-                        e.stopPropagation();
-                        handleIconButtonClick("skip");
-                    }} />
-                    {/* <IconButton type='chat' onClick={(e) => {
+                </span>
+                <div className='details-container' style={{
+                    width: "100%",
+                }}>
+                    <div className='details' style={{ marginLeft: "1rem", marginBottom: "2rem" }}>
+                        <p>{`${props.first_name} ${props.last_name ?? ""}`}, {dayjs().diff(props.birthday, "y")}</p>
+                        <div style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                            gap: "0.5rem"
+                        }}>
+                            <img src={ladyIcon} alt="icon" width={30} height={30} />
+                            <p style={{
+                                fontSize: "medium",
+                            }}>{props.job}</p>
+                        </div>
+                        <div style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                            gap: "0.5rem"
+                        }}>
+                            <FaLocationDot size={25} />
+                            <p style={{
+                                fontSize: "medium",
+                            }}>{props.location_string}, {props.country}</p>
+                        </div>
+                    </div>
+                    <div className='options'>
+                        <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
+                            e.stopPropagation();
+                            setLiked(!liked);
+                            handleIconButtonClick("like");
+                        }} />
+                        {/* <div style={{
+                            position: "relative",
+                            top: "1.5rem"
+                        }}>
+                            <IconButton
+                                type={"details"}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    const detailsClassList = detailsRef.current.classList;
+
+                                    if (detailsClassList.contains("show")) {
+                                        detailsRef.current.style.transition = "all 0.25s ease-in-out";
+                                        detailsRef.current.style.opacity = "0";
+                                        setTimeout(() => {
+                                            detailsRef.current.style.display = "none";
+                                        }, 200);
+
+                                    } else {
+                                        detailsRef.current.style.transition = "all 0.25s ease-in-out";
+                                        detailsRef.current.style.opacity = "1";
+                                        detailsRef.current.style.display = "block";
+                                        document.querySelector("#scroll-anchor").scrollIntoView({ behavior: "smooth" });
+                                    }
+
+                                    detailsClassList.toggle("show");
+                                }}
+                            />
+                        </div> */}
+                        <IconButton type='skip' onClick={(e) => {
+                            e.stopPropagation();
+                            handleIconButtonClick("skip");
+                        }} />
+                        {/* <IconButton type='chat' onClick={(e) => {
                         e.stopPropagation();
                         handleIconButtonClick("chat");
                     }} /> */}
+                    </div>
+                </div>
+                <div className='menu'>
+                    <div>
+                        <svg width="31" height="32" viewBox="0 0 31 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5.45313 7.23751L13.0211 7.23751M13.0211 7.23751C13.0211 8.63074 14.1506 9.76018 15.5438 9.76018C16.937 9.76018 18.0665 8.63074 18.0665 7.23751M13.0211 7.23751C13.0211 5.84428 14.1506 4.71484 15.5438 4.71484C16.937 4.71484 18.0665 5.84428 18.0665 7.23751M18.0665 7.23751L25.6345 7.23751M5.45313 16.0668H20.5891M20.5891 16.0668C20.5891 17.4601 21.7186 18.5895 23.1118 18.5895C24.505 18.5895 25.6345 17.4601 25.6345 16.0668C25.6345 14.6736 24.505 13.5442 23.1118 13.5442C21.7186 13.5442 20.5891 14.6736 20.5891 16.0668ZM10.4985 24.8962H25.6345M10.4985 24.8962C10.4985 23.5029 9.36902 22.3735 7.97579 22.3735C6.58256 22.3735 5.45312 23.5029 5.45312 24.8962C5.45313 26.2894 6.58256 27.4188 7.97579 27.4188C9.36902 27.4188 10.4985 26.2894 10.4985 24.8962Z" stroke="white" stroke-width="1.892" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div>
+                        <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16.8117 6.78086C16.8117 6.08425 16.247 5.51953 15.5504 5.51953C14.8538 5.51953 14.2891 6.08425 14.2891 6.78086C14.2891 7.47748 14.8538 8.0422 15.5504 8.0422C16.247 8.0422 16.8117 7.47748 16.8117 6.78086Z" stroke="white" stroke-width="1.892" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M16.8117 15.6102C16.8117 14.9136 16.247 14.3489 15.5504 14.3489C14.8538 14.3489 14.2891 14.9136 14.2891 15.6102C14.2891 16.3068 14.8538 16.8715 15.5504 16.8715C16.247 16.8715 16.8117 16.3068 16.8117 15.6102Z" stroke="white" stroke-width="1.892" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M16.8117 24.4395C16.8117 23.7429 16.247 23.1782 15.5504 23.1782C14.8538 23.1782 14.2891 23.7429 14.2891 24.4395C14.2891 25.1361 14.8538 25.7009 15.5504 25.7009C16.247 25.7009 16.8117 25.1361 16.8117 24.4395Z" stroke="white" stroke-width="1.892" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
                 </div>
             </div>
-            <div className='menu'>
-                <div>
-                    <svg width="31" height="32" viewBox="0 0 31 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M5.45313 7.23751L13.0211 7.23751M13.0211 7.23751C13.0211 8.63074 14.1506 9.76018 15.5438 9.76018C16.937 9.76018 18.0665 8.63074 18.0665 7.23751M13.0211 7.23751C13.0211 5.84428 14.1506 4.71484 15.5438 4.71484C16.937 4.71484 18.0665 5.84428 18.0665 7.23751M18.0665 7.23751L25.6345 7.23751M5.45313 16.0668H20.5891M20.5891 16.0668C20.5891 17.4601 21.7186 18.5895 23.1118 18.5895C24.505 18.5895 25.6345 17.4601 25.6345 16.0668C25.6345 14.6736 24.505 13.5442 23.1118 13.5442C21.7186 13.5442 20.5891 14.6736 20.5891 16.0668ZM10.4985 24.8962H25.6345M10.4985 24.8962C10.4985 23.5029 9.36902 22.3735 7.97579 22.3735C6.58256 22.3735 5.45312 23.5029 5.45312 24.8962C5.45313 26.2894 6.58256 27.4188 7.97579 27.4188C9.36902 27.4188 10.4985 26.2894 10.4985 24.8962Z" stroke="white" stroke-width="1.892" stroke-linecap="round" />
-                    </svg>
-                </div>
-                <div>
-                    <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16.8117 6.78086C16.8117 6.08425 16.247 5.51953 15.5504 5.51953C14.8538 5.51953 14.2891 6.08425 14.2891 6.78086C14.2891 7.47748 14.8538 8.0422 15.5504 8.0422C16.247 8.0422 16.8117 7.47748 16.8117 6.78086Z" stroke="white" stroke-width="1.892" stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M16.8117 15.6102C16.8117 14.9136 16.247 14.3489 15.5504 14.3489C14.8538 14.3489 14.2891 14.9136 14.2891 15.6102C14.2891 16.3068 14.8538 16.8715 15.5504 16.8715C16.247 16.8715 16.8117 16.3068 16.8117 15.6102Z" stroke="white" stroke-width="1.892" stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M16.8117 24.4395C16.8117 23.7429 16.247 23.1782 15.5504 23.1782C14.8538 23.1782 14.2891 23.7429 14.2891 24.4395C14.2891 25.1361 14.8538 25.7009 15.5504 25.7009C16.247 25.7009 16.8117 25.1361 16.8117 24.4395Z" stroke="white" stroke-width="1.892" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </div>
+            <div
+                ref={detailsRef}
+                style={{
+                    height: "100%",
+                    width: "100%",
+                    display: "none",                    
+                }}
+            >
+                <ProfileDetails userId={props.user_id} />
             </div>
         </div>
     )

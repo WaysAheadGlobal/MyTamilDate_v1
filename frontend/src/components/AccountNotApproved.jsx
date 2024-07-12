@@ -3,6 +3,7 @@ import { Container, Image } from 'react-bootstrap'
 import logo from "../assets/images/MTDlogo.png";
 import responsivebg from "../assets/images/responsive-bg.png";
 import './job-title.css';
+import notApproved from "../assets/images/not-approved.png";
 
 export default function AccountNotApproved() {
     return (
@@ -26,29 +27,23 @@ export default function AccountNotApproved() {
                         textAlign: "center",
                         justifyContent: "center",
                     }}>
-                        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g clip-path="url(#clip0_778_7159)">
-                                <path d="M32 0C14.328 0 0 14.328 0 32C0 49.672 14.328 64 32 64C49.672 64 64 49.672 64 32C64 14.328 49.672 0 32 0ZM32 8C37.18 8 41.946 9.688 45.868 12.484L12.476 45.86C9.68 41.938 8 37.172 8 32C8 18.766 18.766 8 32 8ZM32 56C26.82 56 22.054 54.312 18.132 51.516L51.524 18.14C54.32 22.062 56 26.828 56 32C56 45.234 45.234 56 32 56Z" fill="#515151" />
-                            </g>
-                            <defs>
-                                <clipPath id="clip0_778_7159">
-                                    <rect width="64" height="64" fill="white" />
-                                </clipPath>
-                            </defs>
-                        </svg>
-
+                        <img src={notApproved} alt="not-approved" />
                         <p style={{
                             fontSize: "24px",
                             fontWeight: "bold",
                             lineHeight: "36px",
                             textAlign: "center",
-                        }}>Oops!</p>
+                        }}>We can't approve your profile just yet!</p>
                         <p style={{
                             fontSize: "14px",
                             fontWeight: "500",
                             lineHeight: "20px",
                             textAlign: "center",
-                        }}>Sorry! Your profile approval request has been denied by the administrator. We are unable to approve your profile at this time as it lacks necessary information. Please update the required details for approval. An email has been sent to you regarding this.</p>
+                            fontFamily: "Inter, sans-serif",
+                            color: "#6c6c6c"
+                        }}>
+                            Sorry! Your profile approval request has been denied by the administrator. We are unable to approve your profile at this time as it lacks necessary information. Please update the required details for approval. An email has been sent to you regarding this.
+                        </p>
                     </div>
                     <div style={{
                         display: "flex",
@@ -58,14 +53,19 @@ export default function AccountNotApproved() {
                         marginBottom: "2rem",
                         alignItems: "center",
                         justifyContent: "center",
+                        textAlign: "center",
                     }}>
-                        <p>Chat and help support</p>
+                        <p
+                            style={{
+                                fontFamily: "Inter, sans-serif",
+                                color: "#4e1173"
+                            }}
+                        >Almost there!</p>
                         <p style={{
-                            background: "linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%)",
-                            backgroundClip: "text",
-                            color: "transparent",
-                            fontWeight: "bold",
-                        }}>hello@mytamildate.com</p>
+                            marginTop: "1em"
+                        }}>
+                            Your profile is under review, but we need a bit more information.
+                        </p>
                     </div>
                 </Container>
             </Container>

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import logo from "../../../../assets/images/MTDlogo.png";
 import heartLogo from "../../../../assets/images/heart-logo.png";
 import profilePic from "../../../../assets/images/profilepic.png";
-import UserProfileProvider from '../context/UserProfileContext';
+import Navbar from '../navbar/Navbar';
 import styles from './sidebar.module.css';
 import Suggestions from './suggestions';
 import { API_URL } from '../../../../api';
@@ -11,9 +11,11 @@ import { useCookies } from '../../../../hooks/useCookies';
 
 export default function Sidebar({ children }) {
     const [isMobile, setIsMobile] = useState(false);
+    const [isTablet, setIsTablet] = useState(false);
     const [pathname, setPathname] = useState([]);
     const suffix = pathname.at(-1);
     const navigate = useNavigate();
+    const cookies = useCookies();
 
     const[profileCompletion, setProfileCompletion] = useState(10)
     const[Profile, setProfileData] = useState({});
@@ -141,13 +143,27 @@ export default function Sidebar({ children }) {
     }, []);
 
     useEffect(() => {
+
         if (window.innerWidth < 1000) {
+            setIsTablet(true);
+        } else {
+            setIsTablet(false);
+        }
+
+        if (window.innerWidth < 768) {
             setIsMobile(true);
         } else {
             setIsMobile(false);
         }
+
         window.addEventListener('resize', () => {
             if (window.innerWidth < 1000) {
+                setIsTablet(true);
+            } else {
+                setIsTablet(false);
+            }
+
+            if (window.innerWidth < 768) {
                 setIsMobile(true);
             } else {
                 setIsMobile(false);
@@ -155,11 +171,35 @@ export default function Sidebar({ children }) {
         });
     }, []);
 
+    useEffect(() => {
+        (async () => {
+            const response = await fetch(`${API_URL}/user/check-approval`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.getCookie('token')}`,
+                },
+            });
+
+            const result = await response.json();
+
+            cookies.setCookie('approval', result.approval);
+
+            if (result.approval === "PENDING") {
+                window.location.replace("/pending")
+            }
+
+            if (result.approval === "REJECTED") {
+                window.location.replace("/not-approved")
+            }
+        })()
+    }, [pathname])
+
     return (
         <section className={styles['section-container']}>
             <aside className={styles['sidebar']}>
                 {
-                    isMobile ? <img src={heartLogo} alt="" style={{
+                    isTablet ? <img src={heartLogo} alt="" style={{
                         width: '50px',
                         height: '50px',
                         objectFit: 'contain',
@@ -259,6 +299,7 @@ export default function Sidebar({ children }) {
             </aside>
             <div className={styles['main-contains']}>
                 {children}
+                {isMobile && <Navbar />}
             </div>
             <aside className={styles['upcoming']}>
                 <div className={styles.profile}>
@@ -292,10 +333,35 @@ export function MobileSidebar() {
     const [pathname, setPathname] = useState([]);
     const suffix = pathname.at(-1);
     const navigate = useNavigate();
+    const cookies = useCookies();
 
     useEffect(() => {
         setPathname(window.location.pathname.split("/"));
     }, []);
+
+    useEffect(() => {
+        (async () => {
+            const response = await fetch(`${API_URL}/user/check-approval`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.getCookie('token')}`,
+                },
+            });
+
+            const result = await response.json();
+
+            cookies.setCookie('approval', result.approval);
+
+            if (result.approval === "PENDING") {
+                window.location.replace("/pending")
+            }
+
+            if (result.approval === "REJECTED") {
+                window.location.replace("/not-approved")
+            }
+        })()
+    }, [pathname])
 
     return (
         <aside className={styles['sidebar']}>

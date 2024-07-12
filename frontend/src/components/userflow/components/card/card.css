@@ -2,18 +2,38 @@ p {
     margin: 0;
 }
 
+:root {
+    --card-height: 100svh;
+}
+
+.card-and-details-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 500px;
+}
+
 .card-container {
     display: flex;
-    height: 100%;
     background-color: rgba(0, 0, 0, 0.047);
-    margin-bottom: 1rem;
     overflow: hidden;
-    position: relative;
-    min-height: 100%;
-    width: 500px;
+    height: 100%;
+    min-height: var(--card-height);
     opacity: 0;
     transform: translateX(-100px);
     transition: transform 150ms linear;
+}
+
+@media screen and (max-width: 768px) {
+    .card-container {
+        --card-height: calc(100svh - 100px);
+        width: 100%;
+        /* 100px is the height of the navbar below the profile */
+    }
+
+    .card-and-details-container {
+        width: 100%;
+    }
 }
 
 .card-container.show {
@@ -21,7 +41,7 @@ p {
     opacity: 1;
 }
 
-.card-container>div:not(.menu) {
+.details-container {
     margin-top: auto;
     padding: 1.5rem;
     font-weight: 600;
