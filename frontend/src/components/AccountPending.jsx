@@ -37,13 +37,16 @@ export default function AccountPending() {
                             fontWeight: "bold",
                             lineHeight: "36px",
                             textAlign: "center",
-                        }}>Approval pending</p>
+                        }}>Pending Approval</p>
                         <p style={{
                             fontSize: "14px",
-                            fontWeight: "500",
+                            fontWeight: "400",
                             lineHeight: "20px",
                             textAlign: "center",
-                        }}>Your account is still pending for approval. We'll notify you by email once it's approved. In the meantime, you can update your profile information.</p>
+                            fontFamily: "Inter, sans-serif",
+                        }}>
+                            We're reviewing your account and will notify you via e-mail at example@gmail.com. In the meantime, you can update your profile information.
+                        </p>
                     </div>
                     <div style={{
                         display: "flex",

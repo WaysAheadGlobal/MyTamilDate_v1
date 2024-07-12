@@ -35,13 +35,13 @@
 }
 
 @media screen and (max-width: 768px) {
-    nav {
+    .nav {
         width: 100%;
         padding: 0.5rem;
         max-width: 100%;
     }
 
-    nav>ul {
+    .nav>ul {
         gap: 0.5rem;
     }
 

@@ -400,7 +400,9 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
             return;
         }
 
-        res.status(200).send(result);
+        const users = result.filter((user: any) => user.like !== 1);
+
+        res.status(200).send(users);
     });
 });
 

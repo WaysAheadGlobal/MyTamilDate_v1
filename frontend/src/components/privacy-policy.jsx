@@ -16,7 +16,7 @@ export const PrivacyPolicy = () => {
         <section>
             <style>
                 {`
-                 p, h1, h4, ul {
+                 p, h1, h4, ul, li {
                  margin-top: 1em;
                  text-align: justify;
                 }

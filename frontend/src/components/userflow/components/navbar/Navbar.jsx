@@ -72,7 +72,7 @@ export default function Navbar({ style }) {
                     <img src={profile} alt="" width={30} height={30} />
                     <div className={styles['indicator']}></div>
                 </li>
-                {
+                {/* {
                     isMobile && (
                         <>
                             <li>
@@ -90,7 +90,7 @@ export default function Navbar({ style }) {
                             </li>
                         </>
                     )
-                }
+                } */}
             </ul>
         </nav>
     )

@@ -134,8 +134,16 @@ export const SignupPhone = () => {
                                 <span>or</span>
                                 <div className='line'></div>
                             </Container>
-                            <p>Already have an account? <a href='/signin' className='signup-signin'>Sign in here</a></p>
-                            <p>By continuing you accept our <br /><a className="signup-links" href="/PrivacyPolicy">Privacy Policy</a> and <a className="signup-links" target="_blank" href='/Tnc'>Terms of Use</a></p>
+                            <p style={{
+                                fontWeight: '600',
+                                fontFamily: 'Poppins, sans-serif',
+                                fontSize: '14px',
+                            }}>Already have an account? <a href='/signin' className='signup-signin'>Sign in here</a></p>
+                            <p style={{
+                                fontWeight: '600',
+                                fontFamily: 'Poppins, sans-serif',
+                                fontSize: '14px',
+                            }}>By continuing you accept our <br /><a className="signup-links" href="/PrivacyPolicy">Privacy Policy</a> and <a className="signup-links" target="_blank" href='/Tnc'>Terms of Use</a></p>
                         </Container>
                     </Container>
                 </Container>

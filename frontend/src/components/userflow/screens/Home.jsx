@@ -37,7 +37,7 @@ export default function Home() {
     /**
      * @type {[Profile[], React.Dispatch<React.SetStateAction<Profile[]>>]}
      */
-    
+
     const { profiles, setProfiles } = useUserProfile();
     const [abortController, setAbortController] = useState(new AbortController());
     /* const [show, setShow] = useState(true); */
@@ -169,7 +169,7 @@ export default function Home() {
                 }}
             >
                 {
-                    profiles.map((profile) => (
+                    profiles/* .slice(0, 1) */.map((profile) => (
                         <Card key={profile.user_id} {...profile} profiles={profiles} setProfiles={setProfiles} />
                     ))
                 }
