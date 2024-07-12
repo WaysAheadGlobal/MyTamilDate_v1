@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Image } from 'react-bootstrap';
+import { Container, Image, Nav } from 'react-bootstrap';
 import edit from './edit.module.css';
 import questionmark from '../../../../assets/images/questionmark.png';
 import editicontwo from '../../../../assets/images/editicontwo.png';
@@ -37,13 +37,16 @@ const personalityArray = [
 
 const Edit = () => {
   const Navigate = useNavigate();
-  const [showInfo, setShowInfo] = useState(false);
+  const [showInfo, setShowInfo] = useState(true);
   const[Profile, setProfileData] = useState({});
   const[language, setLanguage] = useState([]);
+  const[quesAns, setQuestionAns] = useState([]);
+  const[expandsall,setexpandall] = useState(false);
   const{getCookie} = useCookies();
   const toggleInfoVisibility = () => {
     setShowInfo(!showInfo);
   };
+
 
 
   const ProfileDetails = async()=>{
@@ -60,7 +63,7 @@ const Edit = () => {
 
    if(response.ok){
     setProfileData(data)
-    console.log(data)
+    console.log(data.personality)
    }
     }
     catch(err){
@@ -81,14 +84,37 @@ const Edit = () => {
  const data = await response.json();
 
  if(response.ok){
-  setLanguage(data)
-  console.log(data)
+  setLanguage(data.selectedLanguages)
+  console.log(data.selectedLanguages)
  }
   }
   catch(err){
    console.log(err);
   }
 }
+const QuestionsAnswer = async()=>{
+  try{
+   const response = await fetch(`${API_URL}/customer/update/questions`,
+     {
+       method : 'GET',
+       headers: {
+         'Authorization': `Bearer ${getCookie('token')}`
+     }
+   }
+ );
+
+ const data = await response.json();
+
+ if(response.ok){
+  setQuestionAns(data);
+  console.log(data);
+ }
+  }
+  catch(err){
+   console.log(err);
+  }
+}
+
 const calculateAge = (birthday) => {
   const birthDate = new Date(birthday);
   const today = new Date();
@@ -103,12 +129,19 @@ const calculateAge = (birthday) => {
   return age;
 };
 
+const expandall = ()=>{
+
+}
+console.log(Profile.Personalities);
+const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split(',') : [];
+
 
   useEffect(() => {
    
     ProfileDetails();
     LanguageDetails();
-  }, [ ]);
+    QuestionsAnswer();
+  }, []);
 
   return (
     <div>
@@ -137,22 +170,21 @@ const calculateAge = (birthday) => {
       </Container>
 
         <Container>
-      <Container className={edit.aboutdetails}>
-        <p className={edit.aboutquestion}>
-        A life goal of mine
-        </p>
-        <p className={edit.aboutanswer}>
-        Fueled by a deep love for nature, I strive to leave the world a more beautiful place, where future generations can experience its wonders
-        </p>
-      </Container>
-      <Container className={edit.aboutdetails}>
-        <p className={edit.aboutquestion}>
-        I get along best with people who
-        </p>
-        <p className={edit.aboutanswer}>
-        Can have a good laugh together and understand each other's humor
-        </p>
-      </Container>
+        {
+    quesAns.length !== 0 
+    ? quesAns.map((item, index) => (
+        <Container key={index} className={edit.aboutdetails}>
+            <p className={edit.aboutquestion}>
+                {item.question}
+            </p>
+            <p className={edit.aboutanswer}>
+                {item.answer}
+            </p>
+        </Container>
+    )) 
+    : "Please Add Profile Answer"
+}
+
       </Container>
 
       <Container className={edit.aboutme}>
@@ -160,18 +192,21 @@ const calculateAge = (birthday) => {
           <p>Personality</p>
         </div>
         <div>
-          <Image onClick={()=> Navigate("/updatepersonality")} src={editicontwo} />
+          <Image onClick={()=> Navigate("/personalityupdate")} src={editicontwo} />
         </div>
       </Container>
-       <Container className={edit.personalityarray}>
-      {Profile.Personalities ?  Profile.Personalities.map((personality, index) => (
-        <div key={index} className={edit.tag}>
-          {personality}
-        </div>
-      ))  : "No Personalities Added "}
+      <Container className={edit.personalityarray}>
+      {PersonalitiesArray.length > 0 ? 
+        PersonalitiesArray.map((personality, index) => (
+          <div key={index} className={edit.tag}>
+            {personality}
+          </div>
+        )) 
+        : "No Personalities Added"
+      }
     </Container>
 
-   <button className={edit.upgradebutton}>Update <span><Image src={update}/></span> </button>
+   {/* <button className={edit.upgradebutton}>Update <span><Image src={update}/></span> </button> */}
 
    <Container>
    <Carddetails 
@@ -186,7 +221,7 @@ const calculateAge = (birthday) => {
    </Container>
 
    <Container>
-   <button className={edit.upgradebutton}>Expand All <span><Image src={update}/></span> </button>
+   <button className={edit.upgradebutton} onClick={expandall}>Expand All <span><Image src={update}/></span> </button>
    </Container>
    <Container>
    <Carddetails icon={carear }title="Career" detail={Profile.StudyField ? Profile.StudyField : "N/A"} />
@@ -195,7 +230,7 @@ const calculateAge = (birthday) => {
   icon={intersts} 
   title="Language" 
   detail={language && language.length > 0 ? language.map((e, i) => (
-    <span key={i}>{e}</span>
+    <span key={i}>{e.name}</span>
   )) : "N/A"} 
 />
   <Carddetails icon={intersts }title="Interrests" detail={Profile.PreferredGender ? Profile.PreferredGender : "N/A"} />
@@ -207,7 +242,7 @@ const calculateAge = (birthday) => {
    </Container>
    <Container>
     <Container style={{display : "flex", marginTop : "20px", justifyContent : "space-between",gap : "5px" }}>
-    <div className={edit.button}>
+    <div className={edit.button} onClick={()=> Navigate("/user/preferences")}>
         <img src={prefarance} alt="Preferences Icon" />
         Preferences
       </div>
@@ -218,7 +253,7 @@ const calculateAge = (birthday) => {
 
     </Container>
    <div className={edit.buttoncontainer}>
-      <div className={edit.buttonlarge}>
+      <div className={edit.buttonlarge} onClick={()=> Navigate("/accoutsetting")}>
         <img src={setting} alt="Settings Icon" />
         Account settings
       </div>

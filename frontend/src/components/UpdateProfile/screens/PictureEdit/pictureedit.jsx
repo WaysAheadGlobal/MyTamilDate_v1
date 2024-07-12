@@ -257,14 +257,13 @@ const getCroppedImg = (imageSrc, crop) => {
 };
 
 
-  useEffect(() => {
-    ImageURL();
-    if(selectedImages){
+useEffect(() => {
+  ImageURL();
 
-      handleNextClick();
-    }
-  }, [  selectedImages]);
-
+  if (selectedImages) {
+    handleNextClick();
+  }
+}, [selectedImages]); 
 
 
   return (

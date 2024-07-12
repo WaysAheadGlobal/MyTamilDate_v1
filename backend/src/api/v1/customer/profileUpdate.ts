@@ -391,7 +391,7 @@ updateprofile.get('/personality-options', (req: UserRequest, res: express.Respon
                 WHEN 1 THEN 'Male' 
                 WHEN 2 THEN 'Female' 
                 ELSE 'Other' 
-            END AS 'Preferred Gender',
+            END AS 'PreferredGender',
             st.name AS 'StudyField',
             j.name AS 'JobTitle',
             g.name AS 'Height',
@@ -474,9 +474,9 @@ updateprofile.get('/userlanguage', verifyUser, (req: UserRequest, res: express.R
 });
 
 // Fetch user questions by user_id
-updateprofile.get('/questions', (req: UserRequest, res: express.Response) => {
+updateprofile.get('/questions',verifyUser, (req: UserRequest, res: express.Response) => {
   const userId = req.userId;
-
+console.log(userId);
   const sql = `
       SELECT 
           qa.question_id,
@@ -502,7 +502,6 @@ updateprofile.get('/questions', (req: UserRequest, res: express.Response) => {
       res.status(200).json(results);
   });
 });
-
 
   export default updateprofile;
 
