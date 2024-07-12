@@ -412,7 +412,6 @@ setting.put("/verifyotp",verifyUser, async(req: UserRequest, res: any) => {
     }
 });
 
-
 //pause Account
 setting.put('/pause', verifyUser, async (req: UserRequest, res) => {
     const userId = req.userId;

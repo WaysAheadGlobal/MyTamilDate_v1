@@ -94,6 +94,9 @@ import { useCookies } from "./hooks/useCookies";
 import EditPicture from "./components/UpdateProfile/screens/PictureEdit/pictureedit";
 import UpdateAnswers from "./components/UpdateProfile/screens/EditAnswerAndQuestion/editanswer";
 import UpdatePersonality from "./components/UpdateProfile/screens/PersonalityEdit/personality";
+import PersonalityProfile from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Personality/personality";
+import { GenderUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Gender/Gender";
+import { LocatedUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/locations/locations";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -222,9 +225,11 @@ function App() {
               <Route path="/preview" element={<Preview />}></Route>
               <Route path="/editpicture" element={<EditPicture />}></Route>
               <Route path="/updateanswer" element={<UpdateAnswers />}></Route>
-              <Route path="/updatepersonality" element={<UpdatePersonality />}></Route>
-
-
+              {/* <Route path="/updatepersonality" element={<UpdatePersonality />}></Route> */}
+              <Route path="/personalityupdate" element = {<PersonalityProfile/>}></Route>
+              <Route path = "/updategender"element = {<GenderUpdate/>}></Route>
+              <Route path="/updatelocations" element={<LocatedUpdate/>}></Route>
+              
               <Route path="/user/home" element={<Home />} />
               <Route path="/user/recommendations" element={<Recommendations />} />
               <Route path="/user/preferences" element={<Preferences />} />

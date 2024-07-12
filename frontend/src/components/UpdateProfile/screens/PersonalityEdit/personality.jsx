@@ -80,7 +80,7 @@ export default function UpdatePersonality() {
         console.log(data);
 
         if (response.ok) {
-            navigate("/profile-answers");
+            navigate("/");
         } else {
             alert(data.message);
         }
