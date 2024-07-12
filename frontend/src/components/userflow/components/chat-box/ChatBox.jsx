@@ -83,7 +83,7 @@ export default function ChatBox() {
     }, []); */
 
     useEffect(() => {
-        const chatContainer = document.querySelector(`.${styles.chatContainer}`);
+        const chatContainer = document.querySelector(`#chat-container`);
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }, [messages]);
 
@@ -238,7 +238,7 @@ export default function ChatBox() {
                     </Dropdown.Menu>
                 </Dropdown>
             </div>
-            <div className={styles.chatContainer}>
+            <div id="chat-container" className={styles.chatContainer}>
                 {
                     Object.keys(messages).map(date => (
                         <React.Fragment key={date}>
