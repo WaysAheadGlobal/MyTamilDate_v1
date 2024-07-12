@@ -102,7 +102,7 @@ export default function Home() {
         };
     }, [profiles]);
 
-    useEffect(() => {
+    /* useEffect(() => {
         if (profiles.length === 0) return;
 
         const lastCardObserver = new IntersectionObserver(entries => {
@@ -117,7 +117,7 @@ export default function Home() {
             lastCardObserver.disconnect()
         };
     }, [profiles])
-
+ */
     return (
         <Sidebar>
             {/* <Modal centered show={show}>
@@ -169,8 +169,8 @@ export default function Home() {
                 }}
             >
                 {
-                    profiles/* .slice(0, 1) */.map((profile) => (
-                        <Card key={profile.user_id} {...profile} profiles={profiles} setProfiles={setProfiles} />
+                    profiles.slice(0, 1).map((profile) => (
+                        <Card key={profile.user_id} {...profile} setPage={setPage} />
                     ))
                 }
                 {
