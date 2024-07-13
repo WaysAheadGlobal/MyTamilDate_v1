@@ -5,11 +5,13 @@ import { API_URL } from '../../../../api';
 import { Skeleton } from '@mui/material';
 import chatPlaceholder from '../../../../assets/images/chatPlaceholder.svg';
 import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 export default function Matches() {
     const [matches, setMatches] = useState([]);
     const [currentMatches, setCurrentMatches] = useState([]);
     const [loadingMatches, setLoadingMatches] = useState(true);
+    const [conversations, setConversations] = useState([]);
     const cookies = useCookies();
     const [page, setPage] = useState(1);
     const navigate = useNavigate();
@@ -85,6 +87,55 @@ export default function Matches() {
         }
     }
 
+    useEffect(() => {
+        (async () => {
+            const response = await fetch(`${API_URL}customer/chat/get-conversations`, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.getCookie('token')}`
+                }
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log("messages", data);
+                setConversations(data);
+            }
+        })()
+    }, [])
+
+    /**
+     * 
+     * @param {string | Date} date
+     * @returns {string} 
+     */
+    function getDateDifference(date) {
+        const today = dayjs();
+        const messageDate = dayjs(date);
+        const diff = today.diff(messageDate, 'day');
+        const diffInHours = today.diff(messageDate, 'hour');
+        const diffInMinutes = today.diff(messageDate, 'minute');
+
+        if (diff === 0) {
+            if (diffInHours < 1) {
+                if (diffInMinutes > 1) {
+                    return `${diffInMinutes} minutes ago`;
+                } else if (diffInMinutes === 1) {
+                    return "A minute ago";
+                } else {
+                    return "Just Now"
+                }
+            } else {
+                return `${diffInHours} hours ago`;
+            }
+        } else if (diff === 1) {
+            return "Yesterday";
+        } else {
+            return messageDate.format("DD/MM/YYYY");
+        }
+    }
+
     return (
         <>
             <p style={{
@@ -146,15 +197,19 @@ export default function Matches() {
                         }}>Messages</p>
                         <div className={styles.messagesContainer}>
                             {
-                                Array(10).fill(0).map((_, i) => (
-                                    <div key={i} className={styles.message}>
-                                        <img src="https://via.placeholder.com/75" alt="profile" />
+                                conversations.map((conversation, i) => (
+                                    <div key={i} className={styles.message} onClick={() => getRoom(conversation.user_id, conversation.first_name, getImageURL(conversation.type, conversation.hash, conversation.extension, conversation.user_id))}>
+                                        <img src={getImageURL(conversation.type, conversation.hash, conversation.extension, conversation.user_id)} alt="profile" style={{
+                                            width: "70px",
+                                            height: "70px",
+                                            objectFit: "cover"
+                                        }} />
                                         <div>
-                                            <p>John Doe</p>
-                                            <p>Lorem ipsum dolor sit</p>
+                                            <p>{conversation.first_name} {conversation.last_name}</p>
+                                            <p>{conversation.message}</p>
                                         </div>
                                         <div style={{ flexGrow: "1" }}></div>
-                                        <p>15 mins ago</p>
+                                        <p>{getDateDifference(conversation.sent_at)}</p>
                                     </div>
                                 ))
                             }

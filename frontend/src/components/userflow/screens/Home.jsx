@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { API_URL } from '../../../api';
 import { useCookies } from '../../../hooks/useCookies';
 import Card from '../components/card/Card';
-import Sidebar from '../components/sidebar/sidebar';
-import { useSearchParams } from 'react-router-dom';
 import { useUserProfile } from '../components/context/UserProfileContext';
+import Sidebar from '../components/sidebar/sidebar';
 /* import { Modal } from 'react-bootstrap';
 import Button from '../components/button/Button'; */
 

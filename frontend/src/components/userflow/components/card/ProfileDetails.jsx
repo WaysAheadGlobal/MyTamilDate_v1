@@ -271,6 +271,23 @@ export default function ProfileDetails({ userId }) {
                         <p className={styles.heading}>About</p>
                         <p className={styles.subHeading}>Supportive, communicative, caring, driven and a goal-oriented partner. More like a power couple & most importantly, someone who's ready to commit and take responsibility on family life.</p>
                     </div>
+                    <div style={{
+                        marginTop: '1rem',
+                    }}>
+                        <Carousel slide controls={false} interval={null} touch>
+                            {
+                                media.map((photo, index) => (
+                                    <Carousel.Item key={index}>
+                                        <img src={photo.url} alt="" style={{
+                                            width: '100%',
+                                            aspectRatio: "1/1",
+                                            objectFit: 'contain',
+                                        }} />
+                                    </Carousel.Item>
+                                ))
+                            }
+                        </Carousel>
+                    </div>
                     <div>
                         <p className={styles.heading}>Interest</p>
                         <div className={styles.interests}>

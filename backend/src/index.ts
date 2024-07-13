@@ -6,7 +6,7 @@ import api from './api';
 import { Sendmail } from './sendgrip/mail';
 import { createServer } from 'http';
 import { Server } from "socket.io";
-
+import jwt from 'jsonwebtoken';
 
 const PORT = process.env.PORT;
 
@@ -32,10 +32,28 @@ app.get('/', (req, res) => {
 
 const httpServer = createServer(app);
 
-const io = new Server(httpServer, {
+export const io = new Server(httpServer, {
     cors: {
         origin: '*',
     }
+});
+
+io.use((socket, next) => {
+    const token = socket.handshake.auth.token;
+
+    if (!token) {
+        return next(new Error('Authentication error'));
+    }
+
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET as string);
+
+    if (!decoded) {
+        return next(new Error('Authentication error'));
+    }
+
+    socket.handshake.auth.userId = decoded.userId;
+
+    next();
 });
 
 io.on('connection', (socket) => {
@@ -50,8 +68,25 @@ io.on('connection', (socket) => {
         console.log('user joined room:', roomId);
     });
 
-    socket.on('send-message', ({ roomId, message }) => {
-        socket.to(roomId).emit('receive-message', message);
+    io.on('get-conversations', (result) => {
+        console.log(result)
+    });
+    socket.on('get-conversations', (result) => {
+        console.log(result)
+    });
+
+    socket.on('send-message', ({ roomId, message, sentAt, type }) => {
+        const senderId = socket.handshake.auth.userId;
+
+        db.query('INSERT INTO dncm_messages (type, version, conversation_id, sender_id, body, sent_at, updated_at, deleted_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [type, 1, roomId, senderId, message, sentAt, sentAt, 0], (err, results) => {
+            if (err) {
+                console.log('Error sending message:', err);
+                return;
+            }
+
+            socket.to(roomId).emit('receive-message', message);
+        });
+
     });
 });
 

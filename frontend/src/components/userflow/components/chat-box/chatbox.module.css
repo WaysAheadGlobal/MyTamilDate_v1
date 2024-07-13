@@ -1,8 +1,8 @@
 .chatbox {
     display: flex;
     flex-direction: column;
-    max-height: 100vh;
-    height: 100vh;
+    max-height: 100dvh;
+    height: 100dvh;
 }
 
 .chatHeader {
@@ -16,6 +16,7 @@
         border-radius: 9999px;
         width: 50px;
         height: 50px;
+        object-fit: cover;
     }
 
     p {
@@ -46,6 +47,7 @@
         border: none;
         padding: 1rem;
         outline: none;
+        width: 100%;
     }
 
     button {
@@ -91,7 +93,7 @@
     width: fit-content;
 }
 
-.message:has(.other) {
+.message:has(.you) {
     margin-left: auto;
     color: white;
     background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
@@ -101,14 +103,37 @@
     }
 }
 
-.message:has(.you) {
+.message:has(.other) {
     margin-left: 2.25rem;
 }
 
-.message:has(.you)+img {
+.message:has(.other)+img {
     border-radius: 9999px;
     width: 40px;
     height: 40px;
     margin-top: -1.5rem;
     margin-bottom: 1rem;
+}
+
+@media screen and (max-width: 768px) {
+    .chatbox {
+        height: 100dvh;
+    }
+
+    .chatHeader {
+        padding: 1rem;
+    }
+
+    .chatContainer {
+        padding: 1rem;
+    }
+
+    .chatInput {
+        margin-inline: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .message {
+        padding: 10px;
+    }    
 }

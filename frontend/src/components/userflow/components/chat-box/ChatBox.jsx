@@ -2,10 +2,10 @@ import dayjs from 'dayjs';
 import React, { useEffect } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { useLocation } from 'react-router-dom';
+import io from "socket.io-client";
 import { API_URL } from '../../../../api';
 import { useCookies } from '../../../../hooks/useCookies';
 import styles from './chatbox.module.css';
-import io from "socket.io-client";
 
 export default function ChatBox() {
     /**
@@ -28,59 +28,42 @@ export default function ChatBox() {
     const cookies = useCookies();
     const location = useLocation();
     const [socket, setSocket] = React.useState(null);
+    const [conversationId, setConversationId] = React.useState(null);
 
-    /* useEffect(() => {
-        setMessages({
-            "2021-10-01": [
-                {
-                    sender: "you",
-                    message: "Hello",
-                    time: "12:00"
-                },
-                {
-                    sender: "other",
-                    message: "Hi",
-                    time: "12:01"
+    useEffect(() => {
+        const conversationId = sessionStorage.getItem("conversationId");
+
+        if (conversationId) {
+            setConversationId(conversationId);
+        }
+
+    }, [window.location.pathname])
+
+    useEffect(() => {
+        setMessages({});
+
+        if (!conversationId) return;
+
+        if (!window.location.pathname.includes("with")) {
+            return;
+        }
+
+        (async () => {
+            const response = await fetch(`${API_URL}customer/chat/get-messages/${conversationId}`, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.getCookie('token')}`
                 }
-            ],
-            "2021-10-02": [
-                {
-                    sender: "you",
-                    message: "How are you?",
-                    time: "12:00"
-                },
-                {
-                    sender: "other",
-                    message: "I'm fine",
-                    time: "12:01"
-                }
-            ],
-            "2024-06-27": [
-                {
-                    sender: "you",
-                    message: "What's up?",
-                    time: "12:00"
-                },
-                {
-                    sender: "other",
-                    message: "Nothing much",
-                    time: "12:01"
-                }
-            ],
-            "2024-06-28": [
-                {
-                    sender: "you",
-                    message: "Goodbye",
-                    time: "12:00"
-                },
-                {
-                    sender: "other",
-                    message: "Bye",
-                    time: "12:01"
-                }
-            ]
-        })
-    }, []); */
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log(data);
+                setMessages(data);
+            }
+        })()
+    }, [conversationId])
 
     useEffect(() => {
         const chatContainer = document.querySelector(`#chat-container`);
@@ -129,7 +112,11 @@ export default function ChatBox() {
     }
 
     useEffect(() => {
-        const socket = io(process.env.REACT_APP_SOCKET_URL);
+        const socket = io(process.env.REACT_APP_SOCKET_URL, {
+            auth: {
+                token: cookies.getCookie('token')
+            }
+        });
         setSocket(socket);
 
         return () => {
@@ -162,8 +149,13 @@ export default function ChatBox() {
         }
     })
 
+    /* useEffect(() => {
+        socket?.on('get-conversations', (data) => {
+            console.log(data)
+        })
+    }) */
+
     /**
-     * 
      * @param {React.FormEvent<HTMLFormElement>} e 
      * @returns {Promise<void>}
      */
@@ -173,35 +165,36 @@ export default function ChatBox() {
 
         if (location.state?.type === "request") {
             await requestChat();
-        } else {
-            if (socket) {
-                socket.emit('send-message', {
-                    message: text,
-                    roomId: sessionStorage.getItem("conversationId")
-                });
-                setMessages({
-                    ...messages,
-                    [dayjs().format("YYYY-MM-DD")]: [
-                        ...(messages[dayjs().format("YYYY-MM-DD")] ? messages[dayjs().format("YYYY-MM-DD")] : []),
-                        {
-                            sender: "you",
-                            message: text,
-                            time: dayjs().format("h:mm A")
-                        }
-                    ]
-                });
-            }
+        } else if (socket) {
+            socket.emit('send-message', {
+                message: text,
+                roomId: sessionStorage.getItem("conversationId"),
+                sentAt: Date.now(),
+                type: 1,
+            });
+            setMessages({
+                ...messages,
+                [dayjs().format("YYYY-MM-DD")]: [
+                    ...(messages[dayjs().format("YYYY-MM-DD")] ? messages[dayjs().format("YYYY-MM-DD")] : []),
+                    {
+                        sender: "you",
+                        message: text,
+                        time: dayjs().format("h:mm A")
+                    }
+                ]
+            });
         }
-
 
         setText("");
     }
 
     return (
-        <section className={styles.chatbox}>
+        <section id="chat-box" className={styles.chatbox}>
             <div className={styles.chatHeader}>
                 {/* <img src="https://via.placeholder.com/75" alt="profile" /> */}
-                <img src={location.state?.img ?? ""} alt="profile" />
+                <img src={location.state?.img ?? ""} alt="profile" style={{
+                    objectFit: "cover"
+                }} />
                 <p>{location.state?.name ?? ""}</p>
                 <div style={{ flexGrow: "1" }}></div>
                 <Dropdown>
@@ -257,7 +250,9 @@ export default function ChatBox() {
                                             </div>
                                         </div>
                                         {
-                                            message.sender === "you" && <img src="https://via.placeholder.com/75" alt="profile" />
+                                            message.sender === "other" && <img src={location.state?.img ?? ""} alt="profile" style={{
+                                                objectFit: "cover",
+                                            }} />
                                         }
                                     </React.Fragment>
                                 ))

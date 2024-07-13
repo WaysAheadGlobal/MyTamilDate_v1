@@ -33,23 +33,23 @@ export const GetStarted = () => {
       display: "grid",
       gridTemplateColumns: "1fr 1fr",
       position: "relative",
-      maxHeight: "100vh",
-      height: "100vh",
+      maxHeight: "100dvh",
+      height: "100dvh",
     }}>
       <img src={bgl} alt="" style={{
         width: "100%",
-        height: "100vh",
+        height: "100dvh",
         objectFit: "cover",
       }} />
       <img src={bgr} alt="" style={{
         width: "100%",
-        height: "100vh",
+        height: "100dvh",
         objectFit: "cover",
       }} />
       <div style={{
         position: "absolute",
         width: "100%",
-        height: "100vh",
+        height: "100dvh",
         backdropFilter: "blur(30px)",
         inset: "0px",
         display: "flex",
@@ -58,7 +58,7 @@ export const GetStarted = () => {
       }}>
         <div style={{
           maxWidth: "500px",
-          height: "100vh",
+          height: "100dvh",
           backgroundImage: `url(${mobile ? mobileBg : bgl})`,
           backgroundSize: "cover",
           backgroundPosition: mobile ? "-10.5rem center" : "center",

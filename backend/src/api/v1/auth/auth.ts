@@ -98,7 +98,7 @@ auth.post('/login',
                     message: 'Login successful!',
                     token: jwt,
                     Result: results,
-                    approved: UserApprovalEnum[results[0].approved]
+                    approved: UserApprovalEnum[results[0].approval]
                 });
             });
         } catch (error) {
