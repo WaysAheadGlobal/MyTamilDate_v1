@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import React, { useEffect } from 'react';
+import React, { useEffect, version } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { useLocation } from 'react-router-dom';
 import { API_URL } from '../../../../api';
@@ -28,6 +28,7 @@ export default function ChatBox() {
     const cookies = useCookies();
     const location = useLocation();
     const [socket, setSocket] = React.useState(null);
+    const [conversationId, setConversationId] = React.useState(null);
 
     /* useEffect(() => {
         setMessages({
@@ -83,6 +84,34 @@ export default function ChatBox() {
     }, []); */
 
     useEffect(() => {
+        const conversationId = sessionStorage.getItem("conversationId");
+
+        if (conversationId) {
+            setConversationId(conversationId);
+        }
+    }, [])
+
+    useEffect(() => {
+        if (!conversationId) return;
+
+        (async () => {
+            const response = await fetch(`${API_URL}customer/chat/get-messages/${conversationId}`, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.getCookie('token')}`
+                }
+            });
+            const data = await response.json();
+    
+            if (response.ok) {
+                console.log(data);
+                setMessages(data);
+            }
+        })()
+    }, [conversationId])
+
+    useEffect(() => {
         const chatContainer = document.querySelector(`#chat-container`);
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }, [messages]);
@@ -129,7 +158,11 @@ export default function ChatBox() {
     }
 
     useEffect(() => {
-        const socket = io(process.env.REACT_APP_SOCKET_URL);
+        const socket = io(process.env.REACT_APP_SOCKET_URL, {
+            auth: {
+                token: cookies.getCookie('token')
+            }
+        });
         setSocket(socket);
 
         return () => {
@@ -163,7 +196,6 @@ export default function ChatBox() {
     })
 
     /**
-     * 
      * @param {React.FormEvent<HTMLFormElement>} e 
      * @returns {Promise<void>}
      */
@@ -173,32 +205,31 @@ export default function ChatBox() {
 
         if (location.state?.type === "request") {
             await requestChat();
-        } else {
-            if (socket) {
-                socket.emit('send-message', {
-                    message: text,
-                    roomId: sessionStorage.getItem("conversationId")
-                });
-                setMessages({
-                    ...messages,
-                    [dayjs().format("YYYY-MM-DD")]: [
-                        ...(messages[dayjs().format("YYYY-MM-DD")] ? messages[dayjs().format("YYYY-MM-DD")] : []),
-                        {
-                            sender: "you",
-                            message: text,
-                            time: dayjs().format("h:mm A")
-                        }
-                    ]
-                });
-            }
+        } else if (socket) {
+            socket.emit('send-message', {
+                message: text,
+                roomId: sessionStorage.getItem("conversationId"),
+                sentAt: Date.now(),
+                type: 1,
+            });
+            setMessages({
+                ...messages,
+                [dayjs().format("YYYY-MM-DD")]: [
+                    ...(messages[dayjs().format("YYYY-MM-DD")] ? messages[dayjs().format("YYYY-MM-DD")] : []),
+                    {
+                        sender: "you",
+                        message: text,
+                        time: dayjs().format("h:mm A")
+                    }
+                ]
+            });
         }
-
 
         setText("");
     }
 
     return (
-        <section className={styles.chatbox}>
+        <section id="chat-box" className={styles.chatbox}>
             <div className={styles.chatHeader}>
                 {/* <img src="https://via.placeholder.com/75" alt="profile" /> */}
                 <img src={location.state?.img ?? ""} alt="profile" />
@@ -257,7 +288,7 @@ export default function ChatBox() {
                                             </div>
                                         </div>
                                         {
-                                            message.sender === "you" && <img src="https://via.placeholder.com/75" alt="profile" />
+                                            message.sender === "you" && <img src={location.state?.img ?? ""} alt="profile" />
                                         }
                                     </React.Fragment>
                                 ))

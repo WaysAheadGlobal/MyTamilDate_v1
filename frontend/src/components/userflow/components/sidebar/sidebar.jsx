@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../../../api';
 import logo from "../../../../assets/images/MTDlogo.png";
 import heartLogo from "../../../../assets/images/heart-logo.png";
-import profilePic from "../../../../assets/images/profilepic.png";
+import { useCookies } from '../../../../hooks/useCookies';
 import Navbar from '../navbar/Navbar';
 import styles from './sidebar.module.css';
 import Suggestions from './suggestions';
-import { API_URL } from '../../../../api';
-import { useCookies } from '../../../../hooks/useCookies';
+import ProfileCompletion from './ProfileCompletion';
 
 export default function Sidebar({ children }) {
     const [isMobile, setIsMobile] = useState(false);
@@ -17,126 +17,6 @@ export default function Sidebar({ children }) {
     const navigate = useNavigate();
     const cookies = useCookies();
 
-    const[profileCompletion, setProfileCompletion] = useState(10)
-    const[Profile, setProfileData] = useState({});
-    const{getCookie} = useCookies();
-  const Navigate = useNavigate();
-   
-    const id = getCookie('userId')
-    const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
-    const [images, setImages] = useState({
-      main: null,
-      first: null,
-      second: null,
-    });
-  
-    const [images2, setImages2] = useState({
-      main: null,
-      first: null,
-      second: null,
-    });
-  
-    const ImageURL = async () => {
-      try {
-        const response = await fetch(`${API_URL}/customer/update/media`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${getCookie('token')}`
-        }
-        });
-        const data = await response.json();
-        console.log("datadaa", data);
-        if (response.ok) {
-          if (data[0].type === 31 || data[1].type === 31 || data[2].type === 31) {
-            const others = data.filter(image => image.type === 32);
-            const main = data.filter(image => image.type === 31)[0];
-         
-            setImages2({
-              main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
-              first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
-              second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
-            })
-  
-  
-            console.log('imges', {
-              main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
-              first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
-              second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
-            })
-          }
-          else{
-            const others = data.filter(image => image.type === 2);
-            const main = data.filter(image => image.type === 1)[0];
-            console.log(others, main)
-            setImages2({
-              main: OldImageURL +"/" + id + "/avatar/"+ main.hash + "-large" + "." + main.extension,
-              first: OldImageURL +"/" + id + "/photo/"+ others[0].hash + "-large" + "." + main.extension,
-              second: OldImageURL +"/" + id + "/photo/"+ others[1].hash  + "-large"+ "." + main.extension,
-            })
-  
-            console.log({
-              main: OldImageURL +"/" + id + "/avatar/"+ main.hash + "-large" + "." + main.extension,
-              first: OldImageURL +"/" + id + "/photo/"+ others[0].hash + "-large" + "." + main.extension,
-              second: OldImageURL +"/" + id + "/photo/"+ others[1].hash  + "-large"+ "." + main.extension,
-            })
-      
-          }
-  
-        }
-      } catch (error) {
-        console.error('Error saving images:', error);
-      }
-    }
-  
-    const GetprofileCompletion = async()=>{
-       try{
-        const response = await fetch(`${API_URL}/customer/update/profileCompletion`,
-          {
-            method : 'GET',
-            headers: {
-              'Authorization': `Bearer ${getCookie('token')}`
-          }
-        }
-      );
-      const data = await response.json();
-  
-      if(response.ok){
-        setProfileCompletion(data.completionPercentage);
-        console.log(profileCompletion);
-      }
-       }
-       catch(err){
-        console.log(err);
-       }
-    }
-  
-    const ProfileDetails = async()=>{
-      try{
-       const response = await fetch(`${API_URL}/customer/update/profileDetails`,
-         {
-           method : 'GET',
-           headers: {
-             'Authorization': `Bearer ${getCookie('token')}`
-         }
-       }
-     );
-     const data = await response.json();
-  
-     if(response.ok){
-      setProfileData(data)
-      console.log(data)
-     }
-      }
-      catch(err){
-       console.log(err);
-      }
-   }
-  
-    useEffect(() => {
-      ImageURL();
-      GetprofileCompletion();
-      ProfileDetails();
-    }, [ ]);
 
     useEffect(() => {
         setPathname(window.location.pathname.split("/"));
@@ -239,7 +119,7 @@ export default function Sidebar({ children }) {
                         border: "1px solid #939393",
                         padding: "0",
                     }} />
-                    <li className={suffix === "profile-settings" ? styles["active"] : ""} onClick={() => navigate("/user/profile-settings")}>
+                    <li className={suffix === "updateprofile" ? styles["active"] : ""} onClick={() => navigate("/updateprofile")}>
                         <div className={styles['indicator']}></div>
                         <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M21 22.3264C21 20.4366 19.633 17.9999 17.5 18H10.5C8.367 17.9999 7 20.4366 7 22.3264M3.5 14.5C3.5 8.70101 8.20101 4 14 4C19.799 4 24.5 8.70101 24.5 14.5C24.5 20.299 19.799 25 14 25C8.20101 25 3.5 20.299 3.5 14.5ZM17.5 11C17.5 12.933 15.933 14.5 14 14.5C12.067 14.5 10.5 12.933 10.5 11C10.5 9.067 12.067 7.5 14 7.5C15.933 7.5 17.5 9.067 17.5 11Z" stroke="#515151" stroke-width="2" />
@@ -302,27 +182,7 @@ export default function Sidebar({ children }) {
                 {isMobile && <Navbar />}
             </div>
             <aside className={styles['upcoming']}>
-                <div className={styles.profile}>
-                    <div className={styles.imgContainer} style={{
-                        "--profile-completed": `${profileCompletion}%`
-                    }}>
-                        <div className={styles.innerCircle}>
-                            <img src={images2.main} alt="" />
-                        </div>
-                    </div>
-                    <p style={{
-                        fontSize: "18px"
-                    }}>{Profile.Name} {Profile.Surname}</p>
-                    <p style={{
-                        marginTop: "-0.5rem",
-                        fontSize: "14px"
-                    }}>{profileCompletion}% complete</p>
-                    <p style={{
-                        fontSize: "14px",
-                        fontWeight: "600"
-                    }}>Complete your profile for better matches</p>
-                    <button className={styles['recommendation']} onClick={()=> Navigate("/updateprofile")}>Update</button>
-                </div>
+                <ProfileCompletion />
                 <Suggestions />
             </aside>
         </section>
@@ -395,7 +255,7 @@ export function MobileSidebar() {
                     border: "1px solid #939393",
                     padding: "0",
                 }} />
-                <li className={suffix === "profile-settings" ? styles["active"] : ""} onClick={() => navigate("/user/profile-settings")}>
+                <li className={suffix === "updateprofile" ? styles["active"] : ""} onClick={() => navigate("/user/updateprofile")}>
                     <div className={styles['indicator']}></div>
                     <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M21 22.3264C21 20.4366 19.633 17.9999 17.5 18H10.5C8.367 17.9999 7 20.4366 7 22.3264M3.5 14.5C3.5 8.70101 8.20101 4 14 4C19.799 4 24.5 8.70101 24.5 14.5C24.5 20.299 19.799 25 14 25C8.20101 25 3.5 20.299 3.5 14.5ZM17.5 11C17.5 12.933 15.933 14.5 14 14.5C12.067 14.5 10.5 12.933 10.5 11C10.5 9.067 12.067 7.5 14 7.5C15.933 7.5 17.5 9.067 17.5 11Z" stroke="#515151" stroke-width="2" />

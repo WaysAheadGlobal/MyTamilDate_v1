@@ -82,7 +82,7 @@ auth.post('/login',
                 return res.status(401).json({ message: otpResponse.message });
             }
 
-            const query = 'SELECT up.id, up.user_id, up.first_name, u.approved FROM user_profiles up INNER JOIN users u ON u.id = up.user_id WHERE phone = ?';
+            const query = 'SELECT up.id, up.user_id, up.first_name, u.approval FROM user_profiles up INNER JOIN users u ON u.id = up.user_id WHERE phone = ?';
             db.query<RowDataPacket[]>(query, [phone], (err, results) => {
                 if (err) {
                     console.error('Error fetching data:', err);
@@ -98,7 +98,7 @@ auth.post('/login',
                     message: 'Login successful!',
                     token: jwt,
                     Result: results,
-                    approved: UserApprovalEnum[results[0].approved]
+                    approved: UserApprovalEnum[results[0].approval]
                 });
             });
         } catch (error) {

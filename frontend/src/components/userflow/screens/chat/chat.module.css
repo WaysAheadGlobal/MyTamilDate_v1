@@ -16,3 +16,25 @@
     padding: 2rem;
     border-right: 2px solid #e0e0e0;
 }
+
+@media screen and (max-width: 900px) {
+    .chatLayout {
+        grid-template-columns: 6rem 1fr;
+    }
+
+    .matchContainer {
+        width: 100%;
+        max-width: 100%;
+        border-right: none;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .chatLayout {
+        grid-template-columns: 1fr;
+    }
+
+    .matchContainer {
+        padding: 1rem;
+    }
+}

@@ -5,6 +5,7 @@ import { db } from "../../../../db/db";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import ConversationTypeEnum from "../../../enums/ConversationTypeEnum";
 import MessageTypeEnum from "../../../enums/MessageTypeEnum";
+import moment from "moment";
 
 const chat = Router();
 
@@ -150,7 +151,7 @@ chat.post("/create-room", (req: UserRequest, res) => {
             return;
         }
 
-        db.query<RowDataPacket[]>("SELECT dc.id as conversation_id FROM dncm_conversations dc INNER JOIN dncm_participants dp ON dp.conversation_id = dc.id WHERE dc.owner_id = ? and dp.participant_id = ?;", [req.userId, participantId], (err, result) => {
+        db.query<RowDataPacket[]>("SELECT dp1.conversation_id FROM dncm_participants dp1 JOIN dncm_participants dp2 ON dp2.conversation_id = dp1.conversation_id WHERE dp1.participant_id = ? AND dp2.participant_id = ?", [req.userId, participantId], (err, result) => {
             if (err) {
                 console.log(err);
                 db.rollback((err) => {
@@ -230,6 +231,38 @@ chat.post("/create-room", (req: UserRequest, res) => {
             }
         });
     })
+});
+
+chat.get("/get-messages/:conversationId", (req: UserRequest, res) => {
+    const conversationId = req.params.conversationId;
+
+    db.query<RowDataPacket[]>("SELECT *, `body` as message, IF (sender_id = ?, 'you', 'other') as sender FROM dncm_messages WHERE conversation_id = ? ORDER BY sent_at ASC;", [req.userId, conversationId], (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("Failed to get messages");
+            return;
+        }
+
+        const messages = result.reduce((acc: any, message) => {
+            const date = moment(message.sent_at).format("YYYY-MM-DD");
+            const time = moment(message.sent_at).format("HH:mm A");
+
+            if (!acc[date]) {
+                acc[date] = [];
+            }
+
+            acc[date].push({
+                ...message,
+                time,
+                date,
+                type: MessageTypeEnum[message.type],
+            });
+
+            return acc;
+        }, {});
+
+        res.status(200).json(messages);
+    });
 });
 
 export default chat;
