@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { verifyUser } from "../../../middleware/verifyUser";
-import { UserRequest } from "../../../types/types";
-import { db } from "../../../../db/db";
+import moment from "moment";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
+import { db } from "../../../../db/db";
 import ConversationTypeEnum from "../../../enums/ConversationTypeEnum";
 import MessageTypeEnum from "../../../enums/MessageTypeEnum";
-import moment from "moment";
+import { verifyUser } from "../../../middleware/verifyUser";
+import { UserRequest } from "../../../types/types";
+import { io } from "../../..";
 
 const chat = Router();
 
@@ -262,6 +263,37 @@ chat.get("/get-messages/:conversationId", (req: UserRequest, res) => {
         }, {});
 
         res.status(200).json(messages);
+    });
+});
+
+chat.get("/get-conversations", (req: UserRequest, res) => {
+    const query = `
+        SELECT
+        up.user_id,
+        up.first_name,
+        up.last_name,
+        m.hash,
+        m.type,
+        m.extension,
+        (SELECT dp2.participant_id FROM dncm_participants dp2 WHERE dp2.conversation_id = dp.conversation_id AND dp2.participant_id != ?) as participant_id,
+        (SELECT dm.\`body\` FROM dncm_messages dm WHERE dm.conversation_id = dp.conversation_id AND dm.\`body\` IS NOT NULL  ORDER BY dm.sent_at DESC LIMIT 1) as message,
+        (SELECT dm.sent_at FROM dncm_messages dm WHERE dm.conversation_id = dp.conversation_id AND dm.\`body\` IS NOT NULL ORDER BY dm.sent_at DESC LIMIT 1) as sent_at,
+        dp.conversation_id FROM dncm_participants dp
+        INNER JOIN user_profiles up ON up.user_id IN (SELECT dp2.participant_id FROM dncm_participants dp2 WHERE dp2.conversation_id = dp.conversation_id AND dp2.participant_id != ?)
+        INNER JOIN media m ON m.user_id = up.user_id
+        WHERE dp.participant_id = ? AND m.type IN (1, 31) ORDER BY sent_at DESC;
+    `;
+
+    db.query<RowDataPacket[]>(query, [req.userId, req.userId, req.userId], (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("Failed to get conversations");
+            return;
+        }
+
+        /* io.emit("get-conversations", result); */
+
+        res.status(200).json(result);
     });
 });
 

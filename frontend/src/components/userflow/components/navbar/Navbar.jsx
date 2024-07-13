@@ -68,7 +68,7 @@ export default function Navbar({ style }) {
                     <img src={heartLogo} alt="" width={30} height={30} />
                     <div className={styles['indicator']}></div>
                 </li>
-                <li className={suffix === "account" ? styles["active"] : ""} onClick={() => navigate("/user/account")}>
+                <li className={suffix === "account" ? styles["active"] : ""} onClick={() => navigate("/updateprofile")}>
                     <img src={profile} alt="" width={30} height={30} />
                     <div className={styles['indicator']}></div>
                 </li>

@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 
 const httpServer = createServer(app);
 
-const io = new Server(httpServer, {
+export const io = new Server(httpServer, {
     cors: {
         origin: '*',
     }
@@ -66,6 +66,13 @@ io.on('connection', (socket) => {
     socket.on('join-room', (roomId) => {
         socket.join(roomId);
         console.log('user joined room:', roomId);
+    });
+
+    io.on('get-conversations', (result) => {
+        console.log(result)
+    });
+    socket.on('get-conversations', (result) => {
+        console.log(result)
     });
 
     socket.on('send-message', ({ roomId, message, sentAt, type }) => {

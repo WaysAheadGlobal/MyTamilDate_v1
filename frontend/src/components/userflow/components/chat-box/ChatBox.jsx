@@ -1,11 +1,11 @@
 import dayjs from 'dayjs';
-import React, { useEffect, version } from 'react';
+import React, { useEffect } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { useLocation } from 'react-router-dom';
+import io from "socket.io-client";
 import { API_URL } from '../../../../api';
 import { useCookies } from '../../../../hooks/useCookies';
 import styles from './chatbox.module.css';
-import io from "socket.io-client";
 
 export default function ChatBox() {
     /**
@@ -30,69 +30,23 @@ export default function ChatBox() {
     const [socket, setSocket] = React.useState(null);
     const [conversationId, setConversationId] = React.useState(null);
 
-    /* useEffect(() => {
-        setMessages({
-            "2021-10-01": [
-                {
-                    sender: "you",
-                    message: "Hello",
-                    time: "12:00"
-                },
-                {
-                    sender: "other",
-                    message: "Hi",
-                    time: "12:01"
-                }
-            ],
-            "2021-10-02": [
-                {
-                    sender: "you",
-                    message: "How are you?",
-                    time: "12:00"
-                },
-                {
-                    sender: "other",
-                    message: "I'm fine",
-                    time: "12:01"
-                }
-            ],
-            "2024-06-27": [
-                {
-                    sender: "you",
-                    message: "What's up?",
-                    time: "12:00"
-                },
-                {
-                    sender: "other",
-                    message: "Nothing much",
-                    time: "12:01"
-                }
-            ],
-            "2024-06-28": [
-                {
-                    sender: "you",
-                    message: "Goodbye",
-                    time: "12:00"
-                },
-                {
-                    sender: "other",
-                    message: "Bye",
-                    time: "12:01"
-                }
-            ]
-        })
-    }, []); */
-
     useEffect(() => {
         const conversationId = sessionStorage.getItem("conversationId");
 
         if (conversationId) {
             setConversationId(conversationId);
         }
-    }, [])
+
+    }, [window.location.pathname])
 
     useEffect(() => {
+        setMessages({});
+
         if (!conversationId) return;
+
+        if (!window.location.pathname.includes("with")) {
+            return;
+        }
 
         (async () => {
             const response = await fetch(`${API_URL}customer/chat/get-messages/${conversationId}`, {
@@ -103,7 +57,7 @@ export default function ChatBox() {
                 }
             });
             const data = await response.json();
-    
+
             if (response.ok) {
                 console.log(data);
                 setMessages(data);
@@ -195,6 +149,12 @@ export default function ChatBox() {
         }
     })
 
+    /* useEffect(() => {
+        socket?.on('get-conversations', (data) => {
+            console.log(data)
+        })
+    }) */
+
     /**
      * @param {React.FormEvent<HTMLFormElement>} e 
      * @returns {Promise<void>}
@@ -232,7 +192,9 @@ export default function ChatBox() {
         <section id="chat-box" className={styles.chatbox}>
             <div className={styles.chatHeader}>
                 {/* <img src="https://via.placeholder.com/75" alt="profile" /> */}
-                <img src={location.state?.img ?? ""} alt="profile" />
+                <img src={location.state?.img ?? ""} alt="profile" style={{
+                    objectFit: "cover"
+                }} />
                 <p>{location.state?.name ?? ""}</p>
                 <div style={{ flexGrow: "1" }}></div>
                 <Dropdown>
@@ -288,7 +250,9 @@ export default function ChatBox() {
                                             </div>
                                         </div>
                                         {
-                                            message.sender === "you" && <img src={location.state?.img ?? ""} alt="profile" />
+                                            message.sender === "other" && <img src={location.state?.img ?? ""} alt="profile" style={{
+                                                objectFit: "cover",
+                                            }} />
                                         }
                                     </React.Fragment>
                                 ))
