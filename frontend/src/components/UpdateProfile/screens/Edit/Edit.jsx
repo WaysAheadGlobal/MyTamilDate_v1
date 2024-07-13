@@ -23,7 +23,7 @@ import setting from '../../../../assets/images/setting.png';
 
 import editcard from '../../Components/card/editcard';
 import Carddetails from '../../Components/card/editcard';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { API_URL } from '../../../../api';
 import { useCookies } from '../../../../hooks/useCookies';
 
@@ -215,7 +215,9 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
   detail={Profile.Birthday ? calculateAge(Profile.Birthday) : "N/A"} 
 />
   <Carddetails icon={gender }title="Gender" detail={Profile.Gender ? Profile.Gender : "N/A"} />
+  <Link to="/updatelocations">
   <Carddetails icon={locationedit }title="Location" detail={Profile.Country ? Profile.Country : "N/A" }  />
+  </Link>
   <Carddetails icon={relisionedit }title="Relision" detail={Profile.Religion ? Profile.Religion : "N/A"} />
   <Carddetails icon={educationedit }title="Education" detail={Profile.StudyField ? Profile.StudyField : "N/A"} />
    </Container>
