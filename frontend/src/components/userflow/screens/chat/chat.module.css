@@ -9,8 +9,8 @@
     flex-direction: column;
     width: 420px;
     max-width: 420px;
-    max-height: 100vh;
-    height: 100vh;
+    max-height: 100dvh;
+    height: 100dvh;
     overflow-y: auto;
     scrollbar-width: none;
     padding: 2rem;

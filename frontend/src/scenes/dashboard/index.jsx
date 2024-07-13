@@ -477,7 +477,7 @@ const Dashboard = () => {
   return (
     <>
     {loading ? (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <Box display="flex" justifyContent="center" alignItems="center" height="100dvh">
       <Typography variant="body1" mr={2}>Hang tight, we're getting things ready for you!</Typography>
       <CircularProgress />
     </Box>
