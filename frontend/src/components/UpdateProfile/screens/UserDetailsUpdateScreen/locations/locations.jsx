@@ -191,9 +191,17 @@ export const LocatedUpdate = () => {
               </Container>
             )}
           </Container>
-          <Button variant="primary" type="submit" className='located-nxt-btn' onClick={handleSubmit}>
+          {/* <Button variant="primary" type="submit" className='located-nxt-btn' onClick={handleSubmit}>
             Next
-          </Button>
+          </Button> */}
+          <div className="d-flex justify-content-center" style={{ position: "fixed", bottom: "30px", width: "100%" }}>
+    <Button variant="outline-danger" className="btn-no" onClick={()=> navigate("/updateprofile")}>
+        Cancel
+    </Button>
+    <Button onClick={handleSubmit} type="submit" variant="primary" className="btn-yes">
+        Save
+    </Button>
+</div>
         </Container>
       </Container>
     </div>
