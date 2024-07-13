@@ -47,6 +47,7 @@ export default function Card({ ...props }) {
     const [liked, setLiked] = useState(props.like);
     const { profiles, setProfiles } = useUserProfile();
     const detailsRef = useRef(null);
+    const { setPage } = props;
 
     async function handleIconButtonClick(type) {
         console.log(type);
@@ -91,6 +92,11 @@ export default function Card({ ...props }) {
             }
 
             if (type === "skip" || type === "like") {
+
+                if (profiles.length === 1) {
+                    setPage(prev => prev + 1);
+                }
+
                 cardRef.current.style.transform = "translateX(-100%)";
                 cardRef.current.style.transition = "transform 0.25s ease-in-out";
                 setProfiles(profiles.filter(profile => profile.user_id !== props.user_id));
@@ -154,7 +160,7 @@ export default function Card({ ...props }) {
                             setLiked(!liked);
                             handleIconButtonClick("like");
                         }} />
-                        {/* <div style={{
+                        <div style={{
                             position: "relative",
                             top: "1.5rem"
                         }}>
@@ -181,7 +187,7 @@ export default function Card({ ...props }) {
                                     detailsClassList.toggle("show");
                                 }}
                             />
-                        </div> */}
+                        </div>
                         <IconButton type='skip' onClick={(e) => {
                             e.stopPropagation();
                             handleIconButtonClick("skip");
@@ -212,7 +218,7 @@ export default function Card({ ...props }) {
                 style={{
                     height: "100%",
                     width: "100%",
-                    display: "none",                    
+                    display: "none",
                 }}
             >
                 <ProfileDetails userId={props.user_id} />
