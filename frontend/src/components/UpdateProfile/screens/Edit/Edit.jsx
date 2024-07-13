@@ -63,7 +63,7 @@ const Edit = () => {
 
    if(response.ok){
     setProfileData(data)
-    console.log(data.personality)
+    console.log(data)
    }
     }
     catch(err){
@@ -214,11 +214,15 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
   title="Age" 
   detail={Profile.Birthday ? calculateAge(Profile.Birthday) : "N/A"} 
 />
+<Link to="/updategender">
   <Carddetails icon={gender }title="Gender" detail={Profile.Gender ? Profile.Gender : "N/A"} />
+</Link>
   <Link to="/updatelocations">
   <Carddetails icon={locationedit }title="Location" detail={Profile.Country ? Profile.Country : "N/A" }  />
   </Link>
-  <Carddetails icon={relisionedit }title="Relision" detail={Profile.Religion ? Profile.Religion : "N/A"} />
+  <Link to = "/updatereligion">
+  <Carddetails icon={relisionedit } title="Relision" detail={Profile.Religion ? Profile.Religion : "N/A"} />
+  </Link>
   <Carddetails icon={educationedit }title="Education" detail={Profile.StudyField ? Profile.StudyField : "N/A"} />
    </Container>
 
@@ -226,8 +230,14 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
    <button className={edit.upgradebutton} onClick={expandall}>Expand All <span><Image src={update}/></span> </button>
    </Container>
    <Container>
-   <Carddetails icon={carear }title="Career" detail={Profile.StudyField ? Profile.StudyField : "N/A"} />
+    <Link to="/updatejob">
+   <Carddetails icon={carear }title="Career" detail={Profile.JobTitle
+ ? Profile.JobTitle
+ : "N/A"} />
+    </Link>
+   <Link to = "/updateheight">
   <Carddetails icon={height }title="Height" detail={Profile.Height ? Profile.Height : "N/A"} />
+   </Link>
   <Carddetails 
   icon={intersts} 
   title="Language" 
@@ -238,8 +248,12 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
   <Carddetails icon={intersts }title="Interrests" detail={Profile.PreferredGender ? Profile.PreferredGender : "N/A"} />
   <Carddetails icon={kids }title="What about kids" detail={Profile.HaveChildren ? Profile.HaveChildren : "N/A"} />
   <Carddetails icon={familplantwo }title="Family plans" detail={Profile.WantChildren ? Profile.WantChildren : "N/A"} />
+  <Link to = "/updatesmoke">
   <Carddetails icon={smoking }title="Do you smoke?" detail={Profile.Smoker ? Profile.Smoker : "N/A"}/>
+  </Link>
+  <Link to = "/updatedrink">
   <Carddetails icon={drinktwo }title="Do you drink" detail={Profile.Drinker ? Profile.Drinker : "N/A"} />
+  </Link>
 
    </Container>
    <Container>

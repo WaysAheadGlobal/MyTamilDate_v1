@@ -97,6 +97,11 @@ import UpdatePersonality from "./components/UpdateProfile/screens/PersonalityEdi
 import PersonalityProfile from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Personality/personality";
 import { GenderUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Gender/Gender";
 import { LocatedUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/locations/locations";
+import { ReligionUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Religion/religion";
+import HeightUpdate from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Height/height";
+import { JobTitleUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Job/job";
+import Smokeupdate from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/smoke/smoke";
+import Drinkupdate from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Drink/drink";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -229,7 +234,12 @@ function App() {
               <Route path="/personalityupdate" element = {<PersonalityProfile/>}></Route>
               <Route path = "/updategender"element = {<GenderUpdate/>}></Route>
               <Route path="/updatelocations" element={<LocatedUpdate/>}></Route>
-              
+              <Route path="/updatereligion" element={<ReligionUpdate/>}></Route>
+              <Route path="/updateheight" element = {<HeightUpdate/>}></Route>
+              <Route path = "/updatejob" element={<JobTitleUpdate/>}></Route>
+              <Route path="/updatesmoke" element = {<Smokeupdate/>}></Route>
+              <Route path = "/updatedrink" element = {<Drinkupdate/>}></Route>
+
               <Route path="/user/home" element={<Home />} />
               <Route path="/user/recommendations" element={<Recommendations />} />
               <Route path="/user/preferences" element={<Preferences />} />
