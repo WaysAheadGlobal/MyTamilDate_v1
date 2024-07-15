@@ -13,11 +13,10 @@ const PORT = process.env.PORT;
 const app = express();
 
 app.use(cors());
-app.use(express.json({ limit: '15mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", api);
-app.use('/sendmail', Sendmail)
+app.use('/sendmail', express.json({ limit: '15mb' }), Sendmail)
 
 app.get('/', (req, res) => {
     db.query('SELECT * FROM admin_users', (err, results) => {
@@ -57,7 +56,8 @@ io.use((socket, next) => {
 });
 
 io.on('connection', (socket) => {
-    console.log('a user connected');
+    console.log('a user connected', socket.handshake.auth.userId);
+    socket.join(socket.handshake.auth.userId);
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
@@ -68,14 +68,12 @@ io.on('connection', (socket) => {
         console.log('user joined room:', roomId);
     });
 
-    io.on('get-conversations', (result) => {
-        console.log(result)
-    });
-    socket.on('get-conversations', (result) => {
-        console.log(result)
+    socket.on("leave-room", (roomId) => {
+        socket.leave(roomId);
+        console.log('user left room:', roomId);
     });
 
-    socket.on('send-message', ({ roomId, message, sentAt, type }) => {
+    socket.on('send-message', ({ roomId, message, sentAt, type, recepientId }) => {
         const senderId = socket.handshake.auth.userId;
 
         db.query('INSERT INTO dncm_messages (type, version, conversation_id, sender_id, body, sent_at, updated_at, deleted_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [type, 1, roomId, senderId, message, sentAt, sentAt, 0], (err, results) => {
@@ -84,6 +82,8 @@ io.on('connection', (socket) => {
                 return;
             }
 
+            socket.emit('fetch-messages', { fetch: true });
+            socket.to(recepientId).emit('fetch-messages', { fetch: true });
             socket.to(roomId).emit('receive-message', message);
         });
 

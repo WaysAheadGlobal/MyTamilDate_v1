@@ -11,9 +11,12 @@ import ejs from 'ejs';
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { getOTPFromDBByEmail, insertOTPInDBByEmail } from "../../../../otpbyEmail";
 import UserApprovalEnum from "../../../enums/UserApprovalEnum";
+import Stripe from "stripe";
 
 const auth = Router();
 let otpData: { phone: string, otp: string, createdAt: Date } | null = null;
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 // Route to send OTP for login
 auth.get('/test-twilio', async (req, res) => {
@@ -304,23 +307,40 @@ auth.post('/signup', [body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'e
                     const profileQuery = `INSERT INTO user_profiles (user_id, completed, phone, created_at, updated_at)
                           VALUES (?, 0, ?, NOW(), NOW())`;
 
-                    db.query(profileQuery, [userId, phone], (profileErr, profileResult) => {
+                    db.query(profileQuery, [userId, phone], async (profileErr, profileResult) => {
                         if (profileErr) {
                             return db.rollback(() => {
                                 console.error('Error inserting user profile:', profileErr);
                                 res.status(500).send('Internal Server Error');
                             });
                         }
-                        db.commit((commitErr) => {
-                            if (commitErr) {
+                        
+                        const customer = await stripe.customers.create({
+                            phone: phone,
+                        });
+
+                        const stripeId = customer.id;
+
+                        db.query('UPDATE users SET stripe_id = ? WHERE id = ?', [stripeId, userId], (err) => {
+                            if (err) {
                                 return db.rollback(() => {
-                                    console.error('Error committing transaction:', commitErr);
+                                    console.error('Error updating data:', err);
                                     res.status(500).send('Internal Server Error');
                                 });
                             }
-                            const jwt = sign({ phone, userId }, process.env.JWT_SECRET as string, { expiresIn: '15 days' });
-                            res.status(201).json({ message: 'Sign up successful', token: jwt, userId });
+
+                            db.commit((commitErr) => {
+                                if (commitErr) {
+                                    return db.rollback(() => {
+                                        console.error('Error committing transaction:', commitErr);
+                                        res.status(500).send('Internal Server Error');
+                                    });
+                                }
+                                const jwt = sign({ phone, userId }, process.env.JWT_SECRET as string, { expiresIn: '15 days' });
+                                res.status(201).json({ message: 'Sign up successful', token: jwt, userId });
+                            });
                         });
+                        
                     });
                 });
             });
