@@ -209,11 +209,13 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
    {/* <button className={edit.upgradebutton}>Update <span><Image src={update}/></span> </button> */}
 
    <Container>
+    <Link to = "/updateage">
    <Carddetails 
   icon={age} 
   title="Age" 
   detail={Profile.Birthday ? calculateAge(Profile.Birthday) : "N/A"} 
 />
+</Link>
 <Link to="/updategender">
   <Carddetails icon={gender }title="Gender" detail={Profile.Gender ? Profile.Gender : "N/A"} />
 </Link>
@@ -223,7 +225,9 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
   <Link to = "/updatereligion">
   <Carddetails icon={relisionedit } title="Relision" detail={Profile.Religion ? Profile.Religion : "N/A"} />
   </Link>
+  <Link to = "/updateeducations">
   <Carddetails icon={educationedit }title="Education" detail={Profile.StudyField ? Profile.StudyField : "N/A"} />
+  </Link>
    </Container>
 
    <Container>
@@ -238,6 +242,9 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
    <Link to = "/updateheight">
   <Carddetails icon={height }title="Height" detail={Profile.Height ? Profile.Height : "N/A"} />
    </Link>
+
+   <Link to="/updatelanguage">
+
   <Carddetails 
   icon={intersts} 
   title="Language" 
@@ -245,9 +252,15 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
     <span key={i}>{e.name}</span>
   )) : "N/A"} 
 />
+</Link>
   <Carddetails icon={intersts }title="Interrests" detail={Profile.PreferredGender ? Profile.PreferredGender : "N/A"} />
+   
+  <Link to = "/updatekids">
   <Carddetails icon={kids }title="What about kids" detail={Profile.HaveChildren ? Profile.HaveChildren : "N/A"} />
+  </Link>
+  <Link to = "/updatefamilyplan">
   <Carddetails icon={familplantwo }title="Family plans" detail={Profile.WantChildren ? Profile.WantChildren : "N/A"} />
+  </Link>
   <Link to = "/updatesmoke">
   <Carddetails icon={smoking }title="Do you smoke?" detail={Profile.Smoker ? Profile.Smoker : "N/A"}/>
   </Link>
@@ -266,7 +279,6 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
         <img src={helpandsupport} alt="Help Icon" />
         Help&Support
       </div>
-
     </Container>
    <div className={edit.buttoncontainer}>
       <div className={edit.buttonlarge} onClick={()=> Navigate("/accoutsetting")}>

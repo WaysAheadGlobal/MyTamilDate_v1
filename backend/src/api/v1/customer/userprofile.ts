@@ -110,6 +110,38 @@ profile.put('/namedetails', [
     res.status(200).json({ message: 'Profile updated successfully' });
   });
 });
+profile.put('/brithday', [
+  verifyUser,
+
+  body('birthday').isDate().withMessage('Birthday must be a valid date'),
+
+
+], (req: UserRequest, res: any) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  const {  birthday, } = req.body;
+  const userId = req.userId;
+  console.log(userId);
+
+  const query = `
+      UPDATE user_profiles
+      SET  birthday = ?,  updated_at = NOW()
+      WHERE user_id = ?
+    `;
+
+  db.query<ResultSetHeader>(query, [ birthday, userId], (err, results) => {
+    if (err) {
+      console.error('Error updating user profile:', err);
+      return res.status(500).send('Internal Server Error');
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: 'User profile not found' });
+    }
+    res.status(200).json({ message: 'Age updated successfully' });
+  });
+});
 
 profile.get('/namedetails', verifyUser, (req: UserRequest, res: any) => {
   const userId = req.userId;
@@ -889,6 +921,32 @@ profile.get('/questions', (req: UserRequest, res: express.Response) => {
     }
 
     res.status(200).json({ questions: results });
+  });
+});
+profile.get('/questionss', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  const sql = `
+    SELECT 
+        q.id AS question_id,
+        q.text AS question,
+        qa.answer,
+        qa.created_at,
+        qa.updated_at
+    FROM 
+        questions q
+    LEFT JOIN 
+        question_answers qa ON qa.question_id = q.id AND qa.user_id = ?
+  `;
+
+  db.query(sql, [userId], (err: Error | null, results: any) => {
+      if (err) {
+          console.error('Error fetching data:', err);
+          res.status(500).send('Internal Server Error');
+          return;
+      }
+
+      res.status(200).json({ questions: results });
   });
 });
 

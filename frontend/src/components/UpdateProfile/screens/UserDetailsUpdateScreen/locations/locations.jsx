@@ -86,18 +86,27 @@ export const LocatedUpdate = () => {
       .then(response => response.json())
       .then(data => {
         console.log('Location saved:', data);
-        navigate("/religion");
+        navigate("/updateprofile");
       })
       .catch(error => console.error('Error saving location:', error));
   };
 
   return (
     <Sidebar>
-
+  <div style={{
+                flex: "1",
+                marginInline: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+                overflowY: "auto",
+                scrollbarWidth: "none",
+                padding : "2rem"
+            }}>
    
     <div className='located-container'>
       <Container className='located-main'>
-        <Container className='located-content'>
+        <Container className='located-content' style={{width : "100%"}}>
          
           <Container className='located-text'>
             <Image className='about-yourself-icon' src={location}></Image>
@@ -205,7 +214,7 @@ export const LocatedUpdate = () => {
         </Container>
       </Container>
     </div>
-
+    </div>
     </Sidebar>
   );
 };

@@ -503,6 +503,104 @@ console.log(userId);
   });
 });
 
+updateprofile.get('/questionss', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  const sql = `
+    SELECT 
+        q.id AS question_id,
+        q.text AS question,
+        qa.answer,
+        qa.created_at,
+        qa.updated_at
+    FROM 
+        questions q
+    LEFT JOIN 
+        question_answers qa ON qa.question_id = q.id AND qa.user_id = ?
+  `;
+
+  db.query(sql, [userId], (err: Error | null, results: any) => {
+      if (err) {
+          console.error('Error fetching data:', err);
+          res.status(500).send('Internal Server Error');
+          return;
+      }
+
+      res.status(200).json({ questions: results });
+  });
+});
+
+updateprofile.get('/answer/:questionId', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+  const questionId = req.params.questionId;
+
+  const query = 'SELECT answer FROM question_answers WHERE user_id = ? AND question_id = ?';
+
+  db.query<RowDataPacket[]>(query, [userId, questionId], (err, results) => {
+    if (err) {
+      console.error('Error fetching answer:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Answer not found' });
+    }
+
+    res.status(200).json(results[0]);
+  });
+});
+
+updateprofile.post('/answer/:questionId', verifyUser, (req: UserRequest, res: express.Response) => {
+  const { answer } = req.body;
+  const userId = req.userId;
+  const questionId = req.params.questionId;
+
+  if (!answer) {
+    return res.status(400).json({ message: 'Answer is required' });
+  }
+
+  db.beginTransaction(err => {
+
+    if (err) {
+      console.error('Transaction Start Error:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    const deleteQuery = 'DELETE FROM question_answers_update WHERE user_id = ? AND question_id = ?';
+
+    db.query(deleteQuery, [userId, questionId], (err, results) => {
+      if (err) {
+        console.error('Error deleting answer:', err);
+        db.rollback(() => {
+          return res.status(500).json({ message: 'Internal Server Error' });
+        });
+      }
+
+      const query = 'INSERT INTO question_answers_update (user_id, question_id, answer, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())';
+
+      db.query(query, [userId, questionId, answer], (err, results) => {
+        if (err) {
+          console.error('Error inserting answer:', err);
+          db.rollback(() => {
+            return res.status(500).json({ message: 'Internal Server Error' });
+          });
+        }
+
+        db.commit(err => {
+          if (err) {
+            console.error('Transaction Commit Error:', err);
+            db.rollback(() => {
+              return res.status(500).json({ message: 'Internal Server Error' });
+            });
+          }
+
+          res.status(200).json({ message: 'Answer updated successfully' });
+        });
+      });
+    });
+  });
+});
+
 
 // Update gender and want_gender
 updateprofile.put('/gender', [
@@ -535,6 +633,8 @@ updateprofile.put('/gender', [
     res.status(200).json({ message: 'Profile updated successfully' });
   });
 });
+
+
   export default updateprofile;
 
 

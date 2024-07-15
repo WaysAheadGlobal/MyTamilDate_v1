@@ -102,6 +102,11 @@ import HeightUpdate from "./components/UpdateProfile/screens/UserDetailsUpdateSc
 import { JobTitleUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Job/job";
 import Smokeupdate from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/smoke/smoke";
 import Drinkupdate from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Drink/drink";
+import KidsAndFamilyUpdate from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Whatsaboutfamily/familyplan";
+import KidsUpdate from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/havekids/havekids";
+import { LanguageUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/languages/languages";
+import { EducationUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/educations/educations";
+import { BasicDetailsUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/age/age";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -239,6 +244,13 @@ function App() {
               <Route path = "/updatejob" element={<JobTitleUpdate/>}></Route>
               <Route path="/updatesmoke" element = {<Smokeupdate/>}></Route>
               <Route path = "/updatedrink" element = {<Drinkupdate/>}></Route>
+              <Route path="/updatefamilyplan" element = {<KidsAndFamilyUpdate/>}></Route>
+              <Route path="/updatekids" element = {<KidsUpdate/>}></Route>
+              <Route path = "/updatelanguage" element = {<LanguageUpdate/>}></Route>
+              <Route path = "/updateeducations" element = {<EducationUpdate/>}></Route>
+              <Route path="/updateage" element = {<BasicDetailsUpdate/>}></Route>
+              
+
 
               <Route path="/user/home" element={<Home />} />
               <Route path="/user/recommendations" element={<Recommendations />} />
