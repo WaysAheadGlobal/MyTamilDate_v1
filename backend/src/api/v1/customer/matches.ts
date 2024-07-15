@@ -4,6 +4,7 @@ import { verifyUser } from "../../../middleware/verifyUser";
 import { db } from "../../../../db/db";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { query, validationResult } from "express-validator";
+import { io } from "../../..";
 
 const matches = Router();
 
@@ -43,6 +44,14 @@ matches.get(
                 WHERE m2.person_id = m1.user_id
                     AND m2.skip = 0
                     AND m2.\`like\` = 1
+            ) AND m1.person_id NOT IN (
+                SELECT b.person_id
+                FROM blocks b
+                WHERE b.user_id = m1.user_id
+            ) AND m1.id NOT IN (
+                SELECT um.match_id
+                FROM user_unmatches um
+                WHERE um.user_id = m1.user_id
             )
         LIMIT ? OFFSET ?;
         `;
@@ -145,6 +154,209 @@ matches.get(
         });
     }
 );
+
+matches.get("/skipped", (req: UserRequest, res) => {
+    const userId = req.userId;
+
+    const query = `
+        SELECT 
+            up.user_id,
+            up.first_name,
+            up.last_name,
+            l.country,
+            l.location_string,
+            j.name,
+            m.type,
+            m.hash,
+            m.extension
+        FROM discovery_skip ds 
+            INNER JOIN user_profiles up ON up.user_id = ds.person_id
+            INNER JOIN media m ON m.user_id = ds.person_id AND m.type IN (1, 31)
+            INNER JOIN locations l ON l.id = up.location_id
+            INNER JOIN jobs j on j.id = up.job_id
+        WHERE ds.user_id = ? ORDER BY ds.created_at DESC;
+    `;
+
+    db.query<RowDataPacket[]>(query, [userId], (err, result) => {
+        if (err) {
+            res.status(500).send("Failed to get skipped");
+            return;
+        }
+
+        res.status(200).send(result);
+    });
+});
+
+matches.get("/blocked", (req: UserRequest, res) => {
+    const userId = req.userId;
+
+    const query = `
+        SELECT 
+            up.user_id,
+            up.first_name,
+            up.last_name,
+            l.country,
+            l.location_string,
+            j.name,
+            m.type,
+            m.hash,
+            m.extension
+        FROM blocks b
+            INNER JOIN user_profiles up ON up.user_id = b.person_id
+            INNER JOIN media m ON m.user_id = b.person_id AND m.type IN (1, 31)
+            INNER JOIN locations l ON l.id = up.location_id
+            INNER JOIN jobs j on j.id = up.job_id
+        WHERE b.user_id = ? ORDER BY b.created_at DESC;
+    `;
+
+    db.query<RowDataPacket[]>(query, [userId], (err, result) => {
+        if (err) {
+            res.status(500).send("Failed to get skipped");
+            return;
+        }
+
+        res.status(200).send(result);
+    });
+});
+
+matches.post("/block", (req: UserRequest, res) => {
+    const userId = req.userId;
+    const personId = req.body.personId;
+
+    const query = "INSERT INTO blocks(user_id, person_id, created_at, updated_at) VALUES (?, ?, NOW(), NOW())";
+
+    db.query<ResultSetHeader>(query, [userId, personId], (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("Failed to block person");
+            return;
+        }
+
+        io.to(userId!).emit("block", { personId: personId });
+        res.status(200).json({ message: "Person blocked" });
+    });
+});
+
+matches.get("/unmatch-reasons", (req: UserRequest, res) => {
+    const query = "SELECT id, name FROM unmatches";
+
+    db.query<RowDataPacket[]>(query, (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("Failed to get unmatch reasons");
+            return;
+        }
+
+        res.status(200).send(result);
+    });
+});
+
+matches.post("/unmatch", (req: UserRequest, res) => {
+    const userId = req.userId;
+    const personId = req.body.personId;
+    const unmatchId = req.body.unmatchId;
+
+    db.beginTransaction(err => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("Failed to unmatch person");
+            return;
+        }
+
+        db.query<RowDataPacket[]>(`
+            SELECT
+                m1.id,
+                m1.user_id,
+                m1.person_id
+            FROM matches m1
+            WHERE m1.user_id = ? AND m1.person_id = ?
+                AND m1.skip = 0
+                AND m1.\`like\` = 1
+                AND person_id IN (
+                    SELECT m2.user_id
+                    FROM matches m2
+                    WHERE m2.person_id = m1.user_id
+                        AND m2.skip = 0
+                        AND m2.\`like\` = 1
+                ) AND m1.person_id NOT IN (
+                    SELECT b.person_id
+                    FROM blocks b
+                    WHERE b.user_id = m1.user_id
+                ) AND m1.id NOT IN (
+                    SELECT um.match_id
+                    FROM user_unmatches um
+                    WHERE um.user_id = m1.user_id
+                )
+        `, [userId, personId], (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send("Failed to unmatch person");
+                return;
+            }
+
+            if (result.length === 0) {
+                res.status(404).send("No match found");
+                return;
+            }
+
+            const matchId = result[0].id;
+
+            const query = "INSERT INTO user_unmatches(user_id, match_id, unmatch_id, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())";
+
+            db.query<ResultSetHeader>(query, [userId, matchId, unmatchId], (err, result) => {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send("Failed to block person");
+                    return;
+                }
+
+                db.commit(err => {
+                    if (err) {
+                        console.log(err);
+                        res.status(500).send("Failed to block person");
+                        return;
+                    }
+
+                    io.to(userId!).emit("unmatch", { personId: personId });
+                    res.status(200).json({ message: "Person unmatched" });
+                })
+            });
+        });
+    });
+});
+
+matches.get("/report-reasons", (req: UserRequest, res) => {
+    const query = "SELECT id, reason_type as name FROM report_reason_types";
+
+    db.query<RowDataPacket[]>(query, (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("Failed to get report reasons");
+            return;
+        }
+
+        res.status(200).send(result);
+    });
+});
+
+
+matches.post("/report", (req: UserRequest, res) => {
+    const userId = req.userId;
+    const personId = req.body.personId;
+
+    const query = "INSERT INTO blocks(user_id, person_id, created_at, updated_at) VALUES (?, ?, NOW(), NOW())";
+
+    db.query<ResultSetHeader>(query, [userId, personId], (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("Failed to block person");
+            return;
+        }
+
+        io.to(userId!).emit("block", { personId: personId });
+        res.status(200).json({ message: "Person blocked" });
+    });
+});
 
 matches.post("/like", (req: UserRequest, res) => {
     const userId = req.userId;
@@ -262,8 +474,6 @@ matches.post("/undo", (req: UserRequest, res) => {
         });
     })
 });
-
-matches.get("/chat/received", (req: UserRequest, res) => { });
 
 matches.get("/chat/sent", (req: UserRequest, res) => {
     const query = `

@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import styles from './matches.module.css';
-import { useCookies } from '../../../../hooks/useCookies';
-import { API_URL } from '../../../../api';
 import { Skeleton } from '@mui/material';
-import chatPlaceholder from '../../../../assets/images/chatPlaceholder.svg';
-import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../../../api';
+import chatPlaceholder from '../../../../assets/images/chatPlaceholder.svg';
+import { useSocket } from '../../../../Context/SockerContext';
+import { useCookies } from '../../../../hooks/useCookies';
+import styles from './matches.module.css';
 
 export default function Matches() {
     const [matches, setMatches] = useState([]);
@@ -15,6 +16,7 @@ export default function Matches() {
     const cookies = useCookies();
     const [page, setPage] = useState(1);
     const navigate = useNavigate();
+    const { socket } = useSocket();
 
     const getImageURL = (type, hash, extension, userId) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}` : `${API_URL}media/avatar/${hash}.${extension}`;
 
@@ -73,11 +75,15 @@ export default function Matches() {
             console.log(data);
 
             if (response.ok) {
+                if (sessionStorage.getItem("conversationId")) {
+                    socket?.emit("leave-room", sessionStorage.getItem("conversationId"));
+                }
                 sessionStorage.setItem("conversationId", data.conversationId);
                 navigate(`/user/chat/with/${name}`, {
                     state: {
                         name,
-                        img
+                        img,
+                        recepientId: userId
                     }
                 })
             }
@@ -99,11 +105,46 @@ export default function Matches() {
             const data = await response.json();
 
             if (response.ok) {
-                console.log("messages", data);
                 setConversations(data);
             }
         })()
     }, [])
+
+    useEffect(() => {
+        socket?.on("fetch-messages", async (data) => {
+            const response = await fetch(`${API_URL}customer/chat/get-conversations?limit=1`, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.getCookie('token')}`
+                }
+            });
+            const result = await response.json();
+
+            if (response.ok) {
+                console.log("messages", result);
+                setConversations([
+                    result[0],
+                    ...conversations.filter(conversation => conversation.conversation_id !== result[0].conversation_id)
+                ])
+            }
+        });
+
+        return () => {
+            socket?.off("fetch-messages");
+        }
+    });
+
+    useEffect(() => {
+        socket?.on("block", (data) => {
+            const personId = data.personId;
+            setConversations(conversations.filter(conversation => conversation.user_id !== personId));
+        });
+
+        return () => {
+            socket?.off("block");
+        }
+    });
 
     /**
      * 

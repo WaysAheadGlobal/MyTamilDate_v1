@@ -151,6 +151,9 @@ export default function Likes() {
                                 backgroundSize: 'cover',
                                 backgroundPosition: 'center',
                             }}
+                            onClick={() => {
+                                navigate(`/user/${like.first_name}/${like.user_id}`)
+                            }}
                             onDoubleClick={(e) => {
                                 e.preventDefault();
                                 if (searchParams[0].get("t") === "r")

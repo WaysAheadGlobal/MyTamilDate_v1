@@ -267,22 +267,42 @@ chat.get("/get-messages/:conversationId", (req: UserRequest, res) => {
 });
 
 chat.get("/get-conversations", (req: UserRequest, res) => {
-    const query = `
+    const limit = req.query.limit;
+
+    console.log(limit)
+
+    let query = `
         SELECT
-        up.user_id,
-        up.first_name,
-        up.last_name,
-        m.hash,
-        m.type,
-        m.extension,
-        (SELECT dp2.participant_id FROM dncm_participants dp2 WHERE dp2.conversation_id = dp.conversation_id AND dp2.participant_id != ?) as participant_id,
-        (SELECT dm.\`body\` FROM dncm_messages dm WHERE dm.conversation_id = dp.conversation_id AND dm.\`body\` IS NOT NULL  ORDER BY dm.sent_at DESC LIMIT 1) as message,
-        (SELECT dm.sent_at FROM dncm_messages dm WHERE dm.conversation_id = dp.conversation_id AND dm.\`body\` IS NOT NULL ORDER BY dm.sent_at DESC LIMIT 1) as sent_at,
-        dp.conversation_id FROM dncm_participants dp
-        INNER JOIN user_profiles up ON up.user_id IN (SELECT dp2.participant_id FROM dncm_participants dp2 WHERE dp2.conversation_id = dp.conversation_id AND dp2.participant_id != ?)
-        INNER JOIN media m ON m.user_id = up.user_id
-        WHERE dp.participant_id = ? AND m.type IN (1, 31) ORDER BY sent_at DESC;
+            up.user_id,
+            up.first_name,
+            up.last_name,
+            m.hash,
+            m.type,
+            m.extension,
+            (SELECT dp2.participant_id FROM dncm_participants dp2 WHERE dp2.conversation_id = dp.conversation_id AND dp2.participant_id != ?) as participant_id,
+            (SELECT dm.\`body\` FROM dncm_messages dm WHERE dm.conversation_id = dp.conversation_id AND dm.\`body\` IS NOT NULL  ORDER BY dm.sent_at DESC LIMIT 1) as message,
+            (SELECT dm.sent_at FROM dncm_messages dm WHERE dm.conversation_id = dp.conversation_id AND dm.\`body\` IS NOT NULL ORDER BY dm.sent_at DESC LIMIT 1) as sent_at,
+            dp.conversation_id 
+        FROM dncm_participants dp
+            INNER JOIN user_profiles up ON up.user_id IN (SELECT dp2.participant_id FROM dncm_participants dp2 WHERE dp2.conversation_id = dp.conversation_id AND dp2.participant_id != ?)
+            INNER JOIN media m ON m.user_id = up.user_id
+        WHERE dp.participant_id = ? 
+            AND m.type IN (1, 31) 
+            AND up.user_id NOT IN (
+                SELECT b.person_id
+                FROM blocks b
+                WHERE b.user_id = dp.participant_id
+            ) AND up.user_id NOT IN (
+                SELECT um.match_id
+                FROM user_unmatches um
+                WHERE um.user_id = dp.participant_id
+            )
+        ORDER BY sent_at DESC 
     `;
+
+    if (limit && !isNaN(parseInt(limit as string))) {
+        query = query.concat(` LIMIT ${limit}`);
+    }
 
     db.query<RowDataPacket[]>(query, [req.userId, req.userId, req.userId], (err, result) => {
         if (err) {

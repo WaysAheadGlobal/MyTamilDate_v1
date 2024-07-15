@@ -1,11 +1,13 @@
 import dayjs from 'dayjs';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
+import Modal from 'react-bootstrap/Modal';
 import { useLocation } from 'react-router-dom';
-import io from "socket.io-client";
 import { API_URL } from '../../../../api';
+import { useSocket } from '../../../../Context/SockerContext';
 import { useCookies } from '../../../../hooks/useCookies';
 import styles from './chatbox.module.css';
+import Button from '../button/Button';
 
 export default function ChatBox() {
     /**
@@ -27,8 +29,11 @@ export default function ChatBox() {
     const [text, setText] = React.useState("");
     const cookies = useCookies();
     const location = useLocation();
-    const [socket, setSocket] = React.useState(null);
     const [conversationId, setConversationId] = React.useState(null);
+    const { socket } = useSocket();
+    const [showReportModal, setShowReportModal] = useState(false);
+    const [showBlockModal, setShowBlockModal] = useState(false);
+    const [showUnmatchModal, setShowUnmatchModal] = useState(false);
 
     useEffect(() => {
         const conversationId = sessionStorage.getItem("conversationId");
@@ -63,7 +68,7 @@ export default function ChatBox() {
                 setMessages(data);
             }
         })()
-    }, [conversationId])
+    }, [conversationId, window.location.pathname])
 
     useEffect(() => {
         const chatContainer = document.querySelector(`#chat-container`);
@@ -112,23 +117,10 @@ export default function ChatBox() {
     }
 
     useEffect(() => {
-        const socket = io(process.env.REACT_APP_SOCKET_URL, {
-            auth: {
-                token: cookies.getCookie('token')
-            }
-        });
-        setSocket(socket);
-
-        return () => {
-            socket.disconnect();
-        }
-    }, []);
-
-    useEffect(() => {
         if (socket) {
             socket.emit('join-room', sessionStorage.getItem("conversationId"));
         }
-    }, [socket])
+    });
 
     useEffect(() => {
         if (socket) {
@@ -147,13 +139,11 @@ export default function ChatBox() {
                 });
             });
         }
-    })
 
-    /* useEffect(() => {
-        socket?.on('get-conversations', (data) => {
-            console.log(data)
-        })
-    }) */
+        return () => {
+            socket?.off('receive-message');
+        }
+    })
 
     /**
      * @param {React.FormEvent<HTMLFormElement>} e 
@@ -171,6 +161,7 @@ export default function ChatBox() {
                 roomId: sessionStorage.getItem("conversationId"),
                 sentAt: Date.now(),
                 type: 1,
+                recepientId: location.state.recepientId
             });
             setMessages({
                 ...messages,
@@ -190,6 +181,9 @@ export default function ChatBox() {
 
     return (
         <section id="chat-box" className={styles.chatbox}>
+            <UnmatchModal show={showUnmatchModal} setShow={setShowUnmatchModal} />
+            <ReportModal show={showReportModal} setShow={setShowReportModal} />
+            <BlockModal show={showBlockModal} setShow={setShowBlockModal} />
             <div className={styles.chatHeader}>
                 {/* <img src="https://via.placeholder.com/75" alt="profile" /> */}
                 <img src={location.state?.img ?? ""} alt="profile" style={{
@@ -215,19 +209,32 @@ export default function ChatBox() {
                         backgroundColor: "rgba(255, 255, 255, 0.5)",
                         backdropFilter: "blur(10px)",
                     }}>
-                        <Dropdown.Item style={{
-                            borderBottom: "1px solid #e0e0e0",
-                            marginBottom: "0.5rem"
-                        }} href="#">Preferences</Dropdown.Item>
-                        <Dropdown.Item style={{
-                            borderBottom: "1px solid #e0e0e0",
-                            marginBottom: "0.5rem"
-                        }} href="#">Unmatch</Dropdown.Item>
-                        <Dropdown.Item style={{
-                            borderBottom: "1px solid #e0e0e0",
-                            marginBottom: "0.5rem"
-                        }} href="#">Report</Dropdown.Item>
-                        <Dropdown.Item href="#">Block</Dropdown.Item>
+                        <Dropdown.Item
+                            as="button"
+                            style={{
+                                borderBottom: "1px solid #e0e0e0",
+                                marginBottom: "0.5rem"
+                            }}
+                            onClick={() => setShowUnmatchModal(true)}
+                        >
+                            Unmatch
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                            as="button"
+                            style={{
+                                borderBottom: "1px solid #e0e0e0",
+                                marginBottom: "0.5rem"
+                            }}
+                            onClick={() => setShowReportModal(true)}
+                        >
+                            Report
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                            as="button"
+                            onClick={() => setShowBlockModal(true)}
+                        >
+                            Block
+                        </Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
             </div>
@@ -266,5 +273,351 @@ export default function ChatBox() {
                 <button>Send</button>
             </form>
         </section>
+    )
+}
+
+function UnmatchModal({ show, setShow }) {
+    const cookies = useCookies();
+    const [options, setOptions] = useState([]);
+    const { socket } = useSocket();
+    const location = useLocation();
+    const formRef = useRef(null);
+
+    useEffect(() => {
+        (async () => {
+            const response = await fetch(`${API_URL}customer/matches/unmatch-reasons`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.getCookie('token')}`
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+            if (response.ok) {
+                setOptions(data);
+            }
+        })()
+    }, [show])
+
+    async function unmatch(e) {
+        e.preventDefault();
+        console.log(location.state.recepientId);
+        const response = await fetch(`${API_URL}customer/matches/unmatch`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookies.getCookie('token')}`
+            },
+            body: JSON.stringify({
+                personId: location.state.recepientId,
+                ...Object.fromEntries(new FormData(formRef.current))
+            })
+        });
+        const data = await response.json();
+        if (response.ok) {
+            console.log(data);
+            socket?.emit('leave-room', sessionStorage.getItem("conversationId"));
+            sessionStorage.removeItem("conversationId");
+            window.location.assign("/user/chat");
+        }
+    }
+
+    return (
+        <Modal size='sm' centered show={show}>
+            <Modal.Body>
+                <p style={{
+                    fontSize: "large",
+                    fontWeight: "600",
+                    margin: "0",
+                    marginBottom: "1rem",
+                    color: "#6c6c6c"
+                }}>Unmatch user?</p>
+                <p
+                    style={{
+                        fontSize: "14px",
+                        margin: "0",
+                        textAlign: "center",
+                        color: "#6c6c6c"
+                    }}
+                >Please let us know why you'd like to unmatch this user so we can improve your future experience.</p>
+                <form
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "1rem",
+                        marginBlock: "1rem"
+                    }}
+                    onSubmit={unmatch}
+                    ref={formRef}
+                >
+                    {
+                        options.map(option => (
+                            <label key={option.id} htmlFor={option.id} style={{
+                                display: "flex",
+                                gap: "1rem",
+                                alignItems: "center",
+                                justifyContent: "flex-start",
+                                fontSize: "14px",
+                                color: "#6c6c6c"
+                            }}>
+                                <input
+                                    type="radio"
+                                    name="unmatchId"
+                                    id={option.id}
+                                    value={option.id}
+                                    style={{
+                                        accentColor: "#4E1173",
+                                        width: "20px",
+                                        height: "20px",
+                                    }}
+                                />
+                                <span>{option.name}</span>
+                            </label>
+                        ))
+                    }
+                </form>
+                <div style={{
+                    marginTop: "1rem",
+                    display: "flex",
+                    gap: "1rem",
+                    marginInline: "auto"
+                }}>
+                    <button
+                        type='button'
+                        style={{
+                            borderRadius: "9999px",
+                            padding: "0.75rem 1.5rem",
+                            border: "2px solid #6c6c6c",
+                            color: "#6c6c6c",
+                            backgroundColor: "transparent"
+                        }}
+                        onClick={() => setShow(false)}
+                    >
+                        Close
+                    </button>
+                    <Button
+                        type="submit"
+                        style={{
+                            borderRadius: "9999px",
+                            padding: "0.75rem 1.5rem",
+                        }}
+                        onClick={() => formRef.current?.requestSubmit()}
+                    >
+                        Submit
+                    </Button>
+                </div>
+            </Modal.Body>
+        </Modal>
+    )
+}
+
+function ReportModal({ show, setShow }) {
+    const cookies = useCookies();
+    const [options, setOptions] = useState([]);
+    const { socket } = useSocket();
+    const location = useLocation();
+
+    useEffect(() => {
+        (async () => {
+            const response = await fetch(`${API_URL}customer/matches/report-reasons`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.getCookie('token')}`
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+            if (response.ok) {
+                setOptions(data);
+            }
+        })()
+    }, [show])
+
+    async function report() {
+        console.log(location.state.recepientId);
+        const response = await fetch(`${API_URL}customer/matches/report`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookies.getCookie('token')}`
+            },
+            body: JSON.stringify({
+                personId: location.state.recepientId
+            })
+        });
+        const data = await response.json();
+        if (response.ok) {
+            console.log(data);
+            socket?.emit('leave-room', sessionStorage.getItem("conversationId"));
+            sessionStorage.removeItem("conversationId");
+            window.location.assign("/user/chat");
+        }
+    }
+
+    return (
+        <Modal size='sm' centered show={show}>
+            <Modal.Body>
+                <p style={{
+                    fontSize: "large",
+                    fontWeight: "600",
+                    margin: "0",
+                    marginBottom: "1rem",
+                    color: "#6c6c6c"
+                }}>Report user?</p>
+                <p
+                    style={{
+                        fontSize: "14px",
+                        margin: "0",
+                        textAlign: "center",
+                        color: "#6c6c6c"
+                    }}
+                >Report this user for violating MTD's community guidelines. Please select a reason for reporting the user below to help us improve your experience.</p>
+                <form
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "1rem",
+                        marginBlock: "1rem"
+                    }}
+                    onSubmit={report}
+                >
+                    {
+                        options.map(option => (
+                            <label key={option.id} htmlFor={option.id} style={{
+                                display: "flex",
+                                gap: "1rem",
+                                alignItems: "center",
+                                justifyContent: "flex-start",
+                                fontSize: "14px",
+                                textAlign: "left",
+                                color: "#6c6c6c"
+                            }}>
+                                <input
+                                    type="radio"
+                                    name="unmatch-reason"
+                                    id={option.id}
+                                    value={option.id}
+                                    style={{
+                                        accentColor: "#4E1173",
+                                        width: "20px",
+                                        height: "20px",
+                                    }}
+                                />
+                                <span>{option.name}</span>
+                            </label>
+                        ))
+                    }
+                </form>
+                <div style={{
+                    marginTop: "1rem",
+                    display: "flex",
+                    gap: "1rem",
+                    marginInline: "auto"
+                }}>
+                    <button
+                        type='button'
+                        style={{
+                            borderRadius: "9999px",
+                            padding: "0.75rem 1.5rem",
+                            border: "2px solid #6c6c6c",
+                            color: "#6c6c6c",
+                            backgroundColor: "transparent"
+                        }}
+                        onClick={() => setShow(false)}
+                    >
+                        Close
+                    </button>
+                    <Button
+                        type="submit"
+                        style={{
+                            borderRadius: "9999px",
+                            padding: "0.75rem 1.5rem",
+                        }}
+                    >
+                        Submit
+                    </Button>
+                </div>
+            </Modal.Body>
+        </Modal>
+    )
+}
+
+function BlockModal({ show, setShow }) {
+    const cookies = useCookies();
+    const { socket } = useSocket();
+    const location = useLocation();
+
+    async function block() {
+        console.log(location.state.recepientId);
+        const response = await fetch(`${API_URL}customer/matches/block`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookies.getCookie('token')}`
+            },
+            body: JSON.stringify({
+                personId: location.state.recepientId
+            })
+        });
+        const data = await response.json();
+        if (response.ok) {
+            console.log(data);
+            socket?.emit('leave-room', sessionStorage.getItem("conversationId"));
+            sessionStorage.removeItem("conversationId");
+            window.location.assign("/user/chat");
+        }
+    }
+
+
+    return (
+        <Modal size='sm' centered show={show}>
+            <Modal.Body>
+                <p style={{
+                    fontSize: "large",
+                    fontWeight: "600",
+                    margin: "0",
+                    marginBottom: "1rem",
+                    color: "#6c6c6c"
+                }}>Block user</p>
+                <p
+                    style={{
+                        fontSize: "14px",
+                        margin: "0",
+                        textAlign: "center",
+                        color: "#6c6c6c"
+                    }}
+                >Blocked members will no longer be able to message you and won't show up when you're browsing</p>
+                <div style={{
+                    marginTop: "1rem",
+                    display: "flex",
+                    gap: "1rem",
+                    marginInline: "auto",
+                    marginTop: "3rem"
+                }}>
+                    <button
+                        type='button'
+                        style={{
+                            borderRadius: "9999px",
+                            padding: "0.75rem 1.5rem",
+                            border: "2px solid #6c6c6c",
+                            color: "#6c6c6c",
+                            backgroundColor: "transparent"
+                        }}
+                        onClick={() => setShow(false)}
+                    >
+                        Close
+                    </button>
+                    <Button
+                        onClick={block}
+                        style={{
+                            borderRadius: "9999px",
+                            padding: "0.75rem 1.5rem",
+                        }}
+                    >
+                        Submit
+                    </Button>
+                </div>
+            </Modal.Body>
+        </Modal>
     )
 }
