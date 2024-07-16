@@ -293,9 +293,13 @@ chat.get("/get-conversations", (req: UserRequest, res) => {
                 FROM blocks b
                 WHERE b.user_id = dp.participant_id
             ) AND up.user_id NOT IN (
-                SELECT um.match_id
-                FROM user_unmatches um
+                SELECT ma.person_id
+                FROM user_unmatches um INNER JOIN matches ma ON ma.id = um.match_id 
                 WHERE um.user_id = dp.participant_id
+            ) AND up.user_id NOT IN (
+                SELECT r.person_id
+                FROM reports r
+                WHERE r.user_id = dp.participant_id
             )
         ORDER BY sent_at DESC 
     `;

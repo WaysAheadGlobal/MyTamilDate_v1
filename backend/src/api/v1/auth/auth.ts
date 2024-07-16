@@ -141,7 +141,7 @@ auth.post("/login/email-otp", async (req, res) => {
 
             const msg = {
                 to: email,
-                from: "mtdteam2024@gmail.com",
+                from: "process.env.EMAIL_HOST",
                 subject: "MTD Login Code",
                 html: html
             };
@@ -367,7 +367,7 @@ auth.post("/verify", verifyUser, async (req: UserRequest, res) => {
         const token = crypto.randomBytes(32).toString('hex');
         const msg: sgMail.MailDataRequired = {
             to: results[0].email,
-            from: "mtdteam2024@gmail.com",
+            from: "process.env.EMAIL_HOST",
             subject: "Email Verification",
             html: await ejs.renderFile("mail/templates/verify.ejs", { link: `${process.env.URL}/api/v1//user/verify/${token}` }),
         };

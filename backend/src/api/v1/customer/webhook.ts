@@ -1,29 +1,15 @@
 import { Router } from "express";
+import moment from "moment";
+import { ResultSetHeader, RowDataPacket } from "mysql2";
 import Stripe from "stripe";
+import { db } from "../../../../db/db";
+import sgMail from "@sendgrid/mail";
 
 const webhookRouter = Router();
 
-// server.js
-//
-// Use this sample code to handle webhook events in your integration.
-//
-// 1) Paste this code into a new file (server.js)
-//
-// 2) Install dependencies
-//   npm install stripe
-//   npm install express
-//
-// 3) Run the server on http://localhost:4242
-//   node server.js
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
-// The library needs to be configured with your account's secret key.
-// Ensure the key is kept out of any version control system you might be using.
-
-
-// This is your Stripe CLI webhook secret for testing your endpoint locally.
-const endpointSecret = "whsec_b88af3ba29f8827823a1efd0d0165bd47eee3805988dfc4cef3df7260c82dacd";
-
-webhookRouter.post('/', (request, response) => {
+webhookRouter.post('/', async (request, response) => {
     const sig = request.headers['stripe-signature']!;
 
     let event;
@@ -37,13 +23,120 @@ webhookRouter.post('/', (request, response) => {
 
     // Handle the event
     switch (event.type) {
-        case 'payment_intent.succeeded':
-            const paymentIntentSucceeded = event.data.object;
-            // Then define and call a function to handle the event payment_intent.succeeded
+        case 'invoice.paid': {
+            // Continue to provision the subscription as payments continue to be made.
+            // Store the status in your database and check when a user accesses your service.
+            // This approach helps you avoid hitting rate limits.   
+
+            const object = event.data.object;
+
+            console.log("1")
+
+            db.beginTransaction(err => {
+                if (err) {
+                    db.rollback(() => {
+                        console.log(err);
+                    });
+                    return;
+                }
+
+                db.query<RowDataPacket[]>("SELECT id FROM users WHERE stripe_id = ?", [object.customer], (err, result) => {
+                    if (err) {
+                        db.rollback(() => {
+                            console.log(err);
+                        });
+                        return;
+                    }
+
+                    if (result.length === 0) {
+                        db.rollback(() => {
+                            console.log("User not found");
+                        });
+                        return;
+                    }
+
+                    db.query<ResultSetHeader>("INSERT INTO payments (customer_id, amount, discount_amount, price_id, created_at, updated_at, user_id) VALUES (?, ?, ?, ?, NOW(), NOW(), ?)", [object.customer, object.amount_paid, object.discount ?? 0, object.lines.data[0]?.plan?.id, result[0].id], (err, _) => {
+                        if (err) {
+                            db.rollback(() => {
+                                console.log(err);
+                            });
+                            return;
+                        }
+
+                        const query = "INSERT INTO subscriptions (user_id, name, stripe_id, stripe_status, stripe_plan, quantity, ends_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?), NOW(), NOW())";
+
+                        const values = [
+                            result[0].id,
+                            "default",
+                            object.subscription,
+                            object.status,
+                            object.lines.data[0]?.plan?.id,
+                            object.lines.data[0]?.quantity,
+                            object.lines.data[0]?.period?.end,
+                            result[0].id
+                        ];
+
+                        db.query<ResultSetHeader>(query, values, async (err, _) => {
+                            if (err) {
+                                db.rollback(() => {
+                                    console.log(err);
+                                });
+                                return;
+                            }
+
+                            await sgMail.send({
+                                to: object.customer_email!,
+                                from: process.env.EMAIL_HOST!,
+                                subject: "Payment Successful",
+                                text: `
+                                Dear customer,
+
+                                Your payment was successful. 
+                                Thank you for subscribing to our service.
+                                
+                                This is your invoice:
+                                ${object.hosted_invoice_url}
+
+                                Regards,
+                                The MTD Team
+                            `
+                            })
+
+                            db.commit(err => {
+                                if (err) {
+                                    db.rollback(() => {
+                                        console.log(err);
+                                    });
+                                    return;
+                                }
+
+                                console.log("Success");
+                            });
+                        });
+                    });
+                });
+            });
+
             break;
-        // ... handle other event types
+        }
+        case 'invoice.payment_failed': {
+            // The payment failed or the customer does not have a valid payment method.
+            // The subscription becomes past_due. Notify your customer and send them to the
+            // customer portal to update their payment information.
+            /* console.log(event.data.object); */
+
+            const object = event.data.object;
+
+            break;
+        }
+        case 'checkout.session.completed': {
+            // Payment is successful and the subscription is created.
+            // You should provision the subscription and save the customer ID to your database.
+            break;
+        }
         default:
-            console.log(`Unhandled event type ${event.type}`);
+        /* console.log(event.data.object); */
+        // Unhandled event type
     }
 
     // Return a 200 response to acknowledge receipt of the event

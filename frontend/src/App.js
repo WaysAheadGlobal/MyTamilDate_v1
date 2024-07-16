@@ -107,6 +107,7 @@ import KidsUpdate from "./components/UpdateProfile/screens/UserDetailsUpdateScre
 import { LanguageUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/languages/languages";
 import { EducationUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/educations/educations";
 import { BasicDetailsUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/age/age";
+import ChatWith from "./components/userflow/screens/chat/ChatWith";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -256,6 +257,7 @@ function App() {
               <Route path="/user/recommendations" element={<Recommendations />} />
               <Route path="/user/preferences" element={<Preferences />} />
               <Route path="/user/:name/:id" element={<ProfileDetails />} />
+              <Route path="/user/chat/with/:name" element={<ChatWith />} />
               <Route path="/user/chat/*" element={<Chat />} />
             </Routes>
           </main>

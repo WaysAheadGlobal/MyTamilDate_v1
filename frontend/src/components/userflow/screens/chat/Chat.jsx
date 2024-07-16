@@ -12,7 +12,7 @@ import styles from './chat.module.css'
 export default function Chat() {
     const pathname = window.location.pathname.split("/");
 
-    useEffect(() => {
+    /* useEffect(() => {
         window.addEventListener("resize", () => {
             if (window.innerWidth > 768) {
                 document.querySelector("#match-box").style.display = "flex";
@@ -46,12 +46,12 @@ export default function Chat() {
             document.querySelector("#match-box").style.display = "flex";
             document.querySelector("#chat-box").style.display = "none";
         }
-    }, [pathname])
+    }, [pathname]) */
 
     return (
         <section className={[styles.chatLayout, "chat"].join(" ")}>
             <MobileSidebar />
-            <div id="match-box" className={styles.matchContainer}>
+            <div className={[styles.matchContainer, styles.matchBox].join(" ")}>
                 <ChatNav />
                 {
                     pathname.includes("likes") && <Likes />
@@ -75,7 +75,7 @@ export default function Chat() {
                     maxWidth: "100%",
                 }} />
             </div>
-            <ChatBox />
+            <ChatBox className={styles.chatBox} />
         </section>
     )
 }

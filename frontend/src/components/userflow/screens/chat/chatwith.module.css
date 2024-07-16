@@ -1,3 +1,17 @@
+.matchBox {
+    display: flex;
+}
+
+.chatBox {
+    display: flex;
+}
+
+@media screen and (max-width: 768px) {
+    .matchBox {
+        display: none !important;
+    }     
+}
+
 .chatLayout {
     display: grid;
     grid-template-columns: auto auto 1fr;
@@ -23,9 +37,7 @@
     }
 
     .matchContainer {
-        width: 100%;
-        max-width: 100%;
-        border-right: none;
+       display: none;
     }
 }
 
@@ -36,23 +48,5 @@
 
     .matchContainer {
         padding: 1rem;
-    }
-}
-
-.matchBox {
-    display: flex;
-}
-
-.chatBox {
-    display: flex;
-}
-
-@media screen and (max-width: 768px) {
-    .matchBox {
-        display: flex;
-    }
-
-    .chatBox {
-        display: none;
     }
 }
