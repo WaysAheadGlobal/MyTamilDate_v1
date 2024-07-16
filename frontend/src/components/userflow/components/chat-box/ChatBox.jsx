@@ -9,7 +9,7 @@ import { useCookies } from '../../../../hooks/useCookies';
 import styles from './chatbox.module.css';
 import Button from '../button/Button';
 
-export default function ChatBox() {
+export default function ChatBox({ className }) {
     /**
      * @typedef {Object} Message
      * @property {"you" | "other"} sender - The sender of the message.
@@ -72,7 +72,7 @@ export default function ChatBox() {
 
     useEffect(() => {
         if (!conversationId) return;
-        
+
         const chatContainer = document.querySelector(`#chat-container`);
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }, [messages]);
@@ -181,12 +181,12 @@ export default function ChatBox() {
         setText("");
     }
 
-    if (!conversationId) {
+    /* if (!conversationId) {
         return <div id="chat-box"></div>
-    }
+    } */
 
     return (
-        <section id="chat-box" className={styles.chatbox}>
+        <section className={[styles.chatbox, className].join(" ")}>
             <UnmatchModal show={showUnmatchModal} setShow={setShowUnmatchModal} />
             <ReportModal show={showReportModal} setShow={setShowReportModal} />
             <BlockModal show={showBlockModal} setShow={setShowBlockModal} />
