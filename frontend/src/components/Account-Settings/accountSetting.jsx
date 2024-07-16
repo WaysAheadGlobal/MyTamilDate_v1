@@ -317,10 +317,36 @@ const Gototermandconditions = ()=>{
     const [email, setEmail] = useState('');
 
 
-    const handleSubmit = (e) => {
+    // const handleSubmit = async(e) => {
+    //     e.preventDefault();
+
+
+    //     if (!email) {
+    //         setErrorMessageemail('Please enter a valid email address');
+    //         return;
+    //     } else if (!email.includes('@')) {
+    //         setErrorMessageemail('Please enter a valid email address');
+    //         return;
+    //     }
+    //       try{
+           
+    //         const response = await fetch (`${API_URL}/customer/setting/request-email-update`)
+           
+    //       }catch(err){
+    //         console.log(err);
+    //       }
+
+    //     console.log('Email submitted:', email);
+    //     setEmail('');
+    //     setErrorMessageemail('');
+    //     handleCloseEmail();
+    //     handleShowEmailotp();
+
+    // };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
-
+    
         if (!email) {
             setErrorMessageemail('Please enter a valid email address');
             return;
@@ -328,14 +354,35 @@ const Gototermandconditions = ()=>{
             setErrorMessageemail('Please enter a valid email address');
             return;
         }
-        console.log('Email submitted:', email);
-        setEmail('');
         setErrorMessageemail('');
-        handleCloseEmail();
-        handleShowEmailotp();
-
+    console.log("req send")
+        try {
+            const response = await fetch(`${API_URL}/customer/setting/request-email-update`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getCookie('token')}`
+                },
+                body: JSON.stringify({ email }),
+            });
+    
+            const data = await response.json();
+            
+            if (response.ok) {
+                console.log('Email submitted:', email);
+                setEmail('');
+                setErrorMessageemail('');
+                handleCloseEmail();
+                handleShowEmailotp();
+            } else {
+                setErrorMessageemail(data.message);
+            }
+        } catch (err) {
+            console.error('Error submitting email:', err);
+            setErrorMessageemail('An error occurred while submitting the email. Please try again later.');
+        }
     };
-
+    
 
     //otp for email code 
 
@@ -938,7 +985,7 @@ const Gototermandconditions = ()=>{
                 showUserPhoneotp={showUserPhoneotp} 
                 handleClosePhoneotp={handleClosePhoneotp} 
                 handleShowsuccessphone={handleShowsuccessphone} 
-                fetchData={fetchData}
+                fetchData={fetchData} 
                 setResendTimer={setResendTimer}
                 resendTimer={resendTimer}
                 modalPhoneNumber={modalPhoneNumber} 

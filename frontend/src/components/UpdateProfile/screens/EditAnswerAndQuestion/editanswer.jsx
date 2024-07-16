@@ -100,7 +100,7 @@ export default function UpdateAnswers() {
                                                             setShow(true);
                                                             setModalData({
                                                                 heading: question.question,
-                                                                apiURL: `${API_URL}/customer/users/answer/${question.question_id}`,
+                                                                apiURL: `${API_URL}/customer/update/answer/${question.question_id}`,
                                                             });
                                                         }}
                                                     >
@@ -208,22 +208,22 @@ function Modal({ show, onHide, modalData, alert }) {
 
     async function saveAnswer() {
         onHide();
-        // const response = await fetch(modalData.apiURL, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         'Authorization': `Bearer ${getCookie('token')}`
-        //     },
-        //     body: JSON.stringify({ answer: text }),
-        // });
-        // const data = await response.json();
-        // console.log(data);
+        const response = await fetch(modalData.apiURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
+            },
+            body: JSON.stringify({ answer: text }),
+        });
+        const data = await response.json();
+        console.log(data);
 
-        // if (response.ok) {
-        //     onHide();
-        //     const answers = getCookie('answers');
-        //     setCookie('answers', answers ? Number(answers) + 1 : 0, { path: '/' });
-        // }
+        if (response.ok) {
+            onHide();
+            const answers = getCookie('answers');
+            setCookie('answers', answers ? Number(answers) + 1 : 0, { path: '/' });
+        }
     }
 
     return (

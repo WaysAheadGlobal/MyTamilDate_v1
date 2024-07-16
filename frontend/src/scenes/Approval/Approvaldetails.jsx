@@ -40,7 +40,7 @@ const UserDetails = () => {
         method: 'GET',
       });
       const data = await response.json();
-      console.log("datadaa", data);
+      // console.log("datadaa", data);
       if (response.ok) {
         if (data[0].type === 31 || data[1].type === 31 || data[2].type === 31) {
           const others = data.filter(image => image.type === 32);
@@ -53,16 +53,16 @@ const UserDetails = () => {
           })
 
 
-          console.log('imges', {
-            main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
-            first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
-            second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
-          })
+          // console.log('imges', {
+          //   main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
+          //   first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
+          //   second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
+          // })
         }
         else{
           const others = data.filter(image => image.type === 2);
           const main = data.filter(image => image.type === 1)[0];
-          console.log(others, main)
+          // console.log(others, main)
           setImages({
             main: OldImageURL +"/" + id + "/avatar/"+ main.hash + "-large" + "." + main.extension,
             first: OldImageURL +"/" + id + "/photo/"+ others[0].hash + "-large" + "." + main.extension,
@@ -87,7 +87,7 @@ const UserDetails = () => {
       method: 'GET',
     });
     const data = await response.json();
-    console.log("data", data);
+    // console.log("data", data);
 
     if (response.ok) {
       let images = {
@@ -136,7 +136,7 @@ const UserDetails = () => {
       }
 
       setImages2(images);
-      console.log('images', images);
+      // console.log('images', images);
     }
   } catch (error) {
     console.error('Error saving images:', error);
@@ -182,7 +182,7 @@ const UserDetails = () => {
 
   const GetUserFromUpdateMedia = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/api/v1/admin/users/UpdateRequestedUser/${id}`);
+      const response = await fetch(`${API_URL}/admin/users/UpdateRequestedUser/${id}`);
       
       if (!response.ok) {
         if (response.status === 404) {
@@ -231,6 +231,31 @@ const UserDetails = () => {
     }
   };
   
+  const RejectedAnswerUpdate = async (userId) => {
+    try {
+      const response = await fetch(`${API_URL}/admin/users/deleteAnswerquestions/${id}`, {
+        method: 'DELETE'
+      });
+  
+      if (!response.ok) {
+        if (response.status === 404) {
+          console.error('No data found for this user.');
+          return;
+        }
+        throw new Error('Failed to delete media update data');
+      }
+  
+      const data = await response.json();
+      console.log('Delete response:', data);
+  
+     navigate('/approval')
+    
+    } catch (error) {
+      console.error('Error:', error);
+    
+    }
+  };
+  
   const Updateanddeletemedia = async () => {
     try {
       const response = await fetch(`${API_URL}/admin/users/replaceMediaData/${id}`, {
@@ -255,7 +280,36 @@ const UserDetails = () => {
       console.error('Error occurred while updating media data:', err);
     }
   };
+
+  const UpdateanddeleteQuestionAnswer = async () => {
+    try {
+      const response = await fetch(`${API_URL}/admin/users/updateQuestionAnswers/${id}`, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json', 
+        }
+      });
   
+      if (!response.ok) {
+        if (response.status === 404) {
+          console.error('Resource not found');
+     
+          return;
+        }
+        throw new Error(`Failed to update Answer data: ${response.statusText}`);
+      } else {
+        console.log("Question updated successfully");
+        navigate('/approval')
+      }
+    } catch (err) {
+      console.error('Error occurred while updating media data:', err);
+    }
+  };
+
+  const UpdateProfileapproval = ()=>{
+    UpdateanddeleteQuestionAnswer();
+    Updateanddeletemedia();
+  }
   
 
   useEffect(() => {
@@ -369,6 +423,8 @@ const UserDetails = () => {
 
   const handleRejectUpdate = ()=>{
     RejectedMediaUpdate();
+    RejectedAnswerUpdate();
+
   }
 
   const formatKey = (key) => {
@@ -526,7 +582,7 @@ const UserDetails = () => {
                     background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
                   },
                 }}
-                onClick={handleAcceptUpdate}
+                onClick={UpdateProfileapproval}
               >
                 Update
               </Button>

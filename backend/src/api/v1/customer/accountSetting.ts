@@ -124,6 +124,7 @@ setting.post('/updatephone/otp', body('phone').isMobilePhone(), verifyUser, (req
     });
 });
 
+
 setting.post('/updatephone', [body('phone').isMobilePhone(), body('otp').notEmpty()], verifyUser, async (req: UserRequest, res: any) => {
     const result = validationResult(req);
     if (!result.isEmpty()) {
@@ -332,39 +333,42 @@ setting.post('/request-email-update',verifyUser, async (req:UserRequest, res:any
         if (results.length > 0) {
             return res.status(409).json({ message: 'This email address is already in use. Try with a different email.' });
         }
+        if(results.length === 0){
+            try {
+                console.log('email otp',otp);
+                await insertOTPInDBByEmail(otp, email);
+                
+                let html;
+                try {
+                    html = await ejs.renderFile("mail/templates/otp.ejs", { otp: otp });
+                } catch (renderError) {
+                    console.error('Error rendering email template:', renderError);
+                    return res.status(500).json({ message: 'Internal Server Error' });
+                }
         
-    try {
-        console.log('email otp',otp);
-        await insertOTPInDBByEmail(otp, email);
+                const msg = {
+                    to: email,
+                    from: "mtdteam2024@gmail.com",
+                    subject: "Approval Notification",
+                    html: html
+                };
         
-        let html;
-        try {
-            html = await ejs.renderFile("mail/templates/otp.ejs", { otp: otp });
-        } catch (renderError) {
-            console.error('Error rendering email template:', renderError);
-            return res.status(500).json({ message: 'Internal Server Error' });
+                sgMail.send(msg)
+                    .then(() => {
+                        console.log("Approval email sent successfully");
+                        return res.status(200).send('Status updated successfully and email sent');
+                    })
+                    .catch((error) => {
+                        console.error('Error sending email:', error);
+                        return res.status(500).send('Internal Server Error');
+                    });
+            } catch (error) {
+                console.error('Error sending OTP:', error);
+                return res.status(500).json({ message: 'Internal Server Error' });
+            }
         }
+  
 
-        const msg = {
-            to: email,
-            from: "mtdteam2024@gmail.com",
-            subject: "Approval Notification",
-            html: html
-        };
-
-        sgMail.send(msg)
-            .then(() => {
-                console.log("Approval email sent successfully");
-                return res.status(200).send('Status updated successfully and email sent');
-            })
-            .catch((error) => {
-                console.error('Error sending email:', error);
-                return res.status(500).send('Internal Server Error');
-            });
-    } catch (error) {
-        console.error('Error sending OTP:', error);
-        return res.status(500).json({ message: 'Internal Server Error' });
-    }
     }
 )})
 

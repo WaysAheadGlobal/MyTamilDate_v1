@@ -48,4 +48,12 @@
     border-color: #F76A7B;
     
   }
-  
+  /* More specific CSS to override the existing styles */
+.custom-row > * {
+  flex-shrink: initial;
+  width: auto;
+  max-width: none;
+  padding-right: 0;
+  padding-left: 0;
+  margin-top: 0;
+}

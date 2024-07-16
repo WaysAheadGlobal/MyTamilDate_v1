@@ -10,6 +10,7 @@ import editlogo from '../../../../assets/images/editicon2.png'
 import { API_URL } from '../../../../api';
 import { useCookies } from '../../../../hooks/useCookies';
 import { useNavigate } from 'react-router-dom';
+import editicon from '../../../../assets/images/editicon.png';
 import Cropper from 'react-easy-crop';
 
 const EditPicture = () => {
@@ -304,7 +305,7 @@ useEffect(() => {
             <Image src={deleteicon} />
           </span>
           <span className={picture.iconRight}>
-            <Image src={editlogo} onClick={() => handleClick('main')} />
+            <Image src={editicon} onClick={() => handleClick('main')} />
             <input
               type="file"
               ref={fileInputRefMain}
@@ -325,7 +326,7 @@ useEffect(() => {
               <Image src={deleteicon} />
             </span>
             <span className={picture.iconRight}>
-              <Image src={editlogo} onClick={() => handleClick('first')} />
+              <Image src={editicon} onClick={() => handleClick('first')} />
               <input
                 type="file"
                 ref={fileInputRefFirst}
@@ -342,7 +343,7 @@ useEffect(() => {
               <Image src={deleteicon} />
             </span>
             <span className={picture.iconRight}>
-              <Image src={editlogo} onClick={() => handleClick('second')} />
+              <Image src={editicon} onClick={() => handleClick('second')} />
               <input
                 type="file"
                 ref={fileInputRefSecond}

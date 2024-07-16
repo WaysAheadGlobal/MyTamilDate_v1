@@ -130,7 +130,11 @@ const calculateAge = (birthday) => {
 };
 
 const expandall = ()=>{
-
+  setexpandall(!expandsall)
+  // if(expandall){
+  //   setexpandall(false)
+  // }
+  // setexpandall(true)
 }
 console.log(Profile.Personalities);
 const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split(',') : [];
@@ -233,6 +237,10 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
    <Container>
    <button className={edit.upgradebutton} onClick={expandall}>Expand All <span><Image src={update}/></span> </button>
    </Container>
+{
+ expandsall ? 
+
+
    <Container>
     <Link to="/updatejob">
    <Carddetails icon={carear }title="Career" detail={Profile.JobTitle
@@ -269,6 +277,9 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
   </Link>
 
    </Container>
+:  ""
+}
+
    <Container>
     <Container style={{display : "flex", marginTop : "20px", justifyContent : "space-between",gap : "5px" }}>
     <div className={edit.button} onClick={()=> Navigate("/user/preferences")}>

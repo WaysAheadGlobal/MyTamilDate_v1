@@ -131,7 +131,8 @@ const Navigate = useNavigate();
     ImageURL();
     GetprofileCompletion();
     ProfileDetails();
-  }, [ ]);
+  }, []);
+  
   return (
     <Sidebar>
       <div style={{
@@ -157,7 +158,7 @@ const Navigate = useNavigate();
                     </div>
             <Image style={{ marginTop: "90px", width: "24px", height: "24px" }} onClick={()=> Navigate("/editpicture")} src={editicon} />
           </div>
-          <div className="row d-flex justify-content-center">
+          <div className=" row d-flex justify-content-center">
             <div className="d-flex flex-column align-items-center">
               <p style={{ fontSize: '18px', color: "#515151" }}>{Profile.Name} {Profile.Surname}</p>
               <p style={{ fontSize: '14px', color: "#6C6C6C" }}>  {profileCompletion}% complete</p>

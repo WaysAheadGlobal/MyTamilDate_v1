@@ -22,7 +22,7 @@ const VerifyPhoneModal = ({
   const [otpErrorMessage, setOtpErrorMessage] = useState('');
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const { getCookie, setCookie } = useCookies();
-
+console.log()
   const otpCode1ref = useRef(null);
   const otpCode2ref = useRef(null);
   const otpCode3ref = useRef(null);
@@ -75,13 +75,13 @@ const VerifyPhoneModal = ({
       setOtpErrorMessage('*Invalid OTP, please re-enter again');
     } else {
       try {
-        const response = await fetch(`${API_URL}customer/setting/updatephone`, {
+        const response = await fetch(`${API_URL}/customer/setting/updatephone`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${getCookie('token')}`
           },
-          body: JSON.stringify({ phone: modalPhoneNumber, otp })
+          body: JSON.stringify({ phone: modalPhoneNumber, otp : otp})
         });
 
         const result = await response.json();
