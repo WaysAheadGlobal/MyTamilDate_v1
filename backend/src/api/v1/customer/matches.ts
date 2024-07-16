@@ -52,6 +52,10 @@ matches.get(
                 SELECT um.match_id
                 FROM user_unmatches um
                 WHERE um.user_id = m1.user_id
+            ) AND m1.person_id NOT IN (
+                SELECT r.person_id
+                FROM reports r
+                WHERE r.user_id = m1.user_id
             )
         LIMIT ? OFFSET ?;
         `;
@@ -317,7 +321,7 @@ matches.post("/unmatch", (req: UserRequest, res) => {
                         return;
                     }
 
-                    io.to(userId!).emit("unmatch", { personId: personId });
+                    io.to(userId!).emit("block", { personId: personId });
                     res.status(200).json({ message: "Person unmatched" });
                 })
             });
@@ -343,10 +347,11 @@ matches.get("/report-reasons", (req: UserRequest, res) => {
 matches.post("/report", (req: UserRequest, res) => {
     const userId = req.userId;
     const personId = req.body.personId;
+    const reportId = req.body.reportId;
 
-    const query = "INSERT INTO blocks(user_id, person_id, created_at, updated_at) VALUES (?, ?, NOW(), NOW())";
+    const query = "INSERT INTO reports(user_id, person_id, reason_id, approval, created_at, updated_at) VALUES (?, ?, ?, 0, NOW(), NOW())";
 
-    db.query<ResultSetHeader>(query, [userId, personId], (err, result) => {
+    db.query<ResultSetHeader>(query, [userId, personId, reportId], (err, result) => {
         if (err) {
             console.log(err);
             res.status(500).send("Failed to block person");

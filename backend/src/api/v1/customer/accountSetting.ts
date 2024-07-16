@@ -236,7 +236,7 @@ setting.get('/getemail', verifyUser, (req: UserRequest, res: any) => {
 //         // Send verification email
 //         const msg = {
 //             to: email,
-//             from: "mtdteam2024@gmail.com",
+//             from: "process.env.EMAIL_HOST",
 //             subject: "Email Verification",
 //             html: html
 //         };
@@ -347,7 +347,7 @@ setting.post('/request-email-update',verifyUser, async (req:UserRequest, res:any
 
         const msg = {
             to: email,
-            from: "mtdteam2024@gmail.com",
+            from: "process.env.EMAIL_HOST",
             subject: "Approval Notification",
             html: html
         };

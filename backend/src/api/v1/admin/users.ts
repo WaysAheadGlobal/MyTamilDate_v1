@@ -233,7 +233,7 @@ users.delete('/deleteMediaUpdate/:user_id', (req: AdminRequest, res: Response) =
             // Send verification email
             const msg = {
                 to: email,
-                from: "mtdteam2024@gmail.com",
+                from: "process.env.EMAIL_HOST",
                 subject: "Update Request Notification",
                 html: html
             };
@@ -695,7 +695,7 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
                 // Send verification email
                 const msg = {
                     to: email,
-                    from: "mtdteam2024@gmail.com",
+                    from: "process.env.EMAIL_HOST",
                     subject: "Approval Notification",
                     html: html
                 };
@@ -766,7 +766,7 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
                                 // Send verification email
                                 const msg = {
                                     to: email,
-                                    from: "mtdteam2024@gmail.com",
+                                    from: "process.env.EMAIL_HOST",
                                     subject: "Approval Rejected Notification",
                                     html: html
                                 };
@@ -813,7 +813,7 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
                                 // Send verification email
                                 const msg = {
                                     to: email,
-                                    from: "mtdteam2024@gmail.com",
+                                    from: "process.env.EMAIL_HOST",
                                     subject: "Approval Rejected Notification",
                                     html: html
                                 };

@@ -71,6 +71,8 @@ export default function ChatBox() {
     }, [conversationId, window.location.pathname])
 
     useEffect(() => {
+        if (!conversationId) return;
+        
         const chatContainer = document.querySelector(`#chat-container`);
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }, [messages]);
@@ -177,6 +179,10 @@ export default function ChatBox() {
         }
 
         setText("");
+    }
+
+    if (!conversationId) {
+        return <div id="chat-box"></div>
     }
 
     return (
@@ -416,6 +422,7 @@ function ReportModal({ show, setShow }) {
     const [options, setOptions] = useState([]);
     const { socket } = useSocket();
     const location = useLocation();
+    const formRef = useRef(null);
 
     useEffect(() => {
         (async () => {
@@ -433,7 +440,8 @@ function ReportModal({ show, setShow }) {
         })()
     }, [show])
 
-    async function report() {
+    async function report(e) {
+        e.preventDefault();
         console.log(location.state.recepientId);
         const response = await fetch(`${API_URL}customer/matches/report`, {
             method: "POST",
@@ -442,7 +450,8 @@ function ReportModal({ show, setShow }) {
                 'Authorization': `Bearer ${cookies.getCookie('token')}`
             },
             body: JSON.stringify({
-                personId: location.state.recepientId
+                personId: location.state.recepientId,
+                ...Object.fromEntries(new FormData(formRef.current))
             })
         });
         const data = await response.json();
@@ -473,6 +482,7 @@ function ReportModal({ show, setShow }) {
                     }}
                 >Report this user for violating MTD's community guidelines. Please select a reason for reporting the user below to help us improve your experience.</p>
                 <form
+                    ref={formRef}
                     style={{
                         display: "flex",
                         flexDirection: "column",
@@ -494,7 +504,7 @@ function ReportModal({ show, setShow }) {
                             }}>
                                 <input
                                     type="radio"
-                                    name="unmatch-reason"
+                                    name="reportId"
                                     id={option.id}
                                     value={option.id}
                                     style={{
@@ -533,6 +543,7 @@ function ReportModal({ show, setShow }) {
                             borderRadius: "9999px",
                             padding: "0.75rem 1.5rem",
                         }}
+                        onClick={() => formRef.current?.requestSubmit()}
                     >
                         Submit
                     </Button>
@@ -592,7 +603,6 @@ function BlockModal({ show, setShow }) {
                     display: "flex",
                     gap: "1rem",
                     marginInline: "auto",
-                    marginTop: "3rem"
                 }}>
                     <button
                         type='button'

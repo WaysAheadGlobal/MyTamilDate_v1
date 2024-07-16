@@ -8,6 +8,7 @@ import matches from "./matches";
 import chat from "./chat";
 import webhookRouter from "./webhook";
 import payment from "./payment";
+import products from "./products";
 
 const customer = Router();
 
@@ -23,5 +24,6 @@ customer.use("/update", updateprofile)
 customer.use("/matches", matches);
 customer.use("/chat", chat);
 customer.use("/payment", payment);
+customer.use("/products", products);
 
 export default customer;

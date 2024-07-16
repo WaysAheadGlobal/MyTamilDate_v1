@@ -11,6 +11,7 @@ payment.use(verifyUser);
 
 payment.post("/create-checkout-session", async (req: UserRequest, res) => {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+    const priceId = req.body.priceId;
 
     db.query<RowDataPacket[]>("SELECT stripe_id FROM users WHERE id = ?", [req.userId], async (err, result) => {
         if (err) {
@@ -27,11 +28,14 @@ payment.post("/create-checkout-session", async (req: UserRequest, res) => {
         const session = await stripe.checkout.sessions.create({
             allow_promotion_codes: true,
             line_items: [
-
+                {
+                    price: priceId,
+                    quantity: 1,
+                },
             ],
-            mode: "payment",
-            success_url: `${process.env.URL}/success`,
-            cancel_url: `${process.env.URL}/cancel`,
+            mode: "subscription",
+            success_url: `${process.env.URL}/user/home`,
+            cancel_url: `${process.env.URL}/selectplan`,
             customer: customerId,
         });
 
