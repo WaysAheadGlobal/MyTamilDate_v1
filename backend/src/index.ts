@@ -83,7 +83,7 @@ io.on('connection', (socket) => {
             }
 
             socket.emit('fetch-messages', { fetch: true });
-            socket.to(recepientId).emit('fetch-messages', { fetch: true });
+            io.to(recepientId).emit('fetch-messages', { fetch: true });
             socket.to(roomId).emit('receive-message', message);
         });
 
