@@ -2,9 +2,11 @@ import React, { useEffect } from 'react'
 import styles from './sidebar.module.css'
 import { useUserProfile } from '../context/UserProfileContext'
 import { API_URL } from '../../../../api';
+import { useNavigate } from 'react-router-dom';
 
 export default function Suggestions() {
-    const { profiles } = useUserProfile();
+    const { profiles } = useUserProfile()
+    const navigate = useNavigate();
 
     const getImageURL = (type, hash, extension, userId) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}` : `${API_URL}media/avatar/${hash}.${extension}`;
 
@@ -12,7 +14,7 @@ export default function Suggestions() {
         <div className={styles.suggestions} style={{ borderTop: "2px solid #e0e0e0" }}>
             <div>
                 <p>Suggested for you</p>
-                <p>See All</p>
+                <p style={{ cursor: "pointer" }} onClick={() => navigate("/user/recommendations")}>See All</p>
             </div>
             {
                 Array.isArray(profiles) && profiles.slice(0, 3).map(profile => (

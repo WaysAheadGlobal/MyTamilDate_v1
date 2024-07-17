@@ -1,81 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { API_URL } from '../../../api';
-import { useCookies } from '../../../hooks/useCookies';
+import React, { useEffect } from 'react';
 import Card from '../components/card/Card';
 import { useUserProfile } from '../components/context/UserProfileContext';
 import Sidebar from '../components/sidebar/sidebar';
-/* import { Modal } from 'react-bootstrap';
-import Button from '../components/button/Button'; */
+import styles from './home.module.css';
 
-export default function Home() {
-    const [loading, setLoading] = useState(true);
-    const [page, setPage] = useState(1);
-    const cookies = useCookies();
-    const [wave, setWave] = useState(1);
-
-    /**
-     * @typedef {Object} Profile
-     * @property {number} id - The unique identifier for the user.
-     * @property {number} user_id - The user ID associated with the user.
-     * @property {string} first_name - The first name of the user.
-     * @property {string} last_name - The last name of the user.
-     * @property {string} birthday - The birthday of the user in ISO format.
-     * @property {string} hash - A hash string associated with the user.
-     * @property {string} extension - The file extension of the user's profile picture.
-     * @property {number} type - The type of user.
-     * @property {number} location_id - The location ID associated with the user.
-     * @property {number} job_id - The job ID associated with the user.
-     * @property {string} country - The country of the user.
-     * @property {string} continent - The continent of the user.
-     * @property {string} location_string - The location string of the user.
-     * @property {string} job - The job of the user.
-     * @property {string} created_at - The creation timestamp of the user record in ISO format.
-     * @property {boolean} like - The like status of the user.
-     */
-
-    /**
-     * @type {[Profile[], React.Dispatch<React.SetStateAction<Profile[]>>]}
-     */
-
-    const { profiles, setProfiles } = useUserProfile();
-    const [abortController, setAbortController] = useState(new AbortController());
-    /* const [show, setShow] = useState(true); */
-
-    useEffect(() => {
-        const storedWave = cookies.getCookie('wave');
-
-        if (storedWave) {
-            abortController.abort();
-            setAbortController(new AbortController());
-            setWave(Number(storedWave));
-        }
-    }, []);
-
-    useEffect(() => {
-        (async () => {
-            setLoading(true);
-
-            const response = await fetch(`${API_URL}customer/user/profiles?page=${page}&wave=${wave}`, {
-                headers: {
-                    'Authorization': `Bearer ${cookies.getCookie('token')}`,
-                },
-                signal: abortController.signal
-            });
-            const data = await response.json();
-            if (!data) return;
-            console.log(data)
-
-            if (response.ok) {
-                if (data.length === 0 && wave < 3) {
-                    setWave(wave + 1);
-                    cookies.setCookie('wave', wave + 1);
-                }
-                setProfiles([...profiles, ...data]);
-            }
-
-            setLoading(false);
-        })()
-    }, [page, wave]);
+export default function Home() {   
+    const {
+        profiles,
+        setProfiles,
+        abortController,
+        setAbortController,
+        wave,
+        setWave,
+        page,
+        setPage,
+        loading,
+        setLoading
+    } = useUserProfile();
 
     useEffect(() => {
         if (profiles.length === 0) return;
@@ -157,15 +98,7 @@ export default function Home() {
                 }} onClick={() => setShow(false)}>Close</Button>
             </Modal> */}
             <div
-                style={{
-                    flex: "1",
-                    marginInline: "auto",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "1rem",
-                    overflowY: "auto",
-                    scrollbarWidth: "none",
-                }}
+                className={styles.container}
             >
                 {
                     profiles.slice(0, 1).map((profile) => (
@@ -173,9 +106,10 @@ export default function Home() {
                     ))
                 }
                 {
-                    loading && <p>Loading...</p>
+                    loading && <p style={{ textAlign: "center" }}>Loading...</p>
                 }
             </div>
         </Sidebar>
     )
 }
+

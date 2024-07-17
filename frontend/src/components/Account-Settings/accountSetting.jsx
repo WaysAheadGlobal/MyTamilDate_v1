@@ -32,8 +32,8 @@ import Sidebar from '../userflow/components/sidebar/sidebar';
 
 export const AccountSetting = () => {
     const navigate = useNavigate();
-    const {getCookie,setCookie,deleteCookie} = useCookies();
-   
+    const { getCookie, setCookie, deleteCookie } = useCookies();
+
     const [showUserName, setshowUserName] = useState(false);
     const [showUserEmail, setshowUserEmail] = useState(false);
     const [showUserEmailotp, setshowUserEmailotp] = useState(false);
@@ -42,44 +42,44 @@ export const AccountSetting = () => {
     const [showUnsubscribeEmail, setShowUnsubscribeEmail] = useState(false);
     const [showPause, setShowPause] = useState(false);
     const [showDeleteAccount, setShowDeleteAccount] = useState(false);
-    const [showPauseOption, setShowPauseOpion] = useState(false); 
-    const [showDeleteOption, setShowDeleteOpion] = useState(false); 
+    const [showPauseOption, setShowPauseOpion] = useState(false);
+    const [showDeleteOption, setShowDeleteOpion] = useState(false);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const[showFinalDetele, setFinalDetele] = useState(false);
+    const [showFinalDetele, setFinalDetele] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
 
     // Data from the backend
-    const[NamePhoneEmail, setNamePhoneEmail] = useState({})
+    const [NamePhoneEmail, setNamePhoneEmail] = useState({})
     const fetchData = async () => {
         try {
-          const response = await fetch(`${API_URL}/customer/setting/namedetails`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${getCookie('token')}`
+            const response = await fetch(`${API_URL}/customer/setting/namedetails`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-          });
-  
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-  
-          const data = await response.json();
-          console.log(data);
-          setFirstName(data.first_name);
-          setLastName(data.last_name);
-          setNamePhoneEmail(data);
+
+            const data = await response.json();
+            console.log(data);
+            setFirstName(data.first_name);
+            setLastName(data.last_name);
+            setNamePhoneEmail(data);
         } catch (error) {
-          console.error('Error fetching data:', error);
+            console.error('Error fetching data:', error);
         }
-      };
+    };
     useEffect(() => {
         fetchData();
-      }, []);
+    }, []);
 
     // update first Name and Last Name
-      const UpdateNameAndLastName = async () => {
+    const UpdateNameAndLastName = async () => {
         try {
             const response = await fetch(`${API_URL}/customer/setting/namedetails`, {
                 method: 'PUT',
@@ -107,11 +107,11 @@ export const AccountSetting = () => {
         fetchData();
         handleCloseName();
     };
-     
-     
+
+
 
     //update Phone Number 
-    
+
     const UpdatePhoneNumber = async () => {
         try {
             const response = await fetch(`${API_URL}/customer/setting/namedetails`, {
@@ -120,7 +120,7 @@ export const AccountSetting = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${getCookie('token')}`
                 },
-                body: JSON.stringify({ first_name: firstName})
+                body: JSON.stringify({ first_name: firstName })
             });
 
             if (!response.ok) {
@@ -136,8 +136,8 @@ export const AccountSetting = () => {
         }
     };
     const [errorMessagephone, setErrorMessagephone] = useState('');
-    
-    
+
+
 
 
     const handleCloseName = () => setshowUserName(false);
@@ -155,7 +155,7 @@ export const AccountSetting = () => {
     const handleClosePhoneotp = () => setshowUserPhoneotp(false);
     const handleShowPhoneotp = () => {
         setshowUserPhoneotp(true);
-        setResendTimer(120); 
+        setResendTimer(120);
     };
 
     const handleClosePause = () => setShowPause(false);
@@ -182,15 +182,15 @@ export const AccountSetting = () => {
     };
 
 
-const GotoPrivacyPolicy = ()=>{
-    navigate("/PrivacyPolicyDetails")
-}
-const Gototermandconditions = ()=>{
-    navigate("/termandconditions")
-}
+    const GotoPrivacyPolicy = () => {
+        navigate("/PrivacyPolicyDetails")
+    }
+    const Gototermandconditions = () => {
+        navigate("/termandconditions")
+    }
 
 
-// Delete My Account now
+    // Delete My Account now
 
 
 
@@ -213,7 +213,7 @@ const Gototermandconditions = ()=>{
     };
 
     const handleFinalDelete = async () => {
-         // Replace with the actual user ID
+        // Replace with the actual user ID
 
         try {
             // Submit delete reason
@@ -277,15 +277,15 @@ const Gototermandconditions = ()=>{
     const handleShowUnsubscribeEmail = () => setShowUnsubscribeEmail(true);
 
     const handleUnsubscribeEmail = () => {
-       
+
         navigate("/unsubscribe")
     };
 
-   //pause my account 
-   const handlePauseAccount = () => {
-    setShowPause(false);
-    handleShowPauseOption();
-};
+    //pause my account 
+    const handlePauseAccount = () => {
+        setShowPause(false);
+        handleShowPauseOption();
+    };
     const [selectedOption, setSelectedOption] = useState('');
     const handleClosePauseOption = () => setShowPauseOpion(false);
     const handleShowPauseOption = () => setShowPauseOpion(true);
@@ -294,20 +294,20 @@ const Gototermandconditions = ()=>{
     };
 
 
-    
 
 
-  
-     //success modal of Email OTP  open and close
-     const [showsuccessemail, setShowsuccess] = useState(false);
-     const handleClosesuccess = () => setShowsuccess(false);
-     const handleShowsuccess = () => setShowsuccess(true);
-    
-     //success modal of Phone OTP  open and close
-     const [showsuccessphone, setShowsuccessphone] = useState(false);
-     const handleClosesuccessphone = () => setShowsuccessphone(false);
-     const handleShowsuccessphone = () => setShowsuccessphone(true);
-   
+
+
+    //success modal of Email OTP  open and close
+    const [showsuccessemail, setShowsuccess] = useState(false);
+    const handleClosesuccess = () => setShowsuccess(false);
+    const handleShowsuccess = () => setShowsuccess(true);
+
+    //success modal of Phone OTP  open and close
+    const [showsuccessphone, setShowsuccessphone] = useState(false);
+    const handleClosesuccessphone = () => setShowsuccessphone(false);
+    const handleShowsuccessphone = () => setShowsuccessphone(true);
+
 
 
 
@@ -329,9 +329,9 @@ const Gototermandconditions = ()=>{
     //         return;
     //     }
     //       try{
-           
+
     //         const response = await fetch (`${API_URL}/customer/setting/request-email-update`)
-           
+
     //       }catch(err){
     //         console.log(err);
     //       }
@@ -346,7 +346,7 @@ const Gototermandconditions = ()=>{
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         if (!email) {
             setErrorMessageemail('Please enter a valid email address');
             return;
@@ -355,19 +355,19 @@ const Gototermandconditions = ()=>{
             return;
         }
         setErrorMessageemail('');
-    console.log("req send")
+        console.log("req send")
         try {
             const response = await fetch(`${API_URL}/customer/setting/request-email-update`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${getCookie('token')}`
+                    'Authorization': `Bearer ${getCookie('token')}`
                 },
                 body: JSON.stringify({ email }),
             });
-    
+
             const data = await response.json();
-            
+
             if (response.ok) {
                 console.log('Email submitted:', email);
                 setEmail('');
@@ -382,11 +382,11 @@ const Gototermandconditions = ()=>{
             setErrorMessageemail('An error occurred while submitting the email. Please try again later.');
         }
     };
-    
+
 
     //otp for email code 
 
-    
+
     const goToSigninEmailSuccessful = () => {
         navigate("/signinemailsuccessful");
     };
@@ -431,10 +431,10 @@ const Gototermandconditions = ()=>{
     };
 
 
- 
 
 
-   
+
+
     // phone number update code
     const [showModalcountry, setshowModalcountry] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -445,7 +445,7 @@ const Gototermandconditions = ()=>{
     const { setPhoneNumber } = useAppContext();
     const [resendTimer, setResendTimer] = useState(120);
     const [modalPhoneNumber, setModalPhoneNumber] = useState('');
-   
+
 
     const handleCountrySelect = (countryCode) => {
         setSelectedCountry(countryCode);
@@ -481,7 +481,7 @@ const Gototermandconditions = ()=>{
             setErrorMessagephoneupdate('Phone number must be at least 10 digits');
         } else {
             setErrorMessagephoneupdate('');
-    
+
             try {
                 const response = await fetch(`${API_URL}/customer/setting/updatephone/otp`, {
                     method: 'POST',
@@ -493,10 +493,10 @@ const Gototermandconditions = ()=>{
                         phone: completePhoneNumber,
                     }),
                 });
-    
+
                 const result = await response.json();
                 if (response.ok) {
-                    
+
                     handleClosephone();
                     setResendTimer(120)
                     handleShowPhoneotp();
@@ -514,7 +514,7 @@ const Gototermandconditions = ()=>{
             }
         }
     };
-    
+
     const PauseMyAccount = async () => {
         try {
             const response = await fetch(`${API_URL}/customer/setting/pause`, {
@@ -524,11 +524,11 @@ const Gototermandconditions = ()=>{
                     'Authorization': `Bearer ${getCookie('token')}`
                 }
             });
-    
+
             if (response.ok) {
                 setShowPauseOpion(false);
                 console.log("Account paused successfully");
-            } 
+            }
             else {
                 const errorData = await response.json();
                 console.error("Failed to pause account:", errorData.message);
@@ -537,12 +537,12 @@ const Gototermandconditions = ()=>{
             console.error("Error in PauseMyAccount:", err);
         }
     }
-    
+
     return (
-        
+
         <Sidebar>
 
-<div style={{
+            <div style={{
                 flex: "1",
                 marginInline: "auto",
                 display: "flex",
@@ -550,206 +550,216 @@ const Gototermandconditions = ()=>{
                 gap: "1rem",
                 overflowY: "auto",
                 scrollbarWidth: "none",
-                marginTop: "-50px"
+                marginTop: "-30px",
+                width: "100%",
+                paddingInline: "1rem",
             }}>
-        <div className='account-setting-container'>
-           
-            <div className='account-setting-main'>
-                <div className='account-setting-box'>
-                    <Container className='logo-progressbar3'>
+                <div className='account-setting-container' style={{
+                    width: "100%",
+                }}>
 
-                        <Container className='logo-arrow3'>
-                            <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
-                            <h1 className='account-setting-heading'>
-                                Account Setting
-                            </h1>
-                        </Container>
+                    <div className='account-setting-main' style={{
+                        width: "100%",
+                    }}>
+                        <div className='account-setting-box'>
+                            <Container className='logo-progressbar3'>
 
-                    </Container>
+                                <Container className='logo-arrow3'>
+                                    <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
+                                    <h1 className='account-setting-heading'>
+                                        Account Setting
+                                    </h1>
+                                </Container>
 
-                    <div className="upgrade-button">
+                            </Container>
 
-                        <div> <span><Image src={premium} /></span> Upgrade Account</div>
-                        <div className="description">
-                            Upgrade your account, you will have unlimited access and wider exposure
+                            {
+                                getCookie('isPremium') !== 'true' && (
+                                    <div className="upgrade-button">
+
+                                        <div> <span><Image src={premium} /></span> Upgrade Account</div>
+                                        <div className="description">
+                                            Upgrade your account, you will have unlimited access and wider exposure
+                                        </div>
+                                    </div>
+                                )
+                            }
+
+                            <Container className='edittext-logo'>
+                                <p className='textofedit'>Tap on each section to edit</p>
+                                <div>
+                                    <Image className='editlogo' src={editlogo} />
+                                </div>
+                            </Container>
+
+
+                            <Container>
+                                {/* User Info Section */}
+                                <div className="user-info-container">
+                                    <div className="user-info-item" onClick={handleShowName}>
+                                        <div className='leftsideinfo'>
+                                            <Image className='userinfoicon' src={username} />
+                                            <span className='userleftinfo'>User name</span>
+                                        </div>
+                                        <div>
+                                            <span className="value">{NamePhoneEmail.first_name + " " + NamePhoneEmail.last_name}</span>
+                                        </div>
+                                    </div>
+                                    <div className="user-info-item" onClick={handleShowPhone}>
+                                        <div className='leftsideinfo'>
+                                            <Image className='userinfoicon' src={phonenumber} />
+                                            <span className='userleftinfo'>Phone Number</span>
+                                        </div>
+                                        <div>
+                                            <span className="value">{NamePhoneEmail.phone}</span>
+                                        </div>
+                                    </div>
+                                    <div className="user-info-item" onClick={handleShowEmail}>
+                                        <div className='leftsideinfo'>
+                                            <Image className='userinfoicon' src={emailicon} />
+                                            <span className='userleftinfo'>Email</span>
+                                        </div>
+                                        <div>
+                                            <span className="value">{NamePhoneEmail.email}</span>
+                                        </div>
+                                    </div>
+                                    <div className="pause-button" onClick={handleShowPause}>
+                                        <Image style={{ marginRight: "6px" }} className="fas fa-pause-circle" src={pauseicon} />
+                                        <span>Pause my account</span>
+                                    </div>
+                                    <div className="payment-button">
+                                        Payment
+                                    </div>
+                                    <Container style={{ marginTop: "20px", marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
+
+                                        <div className="user-info-item" onClick={() => navigate("/paymentmethod")}>
+                                            <div className='leftsideinfo'>
+                                                <Image className='userinfoicon' src={CreditCard} />
+                                                <span className='userleftinfo'>Payment Method</span>
+                                            </div>
+                                            <div>
+                                                <span className="value"></span>
+                                            </div>
+                                        </div>
+                                    </Container>
+                                    <Container style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
+
+                                        <div className="user-info-item" onClick={() => navigate("/billinghistory")}>
+                                            <div className='leftsideinfo'>
+                                                <Image className='userinfoicon' src={emailicon} />
+                                                <span className='userleftinfo'>Billing History</span>
+                                            </div>
+                                            <div>
+                                                <span className="value"></span>
+                                            </div>
+                                        </div>
+                                    </Container>
+                                    <Container style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
+
+                                        <div className="user-info-item">
+                                            <div className='leftsideinfo'>
+                                                <Image className='userinfoicon' src={pauseicon} />
+                                                <span className='userleftinfo'>Disable Subscription</span>
+                                            </div>
+                                            <div>
+                                                <span className="value"></span>
+                                            </div>
+                                        </div>
+                                    </Container>
+                                    <div className="legal-button">
+                                        Legal
+                                    </div>
+                                </div>
+
+                                <div className="user-info-container">
+                                    <div className="last-user-info-item">
+                                        <div className='lastleftsideinfo' onClick={handleUnsubscribeEmail}>
+                                            <span className='lastuserleftinfo'>Email Unsubscribe</span>
+                                        </div>
+                                        <div>
+                                            <Image className='userinfoicon' src={emailicon} />
+                                        </div>
+                                    </div>
+
+                                    <div className="last-user-info-item" onClick={GotoPrivacyPolicy}>
+                                        <div className='lastleftsideinfo'>
+                                            <span className='lastuserleftinfo'>Privacy Policy</span>
+                                        </div>
+                                        <div>
+                                            <Image className='userinfoicon' src={privacy} />
+                                        </div>
+                                    </div>
+                                    <div className="last-user-info-item" onClick={Gototermandconditions}>
+                                        <div className='lastleftsideinfo'>
+                                            <span className='lastuserleftinfo'>Terms of Service</span>
+                                        </div>
+                                        <div>
+                                            <Image className='userinfoicon' src={service} />
+                                        </div>
+                                    </div>
+
+                                    <div className="last-user-info-item" style={{ border: "none" }} onClick={handleShowLogout}>
+                                        <div className='lastleftsideinfo' >
+                                            <span className='lastuserleftinfo' >Logout</span>
+                                        </div>
+                                        <div>
+                                            <Image className='userinfoicon' src={logout} />
+                                        </div>
+                                    </div>
+                                    <button className="delete-button" onClick={handleShowDeleteAccount}>
+                                        <span>Delete my Account</span>
+                                        <Image className='userinfoicon' src={deleteicon} />
+                                    </button>
+
+
+
+
+
+                                </div>
+                            </Container>
                         </div>
                     </div>
 
-                    <Container className='edittext-logo'>
-                        <p className='textofedit'>Tap on each section to edit</p>
-                        <div>
-                            <Image className='editlogo' src={editlogo} />
-                        </div>
-                    </Container>
 
 
-                    <Container>
-                        {/* User Info Section */}
-                        <div className="user-info-container">
-                            <div className="user-info-item" onClick={handleShowName}>
-                                <div className='leftsideinfo'>
-                                    <Image className='userinfoicon' src={username} />
-                                    <span className='userleftinfo'>User name</span>
-                                </div>
-                                <div>
-                                    <span className="value">{NamePhoneEmail.first_name + " " + NamePhoneEmail.last_name}</span>
-                                </div>
-                            </div>
-                            <div className="user-info-item" onClick={handleShowPhone}>
-                                <div className='leftsideinfo'>
-                                    <Image className='userinfoicon' src={phonenumber} />
-                                    <span className='userleftinfo'>Phone Number</span>
-                                </div>
-                                <div>
-                                    <span className="value">{NamePhoneEmail.phone}</span>
-                                </div>
-                            </div>
-                            <div className="user-info-item" onClick={handleShowEmail}>
-                                <div className='leftsideinfo'>
-                                    <Image className='userinfoicon' src={emailicon} />
-                                    <span className='userleftinfo'>Email</span>
-                                </div>
-                                <div>
-                                    <span className="value">{NamePhoneEmail.email}</span>
-                                </div>
-                            </div>
-                            <div className="pause-button" onClick={handleShowPause}>
-                                <Image style={{ marginRight: "6px" }} className="fas fa-pause-circle" src={pauseicon} />
-                                <span>Pause my account</span>
-                            </div>
-                            <div className="payment-button">
-                                Payment
-                            </div>
-                            <Container style={{ marginTop: "20px", marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
+                    {/* update the Name  */}
 
-                                <div className="user-info-item" onClick={()=> navigate("/paymentmethod")}>
-                                    <div className='leftsideinfo'>
-                                        <Image className='userinfoicon' src={CreditCard} />
-                                        <span className='userleftinfo'>Payment Method</span>
-                                    </div>
-                                    <div>
-                                        <span className="value"></span>
-                                    </div>
-                                </div>
-                            </Container>
-                            <Container style={{  marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
-
-                                <div className="user-info-item" onClick={()=>navigate("/billinghistory")}>
-                                    <div className='leftsideinfo'>
-                                        <Image className='userinfoicon' src={emailicon} />
-                                        <span className='userleftinfo'>Billing History</span>
-                                    </div>
-                                    <div>
-                                        <span className="value"></span>
-                                    </div>
-                                </div>
-                            </Container>
-                            <Container style={{  marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
-
-                                <div className="user-info-item">
-                                    <div className='leftsideinfo'>
-                                        <Image className='userinfoicon' src={pauseicon} />
-                                        <span className='userleftinfo'>Disable Subscription</span>
-                                    </div>
-                                    <div>
-                                        <span className="value"></span>
-                                    </div>
-                                </div>
-                            </Container>
-                            <div className="legal-button">
-                                Legal
-                            </div>
-                        </div>
-
-                        <div className="user-info-container">
-                            <div className="last-user-info-item">
-                                <div className='lastleftsideinfo' onClick={handleUnsubscribeEmail}>
-                                    <span className='lastuserleftinfo'>Email Unsubscribe</span>
-                                </div>
-                                <div>
-                                    <Image className='userinfoicon' src={emailicon} />
-                                </div>
-                            </div>
-
-                            <div className="last-user-info-item" onClick={GotoPrivacyPolicy}>
-                                <div className='lastleftsideinfo'>
-                                    <span className='lastuserleftinfo'>Privacy Policy</span>
-                                </div>
-                                <div>
-                                    <Image className='userinfoicon' src={privacy} />
-                                </div>
-                            </div>
-                            <div className="last-user-info-item" onClick={Gototermandconditions}>
-                                <div className='lastleftsideinfo'>
-                                    <span className='lastuserleftinfo'>Terms of Service</span>
-                                </div>
-                                <div>
-                                    <Image className='userinfoicon' src={service} />
-                                </div>
-                            </div>
-
-                            <div  className="last-user-info-item" style={{ border: "none" }} onClick={handleShowLogout}>
-                                <div className='lastleftsideinfo' >
-                                    <span className='lastuserleftinfo' >Logout</span>
-                                </div>
-                                <div>
-                                    <Image className='userinfoicon' src={logout} />
-                                </div>
-                            </div>
-                            <button className="delete-button" onClick={handleShowDeleteAccount}>
-                                <span>Delete my Account</span>
-                                <Image className='userinfoicon' src={deleteicon} />
+                    <Modal show={showUserName} centered>
+                        <Modal.Header >
+                            <Modal.Title>Update User Name</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Form>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="First name"
+                                    value={firstName}
+                                    onChange={(e) => setFirstName(e.target.value)}
+                                    className="form-control-name"
+                                />
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Last name"
+                                    value={lastName}
+                                    onChange={(e) => setLastName(e.target.value)}
+                                    className="form-control-name"
+                                />
+                            </Form>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <button className="btn-cancel" onClick={handleCloseName}>
+                                Cancel
                             </button>
+                            <Button variant="primary" className="btn-save" onClick={handleSaveFirstLastName}>
+                                Save
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
 
 
+                    {/* Update the email Address */}
 
-
-
-                        </div>
-                    </Container>
-                </div>
-            </div>
-
-           
-
-{/* update the Name  */}
-
-            <Modal show={showUserName} centered>
-                <Modal.Header >
-                    <Modal.Title>Update User Name</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Form.Control
-                            type="text"
-                            placeholder="First name"
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                            className="form-control-name"
-                        />
-                        <Form.Control
-                            type="text"
-                            placeholder="Last name"
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                            className="form-control-name"
-                        />
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <button  className="btn-cancel" onClick={handleCloseName}>
-                        Cancel
-                    </button>
-                    <Button variant="primary" className="btn-save" onClick={handleSaveFirstLastName}>
-                        Save
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-
-
-{/* Update the email Address */}
-
-            {/* <Modal show={showUserEmail} centered>
+                    {/* <Modal show={showUserEmail} centered>
                 <Modal.Header >
                     <Modal.Title>Update Your Emaill</Modal.Title>
                 </Modal.Header>
@@ -785,453 +795,453 @@ const Gototermandconditions = ()=>{
                 </Modal.Footer>
             </Modal> */}
 
-            <Modal show={showUserEmail} centered>
-                <Modal.Header >
-                    <Modal.Title>Update Your Email</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={handleSubmit} className=''>
-                        <Container className='signin-emailverify-content'>
-                            <div style={{ width: '100%', alignItems: 'center' }}>
-                                <Form.Group controlId="formCode" className='signin-emailverify-form-group'>
-                                    <Form.Control
-                                        className={`signin-emailverify-input ${errorMessageemail ? 'error' : ''}`}
-                                        type="text"
-                                        style={{ flex: 1 }}
-                                        placeholder="Example@gmail.com"
-                                        onChange={(e) => setEmail(e.target.value)}
-                                    />
-                                    {errorMessageemail && <Form.Text className="text-danger error-message">{errorMessageemail}</Form.Text>}
-                                </Form.Group>
-                            </div>
-                        </Container>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="outline-danger" className="btn-cancel" onClick={handleCloseEmail}>
-                        Cancel
-                    </Button>
-                    <Button variant="primary" className="btn-save" onClick={handleSubmit}>
-                        Save
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-
-            <Modal show={showUserEmailotp} centered>
-                <Modal.Header >
-                    <Modal.Title>Verify Code</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={handleSubmit} className=''>
-                        <Container className='entercode-content' style={{ marginBottom: "100px" }}>
-                            <div>
-                                <Form.Group controlId="formCode" className='entercode-form-group'>
-
-                                    <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
-                                        <Form.Control
-                                            className={`entercode-input ${errorMessage ? 'error' : ''}`}
-                                            type="text"
-                                            ref={code1ref}
-                                            placeholder=""
-                                            value={code1}
-                                            onChange={(e) => handleCodeChange(e, setCode1, code2ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, null)}
-                                            style={{ flex: 1 }}
-                                        />
-                                        <Form.Control
-                                            className={`entercode-input ${errorMessage ? 'error' : ''}`}
-                                            type="text"
-                                            ref={code2ref}
-                                            placeholder=""
-                                            value={code2}
-                                            onChange={(e) => handleCodeChange(e, setCode2, code3ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, code1ref)}
-                                            style={{ flex: 1, marginLeft: '10px' }}
-                                        />
-                                        <Form.Control
-                                            className={`entercode-input ${errorMessage ? 'error' : ''}`}
-                                            type="text"
-                                            ref={code3ref}
-                                            placeholder=""
-                                            value={code3}
-                                            onChange={(e) => handleCodeChange(e, setCode3, code4ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, code2ref)}
-                                            style={{ flex: 1, marginLeft: '10px' }}
-                                        />
-                                        <Form.Control
-                                            className={`entercode-input ${errorMessage ? 'error' : ''}`}
-                                            type="text"
-                                            ref={code4ref}
-                                            placeholder=""
-                                            value={code4}
-                                            onChange={(e) => handleCodeChange(e, setCode4, null)}
-                                            onKeyDown={(e) => handleKeyDown(e, code3ref)}
-                                            style={{ flex: 1, marginLeft: '10px' }}
-                                        />
+                    <Modal show={showUserEmail} centered>
+                        <Modal.Header >
+                            <Modal.Title>Update Your Email</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Form onSubmit={handleSubmit} className=''>
+                                <Container className='signin-emailverify-content'>
+                                    <div style={{ width: '100%', alignItems: 'center' }}>
+                                        <Form.Group controlId="formCode" className='signin-emailverify-form-group'>
+                                            <Form.Control
+                                                className={`signin-emailverify-input ${errorMessageemail ? 'error' : ''}`}
+                                                type="text"
+                                                style={{ flex: 1 }}
+                                                placeholder="Example@gmail.com"
+                                                onChange={(e) => setEmail(e.target.value)}
+                                            />
+                                            {errorMessageemail && <Form.Text className="text-danger error-message">{errorMessageemail}</Form.Text>}
+                                        </Form.Group>
                                     </div>
-                                    {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
-                                </Form.Group>
-                                <div className='resend-timer'>
-                                    <a href=''> Resend code</a>
-                                    <span>1:48sec</span>
-                                </div>
-                            </div>
+                                </Container>
+                            </Form>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="outline-danger" className="btn-cancel" onClick={handleCloseEmail}>
+                                Cancel
+                            </Button>
+                            <Button variant="primary" className="btn-save" onClick={handleSubmit}>
+                                Save
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
 
-                        </Container>
-                        <Button variant="outline-danger" className="btn-cancel" onClick={handleCloseEmailotp}>
-                            Cancel
-                        </Button>
-                        <Button variant="primary" className="btn-save" onClick={handleSubmitEmailotp}>
-                            Save
-                        </Button>
-                    </Form>
-                </Modal.Body>
+                    <Modal show={showUserEmailotp} centered>
+                        <Modal.Header >
+                            <Modal.Title>Verify Code</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Form onSubmit={handleSubmit} className=''>
+                                <Container className='entercode-content' style={{ marginBottom: "100px" }}>
+                                    <div>
+                                        <Form.Group controlId="formCode" className='entercode-form-group'>
 
-            </Modal>
-
-            <Modal show={showsuccessemail} onHide={handleClosesuccess} centered>
-                <Modal.Body className="success-modal-content">
-                    <Image className="success-icon" src={Right} />
-                    <div className="success-title">Success</div>
-                    <div className="success-message">Email was changed successfully</div>
-                    <Button className="btn-okay" onClick={handleClosesuccess}>
-                        Okay
-                    </Button>
-                </Modal.Body>
-            </Modal>
-
-
-{/* update the phone number */}
-
-            <Modal show={showUserphone} centered>
-                <Modal.Header >
-                    <Modal.Title>Update Your Number</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Container className=''>
-                        <Form onSubmit={handleSubmit} className='verify-phone-form'>
-                            <Form.Group style={{marginBottom : "100px"}} controlId="formPhoneNumber" className='verify-form-group'>
-                                
-                                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                                    <Dropdown>
-                                        <div id="dropdown-basic"  onClick={() => setshowModalcountry(true)} className='flag-box'>
-                                        <Flag code={selectedCountry} style={{ width: '34px', height: '25px', marginRight: '10px' }} className='flag' />
-                                        <span>{selectedCountryInfo.dial_code}</span>
+                                            <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                                                <Form.Control
+                                                    className={`entercode-input ${errorMessage ? 'error' : ''}`}
+                                                    type="text"
+                                                    ref={code1ref}
+                                                    placeholder=""
+                                                    value={code1}
+                                                    onChange={(e) => handleCodeChange(e, setCode1, code2ref)}
+                                                    onKeyDown={(e) => handleKeyDown(e, null)}
+                                                    style={{ flex: 1 }}
+                                                />
+                                                <Form.Control
+                                                    className={`entercode-input ${errorMessage ? 'error' : ''}`}
+                                                    type="text"
+                                                    ref={code2ref}
+                                                    placeholder=""
+                                                    value={code2}
+                                                    onChange={(e) => handleCodeChange(e, setCode2, code3ref)}
+                                                    onKeyDown={(e) => handleKeyDown(e, code1ref)}
+                                                    style={{ flex: 1, marginLeft: '10px' }}
+                                                />
+                                                <Form.Control
+                                                    className={`entercode-input ${errorMessage ? 'error' : ''}`}
+                                                    type="text"
+                                                    ref={code3ref}
+                                                    placeholder=""
+                                                    value={code3}
+                                                    onChange={(e) => handleCodeChange(e, setCode3, code4ref)}
+                                                    onKeyDown={(e) => handleKeyDown(e, code2ref)}
+                                                    style={{ flex: 1, marginLeft: '10px' }}
+                                                />
+                                                <Form.Control
+                                                    className={`entercode-input ${errorMessage ? 'error' : ''}`}
+                                                    type="text"
+                                                    ref={code4ref}
+                                                    placeholder=""
+                                                    value={code4}
+                                                    onChange={(e) => handleCodeChange(e, setCode4, null)}
+                                                    onKeyDown={(e) => handleKeyDown(e, code3ref)}
+                                                    style={{ flex: 1, marginLeft: '10px' }}
+                                                />
+                                            </div>
+                                            {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
+                                        </Form.Group>
+                                        <div className='resend-timer'>
+                                            <a href=''> Resend code</a>
+                                            <span>1:48sec</span>
                                         </div>
-                                    </Dropdown>
-                                    <Form.Control
-                                        className={`num-verify-input ${errorMessagephoneupdate ? 'error' : ''}`}
-                                        type="text"
-                                        placeholder="(905)258-2258"
-                                        value={phoneNumberupdate}
-                                        onChange={handlePhoneNumberChange}
-                                        style={{ flex: 1, marginLeft: '10px' }}
-                                    />
-                                </div>
-                                {errorMessagephoneupdate && <Form.Text className="text-danger error-message">{errorMessagephoneupdate}</Form.Text>}
-                            </Form.Group>
-                            <Container style={{display : "flex", justifyContent : "center" , alignItems : "center"}}>
+                                    </div>
 
-                            <button  className="btn-cancel" onClick={handleClosephone}>
-                            Cancel
-                        </button>
-                        <Button variant="primary" className="btn-save" onClick={handleSubmitphone}>
-                            Save
-                        </Button>
+                                </Container>
+                                <Button variant="outline-danger" className="btn-cancel" onClick={handleCloseEmailotp}>
+                                    Cancel
+                                </Button>
+                                <Button variant="primary" className="btn-save" onClick={handleSubmitEmailotp}>
+                                    Save
+                                </Button>
+                            </Form>
+                        </Modal.Body>
+
+                    </Modal>
+
+                    <Modal show={showsuccessemail} onHide={handleClosesuccess} centered>
+                        <Modal.Body className="success-modal-content">
+                            <Image className="success-icon" src={Right} />
+                            <div className="success-title">Success</div>
+                            <div className="success-message">Email was changed successfully</div>
+                            <Button className="btn-okay" onClick={handleClosesuccess}>
+                                Okay
+                            </Button>
+                        </Modal.Body>
+                    </Modal>
+
+
+                    {/* update the phone number */}
+
+                    <Modal show={showUserphone} centered>
+                        <Modal.Header >
+                            <Modal.Title>Update Your Number</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Container className=''>
+                                <Form onSubmit={handleSubmit} className='verify-phone-form'>
+                                    <Form.Group style={{ marginBottom: "100px" }} controlId="formPhoneNumber" className='verify-form-group'>
+
+                                        <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                            <Dropdown>
+                                                <div id="dropdown-basic" onClick={() => setshowModalcountry(true)} className='flag-box'>
+                                                    <Flag code={selectedCountry} style={{ width: '34px', height: '25px', marginRight: '10px' }} className='flag' />
+                                                    <span>{selectedCountryInfo.dial_code}</span>
+                                                </div>
+                                            </Dropdown>
+                                            <Form.Control
+                                                className={`num-verify-input ${errorMessagephoneupdate ? 'error' : ''}`}
+                                                type="text"
+                                                placeholder="(905)258-2258"
+                                                value={phoneNumberupdate}
+                                                onChange={handlePhoneNumberChange}
+                                                style={{ flex: 1, marginLeft: '10px' }}
+                                            />
+                                        </div>
+                                        {errorMessagephoneupdate && <Form.Text className="text-danger error-message">{errorMessagephoneupdate}</Form.Text>}
+                                    </Form.Group>
+                                    <Container style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+
+                                        <button className="btn-cancel" onClick={handleClosephone}>
+                                            Cancel
+                                        </button>
+                                        <Button variant="primary" className="btn-save" onClick={handleSubmitphone}>
+                                            Save
+                                        </Button>
+                                    </Container>
+                                </Form>
+
                             </Container>
-                        </Form>
+                        </Modal.Body>
 
-                    </Container>
-                </Modal.Body>
+                    </Modal>
 
-            </Modal>
-
-            <Modal show={showModalcountry} onHide={() => setshowModalcountry(false)}
-                centered
-                dialogClassName="custom-modal"
-            >
-                {/* <Modal.Header closeButton>
+                    <Modal show={showModalcountry} onHide={() => setshowModalcountry(false)}
+                        centered
+                        dialogClassName="custom-modal"
+                    >
+                        {/* <Modal.Header closeButton>
 
                 </Modal.Header> */}
 
-<Modal.Body style={{
-                    maxHeight: "500px",
-                    overflowY: "auto",
-                    width: "100%",
-                }}>
-                    <InputGroup className="mb-3" style={{
-                        position: 'sticky',
-                        top: '0',
-                        width: '100%',
-                    }}>
-                        <FormControl
-                            placeholder="Search Country"
-                            aria-label="Search Country"
-                            aria-describedby="basic-addon2"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </InputGroup>
-                     {filteredCountries.map((country) => (
-                        <div key={country.code} className='flag-item' onClick={() => handleCountrySelect(country.code)}>
-                            <Flag code={country.code} style={{ width: '24px', height: '18px', marginRight: '10px' }} />
-                            {country.name} ({country.dial_code})
-                        </div>
-                    ))}
-                </Modal.Body>
-            </Modal>
-
-            <VerifyPhoneModal
-                showUserPhoneotp={showUserPhoneotp} 
-                handleClosePhoneotp={handleClosePhoneotp} 
-                handleShowsuccessphone={handleShowsuccessphone} 
-                fetchData={fetchData} 
-                setResendTimer={setResendTimer}
-                resendTimer={resendTimer}
-                modalPhoneNumber={modalPhoneNumber} 
-                setModalPhoneNumber={setModalPhoneNumber}
-                errorMessagephone={errorMessagephone}
-                seterrorMessagephone = {errorMessagephone}
-            />
-              
-            <Modal show={showsuccessphone} onHide={handleClosesuccessphone} centered>
-                <Modal.Body className="success-modal-content">
-                    <Image className="success-icon" src={Right} />
-                    <div className="success-title">Done</div>
-                    <div className="success-message">Phone number has been updated successfully</div>
-                    <Button className="btn-okay" onClick={handleClosesuccessphone}>
-                        Okay
-                    </Button>
-                </Modal.Body>
-            </Modal>
-
-
-      {/* pause my account */}
-      <Modal show={showPause} onHide={handleClosePause} centered>
-            <Modal.Body className="pause-modal-content">
-                
-                <div className="pause-modal-title">Pause my Account?</div>
-                <div className="pause-modal-message">
-                    Your profile will be hidden and other members will not be able to see or message you. You can reactivate your account anytime.
-                </div>
-                <div className="d-flex justify-content-center">
-                    <Button variant="outline-danger" className="btn-no" onClick={handleClosePause}>
-                        No
-                    </Button>
-                    <Button variant="primary" className="btn-yes" onClick={handlePauseAccount}>
-                        Yes
-                    </Button>
-                </div>
-            </Modal.Body>
-        </Modal>
-       
-        <Modal show={showPauseOption} onHide={handleClosePauseOption} centered>
-            <Modal.Body className="feedback-modal-content">
-                <div className="feedback-modal-title">
-                    Sorry we didn’t have what you were looking for this time!
-                </div>
-                <div className="feedback-modal-subtitle">
-                    We'd love to get your feedback so we can improve
-                </div>
-                <Form>
-                    <div className="feedback-options">
-                        <Form.Check
-                            type="radio"
-                            label="I met somebody on myTamilDate!"
-                            name="feedback"
-                            id="feedback1"
-                            className="feedback-option"
-                            onChange={() => setSelectedOption('option1')}
-                        />
-                        <Form.Check
-                            type="radio"
-                            label="I got too many messages from other members"
-                            name="feedback"
-                            id="feedback2"
-                            className="feedback-option"
-                            onChange={() => setSelectedOption('option2')}
-                        />
-                        <Form.Check
-                            type="radio"
-                            label="I met somebody elsewhere"
-                            name="feedback"
-                            id="feedback3"
-                            className="feedback-option"
-                            onChange={() => setSelectedOption('option3')}
-                        />
-                        <Form.Check
-                            type="radio"
-                            label="It's too expensive"
-                            name="feedback"
-                            id="feedback4"
-                            className="feedback-option"
-                            onChange={() => setSelectedOption('option4')}
-                        />
-                        <Form.Check
-                            type="radio"
-                            label="The site is hard to use"
-                            name="feedback"
-                            id="feedback5"
-                            className="feedback-option"
-                            onChange={() => setSelectedOption('option5')}
-                        />
-                        <Form.Check
-                            type="radio"
-                            label="There aren’t enough people in my area"
-                            name="feedback"
-                            id="feedback6"
-                            className="feedback-option"
-                            onChange={() => setSelectedOption('option6')}
-                        />
-                        <Form.Check
-                            type="radio"
-                            label="Others"
-                            name="feedback"
-                            id="feedback7"
-                            className="feedback-option"
-                            onChange={() => setSelectedOption('option7')}
-                        />
-                    </div>
-                    <div className="d-flex justify-content-center">
-                        <Button variant="outline-danger" className="btn-cancel-pause" onClick={handleClosePauseOption}>
-                            Cancel
-                        </Button>
-                        <Button variant="primary" className="btn-pause" onClick={PauseMyAccount}>
-                            Pause account
-                        </Button>
-                    </div>
-                </Form>
-            </Modal.Body>
-        </Modal>
-
-        {/* Unsubscribe email  */}
-           
-        <Modal show={showUnsubscribeEmail} onHide={handleCloseUnsubscribeEmail} centered>
-            <Modal.Body className="pause-modal-content">
-                <div className="pause-modal-title">Cancel Auto-Renewal on your Subscription?</div>
-                <div className="pause-modal-message">
-                Your account will not auto-renew and your service will be interrupted on the expiry date. Keep auto-renew for a seamless experience.
-                </div>
-                <div className="d-flex justify-content-center">
-                    <Button variant="outline-danger" className="btn-no" onClick={handleCloseUnsubscribeEmail}>
-                        Cancel
-                    </Button>
-                    <Button variant="primary" className="btn-yes" onClick={handleUnsubscribeEmail}>
-                        Keep
-                    </Button>
-                </div>
-            </Modal.Body>
-        </Modal>
-
-        {/* delete my account */}
-        <Modal show={showDeleteAccount} onHide={handleCloseDeleteAccount} centered>
-                <Modal.Body className="pause-modal-content">
-                    <div style={{ display: "flex" }}>
-                        <Image style={{ width: "24px", height: "24px", marginTop: "7px" }} className="fas fa-pause-circle" src={pauseicon} />
-                        <div className="pause-modal-title">Pause your Account instead</div>
-                    </div>
-                    <div className="pause-modal-message">
-                        <p>Just need a break?</p>
-                        <p style={{ marginTop: "-10px" }}> Pause your account and hide your profile, and come back anytime.</p>
-                    </div>
-                    <div className="d-flex justify-content-center">
-                        <Button variant="outline-danger" className="btn-no" onClick={handleCloseDeleteAccount}>
-                            Cancel
-                        </Button>
-                        <Button style={{ backgroundColor: "#F7ECFF", color: "black", width: "140px", border: "none", borderRadius: "24px" }} onClick={handleShowPauseModel}>
-                            Pause
-                        </Button>
-                    </div>
-                    <div style={{ marginTop: "20px" }}>
-                        <Button variant="primary" width="300px" className="btn-yes" onClick={handleDeleteAccount}>
-                            Delete
-                        </Button>
-                    </div>
-                </Modal.Body>
-            </Modal>
-
-            <Modal show={showDeleteOption} onHide={handleCloseDeleteOption} centered>
-                <Modal.Body className="feedback-modal-content">
-                    <div className="feedback-modal-title">
-                        Sorry we didn’t have what you were looking for this time!
-                    </div>
-                    <div className="feedback-modal-subtitle">
-                        We want to improve, give us feedback and you will have a chance to win $50 CDN Amazon gift card!
-                    </div>
-                    <Form>
-                        <div className="feedback-options">
-                            {feedbackOptions.map((option, index) => (
-                                <Form.Check
-                                    type="radio"
-                                    label={option}
-                                    name="feedback"
-                                    id={`feedback${index + 1}`}
-                                    className="feedback-option"
-                                    key={index}
-                                    onChange={() => {
-                                        setSelectedDeleteOption(index + 1);
-                                        setDeleteReason(option);
-                                    }}
+                        <Modal.Body style={{
+                            maxHeight: "500px",
+                            overflowY: "auto",
+                            width: "100%",
+                        }}>
+                            <InputGroup className="mb-3" style={{
+                                position: 'sticky',
+                                top: '0',
+                                width: '100%',
+                            }}>
+                                <FormControl
+                                    placeholder="Search Country"
+                                    aria-label="Search Country"
+                                    aria-describedby="basic-addon2"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
                                 />
+                            </InputGroup>
+                            {filteredCountries.map((country) => (
+                                <div key={country.code} className='flag-item' onClick={() => handleCountrySelect(country.code)}>
+                                    <Flag code={country.code} style={{ width: '24px', height: '18px', marginRight: '10px' }} />
+                                    {country.name} ({country.dial_code})
+                                </div>
                             ))}
-                        </div>
-                        <div className="d-flex justify-content-center">
-                            <Button variant="outline-danger" className="btn-cancel-pause" onClick={handleCloseDeleteOption}>
-                                Cancel
+                        </Modal.Body>
+                    </Modal>
+
+                    <VerifyPhoneModal
+                        showUserPhoneotp={showUserPhoneotp}
+                        handleClosePhoneotp={handleClosePhoneotp}
+                        handleShowsuccessphone={handleShowsuccessphone}
+                        fetchData={fetchData}
+                        setResendTimer={setResendTimer}
+                        resendTimer={resendTimer}
+                        modalPhoneNumber={modalPhoneNumber}
+                        setModalPhoneNumber={setModalPhoneNumber}
+                        errorMessagephone={errorMessagephone}
+                        seterrorMessagephone={errorMessagephone}
+                    />
+
+                    <Modal show={showsuccessphone} onHide={handleClosesuccessphone} centered>
+                        <Modal.Body className="success-modal-content">
+                            <Image className="success-icon" src={Right} />
+                            <div className="success-title">Done</div>
+                            <div className="success-message">Phone number has been updated successfully</div>
+                            <Button className="btn-okay" onClick={handleClosesuccessphone}>
+                                Okay
                             </Button>
-                            <Button variant="primary" className="btn-pause" onClick={handleDeleteAccountOption}>
-                                Delete account
-                            </Button>
-                        </div>
-                    </Form>
-                </Modal.Body>
-            </Modal>
+                        </Modal.Body>
+                    </Modal>
 
-            <Modal show={showFinalDelete} onHide={handleCloseFinalDelete} centered>
-                <Modal.Body className="pause-modal-content">
-                    <div className="pause-modal-title">Delete your Account?</div>
-                    <div className="pause-modal-message">
-                        You cannot recover your account once deleted, are you sure you want to delete your account?
-                    </div>
-                    <div className="d-flex justify-content-center">
-                        <Button variant="outline-danger" className="btn-no" onClick={handleCloseFinalDelete}>
-                            Cancel
-                        </Button>
-                        <Button variant="primary" className="btn-yes" onClick={handleFinalDelete}>
-                            Delete
-                        </Button>
-                    </div>
-                </Modal.Body>
-            </Modal>
 
-         {/* logout my Account */}
-            
-            
-        <Modal show={showFinalDetele} onHide={handleCloseFinalDetele} centered>
+                    {/* pause my account */}
+                    <Modal show={showPause} onHide={handleClosePause} centered>
+                        <Modal.Body className="pause-modal-content">
 
-<Modal.Body className="pause-modal-content">
-    
-    <div className="pause-modal-title">Delete your Account?</div>
-    <div className="pause-modal-message">
-    You cannot recover your account once deleted, are you sure you want to delete your account?
-    </div>
-    <div className="d-flex justify-content-center">
-        <Button variant="outline-danger" className="btn-no" onClick={handleCloseFinalDetele}>
-            Cancel
-        </Button>
-        <Button variant="primary" className="btn-yes" onClick={handleFinalDelete}>
-            Delete
-        </Button>
-    </div>
-</Modal.Body>
-</Modal>
-              <LogoutModal
-              showLogoutModal={showLogoutModal}
-              handleCloseLogout={handleCloseLogout}
-              handleLogout={handleLogout}
-              />
-        </div>
-        </div>
+                            <div className="pause-modal-title">Pause my Account?</div>
+                            <div className="pause-modal-message">
+                                Your profile will be hidden and other members will not be able to see or message you. You can reactivate your account anytime.
+                            </div>
+                            <div className="d-flex justify-content-center">
+                                <Button variant="outline-danger" className="btn-no" onClick={handleClosePause}>
+                                    No
+                                </Button>
+                                <Button variant="primary" className="btn-yes" onClick={handlePauseAccount}>
+                                    Yes
+                                </Button>
+                            </div>
+                        </Modal.Body>
+                    </Modal>
+
+                    <Modal show={showPauseOption} onHide={handleClosePauseOption} centered>
+                        <Modal.Body className="feedback-modal-content">
+                            <div className="feedback-modal-title">
+                                Sorry we didn’t have what you were looking for this time!
+                            </div>
+                            <div className="feedback-modal-subtitle">
+                                We'd love to get your feedback so we can improve
+                            </div>
+                            <Form>
+                                <div className="feedback-options">
+                                    <Form.Check
+                                        type="radio"
+                                        label="I met somebody on myTamilDate!"
+                                        name="feedback"
+                                        id="feedback1"
+                                        className="feedback-option"
+                                        onChange={() => setSelectedOption('option1')}
+                                    />
+                                    <Form.Check
+                                        type="radio"
+                                        label="I got too many messages from other members"
+                                        name="feedback"
+                                        id="feedback2"
+                                        className="feedback-option"
+                                        onChange={() => setSelectedOption('option2')}
+                                    />
+                                    <Form.Check
+                                        type="radio"
+                                        label="I met somebody elsewhere"
+                                        name="feedback"
+                                        id="feedback3"
+                                        className="feedback-option"
+                                        onChange={() => setSelectedOption('option3')}
+                                    />
+                                    <Form.Check
+                                        type="radio"
+                                        label="It's too expensive"
+                                        name="feedback"
+                                        id="feedback4"
+                                        className="feedback-option"
+                                        onChange={() => setSelectedOption('option4')}
+                                    />
+                                    <Form.Check
+                                        type="radio"
+                                        label="The site is hard to use"
+                                        name="feedback"
+                                        id="feedback5"
+                                        className="feedback-option"
+                                        onChange={() => setSelectedOption('option5')}
+                                    />
+                                    <Form.Check
+                                        type="radio"
+                                        label="There aren’t enough people in my area"
+                                        name="feedback"
+                                        id="feedback6"
+                                        className="feedback-option"
+                                        onChange={() => setSelectedOption('option6')}
+                                    />
+                                    <Form.Check
+                                        type="radio"
+                                        label="Others"
+                                        name="feedback"
+                                        id="feedback7"
+                                        className="feedback-option"
+                                        onChange={() => setSelectedOption('option7')}
+                                    />
+                                </div>
+                                <div className="d-flex justify-content-center">
+                                    <Button variant="outline-danger" className="btn-cancel-pause" onClick={handleClosePauseOption}>
+                                        Cancel
+                                    </Button>
+                                    <Button variant="primary" className="btn-pause" onClick={PauseMyAccount}>
+                                        Pause account
+                                    </Button>
+                                </div>
+                            </Form>
+                        </Modal.Body>
+                    </Modal>
+
+                    {/* Unsubscribe email  */}
+
+                    <Modal show={showUnsubscribeEmail} onHide={handleCloseUnsubscribeEmail} centered>
+                        <Modal.Body className="pause-modal-content">
+                            <div className="pause-modal-title">Cancel Auto-Renewal on your Subscription?</div>
+                            <div className="pause-modal-message">
+                                Your account will not auto-renew and your service will be interrupted on the expiry date. Keep auto-renew for a seamless experience.
+                            </div>
+                            <div className="d-flex justify-content-center">
+                                <Button variant="outline-danger" className="btn-no" onClick={handleCloseUnsubscribeEmail}>
+                                    Cancel
+                                </Button>
+                                <Button variant="primary" className="btn-yes" onClick={handleUnsubscribeEmail}>
+                                    Keep
+                                </Button>
+                            </div>
+                        </Modal.Body>
+                    </Modal>
+
+                    {/* delete my account */}
+                    <Modal show={showDeleteAccount} onHide={handleCloseDeleteAccount} centered>
+                        <Modal.Body className="pause-modal-content">
+                            <div style={{ display: "flex" }}>
+                                <Image style={{ width: "24px", height: "24px", marginTop: "7px" }} className="fas fa-pause-circle" src={pauseicon} />
+                                <div className="pause-modal-title">Pause your Account instead</div>
+                            </div>
+                            <div className="pause-modal-message">
+                                <p>Just need a break?</p>
+                                <p style={{ marginTop: "-10px" }}> Pause your account and hide your profile, and come back anytime.</p>
+                            </div>
+                            <div className="d-flex justify-content-center">
+                                <Button variant="outline-danger" className="btn-no" onClick={handleCloseDeleteAccount}>
+                                    Cancel
+                                </Button>
+                                <Button style={{ backgroundColor: "#F7ECFF", color: "black", width: "140px", border: "none", borderRadius: "24px" }} onClick={handleShowPauseModel}>
+                                    Pause
+                                </Button>
+                            </div>
+                            <div style={{ marginTop: "20px" }}>
+                                <Button variant="primary" width="300px" className="btn-yes" onClick={handleDeleteAccount}>
+                                    Delete
+                                </Button>
+                            </div>
+                        </Modal.Body>
+                    </Modal>
+
+                    <Modal show={showDeleteOption} onHide={handleCloseDeleteOption} centered>
+                        <Modal.Body className="feedback-modal-content">
+                            <div className="feedback-modal-title">
+                                Sorry we didn’t have what you were looking for this time!
+                            </div>
+                            <div className="feedback-modal-subtitle">
+                                We want to improve, give us feedback and you will have a chance to win $50 CDN Amazon gift card!
+                            </div>
+                            <Form>
+                                <div className="feedback-options">
+                                    {feedbackOptions.map((option, index) => (
+                                        <Form.Check
+                                            type="radio"
+                                            label={option}
+                                            name="feedback"
+                                            id={`feedback${index + 1}`}
+                                            className="feedback-option"
+                                            key={index}
+                                            onChange={() => {
+                                                setSelectedDeleteOption(index + 1);
+                                                setDeleteReason(option);
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                                <div className="d-flex justify-content-center">
+                                    <Button variant="outline-danger" className="btn-cancel-pause" onClick={handleCloseDeleteOption}>
+                                        Cancel
+                                    </Button>
+                                    <Button variant="primary" className="btn-pause" onClick={handleDeleteAccountOption}>
+                                        Delete account
+                                    </Button>
+                                </div>
+                            </Form>
+                        </Modal.Body>
+                    </Modal>
+
+                    <Modal show={showFinalDelete} onHide={handleCloseFinalDelete} centered>
+                        <Modal.Body className="pause-modal-content">
+                            <div className="pause-modal-title">Delete your Account?</div>
+                            <div className="pause-modal-message">
+                                You cannot recover your account once deleted, are you sure you want to delete your account?
+                            </div>
+                            <div className="d-flex justify-content-center">
+                                <Button variant="outline-danger" className="btn-no" onClick={handleCloseFinalDelete}>
+                                    Cancel
+                                </Button>
+                                <Button variant="primary" className="btn-yes" onClick={handleFinalDelete}>
+                                    Delete
+                                </Button>
+                            </div>
+                        </Modal.Body>
+                    </Modal>
+
+                    {/* logout my Account */}
+
+
+                    <Modal show={showFinalDetele} onHide={handleCloseFinalDetele} centered>
+
+                        <Modal.Body className="pause-modal-content">
+
+                            <div className="pause-modal-title">Delete your Account?</div>
+                            <div className="pause-modal-message">
+                                You cannot recover your account once deleted, are you sure you want to delete your account?
+                            </div>
+                            <div className="d-flex justify-content-center">
+                                <Button variant="outline-danger" className="btn-no" onClick={handleCloseFinalDetele}>
+                                    Cancel
+                                </Button>
+                                <Button variant="primary" className="btn-yes" onClick={handleFinalDelete}>
+                                    Delete
+                                </Button>
+                            </div>
+                        </Modal.Body>
+                    </Modal>
+                    <LogoutModal
+                        showLogoutModal={showLogoutModal}
+                        handleCloseLogout={handleCloseLogout}
+                        handleLogout={handleLogout}
+                    />
+                </div>
+            </div>
         </Sidebar>
     );
 };

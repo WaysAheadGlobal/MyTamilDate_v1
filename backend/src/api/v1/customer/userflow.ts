@@ -195,7 +195,7 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                 JOIN media m ON up.user_id = m.user_id 
                 JOIN locations l ON up.location_id = l.id
                 JOIN jobs j ON j.id = up.job_id
-                WHERE m.type IN (1, 31);
+                WHERE m.type IN (1, 31)
             `;
 
             params = [
@@ -255,7 +255,7 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                 JOIN media m ON up.user_id = m.user_id 
                 JOIN locations l ON up.location_id = l.id
                 JOIN jobs j ON j.id = up.job_id
-                WHERE m.type IN (1, 31);
+                WHERE m.type IN (1, 31)
             `;
 
             params = [
@@ -313,7 +313,7 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                 JOIN media m ON up.user_id = m.user_id 
                 JOIN locations l ON up.location_id = l.id
                 JOIN jobs j ON j.id = up.job_id
-                WHERE m.type IN (1, 31);
+                WHERE m.type IN (1, 31)
             `;
 
             params = [
@@ -375,7 +375,7 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
             JOIN media m ON up.user_id = m.user_id 
             JOIN locations l ON up.location_id = l.id
             JOIN jobs j ON j.id = up.job_id
-            WHERE m.type IN (1, 31);
+            WHERE m.type IN (1, 31)
         `;
 
         params = [
@@ -392,6 +392,10 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
             req.userId
         ];
     }
+
+    query = query.concat(` AND up.user_id NOT IN (SELECT b.person_id FROM blocks b WHERE b.user_id = ?) AND up.user_id NOT IN (SELECT r.person_id FROM reports r WHERE r.user_id = ?) AND up.user_id NOT IN (SELECT b.user_id FROM blocks b WHERE b.person_id = ?) AND up.user_id NOT IN (SELECT r.user_id FROM reports r WHERE r.person_id = ?);`);
+
+    params.push(req.userId, req.userId, req.userId, req.userId);
 
     db.query<RowDataPacket[]>(query, params, (err, result) => {
         if (err) {
@@ -595,11 +599,32 @@ userFlowRouter.put("/preferences/save/age", (req: UserRequest, res) => {
 
 });
 
-userFlowRouter.put("/preferences/save/location", (req: UserRequest, res) => {
+userFlowRouter.put("/preferences/save/location", async (req: UserRequest, res) => {
     const locationId = req.body.location_id;
 
     if (!locationId) {
         res.status(400).send({ message: "Bad request" });
+        return;
+    }
+
+    const isPremium = await new Promise((resolve, reject) => {
+        db.query<RowDataPacket[]>("SELECT id FROM subscriptions WHERE user_id = ? AND stripe_status = 'active';", [req.userId], (err, result) => {
+            if (err) {
+                console.log(err)
+                reject(err);
+                return;
+            }
+
+            if (result.length === 0) {
+                resolve(false);
+            }
+
+            resolve(true);
+        });
+    });
+
+    if (!isPremium) {
+        res.status(403).send({ message: "Forbidden" });
         return;
     }
 
@@ -685,7 +710,7 @@ userFlowRouter.put("/preferences/save/location", (req: UserRequest, res) => {
     });
 });
 
-userFlowRouter.put("/preferences/save/:field", (req: UserRequest, res) => {
+userFlowRouter.put("/preferences/save/:field", async (req: UserRequest, res) => {
     const field = req.params.field;
     const value = req.body.value;
 
@@ -706,6 +731,27 @@ userFlowRouter.put("/preferences/save/:field", (req: UserRequest, res) => {
 
     if (!fields.includes(field)) {
         res.status(400).send({ message: "Bad request" });
+        return;
+    }
+
+    const isPremium = await new Promise((resolve, reject) => {
+        db.query<RowDataPacket[]>("SELECT id FROM subscriptions WHERE user_id = ? AND stripe_status = 'active';", [req.userId], (err, result) => {
+            if (err) {
+                console.log(err)
+                reject(err);
+                return;
+            }
+
+            if (result.length === 0) {
+                resolve(false);
+            }
+
+            resolve(true);
+        });
+    });
+
+    if (field !== "religion_id" && !isPremium) {
+        res.status(403).send({ message: "Forbidden" });
         return;
     }
 

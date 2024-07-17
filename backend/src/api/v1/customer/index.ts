@@ -9,6 +9,7 @@ import chat from "./chat";
 import webhookRouter from "./webhook";
 import payment from "./payment";
 import products from "./products";
+import subscription from "./subscription";
 
 const customer = Router();
 
@@ -25,5 +26,6 @@ customer.use("/matches", matches);
 customer.use("/chat", chat);
 customer.use("/payment", payment);
 customer.use("/products", products);
+customer.use("/subscription", subscription);
 
 export default customer;
