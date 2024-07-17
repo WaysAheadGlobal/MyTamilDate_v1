@@ -1,99 +1,111 @@
 .cardContainer {
-   display: flex;
-   justify-content: center;
-   align-items: center;
- 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -30px;
+}
 
-  }
-  
+.pricingCard {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease;
+  position: relative;
+  width: 114px;
+  height: 127px;
+}
 
-  
-  .pricingCard {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    transition: transform 0.3s ease;
-    position: relative;
-    width: 114px;
-    height: 127px;
-  }
-  
-  .pricingCard:hover {
-    transform: scale(1.25);
-    z-index: 9999;
-  }
+.selectedCard {
+  transform: scale(1.2);
+  z-index: 9999;
+}
 
-  .cardBody {
-    padding: 8px;
-  }
-  .cardBodypopular{
-    padding: 10px;
-    margin-top: -24px;
-    
-  }
-  
-  .cardTitle {
-    font-family: Poppins;
-font-size: 9.77px;
-font-weight: 500;
-line-height: 14.66px;
-text-align: center;
+.cardBody {
+  padding: 8px;
+}
 
-   
-  }
-  
-  .cardPrice {
-    font-family: Poppins;
-    font-size: 16.75px;
-    font-weight: 400;
-    line-height: 25.13px;
-    letter-spacing: 0.04em;
-    text-align: left;
-    
-    
-  }
-  
-  .cardPrice span {
-    font-size: 0.5em;
-  }
-  
-  .cardText {
-    font-size:8px;
-    color: gray;
-  }
-  .mostPopular {
-    
-   
-    background:  rgba(255,107,107,1);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 10px 10px 0 0;
-margin-left: 58px;
-    
-    transform: translateX(-50%);
-    width: 115px;
-    font-size: 12px;
-  }
-  .continuebutton{
-    width: 251px;
-height: 45px;
+.cardBodypopular {
+  padding: 10px;
+  margin-top: -24px;
+}
 
-padding: 12px 16px 12px 16px;
-gap: 10px;
-border-radius: 36px ;
-border: 0.4px solid;
+.cardTitle {
+  font-family: Poppins;
+  font-size: 9.77px;
+  font-weight: 500;
+  line-height: 14.66px;
+  text-align: center;
+}
 
-border-image-source: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+.cardPrice {
+  font-family: Poppins;
+  font-size: 16.75px;
+  font-weight: 400;
+  line-height: 25.13px;
+  letter-spacing: 0.04em;
+  text-align: left;
+}
 
+.cardPrice span {
+  font-size: 0.5em;
+}
 
-color : white;
-background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+.cardText {
+  font-size: 8px;
+  color: gray;
+}
 
-  }
-  .buttonContainer{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 40px;
-  }
+.mostPopular {
+  background: rgba(255, 107, 107, 1);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 10px 10px 0 0;
+  margin-left: 58px;
+  transform: translateX(-50%);
+  width: 115px;
+  font-size: 12px;
+}
+
+.continuebutton {
+  width: 251px;
+  height: 45px;
+  padding: 12px 16px;
+  gap: 10px;
+  border-radius: 36px;
+  border: 0.4px solid;
+  border-image-source: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+  color: white;
+  background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-top: 10px;
+}
+
+.dotContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background: gray;
+  border-radius: 50%;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.activeDot {
+  width: 30px;
+  height: 8px;
+  background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+  border-radius: 25%;
+}

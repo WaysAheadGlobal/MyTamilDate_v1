@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Container, Image } from 'react-bootstrap';
 import { IoMdArrowDropdown } from 'react-icons/io';
 import backarrow from "../../../../assets/images/backarrow.jpg";
@@ -9,26 +9,41 @@ import PricingCarousel from './plandetails';
 import styles from './selectplan.module.css';
 
 const Selectplan = () => {
+  const [selectedCurrency, setSelectedCurrency] = useState('CAD'); // Default to CAD
+
+  const handleCurrencyChange = (event) => {
+    setSelectedCurrency(event.target.value);
+  };
+
   return (
     <Sidebar>
-      <div style={{ flex: "1", marginInline: "auto", display: "flex", flexDirection: "column", gap: "1rem", overflowY: "auto", scrollbarWidth: "none" }}>
-        <div>
-          <div>
-
+ <div style={{
+        flex: "1",
+        marginInline: "auto",
+        display: "flex",
+        flexDirection: "column",
+        gap: "1rem",
+        overflowY: "auto",
+        scrollbarWidth: "none",
+        
+      }}>
+        <div className={styles.bottomdetails}>
+          <div style={{ marginBottom: "10px" }}>
             <Container className='logo-arrow1'>
               <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
               <Image src={logo2} alt="Logo" className='logo1' style={{ backgroundColor: 'transparent' }} />
             </Container>
-
           </div>
           <CarouselComponent />
-          <div className={styles.currencyselected}>
+          <div >
             <div className={styles.currencyselected}>
               <div className={styles.selectWrapper}>
                 <select
                   name="currency"
                   id="currency-select"
                   className={`form-select ${styles.formSelectCurrency}`}
+                  value={selectedCurrency}
+                  onChange={handleCurrencyChange}
                 >
                   <option value="CAD">CAD</option>
                   <option value="INR">INR</option>
@@ -39,13 +54,15 @@ const Selectplan = () => {
                 </div>
               </div>
             </div>
-          </div>
-          <div>
-            <PricingCarousel />
+            <div>
+              <PricingCarousel currency={selectedCurrency} />
+              
+            </div>
           </div>
         </div>
-      </div>
-    </Sidebar>
+        </div>
+        </Sidebar>
+    
   );
 }
 

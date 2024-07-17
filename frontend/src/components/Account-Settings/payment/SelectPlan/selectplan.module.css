@@ -35,7 +35,7 @@
     align-items: center;
     margin: 20px auto;
     height: 100px;
-    margin-top: -30px;
+    margin-top: -4px;
   }
   
   .formSelectCurrency option {
@@ -55,4 +55,30 @@
   .formSelectCurrency option:hover {
     background-color: #F76A7B;
     color: white;
+  }
+
+  .bottomdetails{
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 4.74%, rgba(255, 235, 228, 0.6) 12.41%, rgba(252, 140, 102, 0.6) 55.41%, rgba(247, 106, 123, 0.6) 85.91%, rgba(136, 15, 138, 0.6) 100.74%);
+
+  }
+
+  .buttonContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+  bottom: 36px;
+ margin: auto;
+  }
+
+  .continuebutton {
+    width: 251px;
+    height: 45px;
+    padding: 12px 16px;
+    gap: 10px;
+    border-radius: 36px;
+    border: 0.4px solid;
+    border-image-source: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+    color: white;
+    background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
   }
