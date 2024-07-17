@@ -1,18 +1,16 @@
-import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Image } from 'react-bootstrap';
-import { Modal, Button, Form, Dropdown, InputGroup, FormControl } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Button, Container, Image, Modal } from 'react-bootstrap';
 import backarrow from "../../../assets/images/backarrow.jpg";
+import mastercard from '../../../assets/images/mastercard.png';
+import visa from '../../../assets/images/visa-logo.png';
 import styles from './billinghistory.module.css';
-import mastercard from '../../../assets/images/mastercard.png'
-import visa from '../../../assets/images/visa-logo.png'
 
-import paymentcardedit from '../../../assets/images/paymentcardedit.png'
-import Sidebar from '../../userflow/components/sidebar/sidebar';
+import { Skeleton } from '@mui/material';
+import dayjs from 'dayjs';
 import { API_URL } from '../../../api';
 import { useCookies } from '../../../hooks/useCookies';
-import dayjs from 'dayjs';
-import { Skeleton } from '@mui/material';
+import Sidebar from '../../userflow/components/sidebar/sidebar';
 
 const BillingHistory = () => {
   const [showmodal, setShowModal] = useState(false);
@@ -143,8 +141,10 @@ const BillingHistory = () => {
                     <div className={styles['cardNumber']}>
                       <p>***{subscription.paymentMethod.last4}</p>
                     </div>
-                    <Container style={{ marginLeft: "50px", marginTop: "17px" }} >
-                      <p style={{ display: "flex", fontSize: "24px", color: "#6C6C6C" }}>{subscription.price}<span style={{ fontSize: "14px", color: "#6C6C6C", marginLeft: "10px", marginTop: "10px" }}>{subscription.currency.toUpperCase()}</span> </p>
+                    <Container style={{ marginLeft: "10px", marginTop: "17px" }} >
+                      <p style={{ display: "flex", fontSize: "24px", color: "#6C6C6C" }}>{subscription.price}
+                        <span style={{ fontSize: "14px", color: "#6C6C6C", marginLeft: "10px", marginTop: "10px" }}>{subscription.currency.toUpperCase()}</span>
+                      </p>
                     </Container>
                   </Container>
                 </Container>
