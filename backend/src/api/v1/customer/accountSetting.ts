@@ -318,26 +318,26 @@ function generateOTP() {
 }
 
 // Send OTP to email  and update it
-setting.post('/request-email-update',verifyUser, async (req:UserRequest, res:any) => {
+setting.post('/request-email-update', verifyUser, async (req: UserRequest, res: any) => {
     const { email } = req.body;
     const userId = req.userId;
     const otp = generateOTP();
-   
-        const checkEmailQuery = 'SELECT id FROM user_profiles WHERE email = ?';
+
+    const checkEmailQuery = 'SELECT id FROM user_profiles WHERE email = ?';
     db.query<RowDataPacket[]>(checkEmailQuery, [email], async (err, results) => {
         if (err) {
             console.error('Error checking email:', err);
             return res.status(500).json({ message: 'Internal Server Error' });
         }
-
         if (results.length > 0) {
             return res.status(409).json({ message: 'This email address is already in use. Try with a different email.' });
         }
-        if(results.length === 0){
+
+        if (results.length === 0) {
             try {
-                console.log('email otp',otp);
+                console.log('email otp', otp);
                 await insertOTPInDBByEmail(otp, email);
-                
+
                 let html;
                 try {
                     html = await ejs.renderFile("mail/templates/otp.ejs", { otp: otp });
@@ -345,39 +345,40 @@ setting.post('/request-email-update',verifyUser, async (req:UserRequest, res:any
                     console.error('Error rendering email template:', renderError);
                     return res.status(500).json({ message: 'Internal Server Error' });
                 }
-        
+
                 const msg = {
                     to: email,
                     from: "mtdteam2024@gmail.com",
                     subject: "Approval Notification",
                     html: html
                 };
-        
+
                 sgMail.send(msg)
                     .then(() => {
                         console.log("Approval email sent successfully");
-                        return res.status(200).send('Status updated successfully and email sent');
+                        return res.status(200).json({ message: 'Status updated successfully and email sent' });  // Ensure this line returns JSON
                     })
                     .catch((error) => {
                         console.error('Error sending email:', error);
-                        return res.status(500).send('Internal Server Error');
+                        return res.status(500).json({ message: 'Internal Server Error' });  // Ensure this line returns JSON
                     });
             } catch (error) {
                 console.error('Error sending OTP:', error);
                 return res.status(500).json({ message: 'Internal Server Error' });
             }
         }
-  
+    });
+});
 
-    }
-)})
 
 setting.put("/verifyotp",verifyUser, async(req: UserRequest, res: any) => {
     const userID = req.userId;
     console.log(userID);
     const { email, otp } = req.body;
+    console.log( "email" , email);
 
     try {
+        console.log(email,otp);
         const verify = await getOTPFromDBByEmail(otp, email);
 
         if (!verify) {

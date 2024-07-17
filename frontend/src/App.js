@@ -108,6 +108,8 @@ import { LanguageUpdate } from "./components/UpdateProfile/screens/UserDetailsUp
 import { EducationUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/educations/educations";
 import { BasicDetailsUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/age/age";
 import ChatWith from "./components/userflow/screens/chat/ChatWith";
+import PauseMyAccount from "./components/userflow/screens/pause/pause";
+import HelpSupport from "./components/UpdateProfile/screens/help&support/helpandsupport";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -250,7 +252,7 @@ function App() {
               <Route path = "/updatelanguage" element = {<LanguageUpdate/>}></Route>
               <Route path = "/updateeducations" element = {<EducationUpdate/>}></Route>
               <Route path="/updateage" element = {<BasicDetailsUpdate/>}></Route>
-              
+              <Route path="/helpsupport" element={<HelpSupport/>}></Route>
 
 
               <Route path="/user/home" element={<Home />} />
@@ -259,6 +261,7 @@ function App() {
               <Route path="/user/:name/:id" element={<ProfileDetails />} />
               <Route path="/user/chat/with/:name" element={<ChatWith />} />
               <Route path="/user/chat/*" element={<Chat />} />
+              <Route path="/user/pause" element = {<PauseMyAccount/>}></Route>
             </Routes>
           </main>
         </div>

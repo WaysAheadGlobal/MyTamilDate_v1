@@ -4,6 +4,7 @@ import { Container, Image } from 'react-bootstrap';
 import backarrow from "../../assets/images/backarrow.jpg";
 
 import './privacyPolicy.module.css';
+import Sidebar from '../userflow/components/sidebar/sidebar';
 
 export const PrivacyPolicySetting = () => {
     const [isChecked, setIsChecked] = useState(false);
@@ -14,8 +15,20 @@ export const PrivacyPolicySetting = () => {
 
 
     return (
-        <>
-            
+       
+            // <Sidebar>
+            // <div style={{
+            //     flex: "1",
+            //     marginInline: "auto",
+            //     display: "flex",
+            //     flexDirection: "column",
+            //     gap: "1rem",
+            //     overflowY: "auto",
+            //     scrollbarWidth: "none",
+            //     marginTop: "-50px",
+            //     padding : "2rem"
+            // }}>
+           
             <Container fluid className='policy-main'> 
             
                 <Container className='logo-arrow3'>
@@ -247,8 +260,8 @@ We also allow users to create an account via third party account login providers
 
 <Container  className='policy-btn-box' ><Button className='policy-btn' disabled={!isChecked}>OK</Button></Container> */}
             </Container>
-
-           
-        </>
+            // </div>
+            // </Sidebar>
+  
     );
 }
