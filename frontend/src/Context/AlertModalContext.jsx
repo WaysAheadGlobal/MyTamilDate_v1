@@ -1,0 +1,120 @@
+import React, { createContext, useMemo, useState } from 'react'
+import { Modal } from 'react-bootstrap'
+import Button from '../components/userflow/components/button/Button';
+
+/**
+ * @typedef {Object} Modal
+ * @property {boolean} show
+ * @property {string} message
+ * @property {string} title
+ * @property {() => void} onButtonClick
+ * @property {boolean} showCancelButton
+ */
+
+/**
+ * @typedef {Object} AlertModalContext
+ * @property {Modal} modal
+ * @property {React.Dispatch<React.SetStateAction<Modal>>} setModal
+ */
+
+/**
+ * @type {React.Context<AlertModalContext>}
+ */
+const AlertModalContext = createContext(null);
+
+export const useAlert = () => {
+    const context = React.useContext(AlertModalContext);
+    if (!context) {
+        throw new Error('useAlert must be used within a AlertModalProvider');
+    }
+    return context;
+}
+
+export default function AlertModalProvider({ children }) {
+    const [modal, setModal] = useState({
+        show: false,
+        message: "",
+        title: "",
+        onButtonClick: () => { },
+        showCancelButton: false
+    });
+
+    const value = useMemo(() => ({ modal, setModal }), [modal, setModal]);
+
+    return (
+        <AlertModalContext.Provider value={value}>
+            <Modal size='sm' centered show={modal.show}>
+                <Modal.Body>
+                    <p style={{
+                        fontSize: "large",
+                        fontWeight: "600",
+                        margin: "0",
+                        marginBottom: "1rem",
+                        color: "#6c6c6c"
+                    }}>{modal.title}</p>
+                    <p
+                        style={{
+                            fontSize: "14px",
+                            margin: "0",
+                            textAlign: "center",
+                            color: "#6c6c6c"
+                        }}
+                    >
+                        {modal.message}
+                    </p>
+                    <div style={{
+                        marginTop: "1rem",
+                        display: "flex",
+                        gap: "1rem",
+                        marginInline: "auto",
+                    }}>
+                        {
+                            modal.showCancelButton && (
+                                <button
+                                    type='button'
+                                    style={{
+                                        borderRadius: "9999px",
+                                        padding: "0.75rem 1.5rem",
+                                        border: "2px solid #6c6c6c",
+                                        color: "#6c6c6c",
+                                        backgroundColor: "transparent"
+                                    }}
+                                    onClick={() => {
+                                        setModal({
+                                            show: false,
+                                            message: "",
+                                            title: "",
+                                            onButtonClick: () => { },
+                                            showCancelButton: false
+                                        });
+                                    }}
+                                >
+                                    Close
+                                </button>
+                            )
+                        }
+                        <Button
+                            onClick={() => {
+                                modal.onButtonClick();
+                                setModal({
+                                    show: false,
+                                    message: "",
+                                    title: "",
+                                    onButtonClick: () => { },
+                                    showCancelButton: false
+                                });
+                            }}
+                            style={{
+                                borderRadius: "9999px",
+                                padding: "0.75rem 1.5rem",
+                            }}
+                        >
+                            Okay
+                        </Button>
+                    </div>
+                </Modal.Body>
+            </Modal>
+            {children}
+        </AlertModalContext.Provider>
+    )
+}

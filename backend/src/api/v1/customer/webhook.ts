@@ -147,12 +147,6 @@ webhookRouter.post('/', async (request, response) => {
                         });
                     });
                 });
-            })
-
-            db.query<ResultSetHeader>("INSERT INTO subscriptions (user_id, name, stripe_id, stripe_status, stripe_plan, quantity, ends_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?), NOW(), NOW())", [object.customer, "default", object.id, object.status, object.items.data[0].plan.id, object.items.data[0].quantity, object.current_period_end], (err, _) => {
-                if (err) {
-                    console.log(err);
-                }
             });
 
             break;

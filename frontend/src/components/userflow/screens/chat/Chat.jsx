@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import ChatBox from '../../components/chat-box/ChatBox'
 import ChatNav from '../../components/chat-nav/ChatNav'
 import Likes from '../../components/likes/Likes'
@@ -15,7 +15,7 @@ export default function Chat() {
     return (
         <section className={[styles.chatLayout, "chat"].join(" ")}>
             <MobileSidebar />
-            <div className={[styles.matchContainer, styles.matchBox].join(" ")}>
+            <div className={[styles.matchContainer, styles.matchBox].join(" ")} style={{ position: "relative" }}>
                 <ChatNav />
                 {
                     pathname.includes("likes") && <Likes />

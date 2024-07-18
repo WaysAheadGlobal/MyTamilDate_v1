@@ -54,6 +54,7 @@
     display: flex;
     overflow: hidden;
     cursor: pointer;
+    position: relative;
 }
 
 .profiles>div>div {
@@ -83,4 +84,11 @@
     font-weight: 500;
     line-height: 31.2px;
     text-align: center;
+}
+
+.selected::after {
+    position: absolute;
+    content: "";
+    inset: 0;
+    background: linear-gradient(180deg, rgba(252, 140, 102, 0.6) -4.17%, rgba(247, 106, 123, 0.6) 110.42%);
 }

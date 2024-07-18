@@ -253,8 +253,7 @@ function App() {
               <Route path = "/updatelanguage" element = {<LanguageUpdate/>}></Route>
               <Route path = "/updateeducations" element = {<EducationUpdate/>}></Route>
               <Route path="/updateage" element = {<BasicDetailsUpdate/>}></Route>
-              <Route path="/helpsupport" element={<HelpSupport/>}></Route>
-             
+              <Route path="/helpsupport" element={<HelpSupport/>}></Route>          
 
 
               <Route path="/user/home" element={<Home />} />

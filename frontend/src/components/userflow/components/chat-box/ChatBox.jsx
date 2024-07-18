@@ -64,14 +64,13 @@ export default function ChatBox({ className }) {
             const data = await response.json();
 
             if (response.ok) {
-                console.log(data);
                 setMessages(data);
             }
         })()
     }, [conversationId, window.location.pathname])
 
     useEffect(() => {
-        if (!conversationId) return;
+        if (!conversationId || !window.location.pathname.includes("with")) return;
 
         const chatContainer = document.querySelector(`#chat-container`);
         chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -181,7 +180,7 @@ export default function ChatBox({ className }) {
         setText("");
     }
 
-    if (!conversationId) {
+    if (!conversationId || !window.location.pathname.includes("with")) {
         return <div id="chat-box"></div>
     }
 

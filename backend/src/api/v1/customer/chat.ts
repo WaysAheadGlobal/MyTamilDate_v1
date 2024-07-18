@@ -6,7 +6,7 @@ import ConversationTypeEnum from "../../../enums/ConversationTypeEnum";
 import MessageTypeEnum from "../../../enums/MessageTypeEnum";
 import { verifyUser } from "../../../middleware/verifyUser";
 import { UserRequest } from "../../../types/types";
-import { io } from "../../..";
+import { checkPremium } from "../../../utils/utils";
 
 const chat = Router();
 
@@ -137,8 +137,15 @@ chat.post("/request", (req: UserRequest, res) => {
 /*
     This endpoint first checks whether a conversation exists between the two users. If it does, it returns the conversation id else it creates a new conversation and returns the conversation id.
 */
-chat.post("/create-room", (req: UserRequest, res) => {
+chat.post("/create-room", async (req: UserRequest, res) => {
     const { participantId } = req.body;
+
+    const isPremium = await checkPremium(req.userId!);
+
+    if (!isPremium) {
+        res.status(403).send("You need to be a premium user to start a conversation");
+        return;
+    }
 
     db.beginTransaction(err => {
         if (err) {

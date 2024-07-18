@@ -7,6 +7,7 @@ import chatPlaceholder from '../../../../assets/images/chatPlaceholder.svg';
 import { useSocket } from '../../../../Context/SockerContext';
 import { useCookies } from '../../../../hooks/useCookies';
 import styles from './matches.module.css';
+import { useAlert } from '../../../../Context/AlertModalContext';
 
 export default function Matches() {
     const [matches, setMatches] = useState([]);
@@ -17,6 +18,7 @@ export default function Matches() {
     const [page, setPage] = useState(1);
     const navigate = useNavigate();
     const { socket } = useSocket();
+    const alert = useAlert();
 
     const getImageURL = (type, hash, extension, userId) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}` : `${API_URL}media/avatar/${hash}.${extension}`;
 
@@ -60,6 +62,17 @@ export default function Matches() {
     }, [matches])
 
     async function getRoom(userId, name, img) {
+        if (cookies.getCookie("isPremium") !== "true") {
+            alert.setModal({
+                show: true,
+                title: "Upgrade to premium",
+                message: "You need to be a premium user to chat with other users. Would you like to upgrade now?",
+                onButtonClick: () => navigate("/selectplan"),
+                showCancelButton: true
+            });
+            return;
+        }
+
         try {
             const response = await fetch(`${API_URL}customer/chat/create-room`, {
                 method: "POST",
@@ -247,7 +260,9 @@ export default function Matches() {
                                         }} />
                                         <div>
                                             <p>{conversation.first_name} {conversation.last_name}</p>
-                                            <p>{conversation.message}</p>
+                                            <p style={{
+                                                filter: cookies.getCookie("isPremium") === "true" ? "none" : "blur(5px)",
+                                            }}>{conversation.message}</p>
                                         </div>
                                         <div style={{ flexGrow: "1" }}></div>
                                         <p>{getDateDifference(conversation.sent_at)}</p>
