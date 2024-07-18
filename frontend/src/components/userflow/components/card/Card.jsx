@@ -122,7 +122,7 @@ export default function Card({ ...props }) {
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat'
                     }}
-                    onClick={() => navigate(`/user/${props.first_name} ${props.last_name ?? ""}/${props.user_id}`)}
+                    /* onClick={() => navigate(`/user/${props.first_name} ${props.last_name ?? ""}/${props.user_id}`)} */
                 >
                     <span style={{
                         position: "absolute",
