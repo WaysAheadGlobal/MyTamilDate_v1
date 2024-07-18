@@ -2,29 +2,64 @@ import React, { useState, useEffect } from 'react';
 import styles from './PricingCarousel.module.css';
 import { API_URL } from '../../../../api';
 import { useCookies } from '../../../../hooks/useCookies';
+import { useAlert } from '../../../../Context/AlertModalContext';
+import { useNavigate } from 'react-router-dom';
 
 const PricingCard = ({ currency }) => {
   const cookies = useCookies();
-  const [priceId, setPriceId] = useState('');
+  const [priceId, setPriceId] = useState(process.env.REACT_APP_STRIPE_PRICE_ID_6_MONTHS);
   const [selectedCard, setSelectedCard] = useState(1); // Start with the middle card selected
+  const alert = useAlert();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log('priceId', priceId);
   }, [priceId]);
 
-  async function handlePayment() {
-    const response = await fetch(`${API_URL}customer/payment/create-checkout-session`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${cookies.getCookie('token')}`,
-      },
-      body: JSON.stringify({ priceId }),
-    });
-    const data = await response.json();
 
-    if (response.ok) {
-      window.location.assign(data.url);
+  async function handlePayment() {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}customer/payment/create-subscription`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${cookies.getCookie('token')}`,
+        },
+        body: JSON.stringify({ priceId }),
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        if (data.url) {
+          alert.setModal({
+            show: true,
+            message: data.message,
+            title: 'Error',
+            onButtonClick: () => {
+              navigate(data.url);
+            }
+          });
+        } else {
+          alert.setModal({
+            show: true,
+            message: data.message,
+            title: 'Success',
+            onButtonClick: () => {
+              window.location.assign('/user/home');
+            }
+          });
+        }
+      }
+    } catch (error) {
+      alert.setModal({
+        show: true,
+        message: "Something went wrong. Please try again later.",
+        title: 'Error',
+      });
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -92,8 +127,8 @@ const PricingCard = ({ currency }) => {
         ))}
       </div>
       <div className={styles.buttonContainer}>
-        <button className={styles.continuebutton} onClick={handlePayment}>
-          Continue
+        <button className={styles.continuebutton} onClick={handlePayment} disabled={loading}>
+          {loading ? 'Processing...' : 'Continue'}
         </button>
       </div>
     </div>

@@ -5,6 +5,7 @@ import { db } from "../../../../db/db";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { query, validationResult } from "express-validator";
 import { io } from "../../..";
+import { checkPremium } from "../../../utils/utils";
 
 const matches = Router();
 
@@ -74,10 +75,17 @@ matches.get(
 matches.get(
     "/likes/sent",
     query("page").optional().isInt({ min: 1 }),
-    (req: UserRequest, res) => {
+    async (req: UserRequest, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             res.status(400).json({ errors: errors.array() });
+            return;
+        }
+
+        const isPremium = await checkPremium(req.userId!);
+
+        if (!isPremium) {
+            res.status(200).json([]);
             return;
         }
 
@@ -118,10 +126,17 @@ matches.get(
 matches.get(
     "/likes/received",
     query("page").optional().isInt({ min: 1 }),
-    (req: UserRequest, res) => {
+    async (req: UserRequest, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             res.status(400).json({ errors: errors.array() });
+            return;
+        }
+
+        const isPremium = await checkPremium(req.userId!);
+
+        if (!isPremium) {
+            res.status(200).json([]);
             return;
         }
 

@@ -173,7 +173,12 @@ export default function Sidebar({ children }) {
                         </svg>
                         <span>Help & Support</span>
                     </div>
-                    <div>
+                    <div style={{ cursor: "pointer" }} onClick={() => {
+                        cookies.deleteCookie("token");
+                        cookies.deleteCookie("approval");
+                        cookies.deleteCookie("isPremium");
+                        window.location.replace("/");
+                    }}>
                         <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M17.4974 5.16797H20.9974C22.2861 5.16797 23.3307 6.21264 23.3307 7.5013V21.5013C23.3307 22.79 22.2861 23.8346 20.9974 23.8346H17.4974M9.33073 9.83464L4.66406 14.5013M4.66406 14.5013L9.33073 19.168M4.66406 14.5013L18.6641 14.5013" stroke="#515151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
@@ -305,7 +310,12 @@ export function MobileSidebar() {
                         <path d="M14 20.3333V20.325M14 17.8333C14 14.0833 17.5 14.9167 17.5 12C17.5 10.1591 15.933 8.66667 14 8.66667C12.4328 8.66667 11.1062 9.64763 10.6602 11M24.5 14.5C24.5 20.299 19.799 25 14 25C8.20101 25 3.5 20.299 3.5 14.5C3.5 8.70101 8.20101 4 14 4C19.799 4 24.5 8.70101 24.5 14.5Z" stroke="#515151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </div>
-                <div>
+                <div onClick={() => {
+                    cookies.deleteCookie("token");
+                    cookies.deleteCookie("approval");
+                    cookies.deleteCookie("isPremium");
+                    window.location.replace("/");
+                }}>
                     <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M17.4974 5.16797H20.9974C22.2861 5.16797 23.3307 6.21264 23.3307 7.5013V21.5013C23.3307 22.79 22.2861 23.8346 20.9974 23.8346H17.4974M9.33073 9.83464L4.66406 14.5013M4.66406 14.5013L9.33073 19.168M4.66406 14.5013L18.6641 14.5013" stroke="#515151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
