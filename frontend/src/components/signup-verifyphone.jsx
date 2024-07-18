@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './signup-verifyphone.css';
 import { useNavigate } from 'react-router-dom';
@@ -13,17 +13,17 @@ import { useCookies } from '../hooks/useCookies';
 import { API_URL } from '../api';
 import { countries } from "country-list-json";
 
-
 export const SignupPhone = () => {
     const navigate = useNavigate();
     const { phoneNumber, setPhoneNumber, } = useAppContext();
     const [selectedCountry, setSelectedCountry] = useState('CA');
-    // const [phoneNumber, setPhoneNumber] = useState('');
     const [selectedCountryInfo, setSelectedCountryInfo] = useState(countries.find(country => country.code === 'CA'));
     const [showModal, setShowModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const { setCookie } = useCookies();
+
+    const searchInputRef = useRef(null); // Reference for the search input
 
     const handleCountrySelect = (countryCode) => {
         setSelectedCountry(countryCode);
@@ -82,6 +82,12 @@ export const SignupPhone = () => {
             }
         }
     };
+
+    useEffect(() => {
+        if (showModal) {
+            searchInputRef.current.focus(); // Focus on the input field when the modal is shown
+        }
+    }, [showModal]);
 
     return (
         <div className='signupphone-container'>
@@ -169,6 +175,7 @@ export const SignupPhone = () => {
                             aria-describedby="basic-addon2"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
+                            ref={searchInputRef} // Set reference for the input field
                         />
                     </InputGroup>
                     {filteredCountries.map((country) => (

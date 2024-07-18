@@ -8,16 +8,13 @@ import { SlArrowDown } from "react-icons/sl";
 import verify from '../assets/images/verified.png';
 import { Footer } from './footer';
 import { NavBar } from './nav';
-
+import { API_URL } from '../api';
 
 function SuccessfullModal(props) {
     return (
-
         <Modal
-
             {...props}
             size="lg"
-            // aria-labelledby="contained-modal-title-vcenter"
             centered
             style={{
                 width: '100%',
@@ -25,36 +22,24 @@ function SuccessfullModal(props) {
                 border: 'none',
                 backgroundColor: "#000000B2"
             }}
-
         >
-
-
-
             <Modal.Body className='getintouch-modal'>
-
-
-
-                <div className=' getetintouch-model-main'>
+                <div className='getetintouch-model-main'>
                     <div className='getintouch-close'>
                         <button type="button" className="btn-close" onClick={props.onHide} style={{ color: '#FFFFFF', padding: '10px' }} >
                         </button>
                     </div>
                     <div className='getintouch-model-content'>
                         <Image className='verify-img' src={verify}></Image>
-                        <span >Thanks! We've received your submission and will be in touch.</span>
+                        <span>Thanks! We've received your submission and will be in touch.</span>
                     </div>
                 </div>
-
-
             </Modal.Body>
-
         </Modal>
-
     );
 }
 
 export const GetInTouch = () => {
-
     const [modalShow, setModalShow] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -73,21 +58,53 @@ export const GetInTouch = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+ 
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('Form data submitted:', formData);
-        // You can add form submission logic here (e.g., API call)
+    
+        try {
+            const response = await fetch(`${API_URL}/customer/users/contact`, {  // Adjusted URL
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: formData.email,
+                    name: formData.name,
+                    message: formData.message,
+                    issue: formData.areaOfConcern  
+                })
+            });
+    
+            if (response.ok) {
+                console.log('Contact form submitted successfully');
+                setModalShow(true);
+                setFormData({
+                    name: '',
+                    email: '',
+                    phone: '',
+                    areaOfConcern: '',
+                    message: ''
+                });
+            } else {
+                const errorData = await response.json();
+                console.error('Error submitting contact form:', errorData);
+            }
+        } catch (error) {
+            console.error('Error submitting contact form:', error);
+        }
     };
+    
+
 
     return (
-
         <>
             <NavBar />
             <div className='getintouch-main'>
                 <p>Get in Touch</p>
-                <Container className='getintouch-content' >
-
-
+                <Container className='getintouch-content'>
                     <Container className='getintouch-form-container'>
                         <span>Let’s connect</span>
                         <Form onSubmit={handleSubmit} className='getintouch-form'>
@@ -101,7 +118,7 @@ export const GetInTouch = () => {
                                 />
                             </Form.Group>
 
-                            <Form.Group controlId="formEmail " className='getintouch-group'>
+                            <Form.Group controlId="formEmail" className='getintouch-group'>
                                 <Form.Control className='getintouch-input'
                                     type="email"
                                     placeholder="Email"
@@ -127,16 +144,13 @@ export const GetInTouch = () => {
                                     name="areaOfConcern"
                                     value={formData.areaOfConcern}
                                     onChange={handleChange}
-                                    // placeholder="Your Topic"
                                     size="sm"
                                     style={{ fontFamily: '"Inter"', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}
                                 >
-
                                     <option value="" className="option-style" style={{ fontFamily: '"Inter"', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>Select</option>
-                                    <option value="I have technical a issue" className="option-style" style={{ fontFamily: '"Inter"', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>I have technical a issue</option>
+                                    <option value="I have a technical issue" className="option-style" style={{ fontFamily: '"Inter"', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>I have a technical issue</option>
                                     <option value="I have a question" className="option-style" style={{ fontFamily: '"Inter"', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>I have a question</option>
-                                    <option value="I have billing a issue" className="option-style" style={{ fontFamily: '"Inter"', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>I have billing a issue</option>
-
+                                    <option value="I have a billing issue" className="option-style" style={{ fontFamily: '"Inter"', fontSize: '18px', fontWeight: 400, lineHeight: '27px', letterSpacing: '-0.01em', textAlign: 'left', color: '#5E5E5E' }}>I have a billing issue</option>
                                 </Form.Control>
                                 <SlArrowDown className="arrow-icon" />
                             </Form.Group>
@@ -151,7 +165,7 @@ export const GetInTouch = () => {
                                 />
                             </Form.Group>
                             <div className='connect-btn-box'>
-                                <Button variant="primary" className='getintouch-btn' onClick={() => setModalShow(true)} type="submit">
+                                <Button variant="primary" className='getintouch-btn' type="submit">
                                     Submit
                                 </Button>
                             </div>
@@ -161,32 +175,14 @@ export const GetInTouch = () => {
                     <Container className='get-bg-container'>
                         {/* <Image className='get-bg' src={getbg}></Image> */}
                     </Container>
-
-
-
-
-
-
-
-
                 </Container>
-
             </div>
             <Footer />
-
 
             <SuccessfullModal
                 show={modalShow}
                 onHide={() => setModalShow(false)}
             />
-
         </>
-
-
-
-
-
-
-
     );
-}
+};

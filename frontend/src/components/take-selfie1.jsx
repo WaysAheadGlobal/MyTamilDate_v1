@@ -28,6 +28,10 @@ export const Selfie = () => {
     const [showDosDontsModal, setShowDosDontsModal] = useState(false);
     const { getCookie } = useCookies();
     const [loading, setLoading] = useState(false);
+    const [showDuplicateNameModal, setShowDuplicateNameModal] = useState(false);
+
+
+    console.log(selectedImages);
 
     const fileInputRefMain = useRef(null);
     const fileInputRefFirst = useRef(null);
@@ -38,6 +42,16 @@ export const Selfie = () => {
         first: null,
         second: null,
     });
+
+    const checkForDuplicateNames = (file, imageKey) => {
+        const fileName = file.name;
+        const existingFileNames = Object.keys(selectedImages)
+            .filter(key => key !== imageKey && selectedImages[key] !== null)
+            .map(key => selectedImages[key]?.name);
+    
+        return existingFileNames.includes(fileName);
+    };
+    
 
     useEffect(() => {
         (async () => {
@@ -73,18 +87,24 @@ export const Selfie = () => {
     }, [])
 
     const handleFileChange = (event, imageKey) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                setImageToCrop(reader.result);
-            };
-            reader.readAsDataURL(file);
-
-            setCurrentImageKey(imageKey);
-            setShowCropModal(true);
+    const file = event.target.files[0];
+    if (file) {
+        if (checkForDuplicateNames(file, imageKey)) {
+            setShowDuplicateNameModal(true);
+            return;
         }
-    };
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            setImageToCrop(reader.result);
+        };
+        reader.readAsDataURL(file);
+
+        setCurrentImageKey(imageKey);
+        setShowCropModal(true);
+    }
+};
+
 
     const handleClick = (imageKey) => {
         if (imageKey === 'main') {
@@ -408,6 +428,15 @@ export const Selfie = () => {
                         </Button>
                     </Modal.Footer> */}
                 </Modal>
+                <Modal centered className="duplicate-name-modal" show={showDuplicateNameModal} onHide={() => setShowDuplicateNameModal(false)}>
+    <Modal.Body className='duplicate-name-modal-body'>
+        Image names must be different.
+        <Button variant="secondary" className='duplicate-name-modal-btn' onClick={() => setShowDuplicateNameModal(false)}>
+            Close
+        </Button>
+    </Modal.Body>
+</Modal>
+
             </Container>
         </div>
     );

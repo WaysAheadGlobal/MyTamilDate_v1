@@ -72,13 +72,13 @@ export default function ProfileAnswers() {
                                 <p>Write your profile answers</p>
                             </Container>
                             <p style={{
-                                color: "#6C6C6C",
+                                color: "#4E1173",
                                 fontSize: "14px",
                                 lineHeight: "20px",
                                 textAlign: "center",
-                                fontWeight: "400",
+                                fontWeight: "600",
                             }}>
-                                Give others a glimpse into your amazing personality by completing at least 2 of these prompts.
+                          Answer 2 prompts only
                             </p>
                             <div style={{
                                 maxHeight: "50vh",

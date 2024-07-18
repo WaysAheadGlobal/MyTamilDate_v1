@@ -25,6 +25,35 @@ const upload = multer({
 
 const profile = express.Router();
 
+
+// Contact Us endpoint
+profile.post('/contact', [
+  body('email').isEmail().withMessage('Invalid email address'),
+  body('name').isString().notEmpty().withMessage('Name is required'),
+  body('message').isString().notEmpty().withMessage('Message is required'),
+  body('issue').isString().notEmpty().withMessage('Issue is required')
+], (req :any, res:express.Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { email, name, message, issue } = req.body;
+
+  const query = `
+    INSERT INTO contact_us (email, name, message, issue, created_at, updated_at)
+    VALUES (?, ?, ?, ?, NOW(), NOW())
+  `;
+
+  db.query<ResultSetHeader>(query, [email, name, message, issue], (err, results) => {
+    if (err) {
+      console.error('Error inserting contact form data:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    res.status(201).json({ message: 'Contact form submitted successfully' });
+  });
+});
 // Get all user profiles
 profile.get('/', verifyUser, (req, res) => {
   const query = 'SELECT * FROM user_profiles';
@@ -82,7 +111,6 @@ profile.put('/namedetails', [
   verifyUser,
   body('first_name').isString().notEmpty().withMessage('First name is required'),
   body('birthday').isDate().withMessage('Birthday must be a valid date'),
-  body('last_name').optional().isString().withMessage('Name must be a text')
 
 ], (req: UserRequest, res: any) => {
   const errors = validationResult(req);
@@ -1018,6 +1046,35 @@ profile.get('/answer/:questionId', verifyUser, (req: UserRequest, res: express.R
     }
 
     res.status(200).json(results[0]);
+  });
+});
+
+profile.get('/questionanswer', (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  const sql = `
+      SELECT 
+          qa.question_id,
+          q.text AS question,
+          qa.answer,
+          qa.created_at,
+          qa.updated_at
+      FROM 
+          question_answers qa
+      JOIN 
+          questions q ON qa.question_id = q.id
+      WHERE 
+          qa.user_id = ?
+  `;
+
+  db.query(sql, [userId], (err: Error | null, results: any) => {
+      if (err) {
+          console.error('Error fetching data:', err);
+          res.status(500).send('Internal Server Error');
+          return;
+      }
+
+      res.status(200).json(results);
   });
 });
 
