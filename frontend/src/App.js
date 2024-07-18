@@ -111,6 +111,7 @@ import ChatWith from "./components/userflow/screens/chat/ChatWith";
 import PauseMyAccount from "./components/userflow/screens/pause/pause";
 import HelpSupport from "./components/UpdateProfile/screens/help&support/helpandsupport";
 
+
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -253,6 +254,7 @@ function App() {
               <Route path = "/updateeducations" element = {<EducationUpdate/>}></Route>
               <Route path="/updateage" element = {<BasicDetailsUpdate/>}></Route>
               <Route path="/helpsupport" element={<HelpSupport/>}></Route>
+             
 
 
               <Route path="/user/home" element={<Home />} />

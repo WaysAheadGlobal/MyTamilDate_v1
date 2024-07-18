@@ -57,10 +57,14 @@
     color: white;
   }
 
-  .bottomdetails{
+  .bottomdetails {
+    height: 100vh;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 4.74%, rgba(255, 235, 228, 0.6) 12.41%, rgba(252, 140, 102, 0.6) 55.41%, rgba(247, 106, 123, 0.6) 85.91%, rgba(136, 15, 138, 0.6) 100.74%);
-
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Optional: centers content vertically */
   }
+  
 
   .buttonContainer {
     display: flex;
