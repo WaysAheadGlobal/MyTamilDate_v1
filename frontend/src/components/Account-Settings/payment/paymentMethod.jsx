@@ -13,14 +13,27 @@ const PaymentMethod = () => {
   
   return (
     <Sidebar>
-      <div style={{ flex: "1", marginInline: "auto", display: "flex", flexDirection: "column", gap: "1rem", overflowY: "auto", scrollbarWidth: "none" }}>
+   <div style={{
+                flex: "1",
+                marginInline: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+                overflowY: "auto",
+                scrollbarWidth: "none",
+                width: "-webkit-fill-available",
+                padding: "2rem"
+            }}>
         
-        
-            <Container className='logo-arrow3'>
+            {/* <Container className='logo-arrow3'>
               <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
               <h1 className='account-setting-heading'>My Payment Method</h1>
           
-        </Container>
+        </Container> */}
+        <div className={styles.logoarrow}>
+                        <Image src={backarrow} className={styles.backarroww} onClick={() => window.history.back()} alt="Back Arrow" />
+                        <div className={styles.helpSupportTitle}>My Payment Method</div>
+                    </div>
 
           <Container className={styles.paymentcard}>
             <Container className={styles.mastercard}>

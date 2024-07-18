@@ -17,16 +17,17 @@ const Selectplan = () => {
 
   return (
     <Sidebar>
- <div style={{
-        flex: "1",
-        marginInline: "auto",
-        display: "flex",
-        flexDirection: "column",
-        gap: "1rem",
-        overflowY: "auto",
-        scrollbarWidth: "none",
-        
-      }}>
+   <div style={{
+                flex: "1",
+                marginInline: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+                overflowY: "auto",
+                scrollbarWidth: "none",
+                width: "-webkit-fill-available",
+                
+            }}>
         <div className={styles.bottomdetails}>
           <div style={{ marginBottom: "10px" }}>
             <Container className='logo-arrow1'>

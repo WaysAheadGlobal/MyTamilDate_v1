@@ -11,20 +11,22 @@ const AddPaymentMethod = () => {
   const navigate = useNavigate();
   return (
     <Sidebar>
-      <div style={{
-        flex: "1",
-        marginInline: "auto",
-        display: "flex",
-        flexDirection: "column",
-        gap: "1rem",
-        overflowY: "auto",
-        scrollbarWidth: "none"
-      }}>
+    <div style={{
+                flex: "1",
+                marginInline: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+                overflowY: "auto",
+                scrollbarWidth: "none",
+                width: "-webkit-fill-available",
+                
+            }}>
         <Container>
-          <Container className='logo-progressbar3' style={{marginBottom : "30px"}}>
+          <Container className='logo-progressbar3' style={{marginBottom : "30px", marginTop : "5px"}}>
             <Container className='logo-arrow3'>
               <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
-              <h1 className='account-setting-heading'>
+              <h1 className='account-setting-heading' style={{ color: "#515151"}}>
                 Add Payments
               </h1>
             </Container>
