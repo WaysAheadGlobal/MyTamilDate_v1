@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { API_URL } from '../../../../api';
+import { useCookies } from '../../../../hooks/useCookies';
 
 /**
  * @typedef {Object} Profile
@@ -20,8 +22,22 @@ import React, { createContext, useContext, useMemo, useState } from 'react';
  * @property {boolean} like - The like status of the user.
  */
 
-/** 
- * @type {React.Context<{profiles: Profile[], setProfiles: React.Dispatch<React.SetStateAction<Profile[]>>}>}
+/**
+ * @typedef {Object} UserProfileContext
+ * @property {Profile[]} profiles - The profiles of the users.
+ * @property {React.Dispatch<React.SetStateAction<Profile[]>>} setProfiles - The setProfiles function.
+ * @property {boolean} loading - The loading status.
+ * @property {React.Dispatch<React.SetStateAction<boolean>>} setLoading - The setLoading function.
+ * @property {number} page - The current page.
+ * @property {React.Dispatch<React.SetStateAction<number>>} setPage - The setPage function.
+ * @property {number} wave - The current wave.
+ * @property {React.Dispatch<React.SetStateAction<number>>} setWave - The setWave function.
+ * @property {AbortController} abortController - The abortController.
+ * @property {React.Dispatch<React.SetStateAction<AbortController>>} setAbortController - The setAbortController function.
+ */
+
+/**
+ * @type {React.Context<UserProfileContext>}
  */
 const UserProfileContext = createContext();
 
@@ -40,8 +56,70 @@ export default function UserProfileProvider({ children }) {
      * @type {[Profile[], React.Dispatch<React.SetStateAction<Profile[]>>]}
      */
     const [profiles, setProfiles] = useState([]);
+    const cookies = useCookies();
+    const [wave, setWave] = useState(1);
+    const [abortController, setAbortController] = useState(new AbortController());
+    const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
 
-    const value = useMemo(() => ({ profiles, setProfiles }), [profiles, setProfiles]);
+    useEffect(() => {
+        const storedWave = cookies.getCookie('wave');
+
+        if (storedWave) {
+            abortController.abort();
+            setAbortController(new AbortController());
+            setWave(Number(storedWave));
+        }
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+            setLoading(true);
+
+            const response = await fetch(`${API_URL}customer/user/profiles?page=${page}&wave=${wave}`, {
+                headers: {
+                    'Authorization': `Bearer ${cookies.getCookie('token')}`,
+                },
+                signal: abortController.signal
+            });
+            const data = await response.json();
+            if (!data) return;
+            console.log(data)
+
+            if (response.ok) {
+                if (data.length === 0 && wave < 3) {
+                    setWave(wave + 1);
+                    cookies.setCookie('wave', wave + 1);
+                }
+                setProfiles([...profiles, ...data]);
+            }
+
+            setLoading(false);
+        })()
+    }, [page, wave]);
+
+    const value = useMemo(() => ({
+        profiles,
+        setProfiles,
+        loading,
+        setLoading,
+        page,
+        setPage,
+        wave,
+        setWave,
+        abortController,
+        setAbortController
+    }), [profiles,
+        setProfiles,
+        loading,
+        setLoading,
+        page,
+        setPage,
+        wave,
+        setWave,
+        abortController,
+        setAbortController
+    ]);
 
     return (
         <UserProfileContext.Provider value={value}>

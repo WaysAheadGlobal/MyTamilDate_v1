@@ -26,9 +26,8 @@ p {
 
 @media screen and (max-width: 768px) {
     .card-container {
-        --card-height: calc(100dvh - 100px);
+        --card-height: calc(100dvh - 52px); /* 52px is the height of the navbar below the profile */
         width: 100%;
-        /* 100px is the height of the navbar below the profile */
     }
 
     .card-and-details-container {
@@ -71,4 +70,8 @@ p {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+}
+
+.dropdown-hover-button:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
 }

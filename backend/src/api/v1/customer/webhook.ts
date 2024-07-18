@@ -1,9 +1,8 @@
+import sgMail from "@sendgrid/mail";
 import { Router } from "express";
-import moment from "moment";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import Stripe from "stripe";
 import { db } from "../../../../db/db";
-import sgMail from "@sendgrid/mail";
 
 const webhookRouter = Router();
 
@@ -30,8 +29,6 @@ webhookRouter.post('/', async (request, response) => {
 
             const object = event.data.object;
 
-            console.log("1")
-
             db.beginTransaction(err => {
                 if (err) {
                     db.rollback(() => {
@@ -55,7 +52,7 @@ webhookRouter.post('/', async (request, response) => {
                         return;
                     }
 
-                    db.query<ResultSetHeader>("INSERT INTO payments (customer_id, amount, discount_amount, price_id, created_at, updated_at, user_id) VALUES (?, ?, ?, ?, NOW(), NOW(), ?)", [object.customer, object.amount_paid, object.discount ?? 0, object.lines.data[0]?.plan?.id, result[0].id], (err, _) => {
+                    db.query<ResultSetHeader>("INSERT INTO payments (customer_id, amount, discount_amount, price_id, created_at, updated_at, user_id) VALUES (?, ?, ?, ?, NOW(), NOW(), ?)", [object.customer, object.amount_paid, object.discount ?? 0, object.lines.data[0]?.plan?.id, result[0].id], async (err) => {
                         if (err) {
                             db.rollback(() => {
                                 console.log(err);
@@ -63,20 +60,25 @@ webhookRouter.post('/', async (request, response) => {
                             return;
                         }
 
-                        const query = "INSERT INTO subscriptions (user_id, name, stripe_id, stripe_status, stripe_plan, quantity, ends_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?), NOW(), NOW())";
+                        await sgMail.send({
+                            to: object.customer_email!,
+                            from: process.env.EMAIL_HOST!,
+                            subject: "Payment Successful",
+                            text: `
+                            Dear customer,
 
-                        const values = [
-                            result[0].id,
-                            "default",
-                            object.subscription,
-                            object.status,
-                            object.lines.data[0]?.plan?.id,
-                            object.lines.data[0]?.quantity,
-                            object.lines.data[0]?.period?.end,
-                            result[0].id
-                        ];
+                            Your payment was successful. 
+                            Thank you for subscribing to our service.
+                            
+                            This is your invoice:
+                            ${object.hosted_invoice_url}
 
-                        db.query<ResultSetHeader>(query, values, async (err, _) => {
+                            Regards,
+                            The MTD Team
+                        `
+                        });
+
+                        db.commit(err => {
                             if (err) {
                                 db.rollback(() => {
                                     console.log(err);
@@ -84,34 +86,7 @@ webhookRouter.post('/', async (request, response) => {
                                 return;
                             }
 
-                            await sgMail.send({
-                                to: object.customer_email!,
-                                from: process.env.EMAIL_HOST!,
-                                subject: "Payment Successful",
-                                text: `
-                                Dear customer,
-
-                                Your payment was successful. 
-                                Thank you for subscribing to our service.
-                                
-                                This is your invoice:
-                                ${object.hosted_invoice_url}
-
-                                Regards,
-                                The MTD Team
-                            `
-                            })
-
-                            db.commit(err => {
-                                if (err) {
-                                    db.rollback(() => {
-                                        console.log(err);
-                                    });
-                                    return;
-                                }
-
-                                console.log("Success");
-                            });
+                            console.log("Success");
                         });
                     });
                 });
@@ -129,13 +104,83 @@ webhookRouter.post('/', async (request, response) => {
 
             break;
         }
-        case 'checkout.session.completed': {
-            // Payment is successful and the subscription is created.
-            // You should provision the subscription and save the customer ID to your database.
+        case 'customer.subscription.created': {
+            const object = event.data.object;
+
+            db.beginTransaction(err => {
+                if (err) {
+                    throw err;
+                }
+
+                db.query<RowDataPacket[]>("SELECT id FROM users WHERE stripe_id = ?", [object.customer], (err, result) => {
+                    if (err) {
+                        db.rollback(() => {
+                            console.log(err);
+                        });
+                        return;
+                    }
+
+                    if (result.length === 0) {
+                        db.rollback(() => {
+                            console.log("User not found");
+                        });
+                        return;
+                    }
+
+                    db.query<ResultSetHeader>("INSERT INTO subscriptions (user_id, name, stripe_id, stripe_status, stripe_plan, quantity, ends_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?), NOW(), NOW())", [result[0].id, "default", object.id, object.status, object.items.data[0].plan.id, object.items.data[0].quantity, object.current_period_end], (err, _) => {
+                        if (err) {
+                            db.rollback(() => {
+                                console.log(err);
+                            });
+                            return;
+                        }
+
+                        db.commit(err => {
+                            if (err) {
+                                db.rollback(() => {
+                                    console.log(err);
+                                });
+                                return;
+                            }
+
+                            console.log("Success");
+                        });
+                    });
+                });
+            })
+
+            db.query<ResultSetHeader>("INSERT INTO subscriptions (user_id, name, stripe_id, stripe_status, stripe_plan, quantity, ends_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?), NOW(), NOW())", [object.customer, "default", object.id, object.status, object.items.data[0].plan.id, object.items.data[0].quantity, object.current_period_end], (err, _) => {
+                if (err) {
+                    console.log(err);
+                }
+            });
+
+            break;
+        }
+        case 'customer.subscription.updated': {
+            const object = event.data.object;
+
+            db.query<RowDataPacket[]>("UPDATE subscriptions SET stripe_status = ?, ends_at = FROM_UNIXTIME(?) WHERE stripe_id = ?", [object.status, object.current_period_end, object.id], (err, _) => {
+                if (err) {
+                    console.log(err);
+                }
+            });
+
+            break;
+        }
+        case 'customer.subscription.deleted': {
+            const object = event.data.object;
+
+            db.query<RowDataPacket[]>("UPDATE subscriptions SET stripe_status = ?, ends_at = NOW() WHERE stripe_id = ?", [object.status, object.id], (err, _) => {
+                if (err) {
+                    console.log(err);
+                }
+            });
+
             break;
         }
         default:
-        /* console.log(event.data.object); */
+            console.log(event.type);
         // Unhandled event type
     }
 

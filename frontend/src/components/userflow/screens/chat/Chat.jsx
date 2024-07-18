@@ -12,42 +12,6 @@ import styles from './chat.module.css'
 export default function Chat() {
     const pathname = window.location.pathname.split("/");
 
-    /* useEffect(() => {
-        window.addEventListener("resize", () => {
-            if (window.innerWidth > 768) {
-                document.querySelector("#match-box").style.display = "flex";
-                document.querySelector("#chat-box").style.display = "flex";
-                return;
-            }
-
-            if (pathname.includes("with")) {
-                document.querySelector("#match-box").style.display = "none";
-                document.querySelector("#chat-box").style.display = "flex";
-            } else {
-                document.querySelector("#match-box").style.display = "flex";
-                document.querySelector("#chat-box").style.display = "none";
-            }
-        });
-    }, [])
-
-    useEffect(() => {
-        if (window.innerWidth > 768) {
-            document.querySelector("#match-box").style.display = "flex";
-            document.querySelector("#chat-box").style.display = "flex";
-            return;
-        }
-
-        if (pathname.includes("with")) {
-            console.log("3")
-            document.querySelector("#match-box").style.display = "none";
-            document.querySelector("#chat-box").style.display = "flex";
-        } else {
-            console.log("4")
-            document.querySelector("#match-box").style.display = "flex";
-            document.querySelector("#chat-box").style.display = "none";
-        }
-    }, [pathname]) */
-
     return (
         <section className={[styles.chatLayout, "chat"].join(" ")}>
             <MobileSidebar />

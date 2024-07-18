@@ -181,9 +181,9 @@ export default function ChatBox({ className }) {
         setText("");
     }
 
-    /* if (!conversationId) {
+    if (!conversationId) {
         return <div id="chat-box"></div>
-    } */
+    }
 
     return (
         <section className={[styles.chatbox, className].join(" ")}>
