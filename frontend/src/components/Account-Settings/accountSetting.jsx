@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './accountSetting.css';
+import profile from './accountset.module.css'
 import { Container, Image } from 'react-bootstrap';
 import { Modal, Button, Form, Dropdown, InputGroup, FormControl } from 'react-bootstrap';
 import backarrow from "../../assets/images/backarrow.jpg";
@@ -47,7 +48,65 @@ export const AccountSetting = () => {
     const [showFinalDetele, setFinalDetele] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
     const alert = useAlert();
+    const id = getCookie('userId')
+    const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
+    const [images2, setImages2] = useState({
+        main: null,
+        first: null,
+        second: null,
+    });
 
+    const ImageURL = async () => {
+        try {
+            const response = await fetch(`${API_URL}/customer/update/media`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${getCookie('token')}`
+                }
+            });
+            const data = await response.json();
+            console.log("datadaa", data);
+            if (response.ok) {
+                if (data[0].type === 31 || data[1].type === 31 || data[2].type === 31) {
+                    const others = data.filter(image => image.type === 32);
+                    const main = data.filter(image => image.type === 31)[0];
+
+                    setImages2({
+                        main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
+                        first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
+                        second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
+                    })
+
+
+                    console.log('imges', {
+                        main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
+                        first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
+                        second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
+                    })
+                }
+                else {
+                    const others = data.filter(image => image.type === 2);
+                    const main = data.filter(image => image.type === 1)[0];
+                    console.log(others, main)
+                    setImages2({
+                        main: OldImageURL + "/" + id + "/avatar/" + main.hash + "-large" + "." + main.extension,
+                        first: OldImageURL + "/" + id + "/photo/" + others[0].hash + "-large" + "." + main.extension,
+                        second: OldImageURL + "/" + id + "/photo/" + others[1].hash + "-large" + "." + main.extension,
+                    })
+
+                    console.log({
+                        main: OldImageURL + "/" + id + "/avatar/" + main.hash + "-large" + "." + main.extension,
+                        first: OldImageURL + "/" + id + "/photo/" + others[0].hash + "-large" + "." + main.extension,
+                        second: OldImageURL + "/" + id + "/photo/" + others[1].hash + "-large" + "." + main.extension,
+                    })
+
+                }
+
+            }
+        } catch (error) {
+            console.error('Error saving images:', error);
+        }
+    }
     // Data from the backend
     const [NamePhoneEmail, setNamePhoneEmail] = useState({})
     const fetchData = async () => {
@@ -106,6 +165,9 @@ export const AccountSetting = () => {
         fetchData();
         handleCloseName();
     };
+
+
+
 
     //update Phone Number 
 
@@ -171,9 +233,9 @@ export const AccountSetting = () => {
     const handleShowLogout = () => setShowLogoutModal(true);
     const handleCloseLogout = () => setShowLogoutModal(false);
     const handleLogout = () => {
-        // Perform logout action here
-        console.log('User logged out');
-        deleteCookie('token')
+        deleteCookie("token");
+        deleteCookie("approval");
+        deleteCookie("isPremium");
         navigate("/");
         setShowLogoutModal(false);
     };
@@ -185,14 +247,10 @@ export const AccountSetting = () => {
     const Gototermandconditions = () => {
         navigate("/termandconditions")
     }
-
-
-    // Delete My Account now
+        // Delete My Account now
     const [showFinalDelete, setShowFinalDelete] = useState(false);
     const [selectedDeleteOption, setSelectedDeleteOption] = useState('');
     const [deleteReason, setDeleteReason] = useState('');
-
-
     const handleShowFinalDelete = () => setShowFinalDelete(true);
     const handleCloseFinalDelete = () => setShowFinalDelete(false);
 
@@ -228,6 +286,7 @@ export const AccountSetting = () => {
             }
 
             console.log('Delete reason submitted successfully:', await response.json());
+
 
 
             response = await fetch(`${API_URL}/delete`, {
@@ -610,6 +669,8 @@ export const AccountSetting = () => {
                 width: "100%",
                 paddingInline: "1rem",
             }}>
+
+
                 <div className='account-setting-container' style={{
                     width: "100%",
                 }}>
@@ -628,28 +689,26 @@ export const AccountSetting = () => {
                                 </Container>
 
                             </Container>
+                            <div className={profile.maincontainer}>
 
-                            {
-                                getCookie('isPremium') !== 'true' && (
-                                    <div className="upgrade-button">
-
-                                        <div> <span><Image src={premium} /></span> Upgrade Account</div>
-                                        <div className="description">
-                                            Upgrade your account, you will have unlimited access and wider exposure
-                                        </div>
+                                <div className={profile.imgContainer}>
+                                    <div >
+                                        <img className={profile.profilepicimg} src={images2.main} alt="" />
                                     </div>
-                                )
-                            }
+                                </div>
+                            </div>
 
-                            <Container className='edittext-logo'>
+                     
+
+                            <div className='edittext-logo'>
                                 <p className='textofedit'>Tap on each section to edit</p>
                                 <div>
                                     <Image className='editlogo' src={editlogo} />
                                 </div>
-                            </Container>
+                            </div>
 
 
-                            <Container>
+                            <div>
                                 {/* User Info Section */}
                                 <div className="user-info-container">
                                     <div className="user-info-item" onClick={handleShowName}>
@@ -679,6 +738,19 @@ export const AccountSetting = () => {
                                             <span className="value">{NamePhoneEmail.email}</span>
                                         </div>
                                     </div>
+
+                                    {
+                                getCookie('isPremium') !== 'true' && (
+                                    <div className="upgrade-button">
+
+                                        <div> <span><Image src={premium} /></span> Upgrade Account</div>
+                                        <div className="description">
+                                            Upgrade your account, you will have unlimited access and wider exposure
+                                        </div>
+                                        <button className ={profile.upgradebutton} onClick={()=> navigate('/selectplan')} >Upgrade Now</button>
+                                    </div>
+                                )
+                            }
                                     <div className="pause-button" onClick={handleShowPause}>
                                         <Image style={{ marginRight: "6px" }} className="fas fa-pause-circle" src={pauseicon} />
                                         <span>Pause my account</span>
@@ -686,7 +758,7 @@ export const AccountSetting = () => {
                                     <div className="payment-button">
                                         Payment
                                     </div>
-                                    <Container style={{ marginTop: "20px", marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
+                                    <div style={{ marginTop: "20px", marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
 
                                         <div className="user-info-item" onClick={() => navigate("/paymentmethod")}>
                                             <div className='leftsideinfo'>
@@ -697,8 +769,8 @@ export const AccountSetting = () => {
                                                 <span className="value"></span>
                                             </div>
                                         </div>
-                                    </Container>
-                                    <Container style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
+                                    </div>
+                                    <div style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
 
                                         <div className="user-info-item" onClick={() => navigate("/billinghistory")}>
                                             <div className='leftsideinfo'>
@@ -709,8 +781,8 @@ export const AccountSetting = () => {
                                                 <span className="value"></span>
                                             </div>
                                         </div>
-                                    </Container>
-                                    <Container onClick={() => {
+                                    </div>
+                                    <div onClick={() => {
                                         alert.setModal({
                                             title: "Subscription Cancel",
                                             message: "Are you sure you want to cancel your subscription?",
@@ -728,7 +800,7 @@ export const AccountSetting = () => {
                                                 <span className="value"></span>
                                             </div>
                                         </div>
-                                    </Container>
+                                    </div>
                                     <div className="legal-button">
                                         Legal
                                     </div>
@@ -779,7 +851,7 @@ export const AccountSetting = () => {
 
 
                                 </div>
-                            </Container>
+                            </div>
                         </div>
                     </div>
 

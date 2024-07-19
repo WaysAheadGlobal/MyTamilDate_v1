@@ -5,11 +5,16 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { tokens } from "../../theme";
 import { useNavigate } from 'react-router-dom';
+
 import { API_URL } from '../../api';
+import { useAlert } from '../../Context/AlertModalContext';
+
+
 const AddPromotionalCode = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
+  const alert = useAlert();
 
   const [formData, setFormData] = useState({
     promo_id: "",         
@@ -37,9 +42,29 @@ const AddPromotionalCode = () => {
     });
   };
 
+
   const handleSubmit = async (e) => {
+           
     e.preventDefault();
+    console.log(formData);
+    if(Number(formData.percent_off) > 100 ){
+      console.log("if conditions")
+      alert.setModal({
+        title : "Error",
+        message : "Percent Off cannot be greater than 100",
+        show : true,
+        onButtonClick : ()=> {}
+      })
+      return
+    }
     try {
+
+      const amountOffValue = formData.amount_off ? Math.round(parseFloat(formData.amount_off) * 100) : null;
+  
+      // Log formData and amountOffValue for debugging
+      console.log('Form Data:', formData);
+      console.log('Amount Off Value:', amountOffValue);
+  
       const response = await fetch(`${API_URL}/admin/promotioncode/`, {
         method: 'POST',
         headers: {
@@ -47,11 +72,13 @@ const AddPromotionalCode = () => {
         },
         body: JSON.stringify({
           ...formData,
+          amount_off: amountOffValue,
           available_from: formData.available_from ? formData.available_from.format('YYYY-MM-DD') : null,
           available_to: formData.available_to ? formData.available_to.format('YYYY-MM-DD') : null,
-          once_per_user: formData.once_per_user === "yes" ? 1 : 0,  // Convert yes/no to 1/0
+          once_per_user: formData.once_per_user === "yes" ? 1 : 0,
         }),
       });
+  
       if (response.ok) {
         console.log("Promotional code added successfully!");
         navigate("/promotionalcodes");
@@ -62,7 +89,7 @@ const AddPromotionalCode = () => {
       console.error("Error:", error);
     }
   };
-
+  
   return (
     <Box m="20px">
       <Typography variant="h2">Add Promotional Code</Typography>
@@ -87,7 +114,6 @@ const AddPromotionalCode = () => {
               onChange={handleChange}
               fullWidth
               margin="normal"
-              required
             />
           </Grid>
           <Grid item xs={12} lg={6}>
@@ -122,9 +148,9 @@ const AddPromotionalCode = () => {
                 label="Only For Subscription"
                 required
               >
-                <MenuItem value="1 month">Premium Account Subscription (1 Month)</MenuItem>
-                <MenuItem value="2 months">Premium Account Subscription (2 Months)</MenuItem>
-                <MenuItem value="3 months">Premium Account Subscription (3 Months)</MenuItem>
+                <MenuItem value={process.env.REACT_APP_STRIPE_PRODUCT_ID_1_MONTHS}>Premium Account Subscription (1 Month)</MenuItem>
+                <MenuItem value={process.env.REACT_APP_STRIPE_PRODUCT_ID_3_MONTHS}>Premium Account Subscription (3 Months)</MenuItem>
+                <MenuItem value={process.env.REACT_APP_STRIPE_PRODUCT_ID_6_MONTHS}>Premium Account Subscription (6 Months)</MenuItem>
               </Select>
             </FormControl>
           </Grid>

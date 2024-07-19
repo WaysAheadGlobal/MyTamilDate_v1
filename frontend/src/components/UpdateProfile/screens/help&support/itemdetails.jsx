@@ -23,10 +23,11 @@ const HelpSupportDetail = ({ title, content, onBack }) => {
                         <div className={styles.helpSupportTitle}>Help & Support</div>
                     </div>
       {/* <button onClick={onBack} className={styles.backButton}>Back</button> */}
-      <h2 className={styles.helpSupportheading} style={{color :  "#4E1173"
+      <h2 className={styles.helpSupportheading } style={{color :  "#4E1173" , fontSize : "18px"
 }}>{title}</h2>
         <div
-            className={styles.helpSupportContent}
+            className={styles.helpSupportContent} 
+            style={{fontSize : "14px"}}
             dangerouslySetInnerHTML={{ __html: content }}
           />
     </div>

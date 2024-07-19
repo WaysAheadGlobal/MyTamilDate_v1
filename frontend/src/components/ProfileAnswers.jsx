@@ -13,6 +13,7 @@ import { useCookies } from '../hooks/useCookies';
 export default function ProfileAnswers() {
 
     const [show, setShow] = useState(false);
+    const[count, setCount] = useState(0);
     const [modalData, setModalData] = useState({
         heading: "",
         apiURL: "",
@@ -22,9 +23,27 @@ export default function ProfileAnswers() {
     const navigate = useNavigate();
     const [alert, setAlert] = useState(false);
 
+    // useEffect(() => {
+    //     (async () => {
+    //         const response = await fetch(`${API_URL}/customer/users/questions`, {
+    //             method: 'GET',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${getCookie('token')}`
+    //             },
+    //         });
+    //         const data = await response.json();
+    //         console.log(data);
+
+    //         if (response.ok) {
+    //             setQuestions(data.questions);
+    //         }
+    //     })()
+    // }, [])
+
     useEffect(() => {
         (async () => {
-            const response = await fetch(`${API_URL}/customer/users/questions`, {
+            const response = await fetch(`${API_URL}/customer/update/questionss`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -38,12 +57,32 @@ export default function ProfileAnswers() {
                 setQuestions(data.questions);
             }
         })()
-    }, [])
+    }, []);
+    
+    useEffect(() => {
+        (async () => {
+            const response = await fetch(`${API_URL}/customer/users/answers/count`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+            });
+            const data = await response.json();
+            
+            setCount(data.count);
+            console.log(count);
+        })()
+    }, []);
 
+
+    const refreshpage = ()=>{
+        window.location.reload();
+    }
     return (
         <div className='job-container'>
             <Modal show={show} onHide={() => setShow(false)} modalData={modalData} />
-            <AlertModal show={alert} onHide={() => setAlert(false)} />
+            <AlertModal show={alert} count = {count} onHide={() => setAlert(false)} />
             <div className='job-bg'>
                 <Image className='responsive-bg' src={responsivebg} alt="Background"></Image>
             </div>
@@ -91,59 +130,66 @@ export default function ProfileAnswers() {
                                     flexDirection: "column",
                                     gap: "1rem",
                                 }}>
-                                    {
-                                        questions.map((question, index) => (
-                                            <div
-                                                tabIndex={0}
-                                                key={index}
-                                                style={{
-                                                    border: "2px solid #cbcbcb",
-                                                    padding: "1rem",
-                                                    borderRadius: "10px",
-                                                    display: "flex",
-                                                    justifyContent: "space-between",
-                                                    alignItems: "center",
-                                                    cursor: "pointer",
-                                                    borderStyle: "dashed",
-                                                }}
-                                                onClick={() => {
-                                                    setShow(true);
-                                                    setModalData({
-                                                        heading: question.question,
-                                                        apiURL: `${API_URL}/customer/users/answer/${question.id}`,
-                                                    });
-                                                }}
-                                            >
-                                                <div>
-                                                    <div style={{
-                                                        color: "black",
-                                                        fontSize: "16px",
-                                                        lineHeight: "24px",
-                                                        fontWeight: "600",
-                                                    }}>
-                                                        {question.question}
+                                   {
+                                                questions.map((question, index) => (
+                                                    <div
+                                                        tabIndex={0}
+                                                        key={index}
+                                                        style={{
+                                                            border: "2px solid #cbcbcb",
+                                                            padding: "1rem",
+                                                            borderRadius: "10px",
+                                                            display: "flex",
+                                                            justifyContent: "space-between",
+                                                            alignItems: "center",
+                                                            cursor: "pointer",
+                                                        }}
+                                                        onClick={() =>  {
+                                                            if (count === 2 && question.answer ==null) {
+                                                                setAlert(true);
+                                                            } else {
+                                                                setModalData({
+                                                                    heading: question.prompt,
+                                                                   apiURL: `${API_URL}/customer/users/answer/${question.question_id}`,
+                                                                   refreshpage : refreshpage
+                                                                });
+                                                                setShow(true);
+                                                            }
+                                                        }}
+                                                    >
+                                                        <div>
+                                                            <div style={{
+                                                                color: "black",
+                                                                fontSize: "16px",
+                                                                lineHeight: "24px",
+                                                                fontWeight: "600",
+                                                            }}>
+                                                                {question.question}
+                                                            </div>
+                                                            <div>
+                                                                {question.answer || ""}
+                                                            </div>
+                                                            <div style={{
+                                                                color: "#6C6C6C",
+                                                                fontSize: "14px",
+                                                                lineHeight: "20px",
+                                                                fontWeight: "400",
+                                                            }}>
+                                                                {question.description}
+                                                            </div>
+                                                        </div>
+                                                        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M12.8346 5.5L7.33464 11V14.6667H11.0013L16.5013 9.16667M12.8346 5.5L15.5846 2.75L19.2513 6.41667L16.5013 9.16667M12.8346 5.5L16.5013 9.16667M9.16797 3.66667L3.66797 3.66667L3.66797 18.3333L18.3346 18.3333V12.8333" stroke="url(#paint0_linear_778_6844)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                            <defs>
+                                                                <linearGradient id="paint0_linear_778_6844" x1="12.0869" y1="2.10069" x2="12.0869" y2="19.9566" gradientUnits="userSpaceOnUse">
+                                                                    <stop stopColor="#FC8C66" />
+                                                                    <stop offset="1" stopColor="#F76A7B" />
+                                                                </linearGradient>
+                                                            </defs>
+                                                        </svg>
                                                     </div>
-                                                    <div style={{
-                                                        color: "#6C6C6C",
-                                                        fontSize: "14px",
-                                                        lineHeight: "20px",
-                                                        fontWeight: "400",
-                                                    }}>
-                                                        {question.description}
-                                                    </div>
-                                                </div>
-                                                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M12.8346 5.5L7.33464 11V14.6667H11.0013L16.5013 9.16667M12.8346 5.5L15.5846 2.75L19.2513 6.41667L16.5013 9.16667M12.8346 5.5L16.5013 9.16667M9.16797 3.66667L3.66797 3.66667L3.66797 18.3333L18.3346 18.3333V12.8333" stroke="url(#paint0_linear_778_6844)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                    <defs>
-                                                        <linearGradient id="paint0_linear_778_6844" x1="12.0869" y1="2.10069" x2="12.0869" y2="19.9566" gradientUnits="userSpaceOnUse">
-                                                            <stop stopColor="#FC8C66" />
-                                                            <stop offset="1" stopColor="#F76A7B" />
-                                                        </linearGradient>
-                                                    </defs>
-                                                </svg>
-                                            </div>
-                                        ))
-                                    }
+                                                ))
+                                            }
                                 </div>
                             </div>
                         </div>
@@ -151,7 +197,7 @@ export default function ProfileAnswers() {
                     <Button variant="primary" type="submit" className='job-nxt-btn' onClick={() => {
                         const answers = getCookie('answers');
 
-                        if (answers && Number(answers) >= 2) {
+                        if (count == 2) {
                             navigate('/kids-family');
                         } else {
                             setAlert(true);
@@ -207,6 +253,7 @@ function Modal({ show, onHide, modalData, alert }) {
             onHide();
             const answers = getCookie('answers');
             setCookie('answers', answers ? Number(answers) + 1 : 0, { path: '/' });
+            modalData.refreshpage();
         }
     }
 
@@ -278,7 +325,7 @@ function Modal({ show, onHide, modalData, alert }) {
     )
 }
 
-function AlertModal({ show, onHide }) {
+function AlertModal({ show, onHide,count }) {
     return (
         <BModal centered show={show} onHide={onHide}>
             <div>
@@ -289,7 +336,10 @@ function AlertModal({ show, onHide }) {
                     textAlign: "center",
                     marginTop: "1rem",
                 }}>
-                    Answer atleast 2 prompts.
+                    {
+                        count != 2 ? "Answer atleast 2 prompts." : "You can answer only 2 prompts"
+                    }
+                    
                 </p>
             </div>
             <Button style={{
@@ -307,3 +357,4 @@ function AlertModal({ show, onHide }) {
         </BModal>
     )
 }
+

@@ -15,7 +15,7 @@ import Cropper from 'react-easy-crop';
 
 const EditPicture = () => {
   const{getCookie} = useCookies();
-  const [showInfo, setShowInfo] = useState(true);
+  const [showInfo, setShowInfo] = useState(false);
   const navigate = useNavigate();
   const[data, setData] = useState([]);
   const [selectedImages, setSelectedImages] = useState({ main: null, first: null, second: null });
@@ -38,8 +38,13 @@ const EditPicture = () => {
   };
 
   const id = getCookie('userId')
+  console.log(id);
   const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
-
+  const [imagesupdate, setimagesupdate] = useState({
+    main: null,
+    first: null,
+    second: null,
+  });
 
   const [images2, setImages2] = useState({
     main: null,
@@ -100,6 +105,60 @@ const EditPicture = () => {
       console.error('Error saving images:', error);
     }
   }
+
+  const UpdatedMedia = async () => {
+    try {
+      const response = await fetch(`${API_URL}customer/update/updated-media`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${getCookie('token')}`
+        }
+      });
+  
+      const data = await response.json();
+      setData(data);
+      console.log("datadaa", data);
+  
+      if (response.ok) {
+        const validImages = data.filter(image => image.hash && image.extension && (image.type === 31 || image.type === 32 || image.type === 1 || image.type === 2));
+        
+        if (validImages.length > 0) {
+          const mainType31 = validImages.find(image => image.type === 31);
+          const othersType32 = validImages.filter(image => image.type === 32);
+          const mainType1 = validImages.find(image => image.type === 1);
+          const othersType2 = validImages.filter(image => image.type === 2);
+  
+          if (mainType31) {
+            setimagesupdate({
+              main: API_URL + "media/avatar/" + mainType31.hash + "." + mainType31.extension,
+              first: othersType32[0] ? API_URL + "media/avatar/" + othersType32[0].hash + "." + othersType32[0].extension : null,
+              second: othersType32[1] ? API_URL + "media/avatar/" + othersType32[1].hash + "." + othersType32[1].extension : null,
+            });
+            console.log('updateImages', {
+              main: API_URL + "media/avatar/" + mainType31.hash + "." + mainType31.extension,
+              first: othersType32[0] ? API_URL + "media/avatar/" + othersType32[0].hash + "." + othersType32[0].extension : null,
+              second: othersType32[1] ? API_URL + "media/avatar/" + othersType32[1].hash + "." + othersType32[1].extension : null,
+            });
+          } else if (mainType1) {
+            setimagesupdate({
+              main: OldImageURL +"/" + id + "/avatar/"+ mainType1.hash + "-large" + "." + mainType1.extension,
+              first: othersType2[0] ? OldImageURL +"/" + id + "/photo/"+ othersType2[0].hash + "-large" + "." + othersType2[0].extension : null,
+              second: othersType2[1] ? OldImageURL +"/" + id + "/photo/"+ othersType2[1].hash  + "-large"+ "." + othersType2[1].extension : null,
+            });
+            console.log({
+              main: OldImageURL +"/" + id + "/avatar/"+ mainType1.hash + "-large" + "." + mainType1.extension,
+              first: othersType2[0] ? OldImageURL +"/" + id + "/photo/"+ othersType2[0].hash + "-large" + "." + othersType2[0].extension : null,
+              second: othersType2[1] ? OldImageURL +"/" + id + "/photo/"+ othersType2[1].hash  + "-large"+ "." + othersType2[1].extension : null,
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error saving images:', error);
+    }
+  };
+  
+
 
   const handleFileChange = (event, imageKey) => {
     const file = event.target.files[0];
@@ -260,7 +319,7 @@ const getCroppedImg = (imageSrc, crop) => {
 
 useEffect(() => {
   ImageURL();
-
+  UpdatedMedia();
   if (selectedImages) {
     handleNextClick();
   }
@@ -278,7 +337,6 @@ useEffect(() => {
       overflowY: "auto",
       scrollbarWidth: "none",
       padding : "2rem"
-      
     }}>
       <div className={picture.container}>
         <p className={picture.componentname}>Your Profile</p>
@@ -302,7 +360,7 @@ useEffect(() => {
         <Image src={images2.main} />
         <div className={picture.icons}>
           <span className={picture.iconLeft}>
-            <Image src={deleteicon} />
+            <Image src="" />
           </span>
           <span className={picture.iconRight}>
             <Image src={editicon} onClick={() => handleClick('main')} />
@@ -323,7 +381,7 @@ useEffect(() => {
           <Image src={images2.first} />
           <div className={picture.icons}>
             <span className={picture.iconLeft}>
-              <Image src={deleteicon} />
+              <Image src="" />
             </span>
             <span className={picture.iconRight}>
               <Image src={editicon} onClick={() => handleClick('first')} />
@@ -340,7 +398,7 @@ useEffect(() => {
           <Image src={images2.second} />
           <div className={picture.icons}>
             <span className={picture.iconLeft}>
-              <Image src={deleteicon} />
+              <Image src="" />
             </span>
             <span className={picture.iconRight}>
               <Image src={editicon} onClick={() => handleClick('second')} />
@@ -354,7 +412,87 @@ useEffect(() => {
           </div>
         </div>
       </div>
+       
 
+
+
+      <div>
+        {
+          imagesupdate.main || imagesupdate.first ||imagesupdate.second ? (
+          <div style={{marginTop : "40px" , color : "#4E1173" , fontSize : "16px", fontWeight : "600",marginBottom : "20px", boxshadow: "0 0 10px rgba(0, 0, 0, 0.1)"}}>
+            <p>
+            Thanks for updating your image! It's now under review by our administrators. You'll receive an update within 24 hours. We appreciate your patience!
+            </p>
+          </div>
+          ) : ""
+        }
+    {imagesupdate.main && (
+      <div className={picture.mainpic} style={{ borderRadius: "16px" }}>
+        <Image src={imagesupdate.main} />
+        <div className={picture.icons}>
+          <span className={picture.iconLeft}>
+            <Image src="" />
+          </span>
+          <span className={picture.iconRight}>
+            <Image src="" onClick={() => handleClick('main')} />
+            <input
+              type="file"
+              ref={fileInputRefMain}
+              onChange={(e) => handleFileChange(e, 'main')}
+              style={{ display: 'none' }}
+            />
+          </span>
+        </div>
+        <div>
+          <p className={picture.pictype}>Main</p>
+        </div>
+      </div>
+    )}
+    
+    <div className={picture.twopiccontainer}>
+      {imagesupdate.first && (
+        <div className={picture.restpicture}>
+          <Image src={imagesupdate.first} />
+          <div className={picture.icons}>
+            <span className={picture.iconLeft}>
+              <Image src="" />
+            </span>
+            <span className={picture.iconRight}>
+              <Image src="" />
+              <input
+                type="file"
+                ref={fileInputRefFirst}
+                onChange={(e) => handleFileChange(e, 'first')}
+                style={{ display: 'none' }}
+              />
+            </span>
+          </div>
+        </div>
+      )}
+      
+      {imagesupdate.second && (
+        <div className={picture.restpicture}>
+          <Image src={imagesupdate.second} />
+          <div className={picture.icons}>
+            <span className={picture.iconLeft}>
+              <Image src="" />
+            </span>
+            <span className={picture.iconRight}>
+              <Image src=""  />
+              <input
+                type="file"
+                ref={fileInputRefSecond}
+                onChange={(e) => handleFileChange(e, 'second')}
+                style={{ display: 'none' }}
+              />
+            </span>
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+
+       
       <Modal centered className="crop-modal" show={showCropModal} onHide={handleCropCancel}>
         <Modal.Header closeButton>
           <Modal.Title>Crop your photo</Modal.Title>

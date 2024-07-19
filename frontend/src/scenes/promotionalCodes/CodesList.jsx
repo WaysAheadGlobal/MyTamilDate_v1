@@ -75,6 +75,14 @@ const Contacts = () => {
       align: 'left',
     },
     {
+      field: 'usages',
+      headerName: 'Usege',
+      type: 'text',
+      flex: 1,
+      headerAlign: 'left',
+      align: 'left',
+    },
+    {
       field: 'once_per_user',
       headerName: 'Once Per User',
       type: 'boolean',

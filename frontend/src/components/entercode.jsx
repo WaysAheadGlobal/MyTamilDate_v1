@@ -87,6 +87,7 @@ export const Entercode = () => {
         const otp = code1 + code2 + code3 + code4;
         console.log(otp);
         console.log(phoneNumber);
+        console.log("post called");
         if (otp.length !== 4) {
             setErrorMessage('*Invalid OTP, please re-enter again');
         } else {
@@ -106,13 +107,14 @@ export const Entercode = () => {
                 });
 
                 const result = await response.json();
+                console.log(result);
                 if (response.ok) {
                     
                     setResendTimer(120);
                     setErrorMessage("") 
                     setIsResendDisabled(true); 
                     setCookie('token', result.token, 15);
-                    setCookie('userId',  result.token,15);
+                    setCookie('userId',  result.Result[0].user_id,15);
                     goToEmailVerify();
                 } else {
                     setErrorMessage(result.message || 'Failed to send OTP');
