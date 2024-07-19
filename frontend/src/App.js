@@ -213,7 +213,7 @@ function App() {
               <Route path="/religion" element={<Religion />} />
               <Route path="/edu" element={<Education />} />
               <Route path="/jobtitle" element={<JobTitle />} />
-              <Route path="/height" element={<Height />} />
+              <Route path="/height" element={<Height />}/>
               <Route path="/personality" element={<Personality />} />
               <Route path="/profile-answers" element={<ProfileAnswers />} />
               <Route path="/kids-family" element={<KidsAndFamily />} />

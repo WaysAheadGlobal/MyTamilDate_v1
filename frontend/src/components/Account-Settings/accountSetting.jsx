@@ -175,10 +175,10 @@ export const AccountSetting = () => {
     const handleShowLogout = () => setShowLogoutModal(true);
     const handleCloseLogout = () => setShowLogoutModal(false);
     const handleLogout = () => {
-        // Perform logout action here
-        console.log('User logged out');
-        deleteCookie('token')
-        navigate("/");
+          deleteCookie("token");
+            deleteCookie("approval");
+            deleteCookie("isPremium");
+            navigate("/");
         setShowLogoutModal(false);
     };
 
@@ -189,14 +189,10 @@ export const AccountSetting = () => {
     const Gototermandconditions = () => {
         navigate("/termandconditions")
     }
-
-
 // Delete My Account now
     const [showFinalDelete, setShowFinalDelete] = useState(false);
     const [selectedDeleteOption, setSelectedDeleteOption] = useState('');
     const [deleteReason, setDeleteReason] = useState('');
-
-
     const handleShowFinalDelete = () => setShowFinalDelete(true);
     const handleCloseFinalDelete = () => setShowFinalDelete(false);
 
