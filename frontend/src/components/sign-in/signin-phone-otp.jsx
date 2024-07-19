@@ -106,13 +106,14 @@ export const SignInPhoneOTP = () => {
                 });
 
                 const result = await response.json();
+                console.log(result);
                 if (response.ok) {
                   
                     setResendTimer(120);
                     setErrorMessage("") 
                     setIsResendDisabled(true); 
                     setCookie('token', result.token, 15);
-                    setCookie('userId',  result.token,15);
+                    setCookie('userId',  result.Result[0].user_id,15);
                     if (result.Result && result.Result.length > 0) {
                         setCookie('Name', result.Result[0].first_name, 20);
                     }

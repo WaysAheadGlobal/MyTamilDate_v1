@@ -197,6 +197,44 @@ updateprofile.post("/media",
     }
   );
 
+//   updateprofile.get('/updated-media', verifyUser, (req: UserRequest, res: express.Response) => {
+//     const userId = req.userId;
+
+//     const query = `
+//         SELECT 
+//             mu.media_id AS id,
+//             mu.type,
+//             mu.hash,
+//             mu.extension,
+//         FROM media_update mu
+//         INNER JOIN media m ON m.id = mu.media_id
+//         WHERE m.user_id = ?
+//     `;
+
+//     db.query<RowDataPacket[]>(query, [userId], (err, results) => {
+//         if (err) {
+//             console.error('Error fetching media:', err);
+//             return res.status(500).send('Internal Server Error');
+//         }
+//         res.status(200).json(results);
+//     });
+// });
+updateprofile.get('/updated-media', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+  console.log(userId);
+
+  const query = 'SELECT media_id as id, hash, extension, type FROM media_update WHERE user_id = ?';
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching media:', err);
+      return res.status(500).send('Internal Server Error');
+    }
+
+    res.status(200).json(results);
+  });
+});
+
+
   updateprofile.get('/questionanswer', (req: UserRequest, res: express.Response) => {
     const userId = req.userId;
 

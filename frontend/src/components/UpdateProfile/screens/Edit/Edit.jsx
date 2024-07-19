@@ -226,7 +226,7 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
   <Carddetails icon={locationedit }title="Location" detail={Profile.Country ? Profile.Country : "N/A" }  />
   </Link>
   <Link to = "/updatereligion">
-  <Carddetails icon={relisionedit } title="Relision" detail={Profile.Religion ? Profile.Religion : "N/A"} />
+  <Carddetails icon={relisionedit } title="Religion" detail={Profile.Religion ? Profile.Religion : "N/A"} />
   </Link>
   <Link to = "/updateeducations">
   <Carddetails icon={educationedit }title="Education" detail={Profile.StudyField ? Profile.StudyField : "N/A"} />
