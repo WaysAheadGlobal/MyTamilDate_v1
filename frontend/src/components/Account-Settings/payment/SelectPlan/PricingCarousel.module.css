@@ -77,6 +77,11 @@
   border-image-source: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
   color: white;
   background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+  font-family: Poppins;
+font-size: 16px;
+font-weight: 500;
+line-height: 24px;
+letter-spacing: 0.04em;
 }
 
 .buttonContainer {

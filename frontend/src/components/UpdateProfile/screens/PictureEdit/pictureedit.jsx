@@ -15,7 +15,7 @@ import Cropper from 'react-easy-crop';
 
 const EditPicture = () => {
   const{getCookie} = useCookies();
-  const [showInfo, setShowInfo] = useState(true);
+  const [showInfo, setShowInfo] = useState(false);
   const navigate = useNavigate();
   const[data, setData] = useState([]);
   const [selectedImages, setSelectedImages] = useState({ main: null, first: null, second: null });
@@ -302,7 +302,7 @@ useEffect(() => {
         <Image src={images2.main} />
         <div className={picture.icons}>
           <span className={picture.iconLeft}>
-            <Image src={deleteicon} />
+            <Image src="" />
           </span>
           <span className={picture.iconRight}>
             <Image src={editicon} onClick={() => handleClick('main')} />
@@ -323,7 +323,7 @@ useEffect(() => {
           <Image src={images2.first} />
           <div className={picture.icons}>
             <span className={picture.iconLeft}>
-              <Image src={deleteicon} />
+              <Image src="" />
             </span>
             <span className={picture.iconRight}>
               <Image src={editicon} onClick={() => handleClick('first')} />
@@ -340,7 +340,7 @@ useEffect(() => {
           <Image src={images2.second} />
           <div className={picture.icons}>
             <span className={picture.iconLeft}>
-              <Image src={deleteicon} />
+              <Image src="" />
             </span>
             <span className={picture.iconRight}>
               <Image src={editicon} onClick={() => handleClick('second')} />

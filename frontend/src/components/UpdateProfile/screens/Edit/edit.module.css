@@ -135,13 +135,15 @@ border: none;
          padding: 10px 12px 10px 12px;
    gap: 2px;
     border-radius: 34px ;
-font-size: 12px;
+font-size: 16px;
 font-weight: 500;
 line-height: 20.8px;
 letter-spacing: 0.04em;
 text-align: center;
 background: #F7ECFF;
 width: 50%;
+Font : Poppins
+
 }
 
 .button img {
@@ -156,12 +158,13 @@ width: 50%;
        padding: 8px 10px 8px 10px;
     gap: 6px;
     border-radius: 34px ;
-font-size: 14px;
+font-size: 16px;
 font-weight: 500;
 line-height: 20.8px;
 letter-spacing: 0.04em;
 text-align: center;
 background: #F7ECFF;
   flex-basis: 100%; /* Makes the button take full width */
+  margin-top: 7px;
  
 }

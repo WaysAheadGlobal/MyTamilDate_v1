@@ -280,7 +280,7 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
             <p className={prev.name} style={{marginTop : "15px"}}>
                 {item.question}
             </p>
-            <p className={prev.location}>
+            <p className={prev.answerdetails}>
                 {item.answer}
             </p>
         </Container>

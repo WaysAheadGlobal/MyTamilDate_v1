@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Image, Nav } from 'react-bootstrap';
+import { div, Image, Nav } from 'react-bootstrap';
 import edit from './edit.module.css';
 import questionmark from '../../../../assets/images/questionmark.png';
 import editicontwo from '../../../../assets/images/editicontwo.png';
@@ -37,7 +37,7 @@ const personalityArray = [
 
 const Edit = () => {
   const Navigate = useNavigate();
-  const [showInfo, setShowInfo] = useState(true);
+  const [showInfo, setShowInfo] = useState(false);
   const[Profile, setProfileData] = useState({});
   const[language, setLanguage] = useState([]);
   const[quesAns, setQuestionAns] = useState([]);
@@ -149,7 +149,7 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
 
   return (
     <div>
-      <Container className={edit.aboutme}>
+      <div className={edit.aboutme}>
         <div className='d-flex align-items-center'>
           <p>About me</p>
           <Image
@@ -159,47 +159,46 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
             height="24px"
             src={questionmark}
           />
-          <Container className={`${edit.whyInfo} ${showInfo ? edit.show : edit.hide}`}>
+          <div className={`${edit.whyInfo} ${showInfo ? edit.show : edit.hide}`}>
             <p>
               Any changes made to the "About Me" section will be sent for Admin review and approval. 
               Your account will be in a pending status until it gets approved. 
               You should receive an update within 24 hours. If not, please reach 
               out to hello@mytamildate.com. Thank you for your patience!
             </p>
-          </Container>
+          </div>
         </div>
         <div>
           <Image onClick={ ()=> Navigate("/updateanswer")} src={editicontwo} />
         </div>
-      </Container>
+      </div>
 
-        <Container>
+        <div>
         {
-    quesAns.length !== 0 
-    ? quesAns.map((item, index) => (
-        <Container key={index} className={edit.aboutdetails}>
+   
+   quesAns.map((item, index) => (
+        <div key={index} className={edit.aboutdetails}>
             <p className={edit.aboutquestion}>
                 {item.question}
             </p>
             <p className={edit.aboutanswer}>
                 {item.answer}
             </p>
-        </Container>
+        </div>
     )) 
-    : "Please Add Profile Answer"
-}
+  }
 
-      </Container>
+      </div>
 
-      <Container className={edit.aboutme}>
+      <div className={edit.aboutme}>
         <div className='d-flex align-items-center'>
           <p>Personality</p>
         </div>
         <div>
           <Image onClick={()=> Navigate("/personalityupdate")} src={editicontwo} />
         </div>
-      </Container>
-      <Container className={edit.personalityarray}>
+      </div>
+      <div className={edit.personalityarray}>
       {PersonalitiesArray.length > 0 ? 
         PersonalitiesArray.map((personality, index) => (
           <div key={index} className={edit.tag}>
@@ -208,11 +207,11 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
         )) 
         : "No Personalities Added"
       }
-    </Container>
+    </div>
 
    {/* <button className={edit.upgradebutton}>Update <span><Image src={update}/></span> </button> */}
 
-   <Container>
+   <div>
     <Link to = "/updateage">
    <Carddetails 
   icon={age} 
@@ -232,16 +231,16 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
   <Link to = "/updateeducations">
   <Carddetails icon={educationedit }title="Education" detail={Profile.StudyField ? Profile.StudyField : "N/A"} />
   </Link>
-   </Container>
+   </div>
 
-   <Container>
+   <div>
    <button className={edit.upgradebutton} onClick={expandall}>Expand All <span><Image src={update}/></span> </button>
-   </Container>
+   </div>
 {
  expandsall ? 
 
 
-   <Container>
+   <div>
     <Link to="/updatejob">
    <Carddetails icon={carear }title="Career" detail={Profile.JobTitle
  ? Profile.JobTitle
@@ -276,12 +275,12 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
   <Carddetails icon={drinktwo }title="Do you drink" detail={Profile.Drinker ? Profile.Drinker : "N/A"} />
   </Link>
 
-   </Container>
+   </div>
 :  ""
 }
 
-   <Container>
-    <Container style={{display : "flex", marginTop : "20px", justifyContent : "space-between",gap : "5px" }}>
+   <div>
+    <div style={{display : "flex", marginTop : "20px", justifyContent : "space-between",gap : "5px" }}>
     <div className={edit.button} onClick={()=> Navigate("/user/preferences")}>
         <img src={prefarance} alt="Preferences Icon" />
         Preferences
@@ -291,14 +290,14 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
         <img src={helpandsupport} alt="Help Icon" />
         Help&Support
       </div>
-    </Container>
-   <div className={edit.buttoncontainer}>
+    </div>
+   <div className={edit.buttondiv}>
       <div className={edit.buttonlarge} onClick={()=> Navigate("/accoutsetting")}>
         <img src={setting} alt="Settings Icon" />
         Account settings
       </div>
     </div>
-   </Container>
+   </div>
     </div>
   );
 };

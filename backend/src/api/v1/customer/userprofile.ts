@@ -407,8 +407,6 @@ profile.get('/location-options', verifyUser, (req: UserRequest, res: express.Res
   });
 });
 
-
-
 //add religions 
 profile.post('/religions', [
   verifyUser,
@@ -467,7 +465,6 @@ profile.get('/religions', verifyUser, (req: UserRequest, res: express.Response) 
     });
   });
 });
-
 
 profile.get('/growths-options', (req: UserRequest, res: express.Response) => {
   db.query('SELECT name, id FROM growths', (err, results) => {
