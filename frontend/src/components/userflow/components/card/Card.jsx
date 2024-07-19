@@ -11,6 +11,8 @@ import { useUserProfile } from '../context/UserProfileContext';
 import ProfileDetails from './ProfileDetails';
 import { Dropdown, Modal } from 'react-bootstrap';
 import Button from "../button/Button";
+import { useAlert } from '../../../../Context/AlertModalContext';
+import { useSocket } from '../../../../Context/SockerContext';
 
 /**
  * @typedef {Object} Profile
@@ -48,21 +50,62 @@ export default function Card({ ...props }) {
     const cardRef = useRef(null);
     const [liked, setLiked] = useState(props.like);
     const { profiles, setProfiles } = useUserProfile();
-    const detailsRef = useRef(null);
     const { setPage } = props;
     const [showDropdown, setShowDropdown] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
     const [showBlockModal, setShowBlockModal] = useState(false);
+    const alert = useAlert();
+    const { socket } = useSocket();
+
+    async function getRoom() {
+        if (cookies.getCookie("isPremium") !== "true") {
+            alert.setModal({
+                show: true,
+                title: "Upgrade to premium",
+                message: "You need to be a premium user to chat with other users. Would you like to upgrade now?",
+                onButtonClick: () => navigate("/selectplan"),
+                showCancelButton: true
+            });
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}customer/chat/create-room`, {
+                method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${cookies.getCookie("token")}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    participantId: props.user_id
+                })
+            });
+            const data = await response.json();
+            console.log(data);
+
+            if (response.ok) {
+                if (sessionStorage.getItem("conversationId")) {
+                    socket?.emit("leave-room", sessionStorage.getItem("conversationId"));
+                }
+                sessionStorage.setItem("conversationId", data.conversationId);
+                navigate(`/user/chat/with/${props.first_name}`, {
+                    state: {
+                        name: props.first_name,
+                        img: image,
+                        recepientId: props.user_id,
+                    }
+                })
+            }
+
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     async function handleIconButtonClick(type) {
         console.log(type);
         if (type === "chat") {
-            navigate(`/user/chat/with/${props.first_name}`, {
-                state: {
-                    user_id: props.user_id,
-                    type: "request"
-                }
-            });
+            await getRoom();
             return;
         }
         const response = await fetch(`${API_URL}customer/matches/${type}`, {
@@ -122,9 +165,8 @@ export default function Card({ ...props }) {
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat'
                     }}
-                    /* onClick={() => navigate(`/user/${props.first_name} ${props.last_name ?? ""}/${props.user_id}`)} */
                 >
-                    <span style={{
+                    <span className="firstUndoBtn" style={{
                         position: "absolute",
                         top: "1rem",
                         left: "1rem",
@@ -163,6 +205,12 @@ export default function Card({ ...props }) {
                             </div>
                         </div>
                         <div className='options'>
+                            <span className='secondUndoBtn'>
+                                <IconButton type='undo' onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleIconButtonClick("undo");
+                                }} />
+                            </span>
                             <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
                                 e.stopPropagation();
                                 setLiked(!liked);
@@ -171,38 +219,22 @@ export default function Card({ ...props }) {
                             <div style={{
                                 position: "relative",
                                 top: "1.5rem"
-                            }}>
+                            }} className='scrollBtn'>
                                 <IconButton
                                     type={"details"}
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        const detailsClassList = detailsRef.current.classList;
-
-                                        if (detailsClassList.contains("show")) {
-                                            detailsRef.current.style.transition = "all 0.25s ease-in-out";
-                                            detailsRef.current.style.opacity = "0";
-                                            setTimeout(() => {
-                                                detailsRef.current.style.display = "none";
-                                            }, 200);
-
-                                        } else {
-                                            detailsRef.current.style.transition = "all 0.25s ease-in-out";
-                                            detailsRef.current.style.opacity = "1";
-                                            detailsRef.current.style.display = "block";
-                                            document.querySelector("#scroll-anchor").scrollIntoView({ behavior: "smooth" });
-                                        }
-
-                                        detailsClassList.toggle("show");
+                                        document.querySelector("#scroll-anchor").scrollIntoView({ behavior: "smooth" });
                                     }} />
                             </div>
                             <IconButton type='skip' onClick={(e) => {
                                 e.stopPropagation();
                                 handleIconButtonClick("skip");
                             }} />
-                            {/* <IconButton type='chat' onClick={(e) => {
-    e.stopPropagation();
-    handleIconButtonClick("chat");
-}} /> */}
+                            <IconButton type='chat' onClick={(e) => {
+                                e.stopPropagation();
+                                handleIconButtonClick("chat");
+                            }} />
                         </div>
                     </div>
                     <div className='menu'>
@@ -270,14 +302,7 @@ export default function Card({ ...props }) {
                         </Dropdown>
                     </div>
                 </div>
-                <div
-                    ref={detailsRef}
-                    style={{
-                        height: "100%",
-                        width: "100%",
-                        display: "none",
-                    }}
-                >
+                <div>
                     <ProfileDetails userId={props.user_id} />
                 </div>
             </div></>

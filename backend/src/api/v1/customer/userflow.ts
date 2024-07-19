@@ -412,7 +412,7 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
 
 userFlowRouter.get("/profile/:id", (req: UserRequest, res) => {
     const query = `
-        SELECT DISTINCT
+        SELECT
             up.id,
             up.user_id,
             up.first_name,
@@ -476,9 +476,20 @@ userFlowRouter.get("/profile/:id", (req: UserRequest, res) => {
                     result[0].personalities = personalityResult.map((personality: any) => personality.name);
                 }
 
-                res.status(200).send(result[0]);
-            });
+                db.query<RowDataPacket[]>('SELECT a.id, a.answer, q.text as question FROM question_answers a INNER JOIN questions q ON q.id = a.question_id WHERE user_id = ?;', [req.params.id], (err, answersResult) => {
+                    if (err) {
+                        console.log(err)
+                        res.status(500).send({ message: "Internal server error" });
+                        return;
+                    }
 
+                    if (answersResult.length !== 0) {
+                        result[0].answers = answersResult;
+                    }
+
+                    res.status(200).send(result[0]);
+                });
+            });
         });
     });
 });

@@ -11,6 +11,14 @@ import styles from './selectplan.module.css';
 const Selectplan = () => {
   const [selectedCurrency, setSelectedCurrency] = useState('CAD'); // Default to CAD
 
+  const rates = [
+    "CAD",
+    "USD",
+    "GBP",
+    "EUR",
+    "AUD",
+  ];
+
   const handleCurrencyChange = (event) => {
     setSelectedCurrency(event.target.value);
   };
@@ -35,7 +43,7 @@ const Selectplan = () => {
             </Container>
           </div>
           <CarouselComponent />
-          <div >
+          <div>
             <div className={styles.currencyselected}>
               <div className={styles.selectWrapper}>
                 <select
@@ -45,18 +53,21 @@ const Selectplan = () => {
                   value={selectedCurrency}
                   onChange={handleCurrencyChange}
                 >
-                  <option value="CAD">CAD</option>
-                  <option value="INR">INR</option>
-                  <option value="USD">USD</option>
+                  {rates.map((rate, i) => (
+                    <option key={i} value={rate}>{rate}</option>
+                  ))}
                 </select>
                 <div className={styles.iconContainer}>
                   <IoMdArrowDropdown className={styles.dropdownIcon} />
                 </div>
               </div>
             </div>
-            <div>
-              <PricingCarousel currency={selectedCurrency} />
-
+            <div style={{
+              marginTop: "1rem",
+            }}>
+              <PricingCarousel
+                currency={selectedCurrency}
+              />
             </div>
           </div>
         </div>

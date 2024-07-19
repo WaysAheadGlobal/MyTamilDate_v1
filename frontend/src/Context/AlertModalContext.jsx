@@ -95,7 +95,9 @@ export default function AlertModalProvider({ children }) {
                         }
                         <Button
                             onClick={() => {
-                                modal.onButtonClick();
+                                if (modal.onButtonClick) {
+                                    modal.onButtonClick();
+                                }
                                 setModal({
                                     show: false,
                                     message: "",

@@ -25,9 +25,7 @@ import { useAppContext } from '../../Context/UseContext';
 import VerifyPhoneModal from './verifyphoneotp';
 import LogoutModal from './logout';
 import Sidebar from '../userflow/components/sidebar/sidebar';
-
-
-
+import { useAlert } from '../../Context/AlertModalContext';
 
 
 export const AccountSetting = () => {
@@ -48,6 +46,7 @@ export const AccountSetting = () => {
     const [lastName, setLastName] = useState('');
     const [showFinalDetele, setFinalDetele] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const alert = useAlert();
 
     // Data from the backend
     const [NamePhoneEmail, setNamePhoneEmail] = useState({})
@@ -108,9 +107,6 @@ export const AccountSetting = () => {
         handleCloseName();
     };
 
-
-
-     
     //update Phone Number 
 
     const UpdatePhoneNumber = async () => {
@@ -191,7 +187,7 @@ export const AccountSetting = () => {
     }
 
 
-// Delete My Account now
+    // Delete My Account now
     const [showFinalDelete, setShowFinalDelete] = useState(false);
     const [selectedDeleteOption, setSelectedDeleteOption] = useState('');
     const [deleteReason, setDeleteReason] = useState('');
@@ -211,15 +207,15 @@ export const AccountSetting = () => {
     };
 
     const handleFinalDelete = async () => {
-         
+
 
         try {
-           
+
             let response = await fetch(`${API_URL}/delete-reason`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getCookie('token')}`  
+                    'Authorization': `Bearer ${getCookie('token')}`
                 },
                 body: JSON.stringify({
                     reason_id: selectedDeleteOption,
@@ -233,12 +229,12 @@ export const AccountSetting = () => {
 
             console.log('Delete reason submitted successfully:', await response.json());
 
-         
+
             response = await fetch(`${API_URL}/delete`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getCookie('token')}`  
+                    'Authorization': `Bearer ${getCookie('token')}`
                 },
             });
 
@@ -256,7 +252,7 @@ export const AccountSetting = () => {
     const handleShowPauseModel = () => {
         handleCloseDeleteAccount();
         handleCloseDeleteOption();
-        handleShowPause(); 
+        handleShowPause();
     };
 
     const feedbackOptions = [
@@ -353,7 +349,7 @@ export const AccountSetting = () => {
             return;
         }
         setErrorMessageemail('');
-            console.log("req send")
+        console.log("req send")
         try {
             const response = await fetch(`${API_URL}/customer/setting/request-email-update`, {
                 method: 'POST',
@@ -365,10 +361,10 @@ export const AccountSetting = () => {
             });
 
             const data = await response.json();
-            
-            console.log('Response:', response);  
-            console.log('Response Data:', data);  
-    
+
+            console.log('Response:', response);
+            console.log('Response Data:', data);
+
             if (response.ok) {
                 console.log('Email submitted:', email);
                 setCookie("UpdateEmail", email, 1);
@@ -386,7 +382,7 @@ export const AccountSetting = () => {
     };
 
 
-    
+
     //otp for email code 
 
     const goToSigninEmailSuccessful = () => {
@@ -423,35 +419,35 @@ export const AccountSetting = () => {
     const handleSubmitEmailotp = async (e) => {
         e.preventDefault();
         const otp = `${code1}${code2}${code3}${code4}`;
-    
+
         if (otp.length !== 4) {
             setErrorMessageotp('Please enter the complete OTP');
             return;
         }
-    
+
         setErrorMessageotp('');
-    const UpdateEmail = getCookie("UpdateEmail")
- 
+        const UpdateEmail = getCookie("UpdateEmail")
+
         try {
-            console.log("email" , UpdateEmail);
+            console.log("email", UpdateEmail);
             const response = await fetch(`${API_URL}/customer/setting/verifyotp`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${getCookie('token')}`
                 },
-                body: JSON.stringify({ email : UpdateEmail, otp }),
+                body: JSON.stringify({ email: UpdateEmail, otp }),
 
             });
-    
+
             const data = await response.json();
-    
+
             if (response.ok) {
                 console.log('OTP verified successfully');
                 setErrorMessage('');
-            handleCloseEmailotp();
-            handleShowsuccess();
-            fetchData();
+                handleCloseEmailotp();
+                handleShowsuccess();
+                fetchData();
 
             } else {
                 setErrorMessageotp(data.message);
@@ -567,6 +563,34 @@ export const AccountSetting = () => {
             }
         } catch (err) {
             console.error("Error in PauseMyAccount:", err);
+        }
+    }
+
+    async function cancelSubscription() {
+        try {
+            try {
+                const response = await fetch(`${API_URL}customer/subscription/cancel`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${getCookie('token')}`
+                    }
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    alert.setModal({
+                        title: "Subscription Cancelled",
+                        message: "Your subscription has been successfully cancelled.",
+                        show: true,
+                        onButtonClick: () => {
+                            window.location.reload();
+                        }
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        } catch (error) {
+            console.error('Error cancelling subscription:', error);
         }
     }
 
@@ -686,7 +710,14 @@ export const AccountSetting = () => {
                                             </div>
                                         </div>
                                     </Container>
-                                    <Container style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
+                                    <Container onClick={() => {
+                                        alert.setModal({
+                                            title: "Subscription Cancel",
+                                            message: "Are you sure you want to cancel your subscription?",
+                                            show: true,
+                                            onButtonClick: cancelSubscription
+                                        })
+                                    }} style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
 
                                         <div className="user-info-item">
                                             <div className='leftsideinfo'>
@@ -859,74 +890,74 @@ export const AccountSetting = () => {
                         </Modal.Footer>
                     </Modal>
 
-           <Modal show={showUserEmailotp} centered>
-    <Modal.Header >
-        <Modal.Title>Verify Code</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-        <Form onSubmit={handleSubmitEmailotp} className=''>
-            <Container className='entercode-content' style={{ marginBottom: "100px" }}>
-                <div>
-                    <Form.Group controlId="formCode" className='entercode-form-group'>
-                        <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
-                            <Form.Control
-                                className={`entercode-input ${errorMessageotp ? 'error' : ''}`}
-                                type="text"
-                                ref={code1ref}
-                                placeholder=""
-                                value={code1}
-                                onChange={(e) => handleCodeChange(e, setCode1, code2ref)}
-                                onKeyDown={(e) => handleKeyDown(e, null)}
-                                style={{ flex: 1 }}
-                            />
-                            <Form.Control
-                                className={`entercode-input ${errorMessageotp ? 'error' : ''}`}
-                                type="text"
-                                ref={code2ref}
-                                placeholder=""
-                                value={code2}
-                                onChange={(e) => handleCodeChange(e, setCode2, code3ref)}
-                                onKeyDown={(e) => handleKeyDown(e, code1ref)}
-                                style={{ flex: 1, marginLeft: '10px' }}
-                            />
-                            <Form.Control
-                                className={`entercode-input ${errorMessageotp ? 'error' : ''}`}
-                                type="text"
-                                ref={code3ref}
-                                placeholder=""
-                                value={code3}
-                                onChange={(e) => handleCodeChange(e, setCode3, code4ref)}
-                                onKeyDown={(e) => handleKeyDown(e, code2ref)}
-                                style={{ flex: 1, marginLeft: '10px' }}
-                            />
-                            <Form.Control
-                                className={`entercode-input ${errorMessageotp ? 'error' : ''}`}
-                                type="text"
-                                ref={code4ref}
-                                placeholder=""
-                                value={code4}
-                                onChange={(e) => handleCodeChange(e, setCode4, null)}
-                                onKeyDown={(e) => handleKeyDown(e, code3ref)}
-                                style={{ flex: 1, marginLeft: '10px' }}
-                            />
-                        </div>
-                        {errorMessageotp && <Form.Text className="text-danger error-message">{errorMessageotp}</Form.Text>}
-                    </Form.Group>
-                    <div className='resend-timer'>
-                        <a href=''> Resend code</a>
-                        <span>1:48sec</span>
-                    </div>
-                </div>
-            </Container>
-            <Button variant="outline-danger" className="btn-cancel" onClick={handleCloseEmailotp}>
-                Cancel
-            </Button>
-            <Button variant="primary" className="btn-save" onClick={handleSubmitEmailotp}>
-                Save
-            </Button>
-        </Form>
-    </Modal.Body>
-</Modal>
+                    <Modal show={showUserEmailotp} centered>
+                        <Modal.Header >
+                            <Modal.Title>Verify Code</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Form onSubmit={handleSubmitEmailotp} className=''>
+                                <Container className='entercode-content' style={{ marginBottom: "100px" }}>
+                                    <div>
+                                        <Form.Group controlId="formCode" className='entercode-form-group'>
+                                            <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                                                <Form.Control
+                                                    className={`entercode-input ${errorMessageotp ? 'error' : ''}`}
+                                                    type="text"
+                                                    ref={code1ref}
+                                                    placeholder=""
+                                                    value={code1}
+                                                    onChange={(e) => handleCodeChange(e, setCode1, code2ref)}
+                                                    onKeyDown={(e) => handleKeyDown(e, null)}
+                                                    style={{ flex: 1 }}
+                                                />
+                                                <Form.Control
+                                                    className={`entercode-input ${errorMessageotp ? 'error' : ''}`}
+                                                    type="text"
+                                                    ref={code2ref}
+                                                    placeholder=""
+                                                    value={code2}
+                                                    onChange={(e) => handleCodeChange(e, setCode2, code3ref)}
+                                                    onKeyDown={(e) => handleKeyDown(e, code1ref)}
+                                                    style={{ flex: 1, marginLeft: '10px' }}
+                                                />
+                                                <Form.Control
+                                                    className={`entercode-input ${errorMessageotp ? 'error' : ''}`}
+                                                    type="text"
+                                                    ref={code3ref}
+                                                    placeholder=""
+                                                    value={code3}
+                                                    onChange={(e) => handleCodeChange(e, setCode3, code4ref)}
+                                                    onKeyDown={(e) => handleKeyDown(e, code2ref)}
+                                                    style={{ flex: 1, marginLeft: '10px' }}
+                                                />
+                                                <Form.Control
+                                                    className={`entercode-input ${errorMessageotp ? 'error' : ''}`}
+                                                    type="text"
+                                                    ref={code4ref}
+                                                    placeholder=""
+                                                    value={code4}
+                                                    onChange={(e) => handleCodeChange(e, setCode4, null)}
+                                                    onKeyDown={(e) => handleKeyDown(e, code3ref)}
+                                                    style={{ flex: 1, marginLeft: '10px' }}
+                                                />
+                                            </div>
+                                            {errorMessageotp && <Form.Text className="text-danger error-message">{errorMessageotp}</Form.Text>}
+                                        </Form.Group>
+                                        <div className='resend-timer'>
+                                            <a href=''> Resend code</a>
+                                            <span>1:48sec</span>
+                                        </div>
+                                    </div>
+                                </Container>
+                                <Button variant="outline-danger" className="btn-cancel" onClick={handleCloseEmailotp}>
+                                    Cancel
+                                </Button>
+                                <Button variant="primary" className="btn-save" onClick={handleSubmitEmailotp}>
+                                    Save
+                                </Button>
+                            </Form>
+                        </Modal.Body>
+                    </Modal>
 
 
                     <Modal show={showsuccessemail} onHide={handleClosesuccess} centered>

@@ -24,6 +24,13 @@ export default function ProfileDetails() {
      */
 
     /**
+     * @typedef {Object} Answers
+     * @property {number} id - The unique identifier for the answer.
+     * @property {string} question - The question.
+     * @property {string} answer - The answer. 
+     */
+
+    /**
      * @typedef {Object} Profile
      * @property {number} id - The unique identifier for the user.
      * @property {number} user_id - The user's ID.
@@ -43,6 +50,7 @@ export default function ProfileDetails() {
      * @property {string} kids - The user's stance on having children.
      * @property {Photo[]} photos - An array of photos associated with the user.
      * @property {string[]} personalities - An array of personalities associated with the user.
+     * @property {Answers[]} answers - An array of answers associated with the user.
      * @property {string} smoke - The user's stance on smoking.
      * @property {string} drink - The user's stance on drinking.
      */
@@ -80,7 +88,7 @@ export default function ProfileDetails() {
                 console.log(data);
             }
         })()
-    }, []);
+    }, [window.location.pathname]);
 
     return (
         <Sidebar>
@@ -123,7 +131,7 @@ export default function ProfileDetails() {
                         left: "1rem",
                         backgroundColor: "transparent",
                         border: "none",
-                    }} onClick={() => navigate("/user/home")}>
+                    }} onClick={() => window.history.back()}>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M4 12L20 12M4 12L10 6M4 12L10 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
@@ -157,10 +165,6 @@ export default function ProfileDetails() {
                         </svg>
                         <p className={styles.subHeading}>{profile.location_string}, {profile.country}</p>
                     </div>
-                    <p>
-                        I get along best with people who
-                        Are in same vibe as me! ;
-                    </p>
                     <p className={styles.heading}>My Highlights</p>
                     <div className={styles.highlights}>
                         <span>
@@ -269,18 +273,14 @@ export default function ProfileDetails() {
                             {profile.kids}
                         </span>
                     </div>
-                    <div>
-                        <p className={styles.heading}>About</p>
-                        <p className={styles.subHeading}>Supportive, communicative, caring, driven and a goal-oriented partner. More like a power couple & most importantly, someone who's ready to commit and take responsibility on family life.</p>
-                    </div>
-                    <div>
-                        <p className={styles.heading}>Interest</p>
-                        <div className={styles.interests}>
-                            <p>Shopping</p>
-                            <p>Shopping</p>
-                            <p>Shopping</p>
-                        </div>
-                    </div>
+                    {
+                        profile.answers?.map(answer => (
+                            <div key={answer.id}>
+                                <p className={styles.heading}>{answer.question}</p>
+                                <p className={styles.subHeading}>{answer.answer}</p>
+                            </div>
+                        ))
+                    }
                     <div>
                         <p className={styles.heading}>My Personality</p>
                         <div className={styles.personalities}>

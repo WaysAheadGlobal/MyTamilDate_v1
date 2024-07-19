@@ -10,6 +10,7 @@ import webhookRouter from "./webhook";
 import payment from "./payment";
 import products from "./products";
 import subscription from "./subscription";
+import unsubscribe from "./unsubscribe";
 
 const customer = Router();
 
@@ -27,5 +28,6 @@ customer.use("/chat", chat);
 customer.use("/payment", payment);
 customer.use("/products", products);
 customer.use("/subscription", subscription);
+customer.use("/unsubscribe", unsubscribe);
 
 export default customer;

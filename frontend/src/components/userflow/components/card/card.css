@@ -24,6 +24,20 @@ p {
     transition: transform 150ms linear;
 }
 
+.firstUndoBtn {
+    display: inline;
+}
+
+.secondUndoBtn {
+    display: none;
+}
+
+@media screen and (max-width: 1200px) {
+    .card-and-details-container {
+        width: 100%;
+    }    
+}
+
 @media screen and (max-width: 768px) {
     .card-container {
         --card-height: calc(100dvh - 52px); /* 52px is the height of the navbar below the profile */
@@ -32,6 +46,22 @@ p {
 
     .card-and-details-container {
         width: 100%;
+    }
+
+    .firstUndoBtn {
+        display: none !important;
+    }
+
+    .secondUndoBtn {
+        display: inline;
+    }
+
+    .scrollBtn {
+        display: none;
+    }
+
+    .details-container {
+        padding: 1rem 0.5rem !important;
     }
 }
 

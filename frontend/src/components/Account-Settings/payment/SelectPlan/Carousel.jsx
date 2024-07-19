@@ -8,7 +8,10 @@ import styles from './carousel.module.css';
 
 const CarouselComponent = () => {
   return (
-    <div className={styles.carouselContainer}>
+    <div className={styles.carouselContainer} style={{
+      marginInline: "auto",
+      marginBlock: "1rem",
+    }}>
       <Carousel interval={3000} pause="hover" indicators={true} controls={false}>
         <Carousel.Item>
           <Image src={crousleone} rounded className={styles.carouselImage} />

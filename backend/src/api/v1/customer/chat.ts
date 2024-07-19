@@ -253,7 +253,7 @@ chat.get("/get-messages/:conversationId", (req: UserRequest, res) => {
 
         const messages = result.reduce((acc: any, message) => {
             const date = moment(message.sent_at).format("YYYY-MM-DD");
-            const time = moment(message.sent_at).format("HH:mm A");
+            const time = moment(message.sent_at).format("hh:mm A");
 
             if (!acc[date]) {
                 acc[date] = [];
@@ -279,35 +279,90 @@ chat.get("/get-conversations", (req: UserRequest, res) => {
     console.log(limit)
 
     let query = `
-        SELECT
-            up.user_id,
-            up.first_name,
-            up.last_name,
-            m.hash,
-            m.type,
-            m.extension,
-            (SELECT dp2.participant_id FROM dncm_participants dp2 WHERE dp2.conversation_id = dp.conversation_id AND dp2.participant_id != ?) as participant_id,
-            (SELECT dm.\`body\` FROM dncm_messages dm WHERE dm.conversation_id = dp.conversation_id AND dm.\`body\` IS NOT NULL  ORDER BY dm.sent_at DESC LIMIT 1) as message,
-            (SELECT dm.sent_at FROM dncm_messages dm WHERE dm.conversation_id = dp.conversation_id AND dm.\`body\` IS NOT NULL ORDER BY dm.sent_at DESC LIMIT 1) as sent_at,
-            dp.conversation_id 
-        FROM dncm_participants dp
-            INNER JOIN user_profiles up ON up.user_id IN (SELECT dp2.participant_id FROM dncm_participants dp2 WHERE dp2.conversation_id = dp.conversation_id AND dp2.participant_id != ?)
-            INNER JOIN media m ON m.user_id = up.user_id
-        WHERE dp.participant_id = ? 
-            AND m.type IN (1, 31) 
-            AND up.user_id NOT IN (
-                SELECT b.person_id
-                FROM blocks b
-                WHERE b.user_id = dp.participant_id
-            ) AND up.user_id NOT IN (
-                SELECT ma.person_id
-                FROM user_unmatches um INNER JOIN matches ma ON ma.id = um.match_id 
-                WHERE um.user_id = dp.participant_id
-            ) AND up.user_id NOT IN (
-                SELECT r.person_id
-                FROM reports r
-                WHERE r.user_id = dp.participant_id
-            )
+        WITH conversations as (
+            SELECT
+                up.user_id,
+                up.first_name,
+                up.last_name,
+                m.hash,
+                m.type,
+                m.extension,
+                (
+                    SELECT 
+                        dp2.participant_id 
+                    FROM 
+                        dncm_participants dp2 
+                    WHERE 
+                        dp2.conversation_id = dp.conversation_id 
+                        AND dp2.participant_id != ?
+                ) as participant_id,
+                (
+                    SELECT 
+                        dm.\`body\` 
+                    FROM 
+                        dncm_messages dm 
+                    WHERE 
+                        dm.conversation_id = dp.conversation_id
+                        AND dm.\`body\` IS NOT NULL  
+                        ORDER BY dm.sent_at DESC 
+                        LIMIT 1
+                ) as message,
+                (
+                    SELECT 
+                        dm.sent_at 
+                    FROM 
+                        dncm_messages dm 
+                    WHERE 
+                    dm.conversation_id = dp.conversation_id 
+                    AND dm.\`body\` IS NOT NULL 
+                    ORDER BY dm.sent_at DESC 
+                    LIMIT 1
+                ) as sent_at,
+                dp.conversation_id 
+            FROM 
+                dncm_participants dp
+                INNER JOIN user_profiles up ON up.user_id IN (
+                    SELECT 
+                        dp2.participant_id 
+                    FROM 
+                        dncm_participants dp2 
+                    WHERE dp2.conversation_id = dp.conversation_id 
+                        AND dp2.participant_id != ?
+                )
+                INNER JOIN media m ON m.user_id = up.user_id
+            WHERE dp.participant_id = ? 
+                AND m.type IN (1, 31) 
+                AND up.user_id NOT IN (
+                    SELECT b.person_id
+                    FROM blocks b
+                    WHERE b.user_id = dp.participant_id
+                ) 
+                AND up.user_id NOT IN (
+                    SELECT ma.person_id
+                    FROM user_unmatches um INNER JOIN matches ma ON ma.id = um.match_id 
+                    WHERE um.user_id = dp.participant_id
+                ) 
+                AND up.user_id NOT IN (
+                    SELECT r.person_id
+                    FROM reports r
+                    WHERE r.user_id = dp.participant_id
+                )
+        )
+        SELECT 
+            user_id, 
+            first_name,
+            last_name,
+            hash,
+            type,
+            extension,
+            participant_id,
+            sent_at,
+            IF (LENGTH(message) > 50, CONCAT(SUBSTR(message, 1, 50), '...'), message) as message,
+            conversation_id
+        FROM 
+            conversations 
+        WHERE 
+            message IS NOT NULL
         ORDER BY sent_at DESC 
     `;
 

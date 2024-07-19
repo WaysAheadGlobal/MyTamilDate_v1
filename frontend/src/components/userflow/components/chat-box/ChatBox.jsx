@@ -2,12 +2,13 @@ import dayjs from 'dayjs';
 import React, { useEffect, useRef, useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Modal from 'react-bootstrap/Modal';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { API_URL } from '../../../../api';
 import { useSocket } from '../../../../Context/SockerContext';
 import { useCookies } from '../../../../hooks/useCookies';
 import styles from './chatbox.module.css';
 import Button from '../button/Button';
+import { IoArrowBack } from "react-icons/io5";
 
 export default function ChatBox({ className }) {
     /**
@@ -34,6 +35,7 @@ export default function ChatBox({ className }) {
     const [showReportModal, setShowReportModal] = useState(false);
     const [showBlockModal, setShowBlockModal] = useState(false);
     const [showUnmatchModal, setShowUnmatchModal] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const conversationId = sessionStorage.getItem("conversationId");
@@ -191,9 +193,10 @@ export default function ChatBox({ className }) {
             <BlockModal show={showBlockModal} setShow={setShowBlockModal} />
             <div className={styles.chatHeader}>
                 {/* <img src="https://via.placeholder.com/75" alt="profile" /> */}
+                <IoArrowBack size={24} cursor="pointer" onClick={() => window.history.back()} />
                 <img src={location.state?.img ?? ""} alt="profile" style={{
                     objectFit: "cover"
-                }} />
+                }} onClick={() => navigate(`/user/${location.state?.name}/${location.state?.recepientId}`)} />
                 <p>{location.state?.name ?? ""}</p>
                 <div style={{ flexGrow: "1" }}></div>
                 <Dropdown>
