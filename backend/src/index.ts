@@ -7,6 +7,7 @@ import { Server } from "socket.io";
 import { db } from '../db/db';
 import MailService from '../mail';
 import api from './api';
+import { RowDataPacket } from 'mysql2';
 
 const mailService = new MailService();
 
@@ -24,7 +25,7 @@ app.get("/mail", async (req, res) => {
         await mailService.sendVerificationMail("niladityasen.2212@gmail.com", "123456");
         await mailService.sendReviewMail("niladityasen.2212@gmail.com", "Niladitya Sen");
         await mailService.sendSignUpMail("niladityasen.2212@gmail.com");
-        
+
         res.status(200).send("Mail sent successfully");
     } catch (error) {
         console.log("Error sending mail:", error);
@@ -87,7 +88,7 @@ io.on('connection', (socket) => {
         console.log('user left room:', roomId);
     });
 
-    socket.on('send-message', ({ roomId, message, sentAt, type, recepientId }) => {
+    socket.on('send-message', async ({ roomId, message, sentAt, type, recepientId }) => {
         const senderId = socket.handshake.auth.userId;
 
         db.query('INSERT INTO dncm_messages (type, version, conversation_id, sender_id, body, sent_at, updated_at, deleted_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [type, 1, roomId, senderId, message, sentAt, sentAt, 0], (err, results) => {
@@ -101,6 +102,14 @@ io.on('connection', (socket) => {
             socket.to(roomId).emit('receive-message', message);
         });
 
+        if (!socket.rooms.has(recepientId)) {
+            try {
+                const [user] = await db.promise().query<RowDataPacket[]>('SELECT first_name, email FROM user_profiles WHERE user_id = ?', [recepientId]);
+                await mailService.sendMessageMail(user[0].email, user[0].first_name);
+            } catch (error) {
+                console.log('Error sending message mail:', error);
+            }
+        }
     });
 });
 

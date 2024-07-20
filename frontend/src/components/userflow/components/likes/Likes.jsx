@@ -260,18 +260,19 @@ export default function Likes() {
                                 backgroundPosition: 'center',
                                 position: 'relative',
                             }}
-                            onClick={() => {
+                            /* onClick={() => {
                                 if (selected === like.user_id) {
                                     setSelected(null);
                                     return;
                                 }
                                 setSelected(like.user_id);
+                            }} */
+                            onDoubleClick={(e) => {
+                                e.preventDefault();
+                                if (searchParams[0].get("t") === "r")
+                                    console.log("like sent")
+                                    handleLike(like.user_id);
                             }}
-                        /* onDoubleClick={(e) => {
-                            e.preventDefault();
-                            if (searchParams[0].get("t") === "r")
-                                handleLike(like.user_id);
-                        }} */
                         >
                             {
                                 selected === like.user_id && (

@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
+import { Carousel } from 'react-bootstrap';
+import { PiCigaretteLight, PiWineFill } from "react-icons/pi";
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../../../api';
 import { useCookies } from '../../../../hooks/useCookies';
 import styles from './profiledetails.module.css';
-import { API_URL } from '../../../../api';
-import { Carousel } from 'react-bootstrap';
-import dayjs from 'dayjs';
+import IconButton from './IconButton';
 
-export default function ProfileDetails({ userId }) {
+export default function ProfileDetails({ userId, handleIconButtonClick, liked, setLiked }) {
     const dialogRef = React.useRef(null);
     const navigate = useNavigate();
     const cookies = useCookies();
@@ -86,7 +87,7 @@ export default function ProfileDetails({ userId }) {
                 console.log(data);
             }
         })()
-    }, []);
+    }, [userId]);
 
     return (
         <>
@@ -143,27 +144,7 @@ export default function ProfileDetails({ userId }) {
                 </div> */}
                 {/* <button className={styles.photoBtn} onClick={() => dialogRef.current.showModal()}>View Photos</button> */}
                 <div className={styles.drawer} id="scroll-anchor">
-                    <p className={styles.heading} style={{ marginTop: "-0.5rem" }}>{profile.first_name} {profile.last_name ?? ""}, {dayjs().diff(profile.birthday, "y")}</p>
-                    <div style={{
-                        display: "flex",
-                        gap: "0.5rem",
-                        marginBottom: "1rem",
-                        alignItems: "center",
-                        justifyContent: "flex-start"
-                    }}>
-                        <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g clip-path="url(#clip0_778_16566)">
-                                <path d="M7.9987 1.83594C5.42203 1.83594 3.33203 3.92594 3.33203 6.5026C3.33203 10.0026 7.9987 15.1693 7.9987 15.1693C7.9987 15.1693 12.6654 10.0026 12.6654 6.5026C12.6654 3.92594 10.5754 1.83594 7.9987 1.83594ZM7.9987 8.16927C7.0787 8.16927 6.33203 7.4226 6.33203 6.5026C6.33203 5.5826 7.0787 4.83594 7.9987 4.83594C8.9187 4.83594 9.66536 5.5826 9.66536 6.5026C9.66536 7.4226 8.9187 8.16927 7.9987 8.16927Z" fill="#6C6C6C" />
-                            </g>
-                            <defs>
-                                <clipPath id="clip0_778_16566">
-                                    <rect width="16" height="16" fill="white" transform="translate(0 0.5)" />
-                                </clipPath>
-                            </defs>
-                        </svg>
-                        <p className={styles.subHeading}>{profile.location_string}, {profile.country}</p>
-                    </div>
-                    <p className={styles.heading}>My Highlights</p>
+                    <p className={styles.heading}>About Me</p>
                     <div className={styles.highlights}>
                         <span>
                             <svg width="7" height="18" viewBox="0 0 7 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -270,6 +251,17 @@ export default function ProfileDetails({ userId }) {
                             </svg>
                             {profile.kids}
                         </span>
+                        <span>
+                            <PiCigaretteLight size={20} color='#4e1173' />
+                            <p>{profile.smoke}</p>
+                        </span>
+                        <span>
+                            <PiWineFill size={20} color='#4e1173' />
+                            <p>{profile.drink}</p>
+                        </span>
+                    </div>
+                    <div className={styles.smokeDrink}>
+
                     </div>
                     {
                         profile.answers?.map(answer => (
@@ -279,6 +271,14 @@ export default function ProfileDetails({ userId }) {
                             </div>
                         ))
                     }
+                    <div className={styles.personalityContainer}>
+                        <span className={styles.heading}>Traits & Interest</span>
+                        <div className={styles.personalities} style={{ alignItems: "center", justifyContent: "center" }}>
+                            {
+                                profile.personalities?.map((personality, index) => <p key={index}>{personality}</p>)
+                            }
+                        </div>
+                    </div>
                     <div style={{
                         marginTop: '1rem',
                     }}>
@@ -296,25 +296,37 @@ export default function ProfileDetails({ userId }) {
                             }
                         </Carousel>
                     </div>
-                    <div>
-                        <p className={styles.heading}>My Personality</p>
-                        <div className={styles.personalities}>
-                            {
-                                profile.personalities?.map((personality, index) => <p key={index}>{personality}</p>)
-                            }
-                        </div>
-                    </div>
-                    <div className={styles.smokeDrink}>
-                        <div>
-                            <p className={styles.heading}>Smoking</p>
-                            <p>{profile.smoke}</p>
-                        </div>
-                        <div>
-                            <p className={styles.heading}>Drinking</p>
-                            <p>{profile.drink}</p>
-                        </div>
-                    </div>
                 </div>
+                    <div style={{
+                        position: "sticky",
+                        bottom: "0",
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: "1rem",
+                        backgroundColor: "white",
+                    }}>
+                        <IconButton type='undo' onClick={(e) => {
+                            e.stopPropagation();
+                            handleIconButtonClick("undo");
+                        }} />
+                        {/* <span className='secondUndoBtn'>
+                            </span> */}
+                        <IconButton type='skip' onClick={(e) => {
+                            e.stopPropagation();
+                            handleIconButtonClick("skip");
+                        }} />
+                        <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
+                            e.stopPropagation();
+                            setLiked(!liked);
+                            handleIconButtonClick("like");
+                        }} />
+                        <IconButton type='chat' onClick={(e) => {
+                            e.stopPropagation();
+                            handleIconButtonClick("chat");
+                        }} />
+                    </div>
             </div>
         </>
     )

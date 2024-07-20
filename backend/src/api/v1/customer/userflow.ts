@@ -431,9 +431,12 @@ userFlowRouter.get("/profile/:id", (req: UserRequest, res) => {
             wk.name as kids,
             sm.name as smoke,
             dr.name as drink,
+            m.hash,
+            m.extension,
+            m.type,
             (SELECT GROUP_CONCAT(l.name SEPARATOR ', ') FROM user_languages ulang INNER JOIN languages l ON ulang.language_id = l.id WHERE ulang.user_id = 73637) as languages
         FROM user_profiles up 
-            LEFT JOIN media m ON m.user_id = up.user_id 
+            LEFT JOIN media m ON m.user_id = up.user_id AND m.type IN (1, 31)
             LEFT JOIN locations l ON l.id = up.location_id 
             LEFT JOIN jobs j ON up.job_id = j.id
             LEFT JOIN religions r ON r.id = up.religion_id

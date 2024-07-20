@@ -60,7 +60,50 @@ payment.post("/create-payment-method", async (req: UserRequest, res) => {
 
 payment.post("/create-subscription", async (req: UserRequest, res) => {
     const priceId = req.body.priceId;
-    const coupon = req.body.coupon;
+
+    db.query<RowDataPacket[]>("SELECT stripe_id FROM users WHERE id = ?", [req.userId], async (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send("Internal Server Error");
+        }
+
+        if (result.length === 0) {
+            return res.status(404).send("User not found");
+        }
+
+        const customerId = result[0].stripe_id;
+
+        const paymentMethods = await stripe.paymentMethods.list({
+            customer: customerId,
+            type: "card",
+        });
+
+        if (paymentMethods.data.length === 0) {
+            res.status(200).json({ message: "No payment method found", url: "/addpaymentmethod?type=subscribe" });
+            return;
+        }
+
+        try {
+            await stripe.customers.update(customerId, {
+                email: req.user.email,
+            });
+            await stripe.subscriptions.create({
+                customer: customerId,
+                items: [{ price: priceId }],
+                default_payment_method: paymentMethods.data[0].id,
+            });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send("Internal Server Error");
+        }
+
+        res.status(200).send({ message: "Subscription created successfully" });
+    });
+});
+
+payment.post("/create-subscription/:coupon", async (req: UserRequest, res) => {
+    const priceId = req.body.priceId;
+    const coupon = req.params.coupon;
     const productId = req.body.product;
 
     const [result] = await db.promise().query<RowDataPacket[]>("SELECT id, applies_to, once_per_user FROM promotional_codes WHERE stripe_id = ?", [coupon]);
@@ -107,6 +150,9 @@ payment.post("/create-subscription", async (req: UserRequest, res) => {
         }
 
         try {
+            await stripe.customers.update(customerId, {
+                email: req.user.email,
+            });
             await stripe.subscriptions.create({
                 customer: customerId,
                 items: [{ price: priceId }],

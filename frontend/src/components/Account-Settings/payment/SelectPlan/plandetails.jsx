@@ -46,13 +46,14 @@ const PricingCard = ({ currency }) => {
   async function handlePayment() {
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}customer/payment/create-subscription`, {
+      const path = coupon ? `/${coupon}` : '';
+      const response = await fetch(`${API_URL}customer/payment/create-subscription${path}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${cookies.getCookie('token')}`,
         },
-        body: JSON.stringify({ priceId, coupon, product }),
+        body: JSON.stringify({ priceId, product }),
       });
       const data = await response.json();
 

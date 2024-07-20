@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyTamilDate Email</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f3f9;
+            margin: 0;
+            padding: 0;
+            height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .email-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 1px solid #e0d8e6;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #e0d8e6;
+        }
+
+        .header img {
+            max-width: 100px;
+        }
+
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content h1 {
+            color: #ff7f50;
+            font-size: 24px;
+            margin: 0 0 20px 0;
+        }
+
+        .content p {
+            font-size: 16px;
+            color: #333333;
+            margin: 0 0 20px 0;
+        }
+
+        .content img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            margin: 0 auto;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0;
+            font-size: 16px;
+            color: #ffffff !important;
+            background-color: #ff7f50;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .footer {
+            padding: 20px;
+            text-align: center;
+            background-color: #f8f3f9;
+            border-top: 1px solid #e0d8e6;
+        }
+
+        .footer a {
+            color: #ff7f50;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <div class="header">
+            <img src="<%= logo %>" alt="MyTamilDate">
+        </div>
+        <div class="content">
+            <h1>You caught their attention</h1>
+            <p>You stood out to this myTamilDate member this week!</p>
+            <img src="<%= image %>" alt="profile">
+            <p><%= name %></p>
+            <a href="https://mytamildate.waysdatalabs.com/user/home" class="button" style="color: white;">Login & say hello</a>
+        </div>
+        <div class="footer">
+            <a href="#">Unsubscribe</a>
+        </div>
+    </div>
+</body>
+
+</html>

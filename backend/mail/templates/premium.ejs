@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>myTamilDate Email Template</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            background-color: #f7e9ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            max-width: 600px;
+            width: 100%;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-container {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 24px;
+            color: #ff755e;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .text {
+            color: #4a4a4a;
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .link {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="<%= logo %>" alt="myTamilDate Logo" />
+        </div>
+        <h1 class="title">Your upgrade was successful!</h1>
+        <p class="text">
+            Welcome to your <strong>Premium myTamilDate membership!</strong> By accessing all of our premium features
+            like unlimited messaging and viewing your likes, you could be joining the countless other single Tamils who
+            have found meaningful relationships and marriages through MTD.
+        </p>
+        <p class="text">
+            <strong><%= plan %></strong><br>
+            Total: $<%= total %> CAD<br>
+            <%if (discount > 0) { %>
+            Discount: $<%= discount %> CAD<br>
+            <% } %>
+            Paid: $<%= paid %> CAD<br>
+            Date Paid: <%= date %>
+        </p>
+        <p class="text">
+            <a href="<%= invoice %>" class="link">Download detailed invoice</a>.
+        </p>
+        <p class="text">
+            Your membership will auto-renew on <%= nextPaymentDate %> at $<%= total %>/mo.<br>
+            Your subscription will automatically renew for the same package length at the same price until you cancel in
+            settings in your MTD account.
+        </p>
+        <div class="footer">
+            <p><a href="#" class="link">Unsubscribe</a></p>
+        </div>
+    </div>
+</body>
+
+</html>

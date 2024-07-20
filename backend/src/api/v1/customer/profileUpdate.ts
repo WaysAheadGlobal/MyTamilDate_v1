@@ -50,7 +50,7 @@ updateprofile.post("/mediaupdate",
     const fileKey = fileKeys[0];
     const file = (req.files as any)[fileKey][0];
     const checkQuery = 'SELECT * FROM media_update WHERE media_id = ?';
-    db.query(checkQuery, [mediaId], (err, results:any) => {
+    db.query(checkQuery, [mediaId], (err, results: any) => {
       if (err) {
         console.error('Error checking media_id:', err);
         return res.status(500).send('Internal Server Error');
@@ -60,142 +60,142 @@ updateprofile.post("/mediaupdate",
         return res.status(400).send('Image already sent for admin approval.');
       }
 
-    const query = 'INSERT INTO media_update (user_id,media_id, hash, extension, type, meta, created_at, updated_at) VALUES (?,?, ?, ?, ?, ?, ?, ?)';
-    const values = [
-      userId,
-      mediaId,
-      file.filename.split(".")[0],
-      file.mimetype.split("/")[1],
-      type,
-      JSON.stringify(file),
-      new Date(),
-      new Date(),
-    
-    ];
+      const query = 'INSERT INTO media_update (user_id,media_id, hash, extension, type, meta, created_at, updated_at) VALUES (?,?, ?, ?, ?, ?, ?, ?)';
+      const values = [
+        userId,
+        mediaId,
+        file.filename.split(".")[0],
+        file.mimetype.split("/")[1],
+        type,
+        JSON.stringify(file),
+        new Date(),
+        new Date(),
 
-    db.query(query, values, (err, results) => {
-      if (err) {
-        console.error('Error inserting media:', err);
-        return res.status(500).send('Internal Server Error');
-      }
-      res.status(200).json({ message: 'Media uploaded successfully' });
-    });
+      ];
+
+      db.query(query, values, (err, results) => {
+        if (err) {
+          console.error('Error inserting media:', err);
+          return res.status(500).send('Internal Server Error');
+        }
+        res.status(200).json({ message: 'Media uploaded successfully' });
+      });
     })
   }
 );
 
 updateprofile.post("/media",
-    verifyUser,
-    upload.fields([
-      { name: 'main', maxCount: 1 },
-      { name: 'first', maxCount: 1 },
-      { name: 'second', maxCount: 1 },
-    ]),
-    async (req: UserRequest, res: express.Response) => {
-      const userId = req.userId;
-      console.log(req.files);
-  
-      if (!req.files) {
-        return res.status(400).send('No files were uploaded.');
-      }
-  
-      const main = (req.files as any)['main'] ? (req.files as any)['main'][0] : null;
-      const first = (req.files as any)['first'] ? (req.files as any)['first'][0] : null;
-      const second = (req.files as any)['second'] ? (req.files as any)['second'][0] : null;
-  
-      // type 3 is for new media and then 1 is for avatar and 2 is for profile
-  
-      const query = 'INSERT INTO media (user_id, hash, extension, type, meta, created_at, updated_at) VALUES ?';
-      const values = [
-        [userId, main.filename.split(".")[0], main.mimetype.split("/")[1], 31, JSON.stringify(main), new Date(), new Date()],
-        [userId, first.filename.split(".")[0], first.mimetype.split("/")[1], 32, JSON.stringify(first), new Date(), new Date()],
-        [userId, second.filename.split(".")[0], second.mimetype.split("/")[1], 32, JSON.stringify(second), new Date(), new Date()]
-      ];
-  
-      db.query(query, [values], (err, results) => {
-        if (err) {
-          console.error('Error inserting media:', err);
-          return res.status(500).send('Internal Server Error');
-        }
-  
-        res.status(200).json({ message: 'Media uploaded successfully' });
-      });
-    }
-  )
-  
-  updateprofile.get('/media', verifyUser, (req: UserRequest, res: express.Response) => {
+  verifyUser,
+  upload.fields([
+    { name: 'main', maxCount: 1 },
+    { name: 'first', maxCount: 1 },
+    { name: 'second', maxCount: 1 },
+  ]),
+  async (req: UserRequest, res: express.Response) => {
     const userId = req.userId;
-    console.log(userId);
-  
-    const query = 'SELECT id, hash, extension, type FROM media WHERE user_id = ?';
-    db.query(query, [userId], (err, results) => {
+    console.log(req.files);
+
+    if (!req.files) {
+      return res.status(400).send('No files were uploaded.');
+    }
+
+    const main = (req.files as any)['main'] ? (req.files as any)['main'][0] : null;
+    const first = (req.files as any)['first'] ? (req.files as any)['first'][0] : null;
+    const second = (req.files as any)['second'] ? (req.files as any)['second'][0] : null;
+
+    // type 3 is for new media and then 1 is for avatar and 2 is for profile
+
+    const query = 'INSERT INTO media (user_id, hash, extension, type, meta, created_at, updated_at) VALUES ?';
+    const values = [
+      [userId, main.filename.split(".")[0], main.mimetype.split("/")[1], 31, JSON.stringify(main), new Date(), new Date()],
+      [userId, first.filename.split(".")[0], first.mimetype.split("/")[1], 32, JSON.stringify(first), new Date(), new Date()],
+      [userId, second.filename.split(".")[0], second.mimetype.split("/")[1], 32, JSON.stringify(second), new Date(), new Date()]
+    ];
+
+    db.query(query, [values], (err, results) => {
       if (err) {
-        console.error('Error fetching media:', err);
+        console.error('Error inserting media:', err);
         return res.status(500).send('Internal Server Error');
       }
-  
-      res.status(200).json(results);
-    });
-  });
 
-  updateprofile.delete("/media/:id",
-    verifyUser,
-    (req: UserRequest, res: express.Response) => {
-      const userId = req.userId;
-      const mediaId = req.params.id;
-  
-      const query = 'DELETE FROM media WHERE id = ? AND user_id = ?';
-      db.query(query, [mediaId, userId], (err, results: ResultSetHeader) => {
-        if (err) {
-          console.error('Error deleting media:', err);
-          return res.status(500).send('Internal Server Error');
-        }
-  
-        if (results.affectedRows === 0) {
-          return res.status(404).send('Media not found or not authorized to delete this media.');
-        }
-  
-        res.status(200).json({ message: 'Media deleted successfully' });
-      });
+      res.status(200).json({ message: 'Media uploaded successfully' });
+    });
+  }
+)
+
+updateprofile.get('/media', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+  console.log(userId);
+
+  const query = 'SELECT id, hash, extension, type FROM media WHERE user_id = ?';
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching media:', err);
+      return res.status(500).send('Internal Server Error');
     }
-  );
-  
-  updateprofile.put("/media/:id",
-    verifyUser,
-    upload.single('file'),
-    async (req: UserRequest, res: express.Response) => {
-      const userId = req.userId;
-      const mediaId = req.params.id;
-      const file = req.file;
-  
-      if (!file) {
-        return res.status(400).send('No file was uploaded.');
+
+    res.status(200).json(results);
+  });
+});
+
+updateprofile.delete("/media/:id",
+  verifyUser,
+  (req: UserRequest, res: express.Response) => {
+    const userId = req.userId;
+    const mediaId = req.params.id;
+
+    const query = 'DELETE FROM media WHERE id = ? AND user_id = ?';
+    db.query(query, [mediaId, userId], (err, results: ResultSetHeader) => {
+      if (err) {
+        console.error('Error deleting media:', err);
+        return res.status(500).send('Internal Server Error');
       }
-  
-      const query = 'UPDATE media SET hash = ?, extension = ?, meta = ?, updated_at = ? WHERE id = ? AND user_id = ?';
-      const values = [
-        file.filename.split(".")[0],
-        file.mimetype.split("/")[1],
-        JSON.stringify(file),
-        new Date(),
-        mediaId,
-        userId
-      ];
-  
-      db.query(query, values, (err, results: ResultSetHeader) => {
-        if (err) {
-          console.error('Error updating media:', err);
-          return res.status(500).send('Internal Server Error');
-        }
-  
-        if (results.affectedRows === 0) {
-          return res.status(404).send('Media not found or not authorized to update this media.');
-        }
-  
-        res.status(200).json({ message: 'Media updated successfully' });
-      });
+
+      if (results.affectedRows === 0) {
+        return res.status(404).send('Media not found or not authorized to delete this media.');
+      }
+
+      res.status(200).json({ message: 'Media deleted successfully' });
+    });
+  }
+);
+
+updateprofile.put("/media/:id",
+  verifyUser,
+  upload.single('file'),
+  async (req: UserRequest, res: express.Response) => {
+    const userId = req.userId;
+    const mediaId = req.params.id;
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).send('No file was uploaded.');
     }
-  );
+
+    const query = 'UPDATE media SET hash = ?, extension = ?, meta = ?, updated_at = ? WHERE id = ? AND user_id = ?';
+    const values = [
+      file.filename.split(".")[0],
+      file.mimetype.split("/")[1],
+      JSON.stringify(file),
+      new Date(),
+      mediaId,
+      userId
+    ];
+
+    db.query(query, values, (err, results: ResultSetHeader) => {
+      if (err) {
+        console.error('Error updating media:', err);
+        return res.status(500).send('Internal Server Error');
+      }
+
+      if (results.affectedRows === 0) {
+        return res.status(404).send('Media not found or not authorized to update this media.');
+      }
+
+      res.status(200).json({ message: 'Media updated successfully' });
+    });
+  }
+);
 
 //   updateprofile.get('/updated-media', verifyUser, (req: UserRequest, res: express.Response) => {
 //     const userId = req.userId;
@@ -235,10 +235,10 @@ updateprofile.get('/updated-media', verifyUser, (req: UserRequest, res: express.
 });
 
 
-  updateprofile.get('/questionanswer', (req: UserRequest, res: express.Response) => {
-    const userId = req.userId;
+updateprofile.get('/questionanswer', (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
 
-    const sql = `
+  const sql = `
         SELECT 
             qa.question_id,
             q.text AS question,
@@ -253,164 +253,164 @@ updateprofile.get('/updated-media', verifyUser, (req: UserRequest, res: express.
             qa.user_id = ?
     `;
 
-    db.query(sql, [userId], (err: Error | null, results: any) => {
-        if (err) {
-            console.error('Error fetching data:', err);
-            res.status(500).send('Internal Server Error');
-            return;
-        }
+  db.query(sql, [userId], (err: Error | null, results: any) => {
+    if (err) {
+      console.error('Error fetching data:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
 
-        res.status(200).json(results);
-    });
+    res.status(200).json(results);
+  });
 });
 
 updateprofile.get('/personality-options', (req: UserRequest, res: express.Response) => {
-    db.query('SELECT name, id FROM personalities', (err, results) => {
-      if (err) {
-        console.error('Error fetching personalities:', err);
-        return res.status(500).json({ message: 'Internal Server Error' });
-      }
-  
-      res.status(200).json({ personalities: results });
-    });
+  db.query('SELECT name, id FROM personalities', (err, results) => {
+    if (err) {
+      console.error('Error fetching personalities:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    res.status(200).json({ personalities: results });
   });
-  
-  updateprofile.get('/personalities', verifyUser, (req: UserRequest, res: express.Response) => {
-    const userId = req.userId;
-  
-    console.log(`Fetching personalities for UserId: ${userId}`);
-  
-    const query = `
+});
+
+updateprofile.get('/personalities', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  console.log(`Fetching personalities for UserId: ${userId}`);
+
+  const query = `
       SELECT p.id, p.name, p.visible, p.created_at, p.updated_at 
       FROM personalities p
       JOIN user_personalities up ON p.id = up.personality_id
       WHERE up.user_id = ?`;
-  
-    db.query<RowDataPacket[]>(query, [userId], (err, results) => {
-      if (err) {
-        console.error('Error fetching personalities:', err);
-        return res.status(500).json({ message: 'Internal Server Error' });
-      }
-  
-      if (results.length === 0) {
-        return res.status(404).json({ message: 'No personalities found for this user' });
-      }
-  
-      res.status(200).json({ personalities: results });
-    });
-  });
 
-  updateprofile.get('/personality-options', (req: UserRequest, res: express.Response) => {
-    db.query('SELECT name, id FROM personalities', (err, results) => {
-      if (err) {
-        console.error('Error fetching personalities:', err);
-        return res.status(500).json({ message: 'Internal Server Error' });
-      }
-  
-      res.status(200).json({ personalities: results });
-    });
-  });
-
-  updateprofile.post('/personality', verifyUser, (req: UserRequest, res: express.Response) => {
-    const { personalities } = req.body;
-    const userId = req.userId;
-  
-    if (!userId || !Array.isArray(personalities)) {
-      return res.status(400).json({ message: 'Invalid request' });
+  db.query<RowDataPacket[]>(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching personalities:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
-  
-    // Start a transaction
-    db.beginTransaction(err => {
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No personalities found for this user' });
+    }
+
+    res.status(200).json({ personalities: results });
+  });
+});
+
+updateprofile.get('/personality-options', (req: UserRequest, res: express.Response) => {
+  db.query('SELECT name, id FROM personalities', (err, results) => {
+    if (err) {
+      console.error('Error fetching personalities:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    res.status(200).json({ personalities: results });
+  });
+});
+
+updateprofile.post('/personality', verifyUser, (req: UserRequest, res: express.Response) => {
+  const { personalities } = req.body;
+  const userId = req.userId;
+
+  if (!userId || !Array.isArray(personalities)) {
+    return res.status(400).json({ message: 'Invalid request' });
+  }
+
+  // Start a transaction
+  db.beginTransaction(err => {
+    if (err) {
+      console.error('Transaction Start Error:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    // Delete existing personalities
+    db.query('DELETE FROM user_personalities WHERE user_id = ?', [userId], (err, results) => {
       if (err) {
-        console.error('Transaction Start Error:', err);
-        return res.status(500).json({ message: 'Internal Server Error' });
+        console.error('Error deleting personalities:', err);
+        db.rollback(() => {
+          return res.status(500).json({ message: 'Internal Server Error' });
+        });
+      } else {
+        // Insert new personalities
+        const query = 'INSERT INTO user_personalities (user_id, personality_id) VALUES ?';
+        const values = personalities.map((personalityId: number) => [userId, personalityId]);
+
+        db.query(query, [values], (err, results) => {
+          if (err) {
+            console.error('Error inserting personalities:', err);
+            db.rollback(() => {
+              return res.status(500).json({ message: 'Internal Server Error' });
+            });
+          } else {
+            // Commit the transaction
+            db.commit(err => {
+              if (err) {
+                console.error('Transaction Commit Error:', err);
+                db.rollback(() => {
+                  return res.status(500).json({ message: 'Internal Server Error' });
+                });
+              } else {
+                res.status(200).json({ message: 'Personalities updated successfully' });
+              }
+            });
+          }
+        });
       }
-  
-      // Delete existing personalities
-      db.query('DELETE FROM user_personalities WHERE user_id = ?', [userId], (err, results) => {
-        if (err) {
-          console.error('Error deleting personalities:', err);
-          db.rollback(() => {
-            return res.status(500).json({ message: 'Internal Server Error' });
-          });
-        } else {
-          // Insert new personalities
-          const query = 'INSERT INTO user_personalities (user_id, personality_id) VALUES ?';
-          const values = personalities.map((personalityId: number) => [userId, personalityId]);
-  
-          db.query(query, [values], (err, results) => {
-            if (err) {
-              console.error('Error inserting personalities:', err);
-              db.rollback(() => {
-                return res.status(500).json({ message: 'Internal Server Error' });
-              });
-            } else {
-              // Commit the transaction
-              db.commit(err => {
-                if (err) {
-                  console.error('Transaction Commit Error:', err);
-                  db.rollback(() => {
-                    return res.status(500).json({ message: 'Internal Server Error' });
-                  });
-                } else {
-                  res.status(200).json({ message: 'Personalities updated successfully' });
-                }
-              });
-            }
-          });
-        }
-      });
     });
   });
+});
 
 
-  //profile Completion track
-  updateprofile.get('/profileCompletion', verifyUser,(req:UserRequest, res: express.Response) => {
-    const userId = req.userId;
-    const sql = `SELECT * FROM user_profiles WHERE user_id = ?`;
-  
-    db.query(sql, [userId], (err, results:any) => {
-      if (err) {
-        console.error('Error retrieving user profile data:', err);
-        return res.status(500).send('Internal Server Error');
+//profile Completion track
+updateprofile.get('/profileCompletion', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+  const sql = `SELECT * FROM user_profiles WHERE user_id = ?`;
+
+  db.query(sql, [userId], (err, results: any) => {
+    if (err) {
+      console.error('Error retrieving user profile data:', err);
+      return res.status(500).send('Internal Server Error');
+    }
+
+    if (results.length === 0) {
+      return res.status(404).send('User profile not found');
+    }
+
+    const profile = results[0];
+
+    // const completionPercentage = calculateCompletionPercentage(profile);
+    const totalFields = 16; // Number of fields used to calculate completion
+    let completedFields = 0;
+
+    // List of fields to consider for profile completion
+    const fields = [
+      'first_name', 'last_name', 'email', 'phone', 'birthday',
+      'location_id', 'gender', 'want_gender', 'study_id', 'job_id',
+      'growth_id', 'religion_id', 'want_kid_id', 'have_kid_id',
+      'smoke_id', 'drink_id'
+    ];
+
+    fields.forEach(field => {
+      if (profile[field] !== null && profile[field] !== undefined && profile[field] !== '') {
+        completedFields++;
       }
-  
-      if (results.length === 0) {
-        return res.status(404).send('User profile not found');
-      }
-  
-      const profile = results[0];
-
-      // const completionPercentage = calculateCompletionPercentage(profile);
-      const totalFields = 18; // Number of fields used to calculate completion
-      let completedFields = 0;
-    
-      // List of fields to consider for profile completion
-      const fields = [
-        'first_name', 'last_name', 'email', 'phone', 'birthday',
-        'location_id', 'gender', 'want_gender', 'study_id', 'job_id',
-        'growth_id', 'religion_id', 'want_kid_id', 'have_kid_id',
-        'smoke_id', 'drink_id'
-      ];
-    
-      fields.forEach(field => {
-        if (profile[field] !== null && profile[field] !== undefined && profile[field] !== '') {
-          completedFields++;
-        }
-      });
-    
-    const   completionPercentage=  Math.floor((completedFields / totalFields) * 100);
-  
-      res.status(200).json({ completionPercentage });
     });
+
+    const completionPercentage = Math.floor((completedFields / totalFields) * 100);
+
+    res.status(200).json({ completionPercentage });
   });
+});
 
-  //All details of Profile
-  updateprofile.get('/profileDetails',verifyUser, (req: UserRequest, res: express.Response) => {
-    const userId = req.userId;
-    console.log(userId);
+//All details of Profile
+updateprofile.get('/profileDetails', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+  console.log(userId);
 
-    const sql = `
+  const sql = `
         SELECT 
             up.first_name AS Name,
             up.last_name AS Surname,
@@ -477,18 +477,18 @@ updateprofile.get('/personality-options', (req: UserRequest, res: express.Respon
             up.id
     `;
 
-    db.query<RowDataPacket[]>(sql, [userId], (err, results) => {
-        if (err) {
-            console.log('Error fetching data:', err);
-            res.status(500).send('Internal Server Error');
-            return;
-        }
-        if (results.length === 0) {
-            res.status(404).send('User not found');
-            return;
-        }
-        res.status(200).json(results[0]);
-    });
+  db.query<RowDataPacket[]>(sql, [userId], (err, results) => {
+    if (err) {
+      console.log('Error fetching data:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    if (results.length === 0) {
+      res.status(404).send('User not found');
+      return;
+    }
+    res.status(200).json(results[0]);
+  });
 });
 
 updateprofile.get('/userlanguage', verifyUser, (req: UserRequest, res: express.Response) => {
@@ -512,9 +512,9 @@ updateprofile.get('/userlanguage', verifyUser, (req: UserRequest, res: express.R
 });
 
 // Fetch user questions by user_id
-updateprofile.get('/questions',verifyUser, (req: UserRequest, res: express.Response) => {
+updateprofile.get('/questions', verifyUser, (req: UserRequest, res: express.Response) => {
   const userId = req.userId;
-console.log(userId);
+  console.log(userId);
   const sql = `
       SELECT 
           qa.question_id,
@@ -531,13 +531,13 @@ console.log(userId);
   `;
 
   db.query(sql, [userId], (err: Error | null, results: any) => {
-      if (err) {
-          console.error('Error fetching data:', err);
-          res.status(500).send('Internal Server Error');
-          return;
-      }
+    if (err) {
+      console.error('Error fetching data:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
 
-      res.status(200).json(results);
+    res.status(200).json(results);
   });
 });
 
@@ -558,13 +558,13 @@ updateprofile.get('/questionss', verifyUser, (req: UserRequest, res: express.Res
   `;
 
   db.query(sql, [userId], (err: Error | null, results: any) => {
-      if (err) {
-          console.error('Error fetching data:', err);
-          res.status(500).send('Internal Server Error');
-          return;
-      }
+    if (err) {
+      console.error('Error fetching data:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
 
-      res.status(200).json({ questions: results });
+    res.status(200).json({ questions: results });
   });
 });
 
@@ -644,13 +644,13 @@ updateprofile.post('/answer/:questionId', verifyUser, (req: UserRequest, res: ex
 updateprofile.put('/gender', [
   verifyUser,
   body('gender').isInt().notEmpty().withMessage('Gender is required'),
- 
+
 ], (req: UserRequest, res: any) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  const { gender} = req.body;
+  const { gender } = req.body;
   const userId = req.userId;
   console.log(userId);
 
@@ -673,6 +673,6 @@ updateprofile.put('/gender', [
 });
 
 
-  export default updateprofile;
+export default updateprofile;
 
 

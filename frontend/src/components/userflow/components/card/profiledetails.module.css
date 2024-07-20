@@ -127,3 +127,28 @@
         width: 90%;
     }
 } */
+
+.personalityContainer {
+    background-color: #F7ECFF;
+    padding: 2rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-top: 2rem;
+    border-radius: 1rem;
+
+    span {
+        position: absolute;
+        background-color: #fdf9fd;
+        border: 1px solid #e0e0e0;
+        align-self: center;
+        padding: 5px 10px;
+        top: -2.5rem;
+        border-radius: 0.5rem;
+        font-size: 14px;
+    }
+
+    p {
+        background-color: #fdf9fd;
+    }
+}

@@ -25,20 +25,25 @@ subscription.get("/premium-info", (req: UserRequest, res) => {
             return;
         }
 
-        const subscription_ = await stripe.subscriptions.retrieve(result[0].stripe_id);
+        try {
+            const subscription_ = await stripe.subscriptions.retrieve(result[0].stripe_id);
 
-        if (subscription_.status !== "active" && subscription_.status !== "trialing") {
-            db.query("UPDATE subscriptions SET stripe_status = ? WHERE user_id = ?", [subscription_.status, userId], (err) => {
-                if (err) {
-                    console.log(err);
-                    res.status(500).json({ message: "An error occurred while updating subscription details" });
-                    return;
-                }
+            if (subscription_.status !== "active" && subscription_.status !== "trialing") {
+                db.query("UPDATE subscriptions SET stripe_status = ? WHERE user_id = ?", [subscription_.status, userId], (err) => {
+                    if (err) {
+                        console.log(err);
+                        res.status(500).json({ message: "An error occurred while updating subscription details" });
+                        return;
+                    }
 
-                res.status(200).json({ isPremium: false });
-            });
-        } else {
-            res.status(200).json({ isPremium: true, endsAt: result[0].ends_at });
+                    res.status(200).json({ isPremium: false });
+                });
+            } else {
+                res.status(200).json({ isPremium: true, endsAt: result[0].ends_at });
+            }
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ message: "An error occurred while fetching subscription details" });
         }
     });
 });

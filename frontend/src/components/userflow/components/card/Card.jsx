@@ -43,7 +43,7 @@ import { useSocket } from '../../../../Context/SockerContext';
  * @param {Profile} props - The properties passed to the component.
  * @returns {JSX.Element} The Card component.
  */
-export default function Card({ ...props }) {
+export default function Card({ show, ...props }) {
     const navigate = useNavigate();
     const image = props.type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${props.user_id}/avatar/${props.hash}-large.${props.extension}` : `${API_URL}media/avatar/${props.hash}.${props.extension}`;
     const cookies = useCookies();
@@ -158,7 +158,7 @@ export default function Card({ ...props }) {
             <ReportModal show={showReportModal} setShow={setShowReportModal} personId={props.user_id} />
             <BlockModal show={showBlockModal} setShow={setShowBlockModal} personId={props.user_id} />
             <div className='card-and-details-container'>
-                <div ref={cardRef} className='card-container'
+                <div ref={cardRef} className={`card-container ${show ? 'show' : ''}`}
                     style={{
                         backgroundImage: `url(${image})`,
                         backgroundSize: 'cover',
@@ -166,7 +166,7 @@ export default function Card({ ...props }) {
                         backgroundRepeat: 'no-repeat'
                     }}
                 >
-                    <span className="firstUndoBtn" style={{
+                    {/* <span className="firstUndoBtn" style={{
                         position: "absolute",
                         top: "1rem",
                         left: "1rem",
@@ -175,7 +175,7 @@ export default function Card({ ...props }) {
                             e.stopPropagation();
                             handleIconButtonClick("undo");
                         }} />
-                    </span>
+                    </span> */}
                     <div className='details-container' style={{
                         width: "100%",
                     }}>
@@ -205,16 +205,15 @@ export default function Card({ ...props }) {
                             </div>
                         </div>
                         <div className='options'>
-                            <span className='secondUndoBtn'>
-                                <IconButton type='undo' onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleIconButtonClick("undo");
-                                }} />
-                            </span>
-                            <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
+                            <IconButton type='undo' onClick={(e) => {
                                 e.stopPropagation();
-                                setLiked(!liked);
-                                handleIconButtonClick("like");
+                                handleIconButtonClick("undo");
+                            }} />
+                            {/* <span className='secondUndoBtn'>
+                            </span> */}
+                            <IconButton type='skip' onClick={(e) => {
+                                e.stopPropagation();
+                                handleIconButtonClick("skip");
                             }} />
                             <div style={{
                                 position: "relative",
@@ -227,9 +226,10 @@ export default function Card({ ...props }) {
                                         document.querySelector("#scroll-anchor").scrollIntoView({ behavior: "smooth" });
                                     }} />
                             </div>
-                            <IconButton type='skip' onClick={(e) => {
+                            <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
                                 e.stopPropagation();
-                                handleIconButtonClick("skip");
+                                setLiked(!liked);
+                                handleIconButtonClick("like");
                             }} />
                             <IconButton type='chat' onClick={(e) => {
                                 e.stopPropagation();
@@ -303,7 +303,12 @@ export default function Card({ ...props }) {
                     </div>
                 </div>
                 <div>
-                    <ProfileDetails userId={props.user_id} />
+                    <ProfileDetails
+                        userId={props.user_id}
+                        handleIconButtonClick={handleIconButtonClick}
+                        liked={liked}
+                        setLiked={setLiked}
+                    />
                 </div>
             </div></>
     )
@@ -460,7 +465,6 @@ function BlockModal({ show, setShow, personId }) {
             window.location.reload();
         }
     }
-
 
     return (
         <Modal size='sm' centered show={show}>

@@ -60,43 +60,6 @@ export default function Home() {
  */
     return (
         <Sidebar>
-            {/* <Modal centered show={show}>
-                <Modal.Body>
-                    {
-                        wave === 2 && (
-                            <p
-                                style={{
-                                    textAlign: "center",
-                                    fontSize: "large",
-                                    fontWeight: "600",
-
-                                }}
-                            >
-                                We've shown you the users who meet your criteria. Let's help you discover some other awesome users you may not have considered!
-                            </p>
-                        )
-                    }
-                    {
-                        wave === 3 && (
-                            <p
-                                style={{
-                                    textAlign: "center",
-                                    fontSize: "large",
-                                    fontWeight: "600",
-
-                                }}
-                            >
-                                We've shown you the users who meet your criteria. Let's help you discover some other awesome users you may not have considered!
-                            </p>
-                        )
-                    }
-                </Modal.Body>
-                <Button style={{
-                    borderRadius: "9999px",
-                    marginTop: "3rem",
-                    marginInline: "auto",
-                }} onClick={() => setShow(false)}>Close</Button>
-            </Modal> */}
             <div
                 className={styles.container}
             >

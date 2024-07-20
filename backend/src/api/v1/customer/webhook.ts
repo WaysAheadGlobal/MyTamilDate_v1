@@ -1,12 +1,17 @@
-import sgMail from "@sendgrid/mail";
 import { Router } from "express";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import Stripe from "stripe";
 import { db } from "../../../../db/db";
+import MailService from "../../../../mail";
+import moment from "moment";
 
 const webhookRouter = Router();
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+
+const mailService = new MailService();
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 webhookRouter.post('/', async (request, response) => {
     const sig = request.headers['stripe-signature']!;
@@ -52,7 +57,7 @@ webhookRouter.post('/', async (request, response) => {
                         return;
                     }
 
-                    db.query<ResultSetHeader>("INSERT INTO payments (customer_id, amount, discount_amount, price_id, created_at, updated_at, user_id) VALUES (?, ?, ?, ?, NOW(), NOW(), ?)", [object.customer, object.amount_paid, object.lines.data[0].discount_amounts?.[0].amount ?? 0, object.lines.data[0]?.plan?.id, result[0].id], async (err) => {
+                    db.query<ResultSetHeader>("INSERT INTO payments (customer_id, amount, discount_amount, price_id, created_at, updated_at, user_id) VALUES (?, ?, ?, ?, NOW(), NOW(), ?)", [object.customer, object.amount_paid, object.lines.data[0].discount_amounts?.[0]?.amount ?? 0, object.lines.data[0]?.plan?.id, result[0].id], async (err) => {
                         if (err) {
                             db.rollback(() => {
                                 console.log(err);
@@ -60,7 +65,7 @@ webhookRouter.post('/', async (request, response) => {
                             return;
                         }
 
-                        await sgMail.send({
+                        /* await sgMail.send({
                             to: object.customer_email!,
                             from: process.env.EMAIL_HOST!,
                             subject: "Payment Successful",
@@ -76,7 +81,7 @@ webhookRouter.post('/', async (request, response) => {
                             Regards,
                             The MTD Team
                         `
-                        });
+                        }); */
 
                         db.commit(err => {
                             if (err) {
@@ -127,12 +132,33 @@ webhookRouter.post('/', async (request, response) => {
                         return;
                     }
 
-                    db.query<ResultSetHeader>("INSERT INTO subscriptions (user_id, name, stripe_id, stripe_status, stripe_plan, quantity, ends_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?), NOW(), NOW())", [result[0].id, "default", object.id, object.status, object.items.data[0].plan.id, object.items.data[0].quantity, object.current_period_end], (err, _) => {
+                    db.query<ResultSetHeader>("INSERT INTO subscriptions (user_id, name, stripe_id, stripe_status, stripe_plan, quantity, ends_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?), NOW(), NOW())", [result[0].id, "default", object.id, object.status, object.items.data[0].plan.id, object.items.data[0].quantity, object.current_period_end], async (err, _) => {
                         if (err) {
                             db.rollback(() => {
                                 console.log(err);
                             });
                             return;
+                        }
+
+                        const [profiles] = await db.promise().query<RowDataPacket[]>("SELECT email FROM user_profiles WHERE user_id = ?", [result[0].id]);
+
+                        const invoice = await stripe.invoices.retrieve(object.latest_invoice as string);
+
+                        if (invoice) {
+                            try {
+                                await mailService.sendPremiumMail(
+                                    profiles[0].email,
+                                    `${invoice.lines.data[0].price?.recurring?.interval_count} ${invoice.lines.data[0].price?.recurring?.interval}`,
+                                    object.items.data[0].plan.amount! / 100, // Convert to dollars
+                                    (invoice.lines.data[0].discount_amounts?.[0]?.amount ?? 0) / 100, // Convert to dollars
+                                    invoice.amount_paid! / 100, // Convert to dollars
+                                    moment().format('MMM DD, YYYY'),
+                                    invoice.hosted_invoice_url!,
+                                    moment().add(1, 'month').format('MMM DD, YYYY')
+                                );
+                            } catch (err) {
+                                console.log(err);
+                            }
                         }
 
                         db.commit(err => {
