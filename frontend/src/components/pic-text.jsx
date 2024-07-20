@@ -60,7 +60,7 @@ export const Pictext = () => {
                                     background: 'linear-gradient(360deg, #F87077 0%, #FB8968 100%)',
                                     color: 'transparent',
                                     backgroundClip: 'text',
-                                    fontFamily: "PT serif, sans-serif",
+                                    fontFamily: "Poly, serif",
                                     fontSize: "24px"
                                 }}>myTamilDate</h4>
                                 <img src={arrow} alt="Arrow" width={200} height={200} style={{ position: "absolute", top: "-11px" }} />

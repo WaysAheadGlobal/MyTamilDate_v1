@@ -12,9 +12,12 @@ import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { getOTPFromDBByEmail, insertOTPInDBByEmail } from "../../../../otpbyEmail";
 import UserApprovalEnum from "../../../enums/UserApprovalEnum";
 import Stripe from "stripe";
+import MailService from "../../../../mail";
 
 const auth = Router();
 let otpData: { phone: string, otp: string, createdAt: Date } | null = null;
+
+const mailService = new MailService();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -141,7 +144,7 @@ auth.post("/login/email-otp", async (req, res) => {
 
             const msg = {
                 to: email,
-                from: "process.env.EMAIL_HOST",
+                from: process.env.EMAIL_HOST!,
                 subject: "MTD Login Code",
                 html: html
             };
@@ -365,15 +368,9 @@ auth.post("/verify", verifyUser, async (req: UserRequest, res) => {
         }
 
         const token = crypto.randomBytes(32).toString('hex');
-        const msg: sgMail.MailDataRequired = {
-            to: results[0].email,
-            from: "process.env.EMAIL_HOST",
-            subject: "Email Verification",
-            html: await ejs.renderFile("mail/templates/verify.ejs", { link: `${process.env.URL}/api/v1//user/verify/${token}` }),
-        };
 
         try {
-            await sgMail.send(msg);
+            await mailService.sendVerificationMail(results[0].email, token);
         } catch (error) {
             console.error('Error sending email:', error);
             return res.status(500).send('Internal Server Error');

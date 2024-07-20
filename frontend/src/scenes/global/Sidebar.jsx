@@ -17,6 +17,8 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { useAppContext } from "../../Context/UseContext";
 import "./Sidebar.css"; // Import custom CSS
 import { useCookies } from "../../hooks/useCookies";
+import { GrAnalytics } from "react-icons/gr";
+import { IoTicketOutline } from "react-icons/io5";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -47,7 +49,7 @@ const Category = ({ title, icon, children, isCollapsed }) => {
 
   return (
     <Box>
-      
+
       <Box
         display="flex"
         alignItems="center"
@@ -81,7 +83,7 @@ const Sidebar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const{deleteCookie} = useCookies();
+  const { deleteCookie } = useCookies();
   const [selected, setSelected] = useState("Dashboard");
   const navigate = useNavigate();
   const { loginAsAdmin, logout } = useAppContext();
@@ -170,7 +172,15 @@ const Sidebar = () => {
               to="/dashboard"
               icon={<HomeOutlinedIcon />}
               selected={selected}
-              setSelected={setSelected}
+              setSelected={() => setSelected("Dashboard")}
+            />
+
+            <Item
+              title="Analytics"
+              to="/analytics"
+              icon={<GrAnalytics />}
+              selected={selected}
+              setSelected={() => setSelected("Analytics")}
             />
 
 
@@ -184,23 +194,23 @@ const Sidebar = () => {
                 to="/contacts"
                 icon={<GroupsIcon />}
                 selected={selected}
-                setSelected={setSelected}
+                setSelected={() => setSelected("User List")}
               />
               <Item
                 title="Approval"
                 to="/approval"
                 icon={<PendingActionsIcon />}
                 selected={selected}
-                setSelected={setSelected}
+                setSelected={() => setSelected("Approval")}
               />
             </Category>
 
             <Item
               title="Promotional Codes"
               to="/promotionalcodes"
-              icon={<ReceiptOutlinedIcon />}
+              icon={<IoTicketOutline size={16} />}
               selected={selected}
-              setSelected={setSelected}
+              setSelected={() => setSelected("Promotional Codes")}
             />
 
 

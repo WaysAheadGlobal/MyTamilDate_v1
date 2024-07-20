@@ -110,6 +110,7 @@ import { BasicDetailsUpdate } from "./components/UpdateProfile/screens/UserDetai
 import ChatWith from "./components/userflow/screens/chat/ChatWith";
 import PauseMyAccount from "./components/userflow/screens/pause/pause";
 import HelpSupport from "./components/UpdateProfile/screens/help&support/helpandsupport";
+import Analytics from "./components/Analytics";
 
 
 function App() {
@@ -160,6 +161,7 @@ function App() {
           <main className="content">
             {admintoken && isProtectedRoute && <Topbar setIsSidebar={setIsSidebar} />}
             <Routes>
+              <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/team" element={<ProtectedRoute><Team /></ProtectedRoute>} />
               <Route path="/contacts" element={<ProtectedRoute><Contacts /></ProtectedRoute>} />

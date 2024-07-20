@@ -1,12 +1,14 @@
 import cors from 'cors';
-import express from 'express';
 import 'dotenv/config';
-import { db } from '../db/db';
-import api from './api';
-import { Sendmail } from './sendgrip/mail';
+import express from 'express';
 import { createServer } from 'http';
-import { Server } from "socket.io";
 import jwt from 'jsonwebtoken';
+import { Server } from "socket.io";
+import { db } from '../db/db';
+import MailService from '../mail';
+import api from './api';
+
+const mailService = new MailService();
 
 const PORT = process.env.PORT;
 
@@ -16,7 +18,19 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", api);
-app.use('/sendmail', express.json({ limit: '15mb' }), Sendmail)
+
+app.get("/mail", async (req, res) => {
+    try {
+        await mailService.sendVerificationMail("niladityasen.2212@gmail.com", "123456");
+        await mailService.sendReviewMail("niladityasen.2212@gmail.com", "Niladitya Sen");
+        await mailService.sendSignUpMail("niladityasen.2212@gmail.com");
+        
+        res.status(200).send("Mail sent successfully");
+    } catch (error) {
+        console.log("Error sending mail:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
 app.get('/', (req, res) => {
     db.query('SELECT * FROM admin_users', (err, results) => {

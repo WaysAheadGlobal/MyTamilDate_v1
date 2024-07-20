@@ -237,7 +237,7 @@ setting.get('/getemail', verifyUser, (req: UserRequest, res: any) => {
 //         // Send verification email
 //         const msg = {
 //             to: email,
-//             from: "process.env.EMAIL_HOST",
+//             from: process.env.EMAIL_HOST!,
 //             subject: "Email Verification",
 //             html: html
 //         };

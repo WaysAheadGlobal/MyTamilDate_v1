@@ -235,10 +235,9 @@ users.delete('/deleteMediaUpdate/:user_id', (req: AdminRequest, res: Response) =
 
             const email = results[0].email;
 
-            // Send verification email
             const msg = {
                 to: email,
-                from: "process.env.EMAIL_HOST",
+                from: process.env.EMAIL_HOST!,
                 subject: "Update Request Notification",
                 html: html
             };
@@ -700,10 +699,9 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
                     return res.status(500).json({ message: 'Internal Server Error' });
                 }
 
-                // Send verification email
                 const msg = {
                     to: email,
-                    from: "process.env.EMAIL_HOST",
+                    from: process.env.EMAIL_HOST!,
                     subject: "Approval Notification",
                     html: html
                 };
@@ -774,7 +772,7 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
                                 // Send verification email
                                 const msg = {
                                     to: email,
-                                    from: "process.env.EMAIL_HOST",
+                                    from: process.env.EMAIL_HOST!,
                                     subject: "Approval Rejected Notification",
                                     html: html
                                 };
@@ -821,7 +819,7 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
                                 // Send verification email
                                 const msg = {
                                     to: email,
-                                    from: "process.env.EMAIL_HOST",
+                                    from: process.env.EMAIL_HOST!,
                                     subject: "Approval Rejected Notification",
                                     html: html
                                 };
