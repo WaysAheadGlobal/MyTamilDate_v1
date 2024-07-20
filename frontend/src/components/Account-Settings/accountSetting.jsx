@@ -135,6 +135,7 @@ export const AccountSetting = () => {
     };
     useEffect(() => {
         fetchData();
+        ImageURL();
     }, []);
 
     // update first Name and Last Name
@@ -686,7 +687,7 @@ export const AccountSetting = () => {
                                     <div className="user-info-item" onClick={handleShowName}>
                                         <div className='leftsideinfo'>
                                             <Image className='userinfoicon' src={username} />
-                                            <span className='userleftinfo'>User name</span>
+                                            <span className='userleftinfo' >User name</span>
                                         </div>
                                         <div>
                                             <span className="value">{NamePhoneEmail.first_name + " " + NamePhoneEmail.last_name}</span>
@@ -730,9 +731,9 @@ export const AccountSetting = () => {
                                     <div className="payment-button">
                                         Payment
                                     </div>
-                                    <div style={{ marginTop: "20px", marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
+                                    <div style={{ marginTop: "20px", marginBottom: "20px", borderBottom: "1px solid #e0e0e0",width :"100%" }} >
 
-                                        <div className="user-info-item" onClick={() => navigate("/paymentmethod")}>
+                                        <div className="user-info-item-payment" onClick={() => navigate("/paymentmethod")}>
                                             <div className='leftsideinfo'>
                                                 <Image className='userinfoicon' src={CreditCard} />
                                                 <span className='userleftinfo'>Payment Method</span>
@@ -742,9 +743,9 @@ export const AccountSetting = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
+                                    <div className='paymentforbox' style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0",width :"100%"   }} >
 
-                                        <div className="user-info-item" onClick={() => navigate("/billinghistory")}>
+                                        <div className="user-info-item-payment" onClick={() => navigate("/billinghistory")}>
                                             <div className='leftsideinfo'>
                                                 <Image className='userinfoicon' src={emailicon} />
                                                 <span className='userleftinfo'>Billing History</span>
@@ -754,9 +755,9 @@ export const AccountSetting = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0" }} >
+                                    <div style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0",width :"100%"  }} >
 
-                                        <div className="user-info-item">
+                                        <div className="user-info-item-payment">
                                             <div className='leftsideinfo'>
                                                 <Image className='userinfoicon' src={pauseicon} />
                                                 <span className='userleftinfo'>Disable Subscription</span>
@@ -1246,7 +1247,8 @@ export const AccountSetting = () => {
                                 <Button variant="outline-danger" className="btn-no" onClick={handleCloseDeleteAccount}>
                                     Cancel
                                 </Button>
-                                <Button style={{ backgroundColor: "#F7ECFF", color: "black", width: "140px", border: "none", borderRadius: "24px" }} onClick={handleShowPauseModel}>
+                                <Button style={{ backgroundColor: "#F7ECFF", color: "black", width: "140px", border: "none", borderRadius: "24px", boxshadow: "0px 4px 10px 0px #00000029"
+ }} onClick={handleShowPauseModel}>
                                     Pause
                                 </Button>
                             </div>

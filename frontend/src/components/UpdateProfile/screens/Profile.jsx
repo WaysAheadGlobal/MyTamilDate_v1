@@ -169,13 +169,19 @@ const Navigate = useNavigate();
                 className={`${profile.tab} ${activeTab === 'edit' ? profile.active : ''}`}
                 onClick={() => setActiveTab('edit')}
               >
+              <p className={profile.editseditsection}>
+
                 Edit
+              </p>
               </div>
               <div
                 className={`${profile.tab} ${activeTab === 'preview' ? profile.active : ''}`}
                 onClick={() => Navigate("/preview")}
               >
+                <p  className={profile.editseditsection}>
+
                 Preview
+                </p>
               </div>
             </div>
 

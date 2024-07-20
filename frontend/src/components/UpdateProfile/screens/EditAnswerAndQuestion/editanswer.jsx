@@ -52,7 +52,7 @@ export default function UpdateAnswers() {
                 <div className={ans.jobcontainer}>
                     <Modal show={show} onHide={() => setShow(false)} modalData={modalData} />
                     <AlertModal show={alert} onHide={() => setAlert(false)} />
-                    
+
                     <Container className={ans.jobmain}>
                         <Container className={ans.jobcontent}>
                             <Container className={ans.jobdetails}>
@@ -72,7 +72,7 @@ export default function UpdateAnswers() {
                                         Answer 2 prompts only
                                     </p>
                                     <div style={{
-                                        maxHeight: "50vh",
+                                        maxHeight: "60vh",
                                         overflow: "auto",
                                         scrollbarColor: "transparent transparent",
                                         scrollBehavior: "smooth",
@@ -113,7 +113,12 @@ export default function UpdateAnswers() {
                                                             }}>
                                                                 {question.question}
                                                             </div>
-                                                            <div>
+                                                            <div style={{
+                                                                color: "#6C6C6C",
+                                                                fontSize: "14px",
+                                                                lineHeight: "20px",
+                                                                fontWeight: "400",
+                                                            }}>
                                                                 {question.answer || ""}
                                                             </div>
                                                             <div style={{
@@ -186,7 +191,7 @@ function Modal({ show, onHide, modalData, alert }) {
 
     useEffect(() => {
         setText("");
-        
+
         (async () => {
             if (!modalData.apiURL) return;
 
@@ -247,7 +252,7 @@ function Modal({ show, onHide, modalData, alert }) {
                     maxLength={200}
                     style={{
                         height: "300px",
-                        marginBlock: "1rem",
+
                         borderRadius: "10px",
                         border: "2px solid #cbcbcb",
                         padding: "1rem",
@@ -271,31 +276,21 @@ function Modal({ show, onHide, modalData, alert }) {
                 alignItems: "center",
                 gap: "1rem",
             }}>
-                <Button style={{
-                    backgroundColor: "white",
-                    borderColor: "#6c6c6c",
-                    borderRadius: "9999px",
-                    padding: "0.5rem 1rem",
-                    color: "#6c6c6c",
-                    fontWeight: "600",
-                    width: "130px"
-                }} onClick={() => { onHide(); setText(""); }}>
-                    Close
-                </Button>
-                <Button
-                    variant="primary"
-                    style={{
-                        background: "linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%)",
-                        borderRadius: "9999px",
-                        padding: "0.5rem 1rem",
-                        border: "none"
-                    }}
+                <button
+                   className='global-cancel-button'
+                    onClick={() => { onHide(); setText(""); }}
+                >
+                    Cencel
+                </button>
+
+                <button
+                    className='global-save-button'
                     onClick={saveAnswer}
                 >
-                    Save Changes
-                </Button>
+                    Save
+                </button>
             </div>
-        </BModal>
+        </BModal >
     )
 }
 

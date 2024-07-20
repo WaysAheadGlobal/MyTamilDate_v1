@@ -158,11 +158,11 @@ export default function Drinkupdate() {
                         </Button> */}
 
                     </div>
-                    <div className="d-flex justify-content-center" style={{ position: "fixed", bottom: "30px", width: "100%" }}>
-    <Button variant="outline-danger" className="btn-no" onClick={()=> navigate('/updateprofile')}>
+                    <div className="d-flex justify-content-center" style={{ position: "fixed", bottom: "30px", width: "100%",gap: "30px" }}>
+                    <button className="global-cancel-button" onClick={()=> navigate('/updateprofile')}>
         Cancel
-    </Button>
-    <Button  type="submit" variant="primary" className="btn-yes" onClick={saveAll}>
+    </button>
+    <Button  type="submit" className="global-save-button" onClick={saveAll}>
         Save
     </Button>
 </div>

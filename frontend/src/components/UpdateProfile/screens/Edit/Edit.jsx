@@ -288,7 +288,7 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
       
       <div className={edit.button} width="150px" onClick={()=> Navigate("/helpsupport")}>
         <img src={helpandsupport} alt="Help Icon" />
-        Help&Support
+        Help & Support
       </div>
     </div>
    <div className={edit.buttondiv}>

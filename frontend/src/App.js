@@ -239,9 +239,9 @@ function App() {
               <Route path="/preview" element={<Preview />}></Route>
               <Route path="/editpicture" element={<EditPicture />}></Route>
               <Route path="/updateanswer" element={<UpdateAnswers />}></Route>
-              {/* <Route path="/updatepersonality" element={<UpdatePersonality />}></Route> */}
+             
               <Route path="/personalityupdate" element = {<PersonalityProfile/>}></Route>
-              {/* <Route path = "/updategender"element = {<GenderUpdate />}></Route> */}
+              <Route path = "/updategender"element = {<GenderUpdate />}></Route>
               <Route path="/updatelocations" element={<LocatedUpdate/>}></Route>
               <Route path="/updatereligion" element={<ReligionUpdate/>}></Route>
               <Route path="/updateheight" element = {<HeightUpdate/>}></Route>
@@ -254,7 +254,7 @@ function App() {
               <Route path = "/updateeducations" element = {<EducationUpdate/>}></Route>
               <Route path="/updateage" element = {<BasicDetailsUpdate/>}></Route>
               <Route path="/helpsupport" element={<HelpSupport/>}></Route>          
-
+             
 
               <Route path="/user/home" element={<Home />} />
               <Route path="/user/recommendations" element={<Recommendations />} />

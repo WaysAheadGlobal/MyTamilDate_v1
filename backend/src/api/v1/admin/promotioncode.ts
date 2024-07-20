@@ -204,59 +204,135 @@ promotions.post('/', async (req: AdminRequest, res: Response) => {
     });
 });
 
-
-
-
 // Edit a promotional code
-promotions.put('/:id', (req: AdminRequest, res: Response) => {
+promotions.put('/:id', async (req: AdminRequest, res: Response) => {
     const { id } = req.params;
     const {
-        promo_id, amount_off, percent_off, available_to, available_from,
-        applies_to, max_redemptions, once_per_user, stripe_id
+      promo_id, amount_off, percent_off, available_to, available_from,
+      applies_to, max_redemptions, once_per_user, stripe_id
     } = req.body;
-
-    const sql = `
+  
+    try {
+      // Retrieve existing promo_id from the database
+      const [promoCode]: any = await new Promise((resolve, reject) => {
+        const sqlSelect = 'SELECT promo_id FROM promotional_codes WHERE id = ? AND deleted_at IS NULL';
+        db.query<any>(sqlSelect, [id], (err, result) => {
+          if (err) return reject(err);
+          resolve(result);
+        });
+      });
+  
+      if (!promoCode) {
+        return res.status(404).json({ message: 'Promotional code not found or already deleted' });
+      }
+  
+      const { promo_id: existingPromoId } = promoCode;
+  
+      // Ensure applies_to is an array or convert it to an array
+      let appliesToArray: string[] = [];
+      if (applies_to) {
+        if (Array.isArray(applies_to)) {
+          appliesToArray = applies_to;
+        } else {
+          appliesToArray = [applies_to];
+        }
+      }
+  
+      const amountOffValue = amount_off ? Math.round(parseFloat(amount_off) * 100) : null;
+  
+      // Update Stripe coupon
+      let updateData: Record<string, any> = {
+        id: promo_id || existingPromoId,
+        max_redemptions: max_redemptions,
+        redeem_by: available_to ? Math.floor(new Date(available_to).getTime() / 1000) : null,
+        applies_to: appliesToArray.length ? { products: appliesToArray } : undefined,
+      };
+  
+      if (percent_off) {
+        updateData.percent_off = percent_off;
+      } else if (amount_off) {
+        updateData.amount_off = amountOffValue;
+        updateData.currency = 'cad';
+      }
+  
+      await stripe.coupons.update(existingPromoId, updateData);
+  
+      // Update in the database
+      const sql = `
         UPDATE promotional_codes SET
-            promo_id = ?, amount_off = ?, percent_off = ?, available_to = ?, available_from = ?,
-            applies_to = ?, max_redemptions = ?, once_per_user = ?, stripe_id = ?, updated_at = NOW()
+          promo_id = ?, amount_off = ?, percent_off = ?, available_to = ?, available_from = ?,
+          applies_to = ?, max_redemptions = ?, once_per_user = ?, stripe_id = ?, updated_at = NOW()
         WHERE id = ? AND deleted_at IS NULL
-    `;
-    const values = [
-        promo_id, amount_off, percent_off, available_to, available_from,
-        applies_to, max_redemptions, once_per_user, stripe_id, id
-    ];
-
-    db.query<ResultSetHeader>(sql, values, (err, result) => {
+      `;
+      const values = [
+        promo_id || existingPromoId, amount_off, percent_off, available_to, available_from,
+        appliesToArray[0], max_redemptions, once_per_user, promo_id || existingPromoId, id
+      ];
+  
+      db.query<ResultSetHeader>(sql, values, (err, result) => {
         if (err) {
-            console.log('Error updating data:', err);
-            return res.status(500).json({ message: 'Internal Server Error' });
+          console.log('Error updating data:', err);
+          return res.status(500).json({ message: 'Internal Server Error' });
         }
-
+  
         if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Promotional code not found or already deleted' });
+          return res.status(404).json({ message: 'Promotional code not found or already deleted' });
         }
-
+  
         res.status(200).json({ message: 'Promotional code updated successfully' });
-    });
-});
+      });
+    } catch (err) {
+      console.error('Error updating promotional code:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+  });
 
 // Soft delete a promotional code
-promotions.delete('/delete/:id', (req: AdminRequest, res: Response) => {
+// Soft delete a promotional code
+promotions.delete('/delete/:id', async (req, res) => {
     const { id } = req.params;
-    const sql = 'UPDATE promotional_codes SET deleted_at = NOW() WHERE id = ? AND deleted_at IS NULL';
-    const values = [id];
-    db.query<ResultSetHeader>(sql, values, (err, result) => {
-        if (err) {
-            console.log('Error deleting data:', err);
-            return res.status(500).json({ message: 'Internal Server Error' });
+    
+    try {
+        // Retrieve promo_id from the database
+        const [promoCode] : any = await new Promise((resolve, reject) => {
+            const sqlSelect = 'SELECT promo_id FROM promotional_codes WHERE id = ? AND deleted_at IS NULL';
+            db.query(sqlSelect, [id], (err, result) => {
+                if (err) return reject(err);
+                resolve(result);
+            });
+        });
+
+        if (!promoCode) {
+            return res.status(404).json({ message: 'Promotional code not found or already deleted' });
         }
+
+        const { promo_id } = promoCode;
+
+        // Soft delete in the database
+        const result :any = await new Promise((resolve, reject) => {
+            const sqlUpdate = 'UPDATE promotional_codes SET deleted_at = NOW() WHERE id = ? AND deleted_at IS NULL';
+            db.query(sqlUpdate, [id], (err, result) => {
+                if (err) return reject(err);
+                resolve(result);
+            });
+        });
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Promotional code not found or already deleted' });
         }
 
-        res.status(200).json({ message: 'Promotional code deleted successfully' });
-    });
+        // Delete from Stripe using promo_id
+        const deleted = await stripe.coupons.del(promo_id);
+
+        if (deleted.deleted) {
+            return res.status(200).json({ message: 'Promotional code deleted successfully' });
+        } else {
+            return res.status(500).json({ message: 'Failed to delete promotional code from Stripe' });
+        }
+    } catch (err) {
+        console.log('Error deleting promotional code:', err);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
 });
 
 export default promotions;

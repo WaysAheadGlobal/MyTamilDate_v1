@@ -58,11 +58,6 @@ export const UpdateGender = () => {
 
     const [selectedOption, setSelectedOption] = useState(null);
 
-    const handlePrefer = (option) => {
-        setSelectedOption(option);
-        const wantGender = option === 'female' ? 2 : option === 'male' ? 1 : 3;
-        setWantGender(wantGender);
-    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -75,7 +70,7 @@ export const UpdateGender = () => {
                 },
                 body: JSON.stringify({
                     gender: havegender,
-                    want_gender: wantGender
+                    
                 })
             });
     
@@ -84,7 +79,7 @@ export const UpdateGender = () => {
             console.log('Response body:', result);
     
             if (response.ok) {
-                navigate("/selfie");
+                navigate("/updateprofile");
             } else {
                 setErrorMessage(result.errors ? result.errors.map(error => error.msg).join(', ') : 'Error updating profile');
             }
@@ -205,64 +200,14 @@ export const UpdateGender = () => {
                                 {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
                             </Form.Group>
 
-                            <Form.Group controlId="formgender" className='birthday-group'>
-                                <Form.Label className='birthday-label'>Whom do you want to Date? *</Form.Label>
-                                <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: "space-evenly" }}>
-                                    <Button
-                                        className="prefer-whome"
-                                        onClick={() => handlePrefer('female')}
-                                        style={{
-                                            background: selectedOption === 'female' ? 'linear-gradient(90deg, #9663BF 0%, #4B164C 100%)' : 'transparent',
-                                            fontFamily: '"Inter"',
-                                            fontSize: '16px',
-                                            fontWeight: '500',
-                                            color: selectedOption === 'female' ? 'white' : '#6C6C6C',
-                                            lineHeight: '24px',
-                                            letterSpacing: '0.04em',
-                                            border: selectedOption === 'female' ? 'none' : '1px solid #6C6C6C '
-                                        }}
-                                    >
-                                        Female
-                                    </Button>
-                                    <Button
-                                        className="prefer-whome"
-                                        onClick={() => handlePrefer('male')}
-                                        style={{
-                                            background: selectedOption === 'male' ? 'linear-gradient(90deg, #9663BF 0%, #4B164C 100%)' : 'transparent',
-                                            fontFamily: '"Inter"',
-                                            fontSize: '16px',
-                                            fontWeight: '500',
-                                            color: selectedOption === 'male' ? 'white' : '#6C6C6C',
-                                            lineHeight: '24px',
-                                            letterSpacing: '0.04em',
-                                            border: selectedOption === 'male' ? 'none' : '1px solid #6C6C6C '
-                                        }}
-                                    >
-                                        Male
-                                    </Button>
-                                    <Button
-                                        className="prefer-whome"
-                                        onClick={() => handlePrefer('all')}
-                                        style={{
-                                            background: selectedOption === 'all' ? 'linear-gradient(90deg, #9663BF 0%, #4B164C 100%)' : 'transparent',
-                                            fontFamily: '"Inter"',
-                                            fontSize: '16px',
-                                            fontWeight: '500',
-                                            color: selectedOption === 'all' ? 'white' : '#6C6C6C',
-                                            lineHeight: '24px',
-                                            letterSpacing: '0.04em',
-                                            border: selectedOption === 'all' ? 'none' : '1px solid #6C6C6C '
-                                        }}
-                                    >
-                                        All
-                                    </Button>
-                                </div>
-                                {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
-                            </Form.Group>
-
-                            <Button variant="primary" type="submit" className='birthday-nxt-btn'>
-                                Next
-                            </Button>
+                            <div className="d-flex justify-content-center" style={{ position: "fixed", bottom: "30px", width: "100%", gap : "30px" }}>
+    <button className="global-cancel-button" onClick={()=> navigate('/updateprofile')}>
+        Cancel
+    </button>
+    <button  type="submit" className="global-save-button">
+        Save
+    </button>
+    </div>
                         </Form>
                     </Container>
                 </Container>
