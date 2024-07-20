@@ -29,7 +29,13 @@ export const AboutUsPage = () => {
                                 <div className="abt1-detail">
                                     <p>ABOUT US</p>
                                     <h3 style={{
-                                        marginTop: "1em"
+                                        marginTop: "1em",
+                                        fontfamily: "Inter",
+fontsize: "20px",
+fontweight: "400",
+lineheight: "35px",
+textalign: "center",
+
                                     }}>myTamilDate.com has been the most trusted dating community for single Tamils around the world for close to a decade! We&apos;re the premiere dating site for diaspora Tamils and have the largest membership base in Canada, USA, UK & more.</h3>
                                 </div>
                             </div>
@@ -52,15 +58,17 @@ export const AboutUsPage = () => {
                             <p style={{
                                 fontSize: "clamp(30px, 5vw, 40px)"
                             }}>
-                                Proven Success
+                               <span style={{color : "black" ,fontSize: "clamp(30px, 5vw, 40px)", fontWeight : "600"}}>Proven</span>  Success
                             </p>
                             <span style={{
-                                fontSize: "clamp(16px, 4vw, 20px)"
+                                fontSize: "clamp(16px, 4vw, 20px)",
+                                marginTop : "20px",
+                                fontWeight : "400"
                             }}>
                                 We&apos;ve been helping single Tamils meet, date and marry for years. On their own terms & their own timelines.
                             </span>
                         </div>
-                        <a href="/signup" >Get Started</a>
+                        <a href="/signup"  style={{marginTop : "10px"}}>Get Started</a>
 
 
                     </div>

@@ -112,7 +112,7 @@ export const Pictext = () => {
                         marginTop: '1rem',
                         textAlign: "justify",
                         width: !mobile ? "28rem" : ""
-                    }}>A surprise engagement at a myTamilDate couple's photoshoot! Find out how <span style={{ color: '#4E1173', fontWeight: "bold" }}>Abi & John</span> Bonded Over Faith & Their Tamil-German-British Connection.</p>
+                    }}>A surprise engagement at a myTamilDate couple's photoshoot! Find out how <span style={{ color: '#4E1173', }}>Abi & John</span> Bonded Over Faith & Their Tamil-German-British Connection.</p>
                     <a href='https://tamilculture.com/mytamildate-success-abi-john-bonded-over-faith-their-tamil-german-british-connection' className='view-success-btn' style={{ marginTop: "1rem" }}>View Success Story</a>
                 </div>
             </div>
