@@ -22,9 +22,6 @@ class MailService {
 
         await sgMail.send(msg);
     }
-
-    async send
-
 }
 
 export default MailService;
