@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './unsubscribeEmail.css';
-import { Form, Button, Container } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import Sidebar from '../userflow/components/sidebar/sidebar';
+import React, { useEffect, useState } from 'react';
+import { Button, Container, Form } from 'react-bootstrap';
 import { API_URL } from '../../api';
-import { useCookies } from '../../hooks/useCookies';
 import { useAlert } from '../../Context/AlertModalContext';
+import { useCookies } from '../../hooks/useCookies';
+import Sidebar from '../userflow/components/sidebar/sidebar';
+import './unsubscribeEmail.css';
 
 
 const UnsubscribeComponent = () => {
@@ -67,7 +66,6 @@ const UnsubscribeComponent = () => {
             }}>
 
                 <div className='un-subscribe-container'>
-
                     <Container>
                         <div className="unsubscribe-container">
                             <div className="unsubscribe-title">
