@@ -25,7 +25,7 @@ const Selectplan = () => {
 
   return (
     <Sidebar>
-      <div style={{
+      <div className={styles.sidebardivbackground} style={{
         flex: "1",
         marginInline: "auto",
         display: "flex",
@@ -34,6 +34,7 @@ const Selectplan = () => {
         overflowY: "auto",
         scrollbarWidth: "none",
         width: "-webkit-fill-available",
+        
       }}>
         <div className={styles.bottomdetails} style={{ padding: "0.5rem", }}>
           <div style={{ marginBottom: "10px" }}>

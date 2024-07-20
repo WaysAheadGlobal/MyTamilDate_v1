@@ -27,6 +27,7 @@ import VerifyPhoneModal from './verifyphoneotp';
 import LogoutModal from './logout';
 import Sidebar from '../userflow/components/sidebar/sidebar';
 import { useAlert } from '../../Context/AlertModalContext';
+import PricingCard from './payment/SelectPlan/plandetails';
 
 
 export const AccountSetting = () => {
@@ -752,6 +753,10 @@ export const AccountSetting = () => {
                                     </div>
                                 )
                             }
+                            {/* <div style={{marginTop : "50px"}}>
+
+                            <PricingCard/>
+                            </div> */}
                                     <div className="pause-button" onClick={handleShowPause}>
                                         <Image style={{ marginRight: "6px" }} className="fas fa-pause-circle" src={pauseicon} />
                                         <span>Pause my account</span>
