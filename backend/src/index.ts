@@ -8,6 +8,8 @@ import { db } from '../db/db';
 import MailService from '../mail';
 import api from './api';
 import { RowDataPacket } from 'mysql2';
+import { getUnsubscribedGroups } from './utils/utils';
+import { UnsubscribeGroup } from './enums/UnsubscribeGroupEnum';
 
 const mailService = new MailService();
 
@@ -102,13 +104,18 @@ io.on('connection', (socket) => {
             socket.to(roomId).emit('receive-message', message);
         });
 
-        if (!socket.rooms.has(recepientId)) {
-            try {
-                const [user] = await db.promise().query<RowDataPacket[]>('SELECT first_name, email FROM user_profiles WHERE user_id = ?', [recepientId]);
-                await mailService.sendMessageMail(user[0].email, user[0].first_name);
-            } catch (error) {
-                console.log('Error sending message mail:', error);
+        try {
+            const unsubscribeGroup = await getUnsubscribedGroups(recepientId); 
+            if (!socket.rooms.has(recepientId) && !unsubscribeGroup.includes(UnsubscribeGroup.MESSAGES)) {
+                try {
+                    const [user] = await db.promise().query<RowDataPacket[]>('SELECT first_name, email FROM user_profiles WHERE user_id = ?', [recepientId]);
+                    await mailService.sendMessageMail(user[0].email, user[0].first_name);
+                } catch (error) {
+                    console.log('Error sending message mail:', error);
+                }
             }
+        } catch (error) {
+            console.log('Error sending message mail:', error);
         }
     });
 });

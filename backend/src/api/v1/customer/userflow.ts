@@ -92,6 +92,11 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
         return;
     }
 
+    if (req.user.active === 0) {
+        res.status(200).json([]);
+        return;
+    }
+
     let query = "";
     let params = [] as any[];
 

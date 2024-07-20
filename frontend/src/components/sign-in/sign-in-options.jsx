@@ -43,7 +43,7 @@ export const SignInOptions = () => {
             if (res.ok) {
                 cookies.setCookie('token', resData.token, 30);
                 cookies.setCookie('userId', resData.Result[0].user_id);                
-                navigate('/user/home');
+                window.location.assign('/user/home');
             }
         },
         onError: (error) => {

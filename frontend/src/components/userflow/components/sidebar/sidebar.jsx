@@ -33,8 +33,8 @@ export default function Sidebar({ children }) {
         '/personalityupdate',
         '/unsubscribe',
         '/selectplan'
-      ];
-      
+    ];
+
 
     const showNavbar = isMobile && !noNavbarRoutes.includes(location.pathname);
 
@@ -72,6 +72,10 @@ export default function Sidebar({ children }) {
     }, []);
 
     useEffect(() => {
+        if (window.location.pathname === "/user/pause") {
+            return;
+        }
+
         (async () => {
             const response = await fetch(`${API_URL}/user/check-approval`, {
                 method: 'GET',
@@ -84,9 +88,16 @@ export default function Sidebar({ children }) {
             const result = await response.json();
 
             cookies.setCookie('approval', result.approval);
+            cookies.setCookie('active', result.active);
+
+            if (!result.active) {
+                window.location.replace("/user/pause");
+                return;
+            }
 
             if (result.approval === "PENDING") {
-                window.location.replace("/pending")
+                window.location.replace("/pending");
+                return;
             }
 
             if (result.approval === "REJECTED") {
@@ -230,7 +241,7 @@ export function MobileSidebar() {
     }, []);
 
     useEffect(() => {
-        (async () => {
+        async function checkApproval() {
             const response = await fetch(`${API_URL}/user/check-approval`, {
                 method: 'GET',
                 headers: {
@@ -243,15 +254,24 @@ export function MobileSidebar() {
 
             cookies.setCookie('approval', result.approval);
 
+            if (!result.active) {
+                window.location.replace("/user/pause");
+                return;
+            }
+
             if (result.approval === "PENDING") {
-                window.location.replace("/pending")
+                window.location.replace("/pending");
+                return;
             }
 
             if (result.approval === "REJECTED") {
-                window.location.replace("/not-approved")
+                window.location.replace("/not-approved");
             }
-        })()
-    }, [pathname])
+        }
+        if (window.location.pathname !== "/user/pause") {
+            checkApproval();
+        }
+    }, [pathname]);
 
     return (
         <aside className={styles['sidebar']}>

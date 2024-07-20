@@ -88,7 +88,7 @@ auth.post('/login',
                 return res.status(401).json({ message: otpResponse.message });
             }
 
-            const query = 'SELECT up.id, up.user_id, up.first_name, u.approval FROM user_profiles up INNER JOIN users u ON u.id = up.user_id WHERE phone = ?';
+            const query = 'SELECT up.id, up.user_id, up.first_name, u.approval, u.deleted_at FROM user_profiles up INNER JOIN users u ON u.id = up.user_id WHERE phone = ?';
             db.query<RowDataPacket[]>(query, [phone], (err, results) => {
                 if (err) {
                     console.error('Error fetching data:', err);
@@ -96,6 +96,10 @@ auth.post('/login',
                 }
 
                 if (results.length === 0) {
+                    return res.status(401).json({ message: 'Invalid phone' });
+                }
+
+                if (results[0].deleted_at) {
                     return res.status(401).json({ message: 'Invalid phone' });
                 }
 
@@ -317,7 +321,7 @@ auth.post('/signup', [body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'e
                                 res.status(500).send('Internal Server Error');
                             });
                         }
-                        
+
                         const customer = await stripe.customers.create({
                             phone: phone,
                         });
@@ -343,7 +347,7 @@ auth.post('/signup', [body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'e
                                 res.status(201).json({ message: 'Sign up successful', token: jwt, userId });
                             });
                         });
-                        
+
                     });
                 });
             });
@@ -448,7 +452,7 @@ auth.get("/verify/:token", async (req: UserRequest, res) => {
 });
 
 auth.get("/check-approval", verifyUser, async (req: UserRequest, res) => {
-    db.query<RowDataPacket[]>('SELECT approval FROM users WHERE id = ?', [req.userId], (err, results) => {
+    db.query<RowDataPacket[]>('SELECT approval, active FROM users WHERE id = ?', [req.userId], (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             return res.status(500).send('Internal Server Error');
@@ -458,8 +462,8 @@ auth.get("/check-approval", verifyUser, async (req: UserRequest, res) => {
             return res.status(401).json({ message: 'Invalid user' });
         }
 
-        res.status(200).json({ approval: UserApprovalEnum[results[0].approval] });
-    }); 
+        res.status(200).json({ approval: UserApprovalEnum[results[0].approval], active: results[0].active === 1 });
+    });
 });
 
 export default auth;

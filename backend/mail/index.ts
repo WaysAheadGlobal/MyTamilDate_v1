@@ -86,6 +86,12 @@ class MailService {
             nextPaymentDate
         });
     }
+
+    async sendPauseAccountMail(to: string, name: string) {
+        await this.sendMail(to, 'Come back! We have a special discount for you.', 'pause', {
+            name
+        });
+    }
 }
 
 export default MailService;

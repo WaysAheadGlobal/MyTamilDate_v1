@@ -21,7 +21,7 @@ export const verifyUser = (req: UserRequest, res: Response, next: NextFunction) 
             return res.status(401).json({ message: "Unauthorized" });
         }
 
-        db.query<RowDataPacket[]>("SELECT * FROM user_profiles WHERE user_id = ?", [decoded.userId], (err, result) => {
+        db.query<RowDataPacket[]>("SELECT up.*, u.active, u.deleted_at FROM user_profiles up INNER JOIN users u ON u.id = up.user_id WHERE user_id = ?", [decoded.userId], (err, result) => {
             if (err) {
                 return res.status(500).json({ message: "Internal server error" });
             }

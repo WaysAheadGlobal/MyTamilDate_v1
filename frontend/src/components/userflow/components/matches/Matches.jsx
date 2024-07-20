@@ -1,6 +1,6 @@
 import { Skeleton } from '@mui/material';
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../../../../api';
 import chatPlaceholder from '../../../../assets/images/chatPlaceholder.svg';
@@ -8,6 +8,7 @@ import { useSocket } from '../../../../Context/SockerContext';
 import { useCookies } from '../../../../hooks/useCookies';
 import styles from './matches.module.css';
 import { useAlert } from '../../../../Context/AlertModalContext';
+import { MdClose } from "react-icons/md";
 
 export default function Matches() {
     const [matches, setMatches] = useState([]);
@@ -19,6 +20,8 @@ export default function Matches() {
     const navigate = useNavigate();
     const { socket } = useSocket();
     const alert = useAlert();
+    const dialogRef = useRef(null);
+    const [imageURL, setImageURL] = useState("");
 
     const getImageURL = (type, hash, extension, userId) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}` : `${API_URL}media/avatar/${hash}.${extension}`;
 
@@ -253,11 +256,20 @@ export default function Matches() {
                             {
                                 conversations.map((conversation, i) => (
                                     <div key={i} className={styles.message} onClick={() => getRoom(conversation.user_id, conversation.first_name, getImageURL(conversation.type, conversation.hash, conversation.extension, conversation.user_id))}>
-                                        <img src={getImageURL(conversation.type, conversation.hash, conversation.extension, conversation.user_id)} alt="profile" style={{
-                                            width: "70px",
-                                            height: "70px",
-                                            objectFit: "cover"
-                                        }} />
+                                        <img
+                                            src={getImageURL(conversation.type, conversation.hash, conversation.extension, conversation.user_id)}
+                                            alt="profile"
+                                            style={{
+                                                width: "70px",
+                                                height: "70px",
+                                                objectFit: "cover"
+                                            }}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                dialogRef.current.showModal();
+                                                setImageURL(getImageURL(conversation.type, conversation.hash, conversation.extension, conversation.user_id));
+                                            }}
+                                        />
                                         <div>
                                             <p>{conversation.first_name} {conversation.last_name}</p>
                                             <p style={{
@@ -273,6 +285,15 @@ export default function Matches() {
                     </>
                 )
             }
+            <dialog ref={dialogRef} className={styles.profileDialog}>
+                <MdClose size={30} color='white' onClick={() => dialogRef.current.close()} style={{
+                    position: "absolute",
+                    right: "1rem",
+                    top: "1rem",
+                    cursor: "pointer"
+                }} />
+                <img src={imageURL} alt="profile" />
+            </dialog>
         </>
     )
 }

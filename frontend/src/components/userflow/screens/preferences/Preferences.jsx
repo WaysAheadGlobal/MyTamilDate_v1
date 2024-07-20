@@ -666,7 +666,7 @@ export default function Preferences() {
                             width: "15rem",
                             marginBottom: "2rem",
                         }}
-                        onClick={() => navigate("/user/home")}
+                        onClick={() => window.location.assign("/user/home")}
                     >Save</Button>
                 </div>
             </div>

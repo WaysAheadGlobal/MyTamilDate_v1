@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Grid, Typography, Button, Avatar, useMediaQuery } from '@mui/material';
-import {  Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Header from '../../components/Header1';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -53,19 +53,19 @@ const UserDetails = () => {
           })
 
         }
-        else{
+        else {
           const others = data.filter(image => image.type === 2);
           const main = data.filter(image => image.type === 1)[0];
           console.log(others, main)
           setImages({
-            main: OldImageURL +"/" + id + "/avatar/"+ main.hash + "-large" + "." + main.extension,
-            first: OldImageURL +"/" + id + "/avatar/"+ others[0].hash + "-large" + "." + main.extension,
-            second: OldImageURL +"/" + id + "/avatar/"+ others[1].hash  + "-large"+ "." + main.extension,
+            main: OldImageURL + "/" + id + "/avatar/" + main.hash + "-large" + "." + main.extension,
+            first: OldImageURL + "/" + id + "/avatar/" + others[0].hash + "-large" + "." + main.extension,
+            second: OldImageURL + "/" + id + "/avatar/" + others[1].hash + "-large" + "." + main.extension,
           })
           console.log({
-            main: OldImageURL +"/" + id + "/avatar/"+ main.hash + "." + main.extension,
-            first: OldImageURL +"/" + id + "/photo/"+ others[0].hash + "." + main.extension,
-            second: OldImageURL +"/" + id + "/photo/"+ others[1].hash + "." + main.extension,
+            main: OldImageURL + "/" + id + "/avatar/" + main.hash + "." + main.extension,
+            first: OldImageURL + "/" + id + "/photo/" + others[0].hash + "." + main.extension,
+            second: OldImageURL + "/" + id + "/photo/" + others[1].hash + "." + main.extension,
           })
         }
 
@@ -122,14 +122,14 @@ const UserDetails = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id: id, approval: newStatus , message : reason}),
+        body: JSON.stringify({ id: id, approval: newStatus, message: reason }),
       });
 
       if (!response.ok) {
         const errorDetails = await response.text(); // Get error details for debugging
         throw new Error(`Failed to update status: ${errorDetails}`);
       }
-     
+
       // Fetch updated details after updating the status
       await fetchData();
       setOpenModal(false);
@@ -205,19 +205,19 @@ const UserDetails = () => {
     setOpenModal(true);
   };
 
-  const handleSaveReason =()=>{
+  const handleSaveReason = () => {
     // updateStatus(30);
     updateStatusReject(30)
-    
-    
+
+
   }
 
-  
-const handleCloseModal = ()=>{
-  setOpenModal(false);
-}
-  const handleOpenReasonModal = ()=>{
-    
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  }
+  const handleOpenReasonModal = () => {
+
   }
 
   return (
@@ -546,52 +546,52 @@ const handleCloseModal = ()=>{
       </Grid>
 
       <Dialog
-  open={openModal}
-  onClose={handleCloseModal}
- 
-  fullWidth
-  sx={{
-    '& .MuiDialog-paper': {
-      width: '350px', 
-      height: '300px', 
-    }
-  }}
->
-  <DialogTitle>What's the reason?</DialogTitle>
-  <DialogContent>
-    <TextField
-      autoFocus
-      margin="dense"
-      label="Reason"
-      type="text"
-      fullWidth
-      variant="outlined"
-      value={reason}
-      onChange={(e) => setReason(e.target.value)}
-      multiline
-      rows={5} // Adjust number of rows as needed
-      sx={{
-        '& .MuiInputBase-root': {
-          height: '150px', // Adjust height as needed
-        }
-      }}
-    />
-  </DialogContent>
-  <DialogActions  >
-    <Button onClick={handleCloseModal} variant="contained" color="error" >
-      Cancel
-    </Button>
-    <Button onClick={handleSaveReason}  sx={{
-                      background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-                      color: '#fff',
-                      '&:hover': {
-                        background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-                      },
-                    }}>
-      Save
-    </Button>
-  </DialogActions>
-</Dialog>
+        open={openModal}
+        onClose={handleCloseModal}
+
+        fullWidth
+        sx={{
+          '& .MuiDialog-paper': {
+            width: '350px',
+            height: '300px',
+          }
+        }}
+      >
+        <DialogTitle>What's the reason?</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Reason"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            multiline
+            rows={5} // Adjust number of rows as needed
+            sx={{
+              '& .MuiInputBase-root': {
+                height: '150px', // Adjust height as needed
+              }
+            }}
+          />
+        </DialogContent>
+        <DialogActions  >
+          <Button onClick={handleCloseModal} variant="contained" color="error" >
+            Cancel
+          </Button>
+          <Button onClick={handleSaveReason} sx={{
+            background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+            color: '#fff',
+            '&:hover': {
+              background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+            },
+          }}>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

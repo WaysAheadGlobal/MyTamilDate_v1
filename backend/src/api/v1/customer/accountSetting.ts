@@ -6,11 +6,12 @@ const { body, validationResult } = require('express-validator');
 import multer from 'multer';
 import moment from 'moment';
 import crypto from 'crypto';
-import { sendOTPtoPhoneNumber, verifyOTP  } from '../../../../otp';
+import { sendOTPtoPhoneNumber, verifyOTP } from '../../../../otp';
 import sgMail from '@sendgrid/mail';
 import ejs from 'ejs';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import { getOTPFromDBByEmail, insertOTPInDBByEmail } from '../../../../otpbyEmail';
+import MailService from '../../../../mail';
 console.log(process.env.URL)
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -32,6 +33,8 @@ const upload = multer({
 const setting = express.Router();
 
 // name update
+
+const mailService = new MailService();
 
 
 setting.get('/namedetails', verifyUser, (req: UserRequest, res: any) => {
@@ -314,7 +317,7 @@ setting.get('/getemail', verifyUser, (req: UserRequest, res: any) => {
 // });
 
 function generateOTP() {
-    return Math.floor(1000 + Math.random() * 9000).toString(); 
+    return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
 // Send OTP to email  and update it
@@ -371,14 +374,14 @@ setting.post('/request-email-update', verifyUser, async (req: UserRequest, res: 
 });
 
 
-setting.put("/verifyotp",verifyUser, async(req: UserRequest, res: any) => {
+setting.put("/verifyotp", verifyUser, async (req: UserRequest, res: any) => {
     const userID = req.userId;
     console.log(userID);
     const { email, otp } = req.body;
-    console.log( "email" , email);
+    console.log("email", email);
 
     try {
-        console.log(email,otp);
+        console.log(email, otp);
         const verify = await getOTPFromDBByEmail(otp, email);
 
         if (!verify) {
@@ -390,7 +393,7 @@ setting.put("/verifyotp",verifyUser, async(req: UserRequest, res: any) => {
         console.log('SQL Query:', updateSql);
         console.log('Params:', params);
 
-        db.query(updateSql, params, (err, results:any) => {
+        db.query(updateSql, params, (err, results: any) => {
             if (err) {
                 console.log('Error executing update query:', err);
                 return res.status(500).json({ message: 'Internal Server Error' });
@@ -422,16 +425,16 @@ setting.put('/pause', verifyUser, async (req: UserRequest, res) => {
     const userId = req.userId;
 
     try {
-
         db.query(`
             UPDATE users
             SET active = 0, updated_at = NOW()
             WHERE id = ?
-        `, [userId], (err, result) => {
+        `, [userId], async (err, result) => {
             if (err) {
                 console.error('Error processing account pause:', err);
                 return res.status(500).json({ message: 'Internal Server Error' });
             }
+            await mailService.sendPauseAccountMail(req.user.email, req.user.first_name);
             return res.status(200).json({ message: 'User account paused successfully' });
         });
 
@@ -451,7 +454,7 @@ setting.put('/unpause', verifyUser, async (req: UserRequest, res: any) => {
             SET active = 1, updated_at = NOW()
             WHERE id = ?
         `
-        await db.query(query2, [userId]);
+        await db.promise().query(query2, [userId]);
 
         return res.status(200).json({ message: 'User account paused successfully' });
     } catch (err) {

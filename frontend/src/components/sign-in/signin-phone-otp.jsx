@@ -19,7 +19,7 @@ export const SignInPhoneOTP = () => {
     const navigate = useNavigate();
 
     const goToSignsuccessful = () => {
-        navigate("/user/home");
+        window.location.assign('/user/home');
     };
 
     // State for OTP code inputs

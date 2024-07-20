@@ -3,7 +3,6 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { useAppContext } from "./Context/UseContext";
 import Approval from "./scenes/Approval";
 import ApprovalUserDetails from "./scenes/Approval/Approvaldetails";
 import AdminSignIn from "./scenes/adminLogin/adminlogin";
@@ -78,39 +77,38 @@ import ProfileAnswers from "./components/ProfileAnswers";
 import SmokeAndFamily from "./components/SmokeAndDrink";
 import { SignInOptions } from "./components/sign-in/sign-in-options";
 
-import PaymentMethod from '../src/components/Account-Settings/payment/paymentMethod'
-import Home from "./components/userflow/screens/Home";
-import Recommendations from "./components/userflow/screens/recommendations/Recommendations";
-import Preferences from "./components/userflow/screens/preferences/Preferences";
-import ProfileDetails from "./components/userflow/screens/profile-details/ProfileDetails";
-import Chat from "./components/userflow/screens/chat/Chat";
-import BillingHistory from './components/Account-Settings/payment/billinghistory'
-import Selectplan from './components/Account-Settings/payment/SelectPlan/selectplan'
-import AddPaymentMethod from "./components/Account-Settings/payment/addpaymentmethod";
+import PaymentMethod from '../src/components/Account-Settings/payment/paymentMethod';
 import Fillpaymentdetails from "./components/Account-Settings/payment/SelectPlan/FIllDetailForPayment/fillpaymentdetails";
-import UpdateProfile from "./components/UpdateProfile/screens/Profile";
-import Preview from "./components/UpdateProfile/screens/Preview/Preview";
-import { useCookies } from "./hooks/useCookies";
-import EditPicture from "./components/UpdateProfile/screens/PictureEdit/pictureedit";
+import Selectplan from './components/Account-Settings/payment/SelectPlan/selectplan';
+import AddPaymentMethod from "./components/Account-Settings/payment/addpaymentmethod";
+import BillingHistory from './components/Account-Settings/payment/billinghistory';
+import Analytics from "./components/Analytics";
 import UpdateAnswers from "./components/UpdateProfile/screens/EditAnswerAndQuestion/editanswer";
-import UpdatePersonality from "./components/UpdateProfile/screens/PersonalityEdit/personality";
-import PersonalityProfile from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Personality/personality";
+import EditPicture from "./components/UpdateProfile/screens/PictureEdit/pictureedit";
+import Preview from "./components/UpdateProfile/screens/Preview/Preview";
+import UpdateProfile from "./components/UpdateProfile/screens/Profile";
+import Drinkupdate from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Drink/drink";
 import { GenderUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Gender/Gender";
-import { LocatedUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/locations/locations";
-import { ReligionUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Religion/religion";
 import HeightUpdate from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Height/height";
 import { JobTitleUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Job/job";
-import Smokeupdate from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/smoke/smoke";
-import Drinkupdate from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Drink/drink";
+import PersonalityProfile from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Personality/personality";
+import { ReligionUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Religion/religion";
 import KidsAndFamilyUpdate from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/Whatsaboutfamily/familyplan";
+import { BasicDetailsUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/age/age";
+import { EducationUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/educations/educations";
 import KidsUpdate from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/havekids/havekids";
 import { LanguageUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/languages/languages";
-import { EducationUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/educations/educations";
-import { BasicDetailsUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/age/age";
+import { LocatedUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/locations/locations";
+import Smokeupdate from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/smoke/smoke";
+import HelpSupport from "./components/UpdateProfile/screens/help&support/helpandsupport";
+import Home from "./components/userflow/screens/Home";
+import Chat from "./components/userflow/screens/chat/Chat";
 import ChatWith from "./components/userflow/screens/chat/ChatWith";
 import PauseMyAccount from "./components/userflow/screens/pause/pause";
-import HelpSupport from "./components/UpdateProfile/screens/help&support/helpandsupport";
-import Analytics from "./components/Analytics";
+import Preferences from "./components/userflow/screens/preferences/Preferences";
+import ProfileDetails from "./components/userflow/screens/profile-details/ProfileDetails";
+import Recommendations from "./components/userflow/screens/recommendations/Recommendations";
+import { useCookies } from "./hooks/useCookies";
 
 
 function App() {
@@ -168,7 +166,7 @@ function App() {
               <Route path="/approval" element={<ProtectedRoute><Approval /></ProtectedRoute>} />
               <Route path="/promotionalcodedetails/:id" element={<ProtectedRoute><Details /></ProtectedRoute>} />
               <Route path="/editpromotionalcode/:id" element={<ProtectedRoute>< EditDetails /></ProtectedRoute>} />
-              <Route path="/userdetails/:id" element={<ProtectedRoute><UserDetails /></ProtectedRoute>} />
+              <Route path="/userdetails/:id" element={<ProtectedRoute><ApprovalUserDetails /></ProtectedRoute>} />
               <Route path="/showPhoneandEmail" element={<ProtectedRoute><ShowphoneAndEmail /></ProtectedRoute>} />
               <Route path="/approvaluserdetails/:id" element={<ProtectedRoute><ApprovalUserDetails /></ProtectedRoute>} />
               <Route path="/promotionalcodes" element={<ProtectedRoute><PromotionalCodes /></ProtectedRoute>} />

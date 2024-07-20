@@ -73,24 +73,6 @@ export default function Likes() {
         };
     }, [likes]);
 
-    async function handleLike(userId) {
-        const response = await fetch(`${API_URL}customer/matches/like`, {
-            method: "POST",
-            body: JSON.stringify({
-                personId: userId
-            }),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${cookies.getCookie('token')}`
-            }
-        });
-        const data = await response.json();
-        if (response.ok) {
-            console.log(data);
-            alert(data.message);
-        }
-    }
-
     async function getRoom(userId, name, img) {
         if (cookies.getCookie("isPremium") !== "true") {
             alert.setModal({
@@ -253,25 +235,19 @@ export default function Likes() {
                     Array.isArray(likes) && likes.map((like, i) => (
                         <div
                             key={i}
-                            className={selected === like.user_id ? styles.selected : ""}
+                            className={(selected === like.user_id ? styles.selected : "" ) + " like"}
                             style={{
                                 backgroundImage: `url(${getImageURL(like.type, like.hash, like.extension, like.user_id)})`,
                                 backgroundSize: 'cover',
                                 backgroundPosition: 'center',
                                 position: 'relative',
                             }}
-                            /* onClick={() => {
+                            onClick={() => {
                                 if (selected === like.user_id) {
                                     setSelected(null);
                                     return;
                                 }
                                 setSelected(like.user_id);
-                            }} */
-                            onDoubleClick={(e) => {
-                                e.preventDefault();
-                                if (searchParams[0].get("t") === "r")
-                                    console.log("like sent")
-                                    handleLike(like.user_id);
                             }}
                         >
                             {

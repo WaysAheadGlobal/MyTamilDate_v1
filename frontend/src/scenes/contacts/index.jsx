@@ -48,10 +48,10 @@ const Contacts = () => {
 
   const fetchData = async (page, pageSize) => {
     try {
-      const response = await fetch(`${ API_URL }/admin/users/customers?limit=${pageSize}&pageNo=${page + 1}`);
+      const response = await fetch(`${API_URL}/admin/users/customers?limit=${pageSize}&pageNo=${page + 1}`);
       const data = await response.json();
       console.log(data.results)
-      
+
       const formattedData = data.results.map((item) => ({
         id: item.user_id,
         name: `${item.first_name} ${item.last_name || ''}`, // Combining first and last name
@@ -60,7 +60,7 @@ const Contacts = () => {
         phone: item.phone || 'N/A',
         email: item.email || 'N/A',
         country: item.country || 'N/A', // Assuming address is optional
-       
+
         gender: item.gender == 1 ? "Male" : "Female",
         created_at: new Date(item.created_at).toLocaleDateString('en-US', {
           year: 'numeric',
@@ -86,16 +86,16 @@ const Contacts = () => {
     const fetchDataloading = async () => {
       try {
         await Promise.all([
-    fetchData(page, pageSize)
-  ])
-  setLoading(false);
-} catch (error) {
-  console.error('Error fetching data:', error);
-  setLoading(false); 
-}
-};
+          fetchData(page, pageSize)
+        ])
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      }
+    };
 
-fetchDataloading();
+    fetchDataloading();
   }, [page, pageSize]);
 
   const formatPhoneNumber = (phoneNumber) => {
@@ -109,7 +109,7 @@ fetchDataloading();
   };
 
   const formatEmailAddress = (email) => {
-    if (email) {
+    if (email && email !== 'N/A') {
       const parts = email.split('@');
       const visiblePart = `${parts[0].charAt(0)}***@${parts[1]}`;
       return visiblePart;
@@ -160,7 +160,7 @@ fetchDataloading();
       headerName: 'Birthday',
       flex: 1,
     },
-   
+
     {
       field: 'gender',
       headerName: 'Gender',
@@ -217,93 +217,93 @@ fetchDataloading();
         </Button> */}
       </Box>
       {loading ? (
-       <Box display="flex" justifyContent="center" alignItems="center" height="100dvh">
-       <Typography variant="body1" mr={2}>Hang tight, we're getting things ready for you!</Typography>
-       <CircularProgress />
-     </Box>
-    ) : (
-      <Box
-        m="40px 0 0 0"
-        height="75vh"
-        sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundImage: 'linear-gradient(90deg, #9663BF, #4B164C)',
-            color: '#fff',
-            borderBottom: "none",
-            fontSize: "16px",
-          },
-          "& .MuiDataGrid-cell": {
-            borderBottom: "none",
-            fontSize: "12px",
-            fontWeight: "Medium",
-          },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: "#605f61",
-            color: '#fff',
-            borderBottom: "none",
-            fontSize: "14px",
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: "#9663BF",
-            color: '#fff',
-          },
-          "& .MuiCheckbox-root": {
-            color: `${colors.greenAccent[200]} !important`,
-          },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `${colors.grey[100]} !important`,
-          },
-          ".MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: '#605f61',
-            color: '#fff',
-          },
-          ".MuiTablePagination-root": {
-            overflow: "auto",
-            color: "rgb(255 255 255 / 87%)",
-            fontSize: "14px",
-          },
-        }}
-      >
-
-
- 
-
-        <DataGrid
-          rows={custmer}
-          columns={columns}
-          components={{ Toolbar: GridToolbar }}
-          pagination
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowsPerPageOptions={[25, 50, 100]}
-          paginationMode="server"
-          onPageChange={(newPage) => setPage(newPage)}
-          rowCount={rowCount}
-          componentsProps={{
-            pagination: {
-              sx: {
-                "& .MuiButtonBase-root": {
-                  color: '#fff',
-                },
-                "& .MuiPaginationItem-root": {
-                  color: '#fff',
-                },
-              },
+        <Box display="flex" justifyContent="center" alignItems="center" height="100dvh">
+          <Typography variant="body1" mr={2}>Hang tight, we're getting things ready for you!</Typography>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Box
+          m="40px 0 0 0"
+          height="75vh"
+          sx={{
+            "& .MuiDataGrid-root": {
+              border: "none",
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundImage: 'linear-gradient(90deg, #9663BF, #4B164C)',
+              color: '#fff',
+              borderBottom: "none",
+              fontSize: "16px",
+            },
+            "& .MuiDataGrid-cell": {
+              borderBottom: "none",
+              fontSize: "12px",
+              fontWeight: "Medium",
+            },
+            "& .name-column--cell": {
+              color: colors.greenAccent[300],
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "#605f61",
+              color: '#fff',
+              borderBottom: "none",
+              fontSize: "14px",
+            },
+            "& .MuiDataGrid-footerContainer": {
+              borderTop: "none",
+              backgroundColor: "#9663BF",
+              color: '#fff',
+            },
+            "& .MuiCheckbox-root": {
+              color: `${colors.greenAccent[200]} !important`,
+            },
+            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+              color: `${colors.grey[100]} !important`,
+            },
+            ".MuiDataGrid-footerContainer": {
+              borderTop: "none",
+              backgroundColor: '#605f61',
+              color: '#fff',
+            },
+            ".MuiTablePagination-root": {
+              overflow: "auto",
+              color: "rgb(255 255 255 / 87%)",
+              fontSize: "14px",
             },
           }}
-        />
-     
+        >
 
-      </Box>
-       )}
+
+
+
+          <DataGrid
+            rows={custmer}
+            columns={columns}
+            components={{ Toolbar: GridToolbar }}
+            pagination
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            rowsPerPageOptions={[25, 50, 100]}
+            paginationMode="server"
+            onPageChange={(newPage) => setPage(newPage)}
+            rowCount={rowCount}
+            componentsProps={{
+              pagination: {
+                sx: {
+                  "& .MuiButtonBase-root": {
+                    color: '#fff',
+                  },
+                  "& .MuiPaginationItem-root": {
+                    color: '#fff',
+                  },
+                },
+              },
+            }}
+          />
+
+
+        </Box>
+      )}
     </Box>
   );
 };

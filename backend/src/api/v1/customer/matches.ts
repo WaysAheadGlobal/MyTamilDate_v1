@@ -5,8 +5,9 @@ import { db } from "../../../../db/db";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { query, validationResult } from "express-validator";
 import { io } from "../../..";
-import { checkPremium } from "../../../utils/utils";
+import { checkPremium, getUnsubscribedGroups } from "../../../utils/utils";
 import MailService from "../../../../mail";
+import { UnsubscribeGroup } from "../../../enums/UnsubscribeGroupEnum";
 
 
 const matches = Router();
@@ -388,7 +389,7 @@ matches.post("/like", (req: UserRequest, res) => {
     const userId = req.userId;
     const personId = req.body.personId;
 
-    const query = "INSERT INTO matches(user_id, person_id, skip, `like`, created_at, updated_at) VALUES (?, ?, 0, 1, NOW(), NOW()) ON DUPLICATE KEY UPDATE `like` = 0, updated_at = NOW()";
+    const query = "INSERT INTO matches(user_id, person_id, skip, `like`, created_at, updated_at) VALUES (?, ?, 0, 1, NOW(), NOW())";
 
     db.query<ResultSetHeader>(query, [userId, personId], async (err, result) => {
         if (err) {
@@ -398,44 +399,50 @@ matches.post("/like", (req: UserRequest, res) => {
         }
 
         try {
+            const unsubscribeGroupMe = await getUnsubscribedGroups(parseInt(userId!));
+            const unsubscribeGroupThem = await getUnsubscribedGroups(parseInt(personId));
+
             const [user] = await db.promise().query<RowDataPacket[]>("SELECT email, first_name FROM user_profiles WHERE user_id = ?", [personId]);
 
-            const [media] = await db.promise().query<RowDataPacket[]>('SELECT hash, extension, type FROM media WHERE user_id = ? AND type IN (1, 31)', [userId]);
+            if (!unsubscribeGroupThem.includes(UnsubscribeGroup.LIKES)) {
+                const [media] = await db.promise().query<RowDataPacket[]>('SELECT hash, extension, type FROM media WHERE user_id = ? AND type IN (1, 31)', [userId]);
+                await mailService.sendLikeMail(
+                    user[0].email,
+                    req.user?.first_name,
+                    getImageURL(media[0].type, media[0].hash, media[0].extension, userId!)
+                );
+            }
 
-            await mailService.sendLikeMail(
-                user[0].email,
-                req.user?.first_name,
-                getImageURL(media[0].type, media[0].hash, media[0].extension, userId!)
-            );
-
-            const [match] = await db.promise().query<RowDataPacket[]>(`
-                SELECT 
-                    m1.person_id
-                FROM 
-                    matches m1 
-                WHERE 
-                    m1.user_id = ? 
-                    AND m1.\`like\` = 1 
-                    AND m1.person_id IN (
+            if (!unsubscribeGroupMe.includes(UnsubscribeGroup.MATCHES)) {
+                const [match] = await db.promise().query<RowDataPacket[]>(`
                     SELECT 
-                        m2.user_id 
+                        m1.person_id
                     FROM 
-                        matches m2 
-                    WHERE
-                        m2.person_id = m1.user_id
-                ) AND m1.person_id = ?;`,
-                [userId, personId]
-            );
+                        matches m1 
+                    WHERE 
+                        m1.user_id = ? 
+                        AND m1.\`like\` = 1 
+                        AND m1.person_id IN (
+                        SELECT 
+                            m2.user_id 
+                        FROM 
+                            matches m2 
+                        WHERE
+                            m2.person_id = m1.user_id
+                    ) AND m1.person_id = ?;`,
+                    [userId, personId]
+                );
 
-            if (match.length > 0) {
-                try {
-                    await mailService.sendMatchesMail(
-                        user[0].email,
-                        `${req.user?.first_name} also likes you ${user[0].first_name}!`,
-                        `Message ${req.user?.first_name}`
-                    );
-                } catch (err) {
-                    console.log(err);
+                if (match.length > 0) {
+                    try {
+                        await mailService.sendMatchesMail(
+                            user[0].email,
+                            `${req.user?.first_name} also likes you ${user[0].first_name}!`,
+                            `Message ${req.user?.first_name}`
+                        );
+                    } catch (err) {
+                        console.log(err);
+                    }
                 }
             }
         } catch (err) {

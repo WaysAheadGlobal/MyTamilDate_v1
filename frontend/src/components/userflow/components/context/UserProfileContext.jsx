@@ -73,6 +73,10 @@ export default function UserProfileProvider({ children }) {
     }, []);
 
     useEffect(() => {
+        if (!cookies.getCookie('token')) {
+            return;
+        }
+        
         (async () => {
             setLoading(true);
 
@@ -96,7 +100,7 @@ export default function UserProfileProvider({ children }) {
 
             setLoading(false);
         })()
-    }, [page, wave]);
+    }, [page, wave, window.location.pathname]);
 
     const value = useMemo(() => ({
         profiles,
@@ -109,7 +113,8 @@ export default function UserProfileProvider({ children }) {
         setWave,
         abortController,
         setAbortController
-    }), [profiles,
+    }), [
+        profiles,
         setProfiles,
         loading,
         setLoading,

@@ -14,7 +14,7 @@ const photos = [
 
 const UserDetails = () => {
   const [details, setDetails] = useState(null);
-  const[update, setUpdate] = useState(false);
+  const [update, setUpdate] = useState(false);
   const theme = useTheme();
   const isXsUp = useMediaQuery(theme.breakpoints.up('xs'));
   const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
@@ -45,7 +45,7 @@ const UserDetails = () => {
         if (data[0].type === 31 || data[1].type === 31 || data[2].type === 31) {
           const others = data.filter(image => image.type === 32);
           const main = data.filter(image => image.type === 31)[0];
-       
+
           setImages({
             main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
             first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
@@ -59,14 +59,14 @@ const UserDetails = () => {
           //   second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
           // })
         }
-        else{
+        else {
           const others = data.filter(image => image.type === 2);
           const main = data.filter(image => image.type === 1)[0];
           // console.log(others, main)
           setImages({
-            main: OldImageURL +"/" + id + "/avatar/"+ main.hash + "-large" + "." + main.extension,
-            first: OldImageURL +"/" + id + "/photo/"+ others[0].hash + "-large" + "." + main.extension,
-            second: OldImageURL +"/" + id + "/photo/"+ others[1].hash  + "-large"+ "." + main.extension,
+            main: OldImageURL + "/" + id + "/avatar/" + main.hash + "-large" + "." + main.extension,
+            first: OldImageURL + "/" + id + "/photo/" + others[0].hash + "-large" + "." + main.extension,
+            second: OldImageURL + "/" + id + "/photo/" + others[1].hash + "-large" + "." + main.extension,
           })
         }
       }
@@ -81,67 +81,67 @@ const UserDetails = () => {
     second: null,
   });
 
- const ImageURL2 = async () => {
-  try {
-    const response = await fetch(`${API_URL}/admin/users/mediaupdate/${id}`, {
-      method: 'GET',
-    });
-    const data = await response.json();
-    // console.log("data", data);
+  const ImageURL2 = async () => {
+    try {
+      const response = await fetch(`${API_URL}/admin/users/mediaupdate/${id}`, {
+        method: 'GET',
+      });
+      const data = await response.json();
+      // console.log("data", data);
 
-    if (response.ok) {
-      let images = {
-        main: null,
-        first: null,
-        second: null,
-      };
+      if (response.ok) {
+        let images = {
+          main: null,
+          first: null,
+          second: null,
+        };
 
-      if (data.length === 0) {
-        console.log("No images available.");
-      } else {
-        const mainImage = data.find(image => image.type === 31);
-        const otherImages = data.filter(image => image.type === 32);
+        if (data.length === 0) {
+          console.log("No images available.");
+        } else {
+          const mainImage = data.find(image => image.type === 31);
+          const otherImages = data.filter(image => image.type === 32);
 
-        if (mainImage) {
-          images.main = `${API_URL}media/avatar/${mainImage.hash}.${mainImage.extension}`;
-        }
-
-        if (otherImages.length > 0) {
-          if (otherImages[0]) {
-            images.first = `${API_URL}media/avatar/${otherImages[0].hash}.${otherImages[0].extension}`;
-          }
-          if (otherImages[1]) {
-            images.second = `${API_URL}media/avatar/${otherImages[1].hash}.${otherImages[1].extension}`;
-          }
-        }
-
-        if (!mainImage && otherImages.length === 0) {
-          // Handling old image URLs
-          const mainOldImage = data.find(image => image.type === 1);
-          const otherOldImages = data.filter(image => image.type === 2);
-
-          if (mainOldImage) {
-            images.main = `${OldImageURL}/${id}/avatar/${mainOldImage.hash}-large.${mainOldImage.extension}`;
+          if (mainImage) {
+            images.main = `${API_URL}media/avatar/${mainImage.hash}.${mainImage.extension}`;
           }
 
-          if (otherOldImages.length > 0) {
-            if (otherOldImages[0]) {
-              images.first = `${OldImageURL}/${id}/photo/${otherOldImages[0].hash}-large.${otherOldImages[0].extension}`;
+          if (otherImages.length > 0) {
+            if (otherImages[0]) {
+              images.first = `${API_URL}media/avatar/${otherImages[0].hash}.${otherImages[0].extension}`;
             }
-            if (otherOldImages[1]) {
-              images.second = `${OldImageURL}/${id}/photo/${otherOldImages[1].hash}-large.${otherOldImages[1].extension}`;
+            if (otherImages[1]) {
+              images.second = `${API_URL}media/avatar/${otherImages[1].hash}.${otherImages[1].extension}`;
             }
           }
+
+          if (!mainImage && otherImages.length === 0) {
+            // Handling old image URLs
+            const mainOldImage = data.find(image => image.type === 1);
+            const otherOldImages = data.filter(image => image.type === 2);
+
+            if (mainOldImage) {
+              images.main = `${OldImageURL}/${id}/avatar/${mainOldImage.hash}-large.${mainOldImage.extension}`;
+            }
+
+            if (otherOldImages.length > 0) {
+              if (otherOldImages[0]) {
+                images.first = `${OldImageURL}/${id}/photo/${otherOldImages[0].hash}-large.${otherOldImages[0].extension}`;
+              }
+              if (otherOldImages[1]) {
+                images.second = `${OldImageURL}/${id}/photo/${otherOldImages[1].hash}-large.${otherOldImages[1].extension}`;
+              }
+            }
+          }
         }
+
+        setImages2(images);
+        // console.log('images', images);
       }
-
-      setImages2(images);
-      // console.log('images', images);
+    } catch (error) {
+      console.error('Error saving images:', error);
     }
-  } catch (error) {
-    console.error('Error saving images:', error);
-  }
-};
+  };
 
 
   const detailsfetchData = async () => {
@@ -157,7 +157,7 @@ const UserDetails = () => {
   const quesAnsfetchData = async () => {
     try {
       const response = await fetch(`${API_URL}/admin/users/user/questions/${id}`);
-      
+
       if (!response.ok) {
         if (response.status === 404) {
           console.error('Resource not found');
@@ -166,9 +166,9 @@ const UserDetails = () => {
         }
         throw new Error(`Failed to fetch questions: ${response.statusText}`);
       }
-  
+
       const data = await response.json();
-  
+
       if (!Array.isArray(data)) {
         setQuesAns([]);
       } else {
@@ -183,7 +183,7 @@ const UserDetails = () => {
   const GetUserFromUpdateMedia = async () => {
     try {
       const response = await fetch(`${API_URL}/admin/users/UpdateRequestedUser/${id}`);
-      
+
       if (!response.ok) {
         if (response.status === 404) {
           console.error('Resource not found');
@@ -191,27 +191,27 @@ const UserDetails = () => {
         }
         throw new Error(`Failed to update media data: ${response.statusText}`);
       }
-  
-      const data = await response.json(); 
+
+      const data = await response.json();
       console.log(data);
-  
+
       if (data.length !== 0) {
         setUpdate(true);
         console.log(update);
       } else {
-        setUpdate(false); 
+        setUpdate(false);
       }
     } catch (err) {
       console.error('Internal Server Error:', err);
     }
   };
-  
+
   const RejectedMediaUpdate = async (userId) => {
     try {
       const response = await fetch(`${API_URL}/admin/users/deleteMediaUpdate/${id}`, {
         method: 'DELETE'
       });
-  
+
       if (!response.ok) {
         if (response.status === 404) {
           console.error('No data found for this user.');
@@ -219,24 +219,24 @@ const UserDetails = () => {
         }
         throw new Error('Failed to delete media update data');
       }
-  
+
       const data = await response.json();
       console.log('Delete response:', data);
-  
-     navigate('/approval')
-    
+
+      navigate('/approval')
+
     } catch (error) {
       console.error('Error:', error);
-    
+
     }
   };
-  
+
   const RejectedAnswerUpdate = async (userId) => {
     try {
       const response = await fetch(`${API_URL}/admin/users/deleteAnswerquestions/${id}`, {
         method: 'DELETE'
       });
-  
+
       if (!response.ok) {
         if (response.status === 404) {
           console.error('No data found for this user.');
@@ -244,31 +244,31 @@ const UserDetails = () => {
         }
         throw new Error('Failed to delete media update data');
       }
-  
+
       const data = await response.json();
       console.log('Delete response:', data);
-  
-     navigate('/approval')
-    
+
+      navigate('/approval')
+
     } catch (error) {
       console.error('Error:', error);
-    
+
     }
   };
-  
+
   const Updateanddeletemedia = async () => {
     try {
       const response = await fetch(`${API_URL}/admin/users/replaceMediaData/${id}`, {
-        method: 'POST', 
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json',
         }
       });
-  
+
       if (!response.ok) {
         if (response.status === 404) {
           console.error('Resource not found');
-     
+
           return;
         }
         throw new Error(`Failed to update media data: ${response.statusText}`);
@@ -284,16 +284,16 @@ const UserDetails = () => {
   const UpdateanddeleteQuestionAnswer = async () => {
     try {
       const response = await fetch(`${API_URL}/admin/users/updateQuestionAnswers/${id}`, {
-        method: 'POST', 
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json',
         }
       });
-  
+
       if (!response.ok) {
         if (response.status === 404) {
           console.error('Resource not found');
-     
+
           return;
         }
         throw new Error(`Failed to update Answer data: ${response.statusText}`);
@@ -306,11 +306,11 @@ const UserDetails = () => {
     }
   };
 
-  const UpdateProfileapproval = ()=>{
+  const UpdateProfileapproval = () => {
     UpdateanddeleteQuestionAnswer();
     Updateanddeletemedia();
   }
-  
+
 
   useEffect(() => {
     quesAnsfetchData();
@@ -333,12 +333,12 @@ const UserDetails = () => {
         },
         body: JSON.stringify({ id: id, approval: newStatus }),
       });
-  
+
       if (!response.ok) {
         const errorDetails = await response.text();
         throw new Error(`Failed to update status: ${errorDetails}`);
       }
-  
+
       await detailsfetchData();
       navigate("/approval");
       console.log("Status updated successfully");
@@ -354,14 +354,14 @@ const UserDetails = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id: id, approval: newStatus , message : reason}),
+        body: JSON.stringify({ id: id, approval: newStatus, message: reason }),
       });
 
       if (!response.ok) {
         const errorDetails = await response.text(); // Get error details for debugging
         throw new Error(`Failed to update status: ${errorDetails}`);
       }
-     
+
       // Fetch updated details after updating the status
       await detailsfetchData();
       handleCloseModal();
@@ -417,11 +417,11 @@ const UserDetails = () => {
     updateStatusReject(30);
   };
 
-  const handleAcceptUpdate =()=>{
+  const handleAcceptUpdate = () => {
     Updateanddeletemedia();
   }
 
-  const handleRejectUpdate = ()=>{
+  const handleRejectUpdate = () => {
     RejectedMediaUpdate();
     RejectedAnswerUpdate();
 
@@ -437,7 +437,7 @@ const UserDetails = () => {
     const maskedUser = user.length > 2 ? user[0] + '*'.repeat(user.length - 2) + user.slice(-1) : user[0] + '*';
     return `${maskedUser}@${domain}`;
   };
-  
+
   const formatPhoneNumber = (phoneNumber) => {
     if (!phoneNumber) return 'N/A';
     if (phoneNumber.length >= 6) {
@@ -448,31 +448,33 @@ const UserDetails = () => {
     }
     return phoneNumber;
   };
-  
+
 
   const formatValue = (key, value) => {
     if (key.toLowerCase() === 'email') {
-      return maskEmail(value);
+      return value;
     }
 
     if (value === null || value === undefined || value === '') {
       return 'N/A';
     }
     if (key.toLowerCase() === 'email') {
- 
-      return maskEmail(value);
-      
+
+      return value;
+
     }
     if (key.toLowerCase() === 'phone') {
-      return formatPhoneNumber(value);
+      return value;
     }
-    if(key.toLowerCase() === 'approval'){
+
+    if (key.toLowerCase() === 'approval') {
       return 'Pending'
     }
 
     if (Array.isArray(value)) {
       return value.join(', ');
     }
+
     return value;
   };
 
@@ -487,30 +489,34 @@ const UserDetails = () => {
         <Grid item xs={12} md={4}>
           <Box display="flex" flexDirection="column" alignItems="center" mb={2} mt={2}>
             <Box mb={2}>
-              
-                <Avatar
-              
-                  alt={`Photo`}
-                  src={images.main}
-                  variant="square"
-                  sx={{ width: '100%', height: '250px', borderRadius: '16px', mb: 4 }}
-                />
 
-                <Avatar
-                
+              <Avatar
+
                 alt={`Photo`}
-                src={images.first}
+                src={images.main}
                 variant="square"
                 sx={{ width: '100%', height: '250px', borderRadius: '16px', mb: 4 }}
               />
-              <Avatar
-             
-              alt={`Photo`}
-              src={images.second}
-              variant="square"
-              sx={{ width: '100%', height: '250px', borderRadius: '16px', mb: 4 }}
-            />
-            
+
+              {
+                window.location.pathname.includes('approvaluserdetails') && (
+                  <>
+                    <Avatar
+                      alt={`Photo`}
+                      src={images.first}
+                      variant="square"
+                      sx={{ width: '100%', height: '250px', borderRadius: '16px', mb: 4 }}
+                    />
+                    <Avatar
+                      alt={`Photo`}
+                      src={images.second}
+                      variant="square"
+                      sx={{ width: '100%', height: '250px', borderRadius: '16px', mb: 4 }}
+                    />
+                  </>
+                )
+              }
+
             </Box>
             <Typography variant="h5" align="center">{`${formatValue('name', details.Name)} ${formatValue('surname', details.Surname)}`}</Typography>
             <Typography variant="subtitle1" color="textSecondary" align="center">{formatValue('status', details.status === 15 ? "Reject" : "pending")}</Typography>
@@ -532,7 +538,7 @@ const UserDetails = () => {
                           backgroundColor: colors.primary[50],
                         }}
                       >
-                        <Typography variant="body1">{formatValue(key, value)}</Typography>
+                        <Typography variant="body1">{formatValue(key, value)?.split(",")?.join(", ") ?? "N/A"}</Typography>
                       </Box>
                     </Box>
                   </Grid>
@@ -556,71 +562,71 @@ const UserDetails = () => {
           </Grid>
           <Box display="flex" gap="8px" flexDirection={isLgUp ? 'row' : 'column'} alignItems="center" justifyContent="center">
             <Box>
-            {
-          update ? (<Grid
-            container
-            direction={isLgUp ? 'row' : 'column'}
-            justifyContent="center"
-            alignItems="center"
-            spacing={2}
-          >
-            <Grid item xs={12} lg={6} textAlign="center">
-              <Button
-                variant="contained"
-                sx={{ backgroundColor: theme.palette.grey[900] }}
-               onClick={handleRejectUpdate}
-              >
-                Reject
-              </Button>
-            </Grid>
-            <Grid item xs={12} lg={6} textAlign="center">
-              <Button
-                sx={{
-                  background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-                  color: '#fff',
-                  '&:hover': {
-                    background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-                  },
-                }}
-                onClick={UpdateProfileapproval}
-              >
-                Update
-              </Button>
-            </Grid>
-          </Grid>) : (  <Grid
-                container
-                direction={isLgUp ? 'row' : 'column'}
-                justifyContent="center"
-                alignItems="center"
-                spacing={2}
-              >
-                <Grid item xs={12} lg={6} textAlign="center">
-                  <Button
-                    variant="contained"
-                    sx={{ backgroundColor: theme.palette.grey[900] }}
-                   onClick={handleRejectReason}
-                  >
-                    Reject
-                  </Button>
-                </Grid>
-                <Grid item xs={12} lg={6} textAlign="center">
-                  <Button
-                    sx={{
-                      background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-                      color: '#fff',
-                      '&:hover': {
+              {
+                update ? (<Grid
+                  container
+                  direction={isLgUp ? 'row' : 'column'}
+                  justifyContent="center"
+                  alignItems="center"
+                  spacing={2}
+                >
+                  <Grid item xs={12} lg={6} textAlign="center">
+                    <Button
+                      variant="contained"
+                      sx={{ backgroundColor: theme.palette.grey[900] }}
+                      onClick={handleRejectUpdate}
+                    >
+                      Reject
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12} lg={6} textAlign="center">
+                    <Button
+                      sx={{
                         background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-                      },
-                    }}
-                    onClick={handleApproveRequest}
-                  >
-                    Approve
-                  </Button>
-                </Grid>
-              </Grid>)
-          }
+                        color: '#fff',
+                        '&:hover': {
+                          background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                        },
+                      }}
+                      onClick={UpdateProfileapproval}
+                    >
+                      Update
+                    </Button>
+                  </Grid>
+                </Grid>) : (<Grid
+                  container
+                  direction={isLgUp ? 'row' : 'column'}
+                  justifyContent="center"
+                  alignItems="center"
+                  spacing={2}
+                >
+                  <Grid item xs={12} lg={6} textAlign="center">
+                    <Button
+                      variant="contained"
+                      sx={{ backgroundColor: theme.palette.grey[900] }}
+                      onClick={handleRejectReason}
+                    >
+                      Reject
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12} lg={6} textAlign="center">
+                    <Button
+                      sx={{
+                        background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                        color: '#fff',
+                        '&:hover': {
+                          background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+                        },
+                      }}
+                      onClick={handleApproveRequest}
+                    >
+                      Approve
+                    </Button>
+                  </Grid>
+                </Grid>)
+              }
 
-            
+
             </Box>
             <Box>
               <Grid
@@ -647,52 +653,52 @@ const UserDetails = () => {
       </Grid>
 
       <Dialog
-  open={openModal}
-  onClose={handleCloseModal}
- 
-  fullWidth
-  sx={{
-    '& .MuiDialog-paper': {
-      width: '350px', 
-      height: '300px', 
-    }
-  }}
->
-  <DialogTitle>What's the reason?</DialogTitle>
-  <DialogContent>
-    <TextField
-      autoFocus
-      margin="dense"
-      label="Reason"
-      type="text"
-      fullWidth
-      variant="outlined"
-      value={reason}
-      onChange={(e) => setReason(e.target.value)}
-      multiline
-      rows={5} // Adjust number of rows as needed
-      sx={{
-        '& .MuiInputBase-root': {
-          height: '150px', // Adjust height as needed
-        }
-      }}
-    />
-  </DialogContent>
-  <DialogActions  >
-    <Button onClick={handleCloseModal} variant="contained" color="error" >
-      Cancel
-    </Button>
-    <Button onClick={handleSaveReason}  sx={{
-                      background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-                      color: '#fff',
-                      '&:hover': {
-                        background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
-                      },
-                    }}>
-      Save
-    </Button>
-  </DialogActions>
-</Dialog>
+        open={openModal}
+        onClose={handleCloseModal}
+
+        fullWidth
+        sx={{
+          '& .MuiDialog-paper': {
+            width: '350px',
+            height: '300px',
+          }
+        }}
+      >
+        <DialogTitle>What's the reason?</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Reason"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            multiline
+            rows={5} // Adjust number of rows as needed
+            sx={{
+              '& .MuiInputBase-root': {
+                height: '150px', // Adjust height as needed
+              }
+            }}
+          />
+        </DialogContent>
+        <DialogActions  >
+          <Button onClick={handleCloseModal} variant="contained" color="error" >
+            Cancel
+          </Button>
+          <Button onClick={handleSaveReason} sx={{
+            background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+            color: '#fff',
+            '&:hover': {
+              background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+            },
+          }}>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

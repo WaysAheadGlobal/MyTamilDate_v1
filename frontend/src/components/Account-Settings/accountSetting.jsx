@@ -249,7 +249,7 @@ export const AccountSetting = () => {
     const Gototermandconditions = () => {
         navigate("/termandconditions")
     }
-        // Delete My Account now
+    // Delete My Account now
     const [showFinalDelete, setShowFinalDelete] = useState(false);
     const [selectedDeleteOption, setSelectedDeleteOption] = useState('');
     const [deleteReason, setDeleteReason] = useState('');
@@ -616,6 +616,7 @@ export const AccountSetting = () => {
 
             if (response.ok) {
                 setShowPauseOpion(false);
+                window.location.replace('/user/pause');
                 console.log("Account paused successfully");
             }
             else {
@@ -700,7 +701,7 @@ export const AccountSetting = () => {
                                 </div>
                             </div>
 
-                     
+
 
                             <div className='edittext-logo'>
                                 <p className='textofedit'>Tap on each section to edit</p>
@@ -742,18 +743,18 @@ export const AccountSetting = () => {
                                     </div>
 
                                     {
-                                getCookie('isPremium') !== 'true' && (
-                                    <div className="upgrade-button">
+                                        getCookie('isPremium') !== 'true' && (
+                                            <div className="upgrade-button">
 
-                                        <div> <span><Image src={premium} /></span> Upgrade Account</div>
-                                        <div className="description">
-                                            Upgrade your account, you will have unlimited access and wider exposure
-                                        </div>
-                                        <button className ={profile.upgradebutton} onClick={()=> navigate('/selectplan')} >Upgrade Now</button>
-                                    </div>
-                                )
-                            }
-                            {/* <div style={{marginTop : "50px"}}>
+                                                <div> <span><Image src={premium} /></span> Upgrade Account</div>
+                                                <div className="description">
+                                                    Upgrade your account, you will have unlimited access and wider exposure
+                                                </div>
+                                                <button className={profile.upgradebutton} onClick={() => navigate('/selectplan')} >Upgrade Now</button>
+                                            </div>
+                                        )
+                                    }
+                                    {/* <div style={{marginTop : "50px"}}>
 
                             <PricingCard/>
                             </div> */}
@@ -764,7 +765,7 @@ export const AccountSetting = () => {
                                     <div className="payment-button">
                                         Payment
                                     </div>
-                                    <div style={{ marginTop: "20px", marginBottom: "20px", borderBottom: "1px solid #e0e0e0",width :"100%" }} >
+                                    <div style={{ marginTop: "20px", marginBottom: "20px", borderBottom: "1px solid #e0e0e0", width: "100%" }} >
 
                                         <div className="user-info-item-payment" onClick={() => navigate("/paymentmethod")}>
                                             <div className='leftsideinfo'>
@@ -776,7 +777,7 @@ export const AccountSetting = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className='paymentforbox' style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0",width :"100%"   }} >
+                                    <div className='paymentforbox' style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0", width: "100%" }} >
 
                                         <div className="user-info-item-payment" onClick={() => navigate("/billinghistory")}>
                                             <div className='leftsideinfo'>
@@ -795,7 +796,7 @@ export const AccountSetting = () => {
                                             show: true,
                                             onButtonClick: cancelSubscription
                                         })
-                                    }} style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0",width :"100%"  }} >
+                                    }} style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0", width: "100%" }} >
 
                                         <div className="user-info-item-payment">
                                             <div className='leftsideinfo'>
@@ -1287,8 +1288,9 @@ export const AccountSetting = () => {
                                 <Button variant="outline-danger" className="btn-no" onClick={handleCloseDeleteAccount}>
                                     Cancel
                                 </Button>
-                                <Button style={{ backgroundColor: "#F7ECFF", color: "black", width: "140px", border: "none", borderRadius: "24px", boxshadow: "0px 4px 10px 0px #00000029"
- }} onClick={handleShowPauseModel}>
+                                <Button style={{
+                                    backgroundColor: "#F7ECFF", color: "black", width: "140px", border: "none", borderRadius: "24px", boxshadow: "0px 4px 10px 0px #00000029"
+                                }} onClick={handleShowPauseModel}>
                                     Pause
                                 </Button>
                             </div>
