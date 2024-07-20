@@ -43,7 +43,7 @@ export default function Matches() {
                 setLoadingMatches(false);
             }
         })()
-    }, [page])
+    }, [page]);
 
     useEffect(() => {
         if (currentMatches.length < 10) return;
@@ -59,7 +59,7 @@ export default function Matches() {
         return () => {
             lastProfileObserver.disconnect()
         };
-    }, [matches])
+    }, [matches]);
 
     async function getRoom(userId, name, img) {
         if (cookies.getCookie("isPremium") !== "true") {

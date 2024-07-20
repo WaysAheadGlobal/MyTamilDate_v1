@@ -510,7 +510,8 @@ matches.get("/chat/sent", (req: UserRequest, res) => {
         INNER JOIN dncm_conversations dc ON dc.id = m.conversation_id
         INNER JOIN dncm_participants dp ON dp.conversation_id = m.conversation_id
         INNER JOIN user_profiles up ON up.user_id = dp.participant_id
-        WHERE dp.participant_id != ? AND dp.joined_at = 0;
+        WHERE dp.participant_id != ? AND dp.joined_at = 0
+        ORDER BY dc.created_at DESC;
     `;
 
     const params = [req.userId, req.userId];
@@ -527,8 +528,6 @@ matches.get("/chat/sent", (req: UserRequest, res) => {
 });
 
 matches.get("/chat/received_", (req: UserRequest, res) => {
-    console.log("first");
-
     const query = `
         WITH messages as (
             SELECT DISTINCT conversation_id FROM dncm_messages WHERE sender_id != ?
@@ -543,7 +542,8 @@ matches.get("/chat/received_", (req: UserRequest, res) => {
         INNER JOIN dncm_conversations dc ON dc.id = m.conversation_id
         INNER JOIN dncm_participants dp ON dp.conversation_id = m.conversation_id
         INNER JOIN user_profiles up ON up.user_id = dp.participant_id
-        WHERE dp.participant_id = ? AND dp.joined_at = 0;
+        WHERE dp.participant_id = ? AND dp.joined_at = 0
+        ORDER BY dc.created_at DESC;
     `;
 
     const params = [req.userId, req.userId];

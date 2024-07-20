@@ -26,9 +26,7 @@ import { useAppContext } from '../../Context/UseContext';
 import VerifyPhoneModal from './verifyphoneotp';
 import LogoutModal from './logout';
 import Sidebar from '../userflow/components/sidebar/sidebar';
-
-
-
+import { useAlert } from '../../Context/AlertModalContext';
 
 
 export const AccountSetting = () => {
@@ -49,6 +47,7 @@ export const AccountSetting = () => {
     const [lastName, setLastName] = useState('');
     const [showFinalDetele, setFinalDetele] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const alert = useAlert();
     const id = getCookie('userId')
     const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
     const [images2, setImages2] = useState({
@@ -249,7 +248,7 @@ export const AccountSetting = () => {
     const Gototermandconditions = () => {
         navigate("/termandconditions")
     }
-    // Delete My Account now
+        // Delete My Account now
     const [showFinalDelete, setShowFinalDelete] = useState(false);
     const [selectedDeleteOption, setSelectedDeleteOption] = useState('');
     const [deleteReason, setDeleteReason] = useState('');
@@ -288,6 +287,7 @@ export const AccountSetting = () => {
             }
 
             console.log('Delete reason submitted successfully:', await response.json());
+
 
 
             response = await fetch(`${API_URL}/delete`, {
@@ -626,6 +626,34 @@ export const AccountSetting = () => {
         }
     }
 
+    async function cancelSubscription() {
+        try {
+            try {
+                const response = await fetch(`${API_URL}customer/subscription/cancel`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${getCookie('token')}`
+                    }
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    alert.setModal({
+                        title: "Subscription Cancelled",
+                        message: "Your subscription has been successfully cancelled.",
+                        show: true,
+                        onButtonClick: () => {
+                            window.location.reload();
+                        }
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        } catch (error) {
+            console.error('Error cancelling subscription:', error);
+        }
+    }
+
     return (
 
         <Sidebar>
@@ -755,7 +783,14 @@ export const AccountSetting = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0",width :"100%"  }} >
+                                    <div onClick={() => {
+                                        alert.setModal({
+                                            title: "Subscription Cancel",
+                                            message: "Are you sure you want to cancel your subscription?",
+                                            show: true,
+                                            onButtonClick: cancelSubscription
+                                        })
+                                    }} style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0",width :"100%"  }} >
 
                                         <div className="user-info-item-payment">
                                             <div className='leftsideinfo'>

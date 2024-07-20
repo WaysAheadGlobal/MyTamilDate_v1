@@ -150,4 +150,33 @@ subscription.post("/resume-auto-renew", (req: UserRequest, res) => {
     });
 });
 
+subscription.post("/cancel", (req: UserRequest, res) => {
+    const userId = req.userId;
+
+    db.query<RowDataPacket[]>("SELECT stripe_id FROM subscriptions WHERE user_id = ? AND stripe_status = 'active';", [userId], async (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).json({ message: "An error occurred while fetching subscription details" });
+            return;
+        }
+
+        if (result.length === 0) {
+            res.status(404).json({ message: "Subscription not found" });
+            return;
+        }
+
+        await stripe.subscriptions.cancel(result[0].stripe_id);
+
+        db.query("UPDATE subscriptions SET stripe_status = 'canceled' WHERE user_id = ?", [userId], (err) => {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ message: "An error occurred while updating subscription details" });
+                return;
+            }
+
+            res.status(200).json({ message: "Subscription has been cancelled" });
+        });
+    });
+});
+
 export default subscription;

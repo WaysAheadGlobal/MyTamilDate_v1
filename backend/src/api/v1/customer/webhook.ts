@@ -52,7 +52,7 @@ webhookRouter.post('/', async (request, response) => {
                         return;
                     }
 
-                    db.query<ResultSetHeader>("INSERT INTO payments (customer_id, amount, discount_amount, price_id, created_at, updated_at, user_id) VALUES (?, ?, ?, ?, NOW(), NOW(), ?)", [object.customer, object.amount_paid, object.discount ?? 0, object.lines.data[0]?.plan?.id, result[0].id], async (err) => {
+                    db.query<ResultSetHeader>("INSERT INTO payments (customer_id, amount, discount_amount, price_id, created_at, updated_at, user_id) VALUES (?, ?, ?, ?, NOW(), NOW(), ?)", [object.customer, object.amount_paid, object.lines.data[0].discount_amounts?.[0].amount ?? 0, object.lines.data[0]?.plan?.id, result[0].id], async (err) => {
                         if (err) {
                             db.rollback(() => {
                                 console.log(err);

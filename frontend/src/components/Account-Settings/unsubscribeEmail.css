@@ -51,6 +51,11 @@ color: #6C6C6C;
 .unsubscribe-option input {
     margin-right: 10px;
 }
+.unsubscribe-option label {
+    font-weight: 500;
+    font-size: 16px;
+    color: #6C6C6C;
+}
 
 .unsubscribe-note {
    

@@ -4,6 +4,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useCookies } from '../../../../hooks/useCookies';
 import { API_URL } from '../../../../api';
 import dayjs from 'dayjs';
+import { Skeleton } from '@mui/material';
+import chatPlaceholder from '../../../../assets/images/chatPlaceholder.svg';
 
 export default function Requests() {
     const navigate = useNavigate();
@@ -111,7 +113,29 @@ export default function Requests() {
                     <div className={styles.indicator}></div>
                 </li>
             </ul>
+            {
+                Array.isArray(requests) && !loading && requests.length === 0 && (
+                    <div className={styles.chatPlaceholder}>
+                        <img src={chatPlaceholder} alt="chat placeholder" />
+                        <p>New requests to match will appear here</p>
+                    </div>
+                )
+            }
             <div className={styles.messagesContainer}>
+                {
+                    loading && Array(6).fill(0).map((_, i) => (
+                        <Skeleton
+                            key={i}
+                            animation="pulse"
+                            sx={{
+                                borderRadius: "12px",
+                            }}
+                            variant="rounded"
+                            width={"100%"}
+                            height={50}
+                        />
+                    ))
+                }
                 {
                     (searchParams[0].get("t") === "r" || !searchParams[0].get("t")) ? (
                         Array.isArray(requests) && requests.map((request, i) => (

@@ -22,6 +22,13 @@ export default function ProfileDetails({ userId }) {
      */
 
     /**
+     * @typedef {Object} Answers
+     * @property {number} id - The unique identifier for the answer.
+     * @property {string} question - The question.
+     * @property {string} answer - The answer. 
+     */
+
+    /**
      * @typedef {Object} Profile
      * @property {number} id - The unique identifier for the user.
      * @property {number} user_id - The user's ID.
@@ -41,6 +48,7 @@ export default function ProfileDetails({ userId }) {
      * @property {string} kids - The user's stance on having children.
      * @property {Photo[]} photos - An array of photos associated with the user.
      * @property {string[]} personalities - An array of personalities associated with the user.
+     * @property {Answers[]} answers - An array of answers associated with the user.
      * @property {string} smoke - The user's stance on smoking.
      * @property {string} drink - The user's stance on drinking.
      */
@@ -134,7 +142,7 @@ export default function ProfileDetails({ userId }) {
                     />
                 </div> */}
                 {/* <button className={styles.photoBtn} onClick={() => dialogRef.current.showModal()}>View Photos</button> */}
-                <div className={styles.drawer}>
+                <div className={styles.drawer} id="scroll-anchor">
                     <p className={styles.heading} style={{ marginTop: "-0.5rem" }}>{profile.first_name} {profile.last_name ?? ""}, {dayjs().diff(profile.birthday, "y")}</p>
                     <div style={{
                         display: "flex",
@@ -155,10 +163,6 @@ export default function ProfileDetails({ userId }) {
                         </svg>
                         <p className={styles.subHeading}>{profile.location_string}, {profile.country}</p>
                     </div>
-                    <p>
-                        I get along best with people who
-                        Are in same vibe as me! ;
-                    </p>
                     <p className={styles.heading}>My Highlights</p>
                     <div className={styles.highlights}>
                         <span>
@@ -267,10 +271,14 @@ export default function ProfileDetails({ userId }) {
                             {profile.kids}
                         </span>
                     </div>
-                    <div>
-                        <p className={styles.heading}>About</p>
-                        <p className={styles.subHeading}>Supportive, communicative, caring, driven and a goal-oriented partner. More like a power couple & most importantly, someone who's ready to commit and take responsibility on family life.</p>
-                    </div>
+                    {
+                        profile.answers?.map(answer => (
+                            <div key={answer.id}>
+                                <p className={styles.heading}>{answer.question}</p>
+                                <p className={styles.subHeading}>{answer.answer}</p>
+                            </div>
+                        ))
+                    }
                     <div style={{
                         marginTop: '1rem',
                     }}>
@@ -289,14 +297,6 @@ export default function ProfileDetails({ userId }) {
                         </Carousel>
                     </div>
                     <div>
-                        <p className={styles.heading}>Interest</p>
-                        <div className={styles.interests}>
-                            <p>Shopping</p>
-                            <p>Shopping</p>
-                            <p>Shopping</p>
-                        </div>
-                    </div>
-                    <div>
                         <p className={styles.heading}>My Personality</p>
                         <div className={styles.personalities}>
                             {
@@ -304,7 +304,7 @@ export default function ProfileDetails({ userId }) {
                             }
                         </div>
                     </div>
-                    <div id="scroll-anchor" className={styles.smokeDrink}>
+                    <div className={styles.smokeDrink}>
                         <div>
                             <p className={styles.heading}>Smoking</p>
                             <p>{profile.smoke}</p>

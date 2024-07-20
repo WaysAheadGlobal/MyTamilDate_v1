@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../../../api';
 import backarrow from "../../../assets/images/backarrow.jpg";
 import mastercard from '../../../assets/images/mastercard.png';
+import americanexpress from '../../../assets/images/american-express.png';
 import paymentcardedit from '../../../assets/images/paymentcardedit.png';
 import visa from '../../../assets/images/visa-logo.png';
 import { useCookies } from '../../../hooks/useCookies';
@@ -65,7 +66,12 @@ const PaymentMethod = () => {
                   paddingInline: "10px",
                   borderRadius: "10px",
                 }}>
-                  <Image src={paymentMethod.brand === "visa" ? visa : mastercard} width={40} height={40} style={{ objectFit: "contain" }} />
+                  <Image
+                    src={paymentMethod.brand === "visa" ? visa : paymentMethod.brand === "mastercard" ? mastercard : americanexpress}
+                    width={40}
+                    height={40}
+                    style={{ objectFit: "contain" }}
+                  />
                 </div>
                 <div className={styles.cardNumber}>
                   <p>***{paymentMethod.last4}</p>

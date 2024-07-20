@@ -28,6 +28,7 @@ export default function Suggestions() {
                             justifyContent: "flex-start",
                             padding: "10px",
                         }}
+                        onClick={() => navigate(`/user/${profile.first_name}/${profile.user_id}`)}
                     >
                         <img
                             src={getImageURL(profile.type, profile.hash, profile.extension, profile.user_id)}

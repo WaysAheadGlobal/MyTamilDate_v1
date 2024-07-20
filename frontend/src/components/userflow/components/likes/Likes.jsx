@@ -6,6 +6,7 @@ import { useCookies } from '../../../../hooks/useCookies';
 import { Skeleton } from '@mui/material';
 import chatPlaceholder from '../../../../assets/images/chatPlaceholder.svg';
 import Button from '../button/Button';
+import { useSocket } from '../../../../Context/SockerContext';
 
 export default function Likes() {
     const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function Likes() {
     const observerRef = useRef(null);
     const [currentLikes, setCurrentLikes] = useState([]);
     const [selected, setSelected] = useState(null);
+    const { socket } = useSocket();
 
     const getImageURL = (type, hash, extension, userId) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}` : `${API_URL}media/avatar/${hash}.${extension}`;
 
@@ -86,6 +88,51 @@ export default function Likes() {
         if (response.ok) {
             console.log(data);
             alert(data.message);
+        }
+    }
+
+    async function getRoom(userId, name, img) {
+        if (cookies.getCookie("isPremium") !== "true") {
+            alert.setModal({
+                show: true,
+                title: "Upgrade to premium",
+                message: "You need to be a premium user to chat with other users. Would you like to upgrade now?",
+                onButtonClick: () => navigate("/selectplan"),
+                showCancelButton: true
+            });
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}customer/chat/create-room`, {
+                method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${cookies.getCookie("token")}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    participantId: userId
+                })
+            });
+            const data = await response.json();
+            console.log(data);
+
+            if (response.ok) {
+                if (sessionStorage.getItem("conversationId")) {
+                    socket?.emit("leave-room", sessionStorage.getItem("conversationId"));
+                }
+                sessionStorage.setItem("conversationId", data.conversationId);
+                navigate(`/user/chat/with/${name}`, {
+                    state: {
+                        name,
+                        img,
+                        recepientId: userId
+                    }
+                })
+            }
+
+        } catch (error) {
+            console.error(error)
         }
     }
 
@@ -244,6 +291,10 @@ export default function Likes() {
                                                         backgroundColor: "transparent",
                                                         border: "none",
                                                         borderRadius: "9999px"
+                                                    }}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        getRoom(like.user_id, like.first_name, getImageURL(like.type, like.hash, like.extension, like.user_id));
                                                     }}
                                                 >
                                                     <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
