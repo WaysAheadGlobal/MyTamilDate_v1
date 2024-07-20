@@ -22,7 +22,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100dvh;
+            height: 100vh;
         }
 
         .container {
@@ -30,20 +30,25 @@
             padding: 20px 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: justify;
+            text-align: left;
             max-width: 400px;
             width: 100%;
         }
 
         .logo img {
             max-width: 12rem;
-            margin-left: -20px;
         }
 
         h1 {
             font-size: 24px;
             color: #333333;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 20px;
+            color: #F76A7B;
+            margin-top: 0;
         }
 
         p {
@@ -73,10 +78,8 @@
         }
 
         .note a {
-            color: transparent;
+            color: #F76A7B;
             text-decoration: none;
-            background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
-            background-clip: text;
             font-weight: 600;
         }
 
@@ -89,12 +92,28 @@
 <body>
     <div class="container">
         <div class="logo">
-            <!-- Insert logo here if needed -->
             <img src="https://mytamildate.com/assets/images/logo/mtd-logo.png" alt="Company Logo">
         </div>
-        <h1>Your profile has been rejected</h1>
+
+        <h2>Thanks for requesting to join the myTamilDate community!</h2>
+
+        <p>Hi</p>
+
+        <p>Your account has not been approved for the following reason:</p>
+        
         <p><%= message %></p>
         <a href="<%= link %>" class="button" >Go to Home</a>
+
+        <h3>Why do we review accounts?</h3>
+        <p>To create a positive experience for all members, we require everyone to have real and complete profiles at all times.</p>
+
+        <h3>Requirements for account approval</h3>
+        <ul>
+            <li>Post real, high-quality images of yourself</li>
+            <li>Complete all sections of your profile</li>
+            <li>Adhere to our terms of use</li>
+        </ul>
+
         <p class="note">If you have any questions, please contact <a href="https://mytamildate.com/">mytamildate.com</a>.</p>
     </div>
 </body>
