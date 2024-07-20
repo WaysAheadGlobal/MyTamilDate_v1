@@ -11,6 +11,7 @@ import visa from '../../../assets/images/visa-logo.png';
 import { useCookies } from '../../../hooks/useCookies';
 import Sidebar from '../../userflow/components/sidebar/sidebar';
 import styles from './paymentMethod.module.css';
+import update from '../../../assets/images/update.png';
 
 const PaymentMethod = () => {
   const navigate = useNavigate();
@@ -84,7 +85,9 @@ const PaymentMethod = () => {
 
         <Container className={styles.buttoncontainer}>
           <Button className={styles.btnnSave} onClick={() => navigate("/addpaymentmethod")}>
-            Add
+            Add Payment  <span>
+              <Image src={update}/>
+            </span>
           </Button>
         </Container>
 
