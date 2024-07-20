@@ -215,12 +215,12 @@ export default function KidsAndFamilyUpdate() {
                         </Button>
                     </div> */}
                     <div className="d-flex justify-content-center" style={{ position: "fixed", bottom: "30px", width: "100%" }}>
-    <Button variant="outline-danger" className="btn-no" onClick={()=> navigate('/updateprofile')}>
+    <button className="global-cancel-button" onClick={()=> navigate('/updateprofile')}>
         Cancel
-    </Button>
-    <Button  type="submit" variant="primary" className="btn-yes" onClick={saveAll}>
+    </button>
+    <button  type="submit" className="global-save-button" onClick={saveAll}>
         Save
-    </Button>
+    </button>
 </div>
                 </Container>
             </Container>

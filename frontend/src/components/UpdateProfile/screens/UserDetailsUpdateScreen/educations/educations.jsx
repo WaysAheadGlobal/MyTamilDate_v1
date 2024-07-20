@@ -159,13 +159,13 @@ export const EducationUpdate = () => {
                         Next
                     </Button> */}
 
-                    <div className="d-flex justify-content-center" style={{ position: "fixed", bottom: "30px", width: "100%" }}>
-    <Button variant="outline-danger" className="btn-no" onClick={ ()=> navigate('/updateprofile')}>
+                    <div className="d-flex justify-content-center" style={{ position: "fixed", bottom: "30px", width: "100%",gap: "30px" }}>
+    <button className="global-cancel-button" onClick={ ()=> navigate('/updateprofile')}>
         Cancel
-    </Button>
-    <Button  type="submit" variant="primary" className="btn-yes" onClick={saveEducation}>
+    </button>
+    <button  type="submit" className="global-save-button" onClick={saveEducation}>
         Save
-    </Button>
+    </button>
 </div>
                 </Container>
             </Container>

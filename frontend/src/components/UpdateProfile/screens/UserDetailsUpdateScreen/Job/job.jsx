@@ -179,12 +179,12 @@ export const JobTitleUpdate = () => {
                     />
                 </Modal.Body>
                 <Modal.Footer className='job-model-footer'>
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                    <button className="global-cancel-button" onClick={() => setShowModal(false)}>
                         Cancel
-                    </Button>
-                    <Button variant="primary" onClick={handleSave}>
+                    </button>
+                    <button className="global-save-button" onClick={handleSave}>
                         Save
-                    </Button>
+                    </button>
                 </Modal.Footer>
             </Modal>
         </div>

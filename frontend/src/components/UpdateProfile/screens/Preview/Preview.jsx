@@ -228,13 +228,19 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
                 className={`${prev.tab} ${activeTab === 'edit' ? prev.active : ''}`}
                 onClick={() => Navigate("/updateprofile")}
               >
-                Edit
+                 <p className={prev.editseditsection}>
+
+Edit
+</p>
               </div>
               <div
                 className={`${prev.tab} ${activeTab === 'preview' ? prev.active : ''}`}
                 onClick={() => Navigate("/preview")}
               >
-                Preview
+                <p className={prev.editseditsection}>
+
+Preview
+</p>
               </div>
             </div>
           </div>
@@ -277,7 +283,7 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
     quesAns.length !== 0 
     ? quesAns.map((item, index) => (
         <Container key={index} >
-            <p className={prev.name} style={{marginTop : "15px"}}>
+            <p className={prev.name} style={{marginTop : "15px", fontSize : "16px"}}>
                 {item.question}
             </p>
             <p className={prev.answerdetails}>

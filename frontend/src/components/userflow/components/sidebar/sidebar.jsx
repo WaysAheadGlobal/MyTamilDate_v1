@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { API_URL } from '../../../../api';
 import logo from "../../../../assets/images/MTDlogo.png";
 import heartLogo from "../../../../assets/images/heart-logo.png";
@@ -13,10 +13,30 @@ export default function Sidebar({ children }) {
     const [isMobile, setIsMobile] = useState(false);
     const [isTablet, setIsTablet] = useState(false);
     const [pathname, setPathname] = useState([]);
+    const location = useLocation();
     const suffix = pathname.at(-1);
     const navigate = useNavigate();
     const cookies = useCookies();
+    const noNavbarRoutes = [
+        '/updatelocations',
+        '/updatereligion',
+        '/updateheight',
+        '/updatejob',
+        '/updatesmoke',
+        '/updatedrink',
+        '/updatefamilyplan',
+        '/updatekids',
+        '/updatelanguage',
+        '/updateeducations',
+        '/updateage',
+        '/updateanswer',
+        '/personalityupdate',
+        '/unsubscribe',
+        '/selectplan'
+      ];
+      
 
+    const showNavbar = isMobile && !noNavbarRoutes.includes(location.pathname);
 
     useEffect(() => {
         setPathname(window.location.pathname.split("/"));
@@ -189,7 +209,7 @@ export default function Sidebar({ children }) {
             </aside>
             <div className={styles['main-contains']}>
                 {children}
-                {isMobile && <Navbar />}
+                {showNavbar && <Navbar />}
             </div>
             <aside className={styles['upcoming']}>
                 <ProfileCompletion />

@@ -31,7 +31,7 @@
 
 .whyInfo p {
     font-family: Poppins;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 400;
     line-height: 16px;
     color: #515151;
@@ -156,7 +156,7 @@ Font : Poppins
     justify-content: center;
     align-items: center;
        padding: 8px 10px 8px 10px;
-    gap: 6px;
+    gap: 2px;
     border-radius: 34px ;
 font-size: 16px;
 font-weight: 500;

@@ -419,9 +419,9 @@ useEffect(() => {
       <div>
         {
           imagesupdate.main || imagesupdate.first ||imagesupdate.second ? (
-          <div style={{marginTop : "40px" , color : "#4E1173" , fontSize : "16px", fontWeight : "600",marginBottom : "20px", boxshadow: "0 0 10px rgba(0, 0, 0, 0.1)"}}>
+          <div className={picture.underreview} style={{marginTop : "40px" , color : "#4E1173" , fontSize : "16px", fontWeight : "600",textalign: "justify",marginBottom : "20px"}}>
             <p>
-            Thanks for updating your image! It's now under review by our administrators. You'll receive an update within 24 hours. We appreciate your patience!
+            Thanks for updating your image! It's now under review by myTamilDate. You'll receive an update within 24 hours. We appreciate your patience!
             </p>
           </div>
           ) : ""

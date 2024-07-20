@@ -8,9 +8,11 @@ import { API_URL } from '../../../../api';
 import { useCookies } from '../../../../hooks/useCookies';
 import Sidebar from '../../../userflow/components/sidebar/sidebar';
 import answer from '../../../../assets/images/answer.png';
+import { useAlert } from '../../../../Context/AlertModalContext';
 
 export default function UpdateAnswers() {
     const [show, setShow] = useState(false);
+    const [count, setCount] = useState(0)
     const [modalData, setModalData] = useState({
         heading: "",
         apiURL: "",
@@ -19,7 +21,7 @@ export default function UpdateAnswers() {
     const [questions, setQuestions] = useState([]);
     const navigate = useNavigate();
     const [alert, setAlert] = useState(false);
-
+    const alertmodal = useAlert();
     useEffect(() => {
         (async () => {
             const response = await fetch(`${API_URL}/customer/update/questionss`, {
@@ -38,6 +40,22 @@ export default function UpdateAnswers() {
         })()
     }, []);
 
+    useEffect(() => {
+        (async () => {
+            const response = await fetch(`${API_URL}/customer/users/answers/count`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+            });
+            const data = await response.json();
+            
+            setCount(data.count);
+            console.log(count);
+        })()
+    }, []);
+
     return (
         <Sidebar>
             <div style={{
@@ -50,9 +68,9 @@ export default function UpdateAnswers() {
                 scrollbarWidth: "none"
             }}>
                 <div className={ans.jobcontainer}>
-                    <Modal show={show} onHide={() => setShow(false)} modalData={modalData} />
-                    <AlertModal show={alert} onHide={() => setAlert(false)} />
-                    
+                    <Modal show={show} alertmodal={alertmodal} count = {count}  onHide={() => setShow(false)} modalData={modalData} />
+                    <AlertModal show={alert} alertmodal={alertmodal} count = {count} onHide={() => setAlert(false)} />
+
                     <Container className={ans.jobmain}>
                         <Container className={ans.jobcontent}>
                             <Container className={ans.jobdetails}>
@@ -72,7 +90,7 @@ export default function UpdateAnswers() {
                                         Answer 2 prompts only
                                     </p>
                                     <div style={{
-                                        maxHeight: "50vh",
+                                        maxHeight: "60vh",
                                         overflow: "auto",
                                         scrollbarColor: "transparent transparent",
                                         scrollBehavior: "smooth",
@@ -97,12 +115,15 @@ export default function UpdateAnswers() {
                                                             cursor: "pointer",
                                                         }}
                                                         onClick={() => {
+                                                            if (count === 2 && question.answer ==null) {
+                                                                setAlert(true);
+                                                            } else {
                                                             setShow(true);
                                                             setModalData({
                                                                 heading: question.question,
                                                                 apiURL: `${API_URL}/customer/update/answer/${question.question_id}`,
                                                             });
-                                                        }}
+                                                        }}}
                                                     >
                                                         <div>
                                                             <div style={{
@@ -113,7 +134,12 @@ export default function UpdateAnswers() {
                                                             }}>
                                                                 {question.question}
                                                             </div>
-                                                            <div>
+                                                            <div style={{
+                                                                color: "#6C6C6C",
+                                                                fontSize: "14px",
+                                                                lineHeight: "20px",
+                                                                fontWeight: "400",
+                                                            }}>
                                                                 {question.answer || ""}
                                                             </div>
                                                             <div style={{
@@ -180,13 +206,13 @@ export default function UpdateAnswers() {
     );
 };
 
-function Modal({ show, onHide, modalData, alert }) {
+function Modal({ show, onHide, modalData, alert ,alertmodal}) {
     const [text, setText] = useState("");
     const { getCookie, setCookie } = useCookies();
 
     useEffect(() => {
         setText("");
-        
+
         (async () => {
             if (!modalData.apiURL) return;
 
@@ -220,6 +246,13 @@ function Modal({ show, onHide, modalData, alert }) {
         console.log(data);
 
         if (response.ok) {
+            
+            alertmodal.setModal({
+                show: true,
+                title: 'Update Profile Answer',
+                message: "Thanks for updating your image! It's now under review by myTamilDate. You'll receive an update within 24 hours.",
+
+            });
             onHide();
             const answers = getCookie('answers');
             setCookie('answers', answers ? Number(answers) + 1 : 0, { path: '/' });
@@ -247,7 +280,6 @@ function Modal({ show, onHide, modalData, alert }) {
                     maxLength={200}
                     style={{
                         height: "300px",
-                        marginBlock: "1rem",
                         borderRadius: "10px",
                         border: "2px solid #cbcbcb",
                         padding: "1rem",
@@ -271,35 +303,25 @@ function Modal({ show, onHide, modalData, alert }) {
                 alignItems: "center",
                 gap: "1rem",
             }}>
-                <Button style={{
-                    backgroundColor: "white",
-                    borderColor: "#6c6c6c",
-                    borderRadius: "9999px",
-                    padding: "0.5rem 1rem",
-                    color: "#6c6c6c",
-                    fontWeight: "600",
-                    width: "130px"
-                }} onClick={() => { onHide(); setText(""); }}>
-                    Close
-                </Button>
-                <Button
-                    variant="primary"
-                    style={{
-                        background: "linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%)",
-                        borderRadius: "9999px",
-                        padding: "0.5rem 1rem",
-                        border: "none"
-                    }}
+                <button
+                   className='global-cancel-button'
+                    onClick={() => { onHide(); setText(""); }}
+                >
+                    Cencel
+                </button>
+
+                <button
+                    className='global-save-button'
                     onClick={saveAnswer}
                 >
-                    Save Changes
-                </Button>
+                    Save
+                </button>
             </div>
-        </BModal>
+        </BModal >
     )
 }
 
-function AlertModal({ show, onHide }) {
+function AlertModal({ show, onHide,count }) {
     return (
         <BModal centered show={show} onHide={onHide}>
             <div>
@@ -310,7 +332,9 @@ function AlertModal({ show, onHide }) {
                     textAlign: "center",
                     marginTop: "1rem",
                 }}>
-                    Answer at least 2 prompts.
+                     {
+                        count != 2 ? "Answer atleast 2 prompts." : "You can answer only 2 prompts"
+                    }
                 </p>
             </div>
             <Button style={{

@@ -159,13 +159,13 @@ export default function PersonalityProfile() {
                             Save
                         </Button> */}
 
-<div className="d-flex justify-content-center" style={{ position: "fixed", bottom: "30px", width: "100%" }}>
-    <Button variant="outline-danger" className="btn-no">
+<div className="d-flex justify-content-center" style={{ position: "fixed", bottom: "30px", width: "100%", gap : "30px" }}>
+    <button className="global-cancel-button" onClick={()=> navigate("/updateprofile")}>
         Cancel
-    </Button>
-    <Button onClick={savePersonalities} type="submit" variant="primary" className="btn-yes">
+    </button>
+    <button onClick={savePersonalities} type="submit" className="global-save-button">
         Save
-    </Button>
+    </button>
 </div>
                     </Container>
                 </Container>

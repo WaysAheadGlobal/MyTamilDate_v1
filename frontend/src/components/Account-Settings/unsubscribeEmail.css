@@ -9,22 +9,37 @@
 }
 
 .unsubscribe-title {
-    /* width: 90%; */
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 500;
     margin-bottom: 20px;
+    color: #515151;
+
 }
 
 .unsubscribe-subtitle {
     font-size: 13px;
-    color: #666;
     margin-bottom: 40px;
-    
+    color: #6C6C6C;
+    font-family: Poppins;
+font-size: 14px;
+font-weight: 400;
+line-height: 20px;
+letter-spacing: 0.04em;
+text-align: center;
+
 }
+
 
 .unsubscribe-options {
     text-align: left;
     margin-bottom: 20px;
+    font-family: Poppins;
+font-size: 16px;
+font-weight: 500;
+line-height: 24px;
+letter-spacing: 0.04em;
+text-align: left;
+color: #6C6C6C;
 }
 
 .unsubscribe-option {
@@ -43,11 +58,19 @@
 }
 
 .unsubscribe-note {
-    font-size: 12px;
+   
     color: #999;
     margin-bottom: 20px;
-    line-height: 1.4;
-    margin-top: 80px;
+    margin-top: 60px;
+    font-family: Poppins;
+font-size: 14px;
+font-weight: 500;
+line-height: 20px;
+letter-spacing: 0.04em;
+text-align: center;
+color: #6C6C6C;
+
+
 }
 
 .form-check-input:checked {

@@ -2,7 +2,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: 25px;
     padding-right: 0;
    padding-left: 0;
   }
@@ -58,4 +57,14 @@
   padding-right: 0;
   padding-left: 0;
   margin-top: 0;
+}
+
+.editseditsection{
+  font-family: Poppins;
+font-size: 18px;
+font-weight: 600;
+line-height: 27px;
+text-align: center;
+color: #515151;
+
 }
