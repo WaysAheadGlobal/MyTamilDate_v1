@@ -10,10 +10,7 @@ const users = Router();
 // Define types for callback function
 type QueryCallback = (err: Error | null, results: any) => void;
 
-
-
-
-
+sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 
 // Helper function to get total count of records
 const getTotalCount = (sql: string, values: any[], callback: (err: Error | null, total: number) => void): void => {
@@ -700,11 +697,13 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
                 }
 
                 const msg = {
-                    to: email,
                     from: process.env.EMAIL_HOST!,
+                    to: email,
                     subject: "Approval Notification",
                     html: html
                 };
+
+                
 
                 sgMail.send(msg)
                     .then(() => {
@@ -712,7 +711,7 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
                         return res.status(200).send('Status updated successfully and email sent');
                     })
                     .catch((error) => {
-                        console.error('Error sending email:', error);
+                        console.error('Error sending email:', JSON.stringify(error));
                         return res.status(500).send('Internal Server Error');
                     });
             });
@@ -959,7 +958,7 @@ users.get('/mediaupdate/:id', (req: AdminRequest, res: Response) => {
 
 users.get('/user/questions/:user_id', (req: AdminRequest, res: Response) => {
     const userId = req.params.user_id;
-  
+
     const sql = `
       SELECT 
         COALESCE(qau.question_id, qa.question_id) AS question_id,
@@ -976,19 +975,19 @@ users.get('/user/questions/:user_id', (req: AdminRequest, res: Response) => {
       WHERE 
         qa.user_id = ? OR qau.user_id = ?
     `;
-  
-    db.query(sql, [userId, userId, userId, userId], (err: Error | null, results: any) => {
-      if (err) {
-        console.error('Error fetching data:', err);
-        res.status(500).send('Internal Server Error');
-        return;
-      }
-  
-      res.status(200).json(results);
-    });
-  });
 
-  users.post('/updateQuestionAnswers/:user_id', (req: AdminRequest, res: Response) => {
+    db.query(sql, [userId, userId, userId, userId], (err: Error | null, results: any) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+
+        res.status(200).json(results);
+    });
+});
+
+users.post('/updateQuestionAnswers/:user_id', (req: AdminRequest, res: Response) => {
     const userId = req.params.user_id;
 
     // Start a transaction
@@ -1038,8 +1037,8 @@ users.get('/user/questions/:user_id', (req: AdminRequest, res: Response) => {
                         });
                     }
 
-                    res.status(200).json({ 
-                        message: 'Question answers updated and temporary data deleted successfully', 
+                    res.status(200).json({
+                        message: 'Question answers updated and temporary data deleted successfully',
                         deleteResults
                     });
                 });

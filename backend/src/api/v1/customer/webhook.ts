@@ -65,24 +65,6 @@ webhookRouter.post('/', async (request, response) => {
                             return;
                         }
 
-                        /* await sgMail.send({
-                            to: object.customer_email!,
-                            from: process.env.EMAIL_HOST!,
-                            subject: "Payment Successful",
-                            text: `
-                            Dear customer,
-
-                            Your payment was successful. 
-                            Thank you for subscribing to our service.
-                            
-                            This is your invoice:
-                            ${object.hosted_invoice_url}
-
-                            Regards,
-                            The MTD Team
-                        `
-                        }); */
-
                         db.commit(err => {
                             if (err) {
                                 db.rollback(() => {

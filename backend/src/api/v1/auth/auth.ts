@@ -14,6 +14,8 @@ import UserApprovalEnum from "../../../enums/UserApprovalEnum";
 import Stripe from "stripe";
 import MailService from "../../../../mail";
 
+sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+
 const auth = Router();
 let otpData: { phone: string, otp: string, createdAt: Date } | null = null;
 

@@ -32,7 +32,7 @@ profile.post('/contact', [
   body('name').isString().notEmpty().withMessage('Name is required'),
   body('message').isString().notEmpty().withMessage('Message is required'),
   body('issue').isString().notEmpty().withMessage('Issue is required')
-], (req :any, res:express.Response) => {
+], (req: any, res: express.Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -149,7 +149,7 @@ profile.put('/brithday', [
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  const {  birthday, } = req.body;
+  const { birthday, } = req.body;
   const userId = req.userId;
   console.log(userId);
 
@@ -159,7 +159,7 @@ profile.put('/brithday', [
       WHERE user_id = ?
     `;
 
-  db.query<ResultSetHeader>(query, [ birthday, userId], (err, results) => {
+  db.query<ResultSetHeader>(query, [birthday, userId], (err, results) => {
     if (err) {
       console.error('Error updating user profile:', err);
       return res.status(500).send('Internal Server Error');
@@ -965,13 +965,13 @@ profile.get('/questionss', verifyUser, (req: UserRequest, res: express.Response)
   `;
 
   db.query(sql, [userId], (err: Error | null, results: any) => {
-      if (err) {
-          console.error('Error fetching data:', err);
-          res.status(500).send('Internal Server Error');
-          return;
-      }
+    if (err) {
+      console.error('Error fetching data:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
 
-      res.status(200).json({ questions: results });
+    res.status(200).json({ questions: results });
   });
 });
 
@@ -1084,13 +1084,13 @@ profile.get('/questionanswer', (req: UserRequest, res: express.Response) => {
   `;
 
   db.query(sql, [userId], (err: Error | null, results: any) => {
-      if (err) {
-          console.error('Error fetching data:', err);
-          res.status(500).send('Internal Server Error');
-          return;
-      }
+    if (err) {
+      console.error('Error fetching data:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
 
-      res.status(200).json(results);
+    res.status(200).json(results);
   });
 });
 

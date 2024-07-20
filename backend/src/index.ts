@@ -22,30 +22,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", api);
 
-app.get("/mail", async (req, res) => {
-    try {
-        await mailService.sendVerificationMail("niladityasen.2212@gmail.com", "123456");
-        await mailService.sendReviewMail("niladityasen.2212@gmail.com", "Niladitya Sen");
-        await mailService.sendSignUpMail("niladityasen.2212@gmail.com");
-
-        res.status(200).send("Mail sent successfully");
-    } catch (error) {
-        console.log("Error sending mail:", error);
-        res.status(500).send("Internal Server Error");
-    }
-});
-
-app.get('/', (req, res) => {
-    db.query('SELECT * FROM admin_users', (err, results) => {
-        if (err) {
-            console.log('Error fetching data:', err);
-            res.status(500).send('Internal Server Error');
-            return;
-        }
-        res.status(200).json(results);
-    });
-});
-
 const httpServer = createServer(app);
 
 export const io = new Server(httpServer, {

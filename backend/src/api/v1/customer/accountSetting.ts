@@ -22,6 +22,8 @@ const storage = multer.diskStorage({
     }
 });
 
+sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+
 const upload = multer({
     storage: storage,
     limits: {
