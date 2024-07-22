@@ -234,6 +234,22 @@ updateprofile.get('/updated-media', verifyUser, (req: UserRequest, res: express.
   });
 });
 
+// DELETE route to delete media updates by user_id
+updateprofile.delete('/delete-media', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+  console.log('Deleting media for user ID:', userId);
+
+  const query = 'DELETE FROM media_update WHERE user_id = ?';
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error deleting media:', err);
+      return res.status(500).send('Internal Server Error');
+    }
+
+    res.status(200).send('Media updates deleted successfully');
+  });
+});
+
 
 updateprofile.get('/questionanswer', (req: UserRequest, res: express.Response) => {
   const userId = req.userId;

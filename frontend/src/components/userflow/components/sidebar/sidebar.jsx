@@ -32,7 +32,8 @@ export default function Sidebar({ children }) {
         '/updateanswer',
         '/personalityupdate',
         '/unsubscribe',
-        '/selectplan'
+        '/selectplan',
+       '/editpicture'
     ];
 
 

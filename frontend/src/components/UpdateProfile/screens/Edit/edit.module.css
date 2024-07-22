@@ -143,13 +143,19 @@ text-align: center;
 background: #F7ECFF;
 width: 50%;
 Font : Poppins
-
 }
+
+.button:hover {
+    cursor: pointer; 
+  }
 
 .button img {
   width: 20px; /* Adjust icon size */
   height: 20px; /* Adjust icon size */
 }
+.buttonlarge:hover {
+    cursor: pointer; 
+  }
 
 .buttonlarge {
     display: flex;
@@ -164,7 +170,6 @@ line-height: 20.8px;
 letter-spacing: 0.04em;
 text-align: center;
 background: #F7ECFF;
-  flex-basis: 100%; /* Makes the button take full width */
+  flex-basis: 100%;
   margin-top: 7px;
- 
 }

@@ -95,6 +95,8 @@ color: #515151;
   .twopiccontainer {
     display: flex;
     gap: 1rem;
+    align-items: center;
+    justify-content: center;
   }
   
   .restpicture {
@@ -148,3 +150,12 @@ color: #515151;
     left: 8px;    /* Positioning the element 8px from the left */
   }
   
+  .twopiccontainerupdate{
+    
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    
+    
+  }

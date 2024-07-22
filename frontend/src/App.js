@@ -255,7 +255,7 @@ function App() {
               <Route path="/updateage" element = {<BasicDetailsUpdate/>}></Route>
               <Route path="/helpsupport" element={<HelpSupport/>}></Route>          
              
-
+ 
               <Route path="/user/home" element={<Home />} />
               <Route path="/user/recommendations" element={<Recommendations />} />
               <Route path="/user/preferences" element={<Preferences />} />

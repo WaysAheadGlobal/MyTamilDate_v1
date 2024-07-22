@@ -10,6 +10,7 @@ import editlogo from '../../../../assets/images/editicon2.png'
 import { API_URL } from '../../../../api';
 import { useCookies } from '../../../../hooks/useCookies';
 import { useNavigate } from 'react-router-dom';
+import backarrow from "../../../../assets/images/backarrow.jpg";
 import editicon from '../../../../assets/images/editicon.png';
 import Cropper from 'react-easy-crop';
 
@@ -114,41 +115,43 @@ const EditPicture = () => {
           'Authorization': `Bearer ${getCookie('token')}`
         }
       });
-
+  
       const data = await response.json();
       setData(data);
       console.log("datadaa", data);
-
+  
       if (response.ok) {
         const validImages = data.filter(image => image.hash && image.extension && (image.type === 31 || image.type === 32 || image.type === 1 || image.type === 2));
-
+  
         if (validImages.length > 0) {
           const mainType31 = validImages.find(image => image.type === 31);
+          const mainType32 = validImages.find(image => image.type === 32);
           const othersType32 = validImages.filter(image => image.type === 32);
           const mainType1 = validImages.find(image => image.type === 1);
+          const mainType2 = validImages.find(image => image.type === 2);
           const othersType2 = validImages.filter(image => image.type === 2);
-
-          if (mainType31) {
+  
+          if (mainType31 || mainType32) {
             setimagesupdate({
-              main: API_URL + "media/avatar/" + mainType31.hash + "." + mainType31.extension,
+              main: mainType31 ? API_URL + "media/avatar/" + mainType31.hash + "." + mainType31.extension : null,
               first: othersType32[0] ? API_URL + "media/avatar/" + othersType32[0].hash + "." + othersType32[0].extension : null,
-              second: othersType32[1] ? API_URL + "media/avatar/" + othersType32[1].hash + "." + othersType32[1].extension : null,
+              second: othersType32[1] ? API_URL + "media/avatar/" + othersType32[1].hash + "." + othersType32[1].extension : null
             });
             console.log('updateImages', {
-              main: API_URL + "media/avatar/" + mainType31.hash + "." + mainType31.extension,
+              main: mainType31 ? API_URL + "media/avatar/" + mainType31.hash + "." + mainType31.extension : null,
               first: othersType32[0] ? API_URL + "media/avatar/" + othersType32[0].hash + "." + othersType32[0].extension : null,
-              second: othersType32[1] ? API_URL + "media/avatar/" + othersType32[1].hash + "." + othersType32[1].extension : null,
+              second: othersType32[1] ? API_URL + "media/avatar/" + othersType32[1].hash + "." + othersType32[1].extension : null
             });
-          } else if (mainType1) {
+          } else if (mainType1 || mainType2) {
             setimagesupdate({
-              main: OldImageURL + "/" + id + "/avatar/" + mainType1.hash + "-large" + "." + mainType1.extension,
+              main: mainType1 ? OldImageURL + "/" + id + "/avatar/" + mainType1.hash + "-large" + "." + mainType1.extension : null,
               first: othersType2[0] ? OldImageURL + "/" + id + "/photo/" + othersType2[0].hash + "-large" + "." + othersType2[0].extension : null,
-              second: othersType2[1] ? OldImageURL + "/" + id + "/photo/" + othersType2[1].hash + "-large" + "." + othersType2[1].extension : null,
+              second: othersType2[1] ? OldImageURL + "/" + id + "/photo/" + othersType2[1].hash + "-large" + "." + othersType2[1].extension : null
             });
             console.log({
-              main: OldImageURL + "/" + id + "/avatar/" + mainType1.hash + "-large" + "." + mainType1.extension,
+              main: mainType1 ? OldImageURL + "/" + id + "/avatar/" + mainType1.hash + "-large" + "." + mainType1.extension : null,
               first: othersType2[0] ? OldImageURL + "/" + id + "/photo/" + othersType2[0].hash + "-large" + "." + othersType2[0].extension : null,
-              second: othersType2[1] ? OldImageURL + "/" + id + "/photo/" + othersType2[1].hash + "-large" + "." + othersType2[1].extension : null,
+              second: othersType2[1] ? OldImageURL + "/" + id + "/photo/" + othersType2[1].hash + "-large" + "." + othersType2[1].extension : null
             });
           }
         }
@@ -157,8 +160,7 @@ const EditPicture = () => {
       console.error('Error saving images:', error);
     }
   };
-
-
+  
 
   const handleFileChange = (event, imageKey) => {
     const file = event.target.files[0];
@@ -173,8 +175,6 @@ const EditPicture = () => {
       setShowCropModal(true);
     }
   };
-
-
 
   const handleClick = (imageKey) => {
     let mediaId = null;
@@ -316,6 +316,33 @@ const EditPicture = () => {
     return promise;
   };
 
+  const handleDeleteImages = async () => {
+    if(imagesupdate.main || imagesupdate.first || imagesupdate.second){
+      try {
+        const response = await fetch(`${API_URL}customer/update/delete-media`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${getCookie('token')}`
+          }
+        });
+  
+        if (response.ok) {
+          console.log('Images deleted successfully');
+        
+          setimagesupdate({ main: null, first: null, second: null });
+          navigate("/updateprofile")
+        } else {
+          console.error('Error deleting images');
+        }
+      } catch (error) {
+        console.error('Error deleting images:', error);
+      }
+    }
+    else{
+      navigate("/updateprofile")
+    }
+   
+  };
 
   useEffect(() => {
     ImageURL();
@@ -339,7 +366,10 @@ const EditPicture = () => {
         padding: "2rem"
       }}>
         <div className={picture.container}>
+          <div>
+
           <p className={picture.componentname}>Your Profile</p>
+          </div>
           <Image
             onClick={toggleInfoVisibility}
             style={{ cursor: 'pointer' }}
@@ -410,7 +440,6 @@ const EditPicture = () => {
           <div className={picture.restpicture} style={{
             maxWidth: "150px",
             maxHeight: "150px",
-            marginLeft: "auto",
             borderRadius: "16px"
           }}>
             <Image src={images2.second} style={{
@@ -438,11 +467,10 @@ const EditPicture = () => {
 
 
 
-
-        <div>
+        <div >
           {
             imagesupdate.main || imagesupdate.first || imagesupdate.second ? (
-              <div className={picture.underreview} style={{ marginTop: "40px", color: "#4E1173", fontSize: "16px", fontWeight: "600", textalign: "justify", marginBottom: "20px" }}>
+              <div className={picture.underreview} style={{ marginTop: "40px", color: "#4E1173", fontSize: "16px", fontWeight: "600", textalign: "justify", marginBottom: "20px", padding : "25px", textAlign : "center" }}>
                 <p>
                   Thanks for updating your image! It's now under review by myTamilDate. You'll receive an update within 24 hours. We appreciate your patience!
                 </p>
@@ -450,7 +478,12 @@ const EditPicture = () => {
             ) : ""
           }
           {imagesupdate.main && (
-            <div className={picture.mainpic} style={{ borderRadius: "16px" }}>
+            <div className={picture.mainpic} style={{
+              maxWidth: "340px",
+              marginInline: "auto",
+              borderRadius: "16px",
+              marginTop : "20px"
+            }}>
               <Image src={imagesupdate.main} />
               <div className={picture.icons}>
                 <span className={picture.iconLeft}>
@@ -472,10 +505,19 @@ const EditPicture = () => {
             </div>
           )}
 
-          <div className={picture.twopiccontainer}>
+          <div className={picture.twopiccontainerupdate}>
             {imagesupdate.first && (
-              <div className={picture.restpicture}>
-                <Image src={imagesupdate.first} />
+              <div className={picture.restpicture} style={{
+                maxWidth: "150px",
+                maxHeight: "150px",
+                borderRadius: "16px"
+              }}>
+                <Image src={imagesupdate.first} style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center"
+            }} />
                 <div className={picture.icons}>
                   <span className={picture.iconLeft}>
                     <Image src="" />
@@ -493,9 +535,18 @@ const EditPicture = () => {
               </div>
             )}
 
-            {imagesupdate.second && (
-              <div className={picture.restpicture}>
-                <Image src={imagesupdate.second} />
+            {imagesupdate.second && ( 
+              <div className={picture.restpicture} style={{
+                maxWidth: "150px",
+                maxHeight: "150px",
+                borderRadius: "16px"
+              }} >
+                <Image src={imagesupdate.second} style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center"
+            }} />
                 <div className={picture.icons}>
                   <span className={picture.iconLeft}>
                     <Image src="" />
@@ -514,6 +565,16 @@ const EditPicture = () => {
             )}
           </div>
         </div>
+
+        <div className="d-flex justify-content-center" style={{  marginTop: "40px", width: "100%", gap : "30px" }}>
+    <button className="global-cancel-button" onClick={handleDeleteImages}>
+        Cancel
+    </button>
+    <button  type="submit" className="global-save-button" onClick={()=> navigate('/updateprofile')}>
+        Save
+    </button>
+    </div>
+           
 
 
         <Modal centered className="crop-modal" show={showCropModal} onHide={handleCropCancel}>
@@ -542,7 +603,9 @@ const EditPicture = () => {
             </button>
           </Modal.Footer>
         </Modal>
+     
       </div>
+      
     </Sidebar>
   );
 };
