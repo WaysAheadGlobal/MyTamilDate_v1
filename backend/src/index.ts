@@ -10,6 +10,7 @@ import api from './api';
 import { RowDataPacket } from 'mysql2';
 import { getUnsubscribedGroups } from './utils/utils';
 import { UnsubscribeGroup } from './enums/UnsubscribeGroupEnum';
+import { Sendmail } from './sendgrip/mail';
 
 const mailService = new MailService();
 
@@ -21,7 +22,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", api);
-
+app.use("/mail-check", Sendmail)
 const httpServer = createServer(app);
 
 export const io = new Server(httpServer, {

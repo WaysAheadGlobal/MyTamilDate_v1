@@ -82,6 +82,7 @@ export default function SmokeAndFamily() {
     async function saveAll() {
         try {
             await Promise.all([saveSmoke(), saveDrink()]);
+            
             navigate('/approve');
         } catch (error) {
 

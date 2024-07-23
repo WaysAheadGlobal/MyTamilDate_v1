@@ -5,12 +5,13 @@ import './privacy-policy.module.css';
 import { NavBar } from './nav';
 import { Footer } from './footer';
 import { Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 export const PrivacyPolicy = () => {
     const [isChecked, setIsChecked] = useState(false);
     const handleCheckboxChange = () => {
         setIsChecked(!isChecked);
     };
-
+const navigate = useNavigate();
 
     return (
         <section>
@@ -27,7 +28,36 @@ export const PrivacyPolicy = () => {
                 marginInline: 'auto',
                 maxWidth: '1200px',
             }}>
-                <h1>Privacy Policy</h1>
+                <div className='tadhaeding' style={{ display: "flex", flexWrap : "wrap-reverse", alignItems: 'center', justifyContent: "center", marginBottom: "60px" }}>
+    <p style={{
+      
+        textAlign: 'left',
+        marginTop: "40px",
+        fontFamily: 'Poppins, sans-serif',
+        fontSize: '22px',
+        fontWeight: '600',
+        lineHeight: '24px',
+        letterSpacing: '0.02em',
+        textAlign: 'left',
+        color : "#5E5E5E"
+
+        
+    }} onClick={()=> navigate("/")}> &lt;&lt; Home</p>
+    <div style={{ flexGrow: 2, textAlign: 'center' }}>
+        <p className='termandconditions' style={{
+            fontFamily: 'Poppins, sans-serif',
+            fontSize: '40px',
+            fontWeight: '600',
+            lineHeight: '60px',
+            letterSpacing: '0.05em',
+            textAlign: 'center',
+            color: "#3A3A3A",
+            
+
+            
+        }}>Privacy Policy</p>
+    </div>
+</div>
                 {/* <span>Last revised on Feb. 4th, 2021.</span> */}
                 <p>TC Global Inc. (“MTD”, "we", "us", "our" or the “Company”) is a corporation formed pursuant to the Business Corporations Act R.S.O. 1990, CHAPTER B.16 in Ontario, Canada. Further to our terms of use (https://mytamildate.com/TermsConditions) (the “Terms”), this Privacy Policy sets out how we collect, store and use personal information and cookies. Unless otherwise indicated, any capitalized terms in this Privacy Policy have the same meaning attributed to them in our Terms.</p>
 

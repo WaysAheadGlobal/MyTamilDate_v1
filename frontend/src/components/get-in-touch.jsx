@@ -18,20 +18,20 @@ function SuccessfullModal(props) {
             centered
             style={{
                 width: '100%',
-                height: '100%',
+               height :"100%",
                 border: 'none',
                 backgroundColor: "#000000B2"
             }}
         >
             <Modal.Body className='getintouch-modal'>
                 <div className='getetintouch-model-main'>
-                    <div className='getintouch-close'>
+                    <div className='getintouch-close' >
                         <button type="button" className="btn-close" onClick={props.onHide} style={{ color: '#FFFFFF', padding: '10px' }} >
                         </button>
                     </div>
                     <div className='getintouch-model-content'>
                         <Image className='verify-img' src={verify}></Image>
-                        <span>Thanks! We've received your submission and will be in touch.</span>
+                        <span>Thanks! <br /> We've received your submission and will be in touch.</span>
                     </div>
                 </div>
             </Modal.Body>

@@ -17,7 +17,6 @@ export default function ApproveEmail() {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${getCookie('token')}`
-
                 },
             });
 

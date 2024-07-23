@@ -5,13 +5,15 @@ import './tnc.module.css';
 import { NavBar } from './nav';
 import { Footer } from './footer';
 import { Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 export const Tnc = () => {
     const [isChecked, setIsChecked] = useState(false);
 
     const handleCheckboxChange = () => {
         setIsChecked(!isChecked);
     };
-
+   
+    const navigate = useNavigate();
 
     return (
         <section>
@@ -28,7 +30,36 @@ export const Tnc = () => {
                 marginInline: 'auto',
                 maxWidth: '1200px',
             }}>
-                <h1> Terms and Conditions</h1>
+<div className='tadhaeding' style={{ display: "flex", flexWrap : "wrap-reverse", alignItems: 'center', justifyContent: "center", marginBottom: "60px" }}>
+    <p style={{
+      
+        textAlign: 'left',
+        marginTop: "40px",
+        fontFamily: 'Poppins, sans-serif',
+        fontSize: '22px',
+        fontWeight: '600',
+        lineHeight: '24px',
+        letterSpacing: '0.02em',
+        textAlign: 'left',
+        color : "#5E5E5E"
+
+        
+    }} onClick={()=> navigate("/")}> &lt;&lt; Home</p>
+    <div style={{ flexGrow: 2, textAlign: 'center' }}>
+        <p className='termandconditions' style={{
+            fontFamily: 'Poppins, sans-serif',
+            fontSize: '40px',
+            fontWeight: '600',
+            lineHeight: '60px',
+            letterSpacing: '0.05em',
+            textAlign: 'center',
+            color: "#3A3A3A"
+
+            
+        }}>Terms and Conditions</p>
+    </div>
+</div>
+
                 {/* <span>Last revised on Feb. 4th, 2021.</span> */}
                 <p>Welcome to myTamilDate! We’re thrilled you’ve joined and look forward to helping you find your special someone.</p>
                 <p>TC Global Inc. (“MTD”, "we", "us", "our" or the “Company”) is a corporation formed pursuant to the Business Corporations Act R.S.O. 1990, CHAPTER B.16 in Ontario, Canada. In consideration for permitting your access to our online dating website, applications and online services and other good and valuable consideration, you agree as follows:</p>

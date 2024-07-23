@@ -139,7 +139,6 @@ auth.post("/login/email-otp", async (req, res) => {
 
             await insertOTPInDBByEmail(otp, email);
 
-
             let html;
             try {
                 html = await ejs.renderFile("mail/templates/otp.ejs", { otp: otp });
@@ -147,7 +146,7 @@ auth.post("/login/email-otp", async (req, res) => {
                 console.error('Error rendering email template:', renderError);
                 return res.status(500).json({ message: 'Internal Server Error' });
             }
-
+         console.log(email,process.env.EMAIL_HOST )
             const msg = {
                 to: email,
                 from: process.env.EMAIL_HOST!,
@@ -161,7 +160,7 @@ auth.post("/login/email-otp", async (req, res) => {
                     return res.status(200).json({ message: 'Status updated successfully and email sent' });
                 })
                 .catch((error) => {
-                    console.error('Error sending email:', error);
+                    console.error('Error sending email:', error.response ? error.response.body : error);
                     return res.status(500).send('Internal Server Error');
                 });
 
@@ -171,6 +170,7 @@ auth.post("/login/email-otp", async (req, res) => {
         }
     });
 });
+
 
 auth.post("/login/email", async (req, res) => {
     const { email, otp } = req.body;
@@ -467,5 +467,6 @@ auth.get("/check-approval", verifyUser, async (req: UserRequest, res) => {
         res.status(200).json({ approval: UserApprovalEnum[results[0].approval], active: results[0].active === 1 });
     });
 });
+
 
 export default auth;
