@@ -223,6 +223,7 @@ function App() {
               <Route path="/pending" element={<AccountPending />} />
               <Route path="/not-approved" element={<AccountNotApproved />} />
               <Route path="/approved" element={<AccountApproved />} />
+              <Route path="/user/verify/:token" element={<AccountPending />} />
 
 
               <Route path="/accoutsetting" element={<AccountSetting />}></Route>

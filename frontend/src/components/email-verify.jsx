@@ -42,6 +42,7 @@ export const EmailVerify = () => {
 
             const result = await response.json();
             if (response.ok) {
+                updateStatus();
                
                 navigate("/getstarted");
                 setErrorMessage('');
@@ -53,6 +54,24 @@ export const EmailVerify = () => {
             setErrorMessage('An error occurred. Please try again later.');
         }
     }
+
+    const updateStatus = async (newStatus) => {
+        try {
+            const response = await fetch(`${API_URL}/user/verify`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+            });
+
+            if (response.ok) {
+                console.log('Mail sent successfully! Please check your email.');
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     return (
         <div className='emailverify-container'>

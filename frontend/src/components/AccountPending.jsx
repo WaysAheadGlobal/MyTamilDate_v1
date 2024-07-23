@@ -1,11 +1,37 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Container, Image } from 'react-bootstrap';
 import logo from "../assets/images/MTDlogo.png";
 import responsivebg from "../assets/images/responsive-bg.png";
 import './job-title.css';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useCookies } from '../hooks/useCookies';
+import { API_URL } from '../api';
 
 export default function AccountPending() {
+const {getCookie} = useCookies();
+    const {token} = useParams();
+    const navigate = useNavigate();
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${API_URL}user/verify/${token}`);
+
+                const result = await response.json();
+                if (response.ok) {
+                   
+               console.log("all is well")
+               navigate("/pending")
+                } else {
+                    console.error('Error fetching user data:', result.message);
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     return (
         <div className='job-container'>

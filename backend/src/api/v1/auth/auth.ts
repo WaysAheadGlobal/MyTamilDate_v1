@@ -90,7 +90,7 @@ auth.post('/login',
                 return res.status(401).json({ message: otpResponse.message });
             }
 
-            const query = 'SELECT up.id, up.user_id, up.first_name, u.approval, u.deleted_at FROM user_profiles up INNER JOIN users u ON u.id = up.user_id WHERE phone = ?';
+            const query = 'SELECT up.id, up.user_id, up.email_verified_at, up.first_name, u.approval, u.deleted_at FROM user_profiles up INNER JOIN users u ON u.id = up.user_id WHERE phone = ?';
             db.query<RowDataPacket[]>(query, [phone], (err, results) => {
                 if (err) {
                     console.error('Error fetching data:', err);
@@ -146,7 +146,7 @@ auth.post("/login/email-otp", async (req, res) => {
                 console.error('Error rendering email template:', renderError);
                 return res.status(500).json({ message: 'Internal Server Error' });
             }
-         console.log(email,process.env.EMAIL_HOST )
+            console.log(email, process.env.EMAIL_HOST)
             const msg = {
                 to: email,
                 from: process.env.EMAIL_HOST!,
@@ -372,9 +372,11 @@ auth.post("/verify", verifyUser, async (req: UserRequest, res) => {
         if (results.length === 0) {
             return res.status(401).json({ message: 'Invalid email' });
         }
-
-        const token = crypto.randomBytes(32).toString('hex');
-
+       
+        const urltoken = crypto.randomBytes(32).toString('hex');
+        const token = `${process.env.URL}/user/verify/${urltoken}`;
+        console.log(token)
+        console.log(results[0].email)
         try {
             await mailService.sendVerificationMail(results[0].email, token);
         } catch (error) {
@@ -382,20 +384,19 @@ auth.post("/verify", verifyUser, async (req: UserRequest, res) => {
             return res.status(500).send('Internal Server Error');
         }
 
-        db.query('INSERT INTO verification_token (user_id, token, created_at) VALUES (?, ?, NOW())', [req.userId, token], (err) => {
+        db.query('INSERT INTO verification_token (user_id, token, created_at) VALUES (?, ?, NOW())', [req.userId, urltoken], (err) => {
             if (err) {
                 console.error('Error inserting data:', err);
                 return res.status(500).send('Internal Server Error');
             }
-
             res.status(200).json({ message: 'Verification email sent' });
         });
     });
 });
 
-auth.get("/verify/:token", async (req: UserRequest, res) => {
+auth.get("/verify/:token", async (req, res) => {
     const { token } = req.params;
-
+    console.log(`${process.env.URL}/approve`); // Debugging line
     db.beginTransaction(err => {
         if (err) {
             console.error('Error starting transaction:', err);
@@ -450,8 +451,10 @@ auth.get("/verify/:token", async (req: UserRequest, res) => {
                 });
             });
         });
-    })
+    });
 });
+
+
 
 auth.get("/check-approval", verifyUser, async (req: UserRequest, res) => {
     db.query<RowDataPacket[]>('SELECT approval, active FROM users WHERE id = ?', [req.userId], (err, results) => {

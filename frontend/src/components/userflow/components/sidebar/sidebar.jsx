@@ -260,12 +260,12 @@ export function MobileSidebar() {
                 return;
             }
 
-            if (result.approval === "PENDING") {
+            if (result.approval === 10) {
                 window.location.replace("/pending");
                 return;
             }
 
-            if (result.approval === "REJECTED") {
+            if (result.approval === 30) {
                 window.location.replace("/not-approved");
             }
         }
