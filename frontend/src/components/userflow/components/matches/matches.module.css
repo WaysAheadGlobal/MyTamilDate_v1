@@ -30,7 +30,7 @@ p {
     gap: 1rem;
     flex: 1;
     overflow-y: auto;
-    scrollbar-width: none;
+    scrollbar-width: thin;
     margin-bottom: -1.5rem;
 }
 

@@ -9,6 +9,7 @@ import Sidebar from '../../components/sidebar/sidebar';
 import styles from './preferences.module.css';
 import './slider.css';
 import { useNavigate } from 'react-router-dom';
+import { useUserProfile } from '../../components/context/UserProfileContext';
 
 const Forms = {
     Radio: ({ options, value, setValue, firstOption, selected }) => (
@@ -231,6 +232,7 @@ export default function Preferences() {
     const [show, setShow] = useState(false);
     const [value, setValue] = useState();
     const cookies = useCookies();
+    const { setRefresh } = useUserProfile();
 
     /**
      * @typedef {Object} Preferences
@@ -249,7 +251,7 @@ export default function Preferences() {
 
     /** @type {[Preferences, React.Dispatch<React.SetStateAction<Preferences>>]} */
     const [preferences, setPreferences] = useState({});
-    const [refresh, setRefresh] = useState(false);
+    const [refresh_, setRefresh_] = useState(false);
     const navigate = useNavigate();
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
@@ -266,7 +268,7 @@ export default function Preferences() {
             console.log(data);
             setPreferences(data);
         })()
-    }, [refresh])
+    }, [refresh_])
 
     /**
      * @param {SelectedPreference} preference
@@ -326,8 +328,9 @@ export default function Preferences() {
 
             if (response.ok) {
                 setShow(false);
-                setRefresh(!refresh);
+                setRefresh_(!refresh_);
                 cookies.deleteCookie('wave');
+                setRefresh(prev => prev + 1);
             }
         } catch (error) {
             console.error(error);
@@ -428,7 +431,6 @@ export default function Preferences() {
                 width: '100%',
                 flex: '1',
                 overflowY: 'auto',
-                scrollbarWidth: 'none',
                 padding: "2rem"
             }}>
                 <p style={{
@@ -543,7 +545,7 @@ export default function Preferences() {
                                         position: "absolute",
                                         inset: "0",
                                     }}
-                                onClick={() => setShowUpgradeModal(true)}
+                                    onClick={() => setShowUpgradeModal(true)}
                                 ></div>
                             )
                         }

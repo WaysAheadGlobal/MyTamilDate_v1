@@ -25,7 +25,6 @@ const Fillpaymentdetails = () => {
         flexDirection: "column",
         gap: "1rem",
         overflowY: "auto",
-        scrollbarWidth: "none"
       }}>
         <Container>
 

@@ -49,7 +49,7 @@ const PauseMyAccount = () => {
         flexDirection: "column",
         gap: "1rem",
         overflowY: "auto",
-        scrollbarWidth: "none",
+        
         padding: "2rem"
       }}>
         <div className={pause.logo}>

@@ -32,7 +32,6 @@ const Selectplan = () => {
         flexDirection: "column",
         gap: "1rem",
         overflowY: "auto",
-        scrollbarWidth: "none",
         width: "-webkit-fill-available",
       }}>
         <div className={styles.bottomdetails} >

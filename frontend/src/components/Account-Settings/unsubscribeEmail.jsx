@@ -62,7 +62,6 @@ const UnsubscribeComponent = () => {
                 flexDirection: "column",
                 gap: "1rem",
                 overflowY: "auto",
-                scrollbarWidth: "none"
             }}>
 
                 <div className='un-subscribe-container'>

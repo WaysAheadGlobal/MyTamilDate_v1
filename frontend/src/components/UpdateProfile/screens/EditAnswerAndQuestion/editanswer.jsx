@@ -65,7 +65,6 @@ export default function UpdateAnswers() {
                 flexDirection: "column",
                 gap: "1rem",
                 overflowY: "auto",
-                scrollbarWidth: "none"
             }}>
                 <div className={ans.jobcontainer}>
                     <Modal show={show} alertmodal={alertmodal} count = {count}  onHide={() => setShow(false)} modalData={modalData} />

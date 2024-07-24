@@ -83,7 +83,7 @@ const BillingHistory = () => {
 
   return (
     <Sidebar>
-      <div style={{ flex: "1", marginInline: "auto", display: "flex", flexDirection: "column", gap: "1rem", overflowY: "auto", scrollbarWidth: "none", width: "100%", paddingInline: "2rem" }}>
+      <div style={{ flex: "1", marginInline: "auto", display: "flex", flexDirection: "column", gap: "1rem", overflowY: "auto", width: "100%", paddingInline: "2rem" }}>
         <div style={{
           width: "100%",
         }}>

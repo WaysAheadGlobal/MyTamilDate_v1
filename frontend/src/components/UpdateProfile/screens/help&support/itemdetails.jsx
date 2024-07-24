@@ -13,7 +13,6 @@ const HelpSupportDetail = ({ title, content, onBack }) => {
                 flexDirection: "column",
                 gap: "1rem",
                 overflowY: "auto",
-                scrollbarWidth: "none",
                 width: "-webkit-fill-available",
                 padding: "2rem"
             }}>

@@ -282,7 +282,7 @@ export default function ProfileDetails({ userId, handleIconButtonClick, liked, s
                     <div style={{
                         marginTop: '1rem',
                     }}>
-                        <Carousel slide controls={false} interval={null} touch>
+                        <Carousel slide controls interval={null} touch>
                             {
                                 media.map((photo, index) => (
                                     <Carousel.Item key={index}>
@@ -297,7 +297,7 @@ export default function ProfileDetails({ userId, handleIconButtonClick, liked, s
                         </Carousel>
                     </div>
                 </div>
-                    <div style={{
+                    <div id="bottomOptions" style={{
                         position: "sticky",
                         bottom: "0",
                         width: "100%",

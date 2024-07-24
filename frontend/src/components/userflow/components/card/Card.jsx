@@ -56,6 +56,21 @@ export default function Card({ show, ...props }) {
     const [showBlockModal, setShowBlockModal] = useState(false);
     const alert = useAlert();
     const { socket } = useSocket();
+    const [topNavVisible, setTopNavVisible] = useState(true);
+
+    useEffect(() => {
+        const bottomNav = document.querySelector("#bottomOptions");
+
+        if (!bottomNav) return;
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                setTopNavVisible(entry.isIntersecting);
+            })
+        });
+
+        observer.observe(bottomNav);
+    }, [])
 
     async function getRoom() {
         if (cookies.getCookie("isPremium") !== "true") {
@@ -141,13 +156,22 @@ export default function Card({ show, ...props }) {
 
             if (type === "skip" || type === "like") {
 
+                cardRef.current.scrollIntoView({ behavior: "smooth" });
+
                 if (profiles.length === 1) {
                     setPage(prev => prev + 1);
                 }
 
-                cardRef.current.style.transform = "translateX(-100%)";
-                cardRef.current.style.transition = "transform 0.25s ease-in-out";
-                setProfiles(profiles.filter(profile => profile.user_id !== props.user_id));
+                if (!window.location.pathname.endsWith(props.user_id)) {
+                    cardRef.current.style.transform = "translateX(-100%)";
+                    cardRef.current.style.transition = "transform 0.25s ease-in-out";
+                    setProfiles(profiles.filter(profile => profile.user_id !== props.user_id));
+                }
+
+                if (window.location.pathname.endsWith(props.user_id) && type === "skip") {
+                    window.location.assign("/user/home");
+                }
+
                 return;
             }
         }
@@ -204,7 +228,9 @@ export default function Card({ show, ...props }) {
                                 }}>{props.location_string}, {props.country}</p>
                             </div>
                         </div>
-                        <div className='options'>
+                        <div className='options'style={{
+                            opacity: topNavVisible ? "0" : "1",
+                        }}>
                             <IconButton type='undo' onClick={(e) => {
                                 e.stopPropagation();
                                 handleIconButtonClick("undo");
