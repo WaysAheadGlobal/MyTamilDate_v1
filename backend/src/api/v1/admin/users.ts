@@ -658,7 +658,7 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
     console.log(message);
 
     const getUserEmailSql = `
-        SELECT up.email
+        SELECT up.email, up.first_name
         FROM users u
         JOIN user_profiles up ON u.id = up.user_id
         WHERE u.id = ?
@@ -673,6 +673,8 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
         if (results.length === 0) {
             return res.status(404).send('User not found');
         }
+
+        const name = results[0].first_name;
 
         const email = results[0].email;
 
@@ -690,7 +692,10 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
 
                 let html;
                 try {
-                    html = await ejs.renderFile("mail/templates/approve.ejs", { link: `${process.env.URL}/user/home` });
+                    html = await ejs.renderFile("mail/templates/approve.ejs", {
+                        link: `${process.env.URL}/user/home`,
+                        name: name
+                    });
                 } catch (renderError) {
                     console.error('Error rendering email template:', renderError);
                     return res.status(500).json({ message: 'Internal Server Error' });
@@ -703,7 +708,7 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
                     html: html
                 };
 
-                
+
 
                 sgMail.send(msg)
                     .then(() => {
@@ -762,7 +767,11 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
                                 console.log(result);
                                 let html;
                                 try {
-                                    html = await ejs.renderFile("mail/templates/reject.ejs", { link: `${process.env.URL}/not-approved`, message: message });
+                                    html = await ejs.renderFile("mail/templates/reject.ejs", {
+                                        link: `${process.env.URL}/not-approved`, 
+                                        message: message,
+                                        name: name
+                                    });
                                 } catch (renderError) {
                                     console.error('Error rendering email template:', renderError);
                                     return res.status(500).json({ message: 'Internal Server Error' });
@@ -772,11 +781,9 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
                                 const msg = {
                                     to: email,
                                     from: process.env.EMAIL_HOST!,
-                                    subject: "Approval Rejected Notification",
+                                    subject: "Your account has not been approved.",
                                     html: html
                                 };
-
-
 
                                 sgMail.send(msg)
                                     .then(() => {
