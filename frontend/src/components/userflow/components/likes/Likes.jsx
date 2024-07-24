@@ -127,7 +127,7 @@ export default function Likes() {
                         backgroundColor: "#606060A3",
                         backdropFilter: "blur(1rem)",
                         inset: 0,
-                        top: "6rem",
+                        top: "5.5rem",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",

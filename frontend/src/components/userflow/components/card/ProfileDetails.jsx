@@ -297,36 +297,34 @@ export default function ProfileDetails({ userId, handleIconButtonClick, liked, s
                         </Carousel>
                     </div>
                 </div>
-                    <div id="bottomOptions" style={{
-                        position: "sticky",
-                        bottom: "0",
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        gap: "1rem",
-                        backgroundColor: "white",
-                    }}>
-                        <IconButton type='undo' onClick={(e) => {
-                            e.stopPropagation();
-                            handleIconButtonClick("undo");
-                        }} />
-                        {/* <span className='secondUndoBtn'>
-                            </span> */}
-                        <IconButton type='skip' onClick={(e) => {
-                            e.stopPropagation();
-                            handleIconButtonClick("skip");
-                        }} />
-                        <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
-                            e.stopPropagation();
-                            setLiked(!liked);
-                            handleIconButtonClick("like");
-                        }} />
-                        <IconButton type='chat' onClick={(e) => {
-                            e.stopPropagation();
-                            handleIconButtonClick("chat");
-                        }} />
-                    </div>
+                {/* <div id="bottomOptions" style={{
+                    position: "sticky",
+                    bottom: "0",
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: "1rem",
+                    backgroundColor: "white",
+                }}>
+                    <IconButton type='undo' onClick={(e) => {
+                        e.stopPropagation();
+                        handleIconButtonClick("undo");
+                    }} />
+                    <IconButton type='skip' onClick={(e) => {
+                        e.stopPropagation();
+                        handleIconButtonClick("skip");
+                    }} />
+                    <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
+                        e.stopPropagation();
+                        setLiked(!liked);
+                        handleIconButtonClick("like");
+                    }} />
+                    <IconButton type='chat' onClick={(e) => {
+                        e.stopPropagation();
+                        handleIconButtonClick("chat");
+                    }} />
+                </div> */}
             </div>
         </>
     )

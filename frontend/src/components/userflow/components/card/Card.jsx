@@ -57,8 +57,9 @@ export default function Card({ show, ...props }) {
     const alert = useAlert();
     const { socket } = useSocket();
     const [topNavVisible, setTopNavVisible] = useState(true);
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-    useEffect(() => {
+    /* useEffect(() => {
         const bottomNav = document.querySelector("#bottomOptions");
 
         if (!bottomNav) return;
@@ -70,7 +71,7 @@ export default function Card({ show, ...props }) {
         });
 
         observer.observe(bottomNav);
-    }, [])
+    }, []) */
 
     async function getRoom() {
         if (cookies.getCookie("isPremium") !== "true") {
@@ -119,6 +120,11 @@ export default function Card({ show, ...props }) {
 
     async function handleIconButtonClick(type) {
         console.log(type);
+        if (type === "undo" && cookies.getCookie("isPremium") !== "true") {
+            setShowUpgradeModal(true)
+            return;
+        }
+
         if (type === "chat") {
             await getRoom();
             return;
@@ -141,11 +147,6 @@ export default function Card({ show, ...props }) {
             if (type === "undo") {
                 const undoUser = data.user;
                 const currentProfileIdx = profiles.findIndex(profile => profile.user_id === props.user_id);
-                console.log([
-                    profiles.slice(0, currentProfileIdx),
-                    undoUser,
-                    profiles.slice(currentProfileIdx)
-                ])
                 setProfiles([
                     ...profiles.slice(0, currentProfileIdx),
                     undoUser,
@@ -179,6 +180,7 @@ export default function Card({ show, ...props }) {
 
     return (
         <>
+            <UpgradeModal show={showUpgradeModal} setShow={setShowUpgradeModal} />
             <ReportModal show={showReportModal} setShow={setShowReportModal} personId={props.user_id} />
             <BlockModal show={showBlockModal} setShow={setShowBlockModal} personId={props.user_id} />
             <div className='card-and-details-container'>
@@ -228,20 +230,16 @@ export default function Card({ show, ...props }) {
                                 }}>{props.location_string}, {props.country}</p>
                             </div>
                         </div>
-                        <div className='options'style={{
-                            opacity: topNavVisible ? "0" : "1",
-                        }}>
-                            <IconButton type='undo' onClick={(e) => {
+                        <div className='options'>
+                            {/* <IconButton type='undo' onClick={(e) => {
                                 e.stopPropagation();
                                 handleIconButtonClick("undo");
-                            }} />
-                            {/* <span className='secondUndoBtn'>
-                            </span> */}
+                            }} /> */}
                             <IconButton type='skip' onClick={(e) => {
                                 e.stopPropagation();
                                 handleIconButtonClick("skip");
                             }} />
-                            <div style={{
+                            {/* <div style={{
                                 position: "relative",
                                 top: "1.5rem"
                             }} className='scrollBtn'>
@@ -251,37 +249,48 @@ export default function Card({ show, ...props }) {
                                         e.stopPropagation();
                                         document.querySelector("#scroll-anchor").scrollIntoView({ behavior: "smooth" });
                                     }} />
+                            </div> */}
+                            <div style={{
+                                display: "flex",
+                                gap: "1rem",
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}>
+                                <IconButton type='chat' onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleIconButtonClick("chat");
+                                }} />
+                                <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
+                                    e.stopPropagation();
+                                    setLiked(!liked);
+                                    handleIconButtonClick("like");
+                                }} />
                             </div>
-                            <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
-                                e.stopPropagation();
-                                setLiked(!liked);
-                                handleIconButtonClick("like");
-                            }} />
-                            <IconButton type='chat' onClick={(e) => {
-                                e.stopPropagation();
-                                handleIconButtonClick("chat");
-                            }} />
                         </div>
                     </div>
-                    <div className='menu'>
-                        <div onClick={(e) => {
-                            e.stopPropagation();
-                            navigate("/user/preferences");
-                        }} style={{ cursor: "pointer" }}>
-                            <svg width="31" height="32" viewBox="0 0 31 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M5.45313 7.23751L13.0211 7.23751M13.0211 7.23751C13.0211 8.63074 14.1506 9.76018 15.5438 9.76018C16.937 9.76018 18.0665 8.63074 18.0665 7.23751M13.0211 7.23751C13.0211 5.84428 14.1506 4.71484 15.5438 4.71484C16.937 4.71484 18.0665 5.84428 18.0665 7.23751M18.0665 7.23751L25.6345 7.23751M5.45313 16.0668H20.5891M20.5891 16.0668C20.5891 17.4601 21.7186 18.5895 23.1118 18.5895C24.505 18.5895 25.6345 17.4601 25.6345 16.0668C25.6345 14.6736 24.505 13.5442 23.1118 13.5442C21.7186 13.5442 20.5891 14.6736 20.5891 16.0668ZM10.4985 24.8962H25.6345M10.4985 24.8962C10.4985 23.5029 9.36902 22.3735 7.97579 22.3735C6.58256 22.3735 5.45312 23.5029 5.45312 24.8962C5.45313 26.2894 6.58256 27.4188 7.97579 27.4188C9.36902 27.4188 10.4985 26.2894 10.4985 24.8962Z" stroke="white" stroke-width="1.892" stroke-linecap="round" />
-                            </svg>
-                        </div>
-                        <Dropdown>
+                    <div className='menu' style={{
+                        flexDirection: "row !important",
+                        justifyContent: "space-between",
+                        width: "93%",
+                    }}>
+                        {
+                            window.location.pathname.endsWith(props.user_id) ? (
+                                <div
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        window.history.back();
+                                    }}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 12L20 12M4 12L10 6M4 12L10 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </div>
+                            ) : (<div></div>)
+                        }
+                        <Dropdown show={showDropdown} onToggle={() => setShowDropdown(!showDropdown)}>
                             <Dropdown.Toggle
                                 as="div"
-                                style={{
-                                    cursor: "pointer",
-                                }}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setShowDropdown(!showDropdown);
-                                }}
                             >
                                 <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M16.8117 6.78086C16.8117 6.08425 16.247 5.51953 15.5504 5.51953C14.8538 5.51953 14.2891 6.08425 14.2891 6.78086C14.2891 7.47748 14.8538 8.0422 15.5504 8.0422C16.247 8.0422 16.8117 7.47748 16.8117 6.78086Z" stroke="white" stroke-width="1.892" stroke-linecap="round" stroke-linejoin="round" />
@@ -289,11 +298,26 @@ export default function Card({ show, ...props }) {
                                     <path d="M16.8117 24.4395C16.8117 23.7429 16.247 23.1782 15.5504 23.1782C14.8538 23.1782 14.2891 23.7429 14.2891 24.4395C14.2891 25.1361 14.8538 25.7009 15.5504 25.7009C16.247 25.7009 16.8117 25.1361 16.8117 24.4395Z" stroke="white" stroke-width="1.892" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                             </Dropdown.Toggle>
-                            <Dropdown.Menu show={showDropdown} style={{
-                                backgroundColor: "rgba(255, 255, 255, 0.5)",
-                                backdropFilter: "blur(50px)",
+                            <Dropdown.Menu style={{
+                                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                                backdropFilter: "blur(10px)",
                                 border: "none",
                             }}>
+                                <Dropdown.Item
+                                    as="button"
+                                    className='dropdown-hover-button'
+                                    style={{
+                                        borderBottom: "1px solid #8b807f",
+                                        marginBottom: "0.5rem",
+                                        color: "white"
+                                    }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigate("/user/preferences");
+                                    }}
+                                >
+                                    Preferences
+                                </Dropdown.Item>
                                 <Dropdown.Item
                                     as="button"
                                     className='dropdown-hover-button'
@@ -537,6 +561,57 @@ function BlockModal({ show, setShow, personId }) {
                         }}
                     >
                         Submit
+                    </Button>
+                </div>
+            </Modal.Body>
+        </Modal>
+    )
+}
+
+function UpgradeModal({ show, setShow }) {
+    return (
+        <Modal size='sm' centered show={show}>
+            <Modal.Body style={{
+                position: "relative",
+                padding: "1rem"
+            }}>
+                <span
+                    style={{
+                        position: "absolute",
+                        top: "-7px",
+                        right: "-7px",
+                    }}
+                    onClick={() => {
+                        setShow(false);
+                    }}
+                >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="12" fill="white" />
+                        <path d="M16 8L8 16M8.00001 8L16 16" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M19 5L5 19M5.00001 5L19 19" stroke="#5E5E5E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </span>
+                <p style={{
+                    fontSize: "large",
+                    fontWeight: "500",
+                    margin: "0",
+                    marginBottom: "1rem",
+                    color: "#6c6c6c"
+                }}>You can undo matches that you've passed on if you change your mind.</p>
+                <div style={{
+                    marginTop: "1rem",
+                    display: "flex",
+                    gap: "1rem",
+                    marginInline: "auto",
+                }}>
+                    <Button
+                        onClick={() => window.location.assign("/selectplan")}
+                        style={{
+                            borderRadius: "9999px",
+                            padding: "0.75rem 1.5rem",
+                        }}
+                    >
+                        Upgrade now
                     </Button>
                 </div>
             </Modal.Body>

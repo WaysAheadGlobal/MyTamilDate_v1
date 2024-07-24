@@ -185,7 +185,7 @@ payment.get("/methods", async (req: UserRequest, res) => {
         }
 
         const customerId = result[0].stripe_id;
-
+        
         try {
             const paymentMethods = await stripe.paymentMethods.list({
                 customer: customerId,

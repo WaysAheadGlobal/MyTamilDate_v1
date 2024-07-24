@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ChatBox from '../../components/chat-box/ChatBox'
 import ChatNav from '../../components/chat-nav/ChatNav'
 import Likes from '../../components/likes/Likes'
@@ -11,6 +11,14 @@ import styles from './chat.module.css'
 
 export default function Chat() {
     const pathname = window.location.pathname.split("/");
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        setIsMobile(window.innerWidth < 768);
+        window.onresize = () => {
+            setIsMobile(window.innerWidth < 768);
+        }
+    }, []);
 
     return (
         <section className={[styles.chatLayout, "chat"].join(" ")}>
@@ -34,10 +42,12 @@ export default function Chat() {
                     ) && <Matches />
                 }
                 <div style={{ marginTop: "auto" }}></div>
-                <Navbar style={{
-                    width: "100%",
-                    maxWidth: "100%",
-                }} />
+                {
+                    isMobile && <Navbar style={{
+                        width: "100%",
+                        maxWidth: "100%",
+                    }} />
+                }
             </div>
             <ChatBox className={styles.chatBox} />
         </section>
