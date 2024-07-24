@@ -33,22 +33,34 @@ const Icons = {
             </clipPath>
         </defs>
     </svg>,
-    skip: <svg width="66" height="67" viewBox="0 0 66 67" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="32.8025" cy="33.322" r="32.164" fill="white" stroke="white" stroke-width="1.26133" />
-        <g clip-path="url(#clip0_969_22053)">
-            <path d="M41.4545 24.6641L24.1562 41.9623M24.1562 24.6641L41.4545 41.9623" stroke="url(#paint0_linear_969_22053)" stroke-width="2.52267" stroke-linecap="round" stroke-linejoin="round" />
+    skip: <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g filter="url(#filter0_d_4123_10370)">
+            <circle cx="28" cy="28" r="28" fill="white" fill-opacity="0.35" />
+            <g clip-path="url(#clip0_4123_10370)">
+                <path d="M35.3845 20.6133L20.6152 35.3825M20.6152 20.6133L35.3845 35.3825" stroke="#CCCCCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M35.3845 20.6133L20.6152 35.3825M20.6152 20.6133L35.3845 35.3825" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M35.3845 20.6133L20.6152 35.3825M20.6152 20.6133L35.3845 35.3825" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M35.3845 20.6133L20.6152 35.3825M20.6152 20.6133L35.3845 35.3825" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </g>
         </g>
         <defs>
-            <linearGradient id="paint0_linear_969_22053" x1="33.5017" y1="23.9433" x2="33.5017" y2="43.7643" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#FC8C66" />
-                <stop offset="1" stop-color="#F76A7B" />
-            </linearGradient>
-            <clipPath id="clip0_969_22053">
-                <rect width="20.1813" height="20.1813" fill="white" transform="translate(22.7109 23.2305)" />
+            <filter id="filter0_d_4123_10370" x="0" y="0" width="64" height="64" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                <feOffset dx="4" dy="4" />
+                <feGaussianBlur stdDeviation="2" />
+                <feComposite in2="hardAlpha" operator="out" />
+                <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.75 0" />
+                <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4123_10370" />
+                <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_4123_10370" result="shape" />
+            </filter>
+            <clipPath id="clip0_4123_10370">
+                <rect width="17.2308" height="17.2308" fill="white" transform="translate(19.3867 19.3867)" />
             </clipPath>
         </defs>
-    </svg>,
-    chat: <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    </svg>
+    ,
+    chat: <svg width="64" height="64" viewBox="0 0 64 64" style={{ marginTop: "1rem" }} fill="none" xmlns="http://www.w3.org/2000/svg">
         <g filter="url(#filter0_dddd_969_22058)">
             <circle cx="31.5782" cy="27.3204" r="25.2267" fill="#4B164C" />
         </g>

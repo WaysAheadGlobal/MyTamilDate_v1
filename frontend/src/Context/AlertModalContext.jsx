@@ -9,6 +9,7 @@ import Button from '../components/userflow/components/button/Button';
  * @property {string} title
  * @property {() => void} onButtonClick
  * @property {boolean} showCancelButton
+ * @property {string} buttonText
  */
 
 /**
@@ -36,7 +37,8 @@ export default function AlertModalProvider({ children }) {
         message: "",
         title: "",
         onButtonClick: () => { },
-        showCancelButton: false
+        showCancelButton: false,
+        buttonText: "Okay"
     });
 
     const value = useMemo(() => ({ modal, setModal }), [modal, setModal]);
@@ -111,7 +113,7 @@ export default function AlertModalProvider({ children }) {
                                 padding: "0.75rem 1.5rem",
                             }}
                         >
-                            Okay
+                            {modal.buttonText ?? "Okay"}
                         </Button>
                     </div>
                 </Modal.Body>

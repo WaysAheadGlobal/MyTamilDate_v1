@@ -354,7 +354,7 @@ export default function Preferences() {
                             display: "flex",
                             flexDirection: "column",
                             gap: "1rem",
-                            minHeight: "25rem",
+                            minHeight: "10rem",
                             marginTop: "1rem",
                         }}
                         onSubmit={handlePreferenceSave}

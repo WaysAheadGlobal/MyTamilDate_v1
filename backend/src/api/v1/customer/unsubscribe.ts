@@ -32,9 +32,12 @@ unsubscribe.post("/", async (req: UserRequest, res) => {
     try {
         await db.promise().beginTransaction();
         await db.promise().query(`DELETE FROM dncs_user_unsubscribe WHERE user_id = ?`, [userId]);
-        await db.promise().query(`INSERT INTO dncs_user_unsubscribe (user_id, unsubscribe_group_id, created_at, updated_at) VALUES ?`, [unsubscribeGroups.map((group) => [userId, group, new Date(), new Date()])]);
+        const values = unsubscribeGroups.map((group) => [userId, group, new Date(), new Date()]);
+        if (values.length !== 0) {
+            await db.promise().query(`INSERT INTO dncs_user_unsubscribe (user_id, unsubscribe_group_id, created_at, updated_at) VALUES ?`, [values]);
+        }
         await db.promise().commit();
-    } catch (error) { 
+    } catch (error) {
         console.log(error);
         await db.promise().rollback();
         return res.status(500).json({ message: "Internal server error" });
