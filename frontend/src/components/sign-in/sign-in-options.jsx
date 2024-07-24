@@ -37,7 +37,6 @@ export const SignInOptions = () => {
                     usingGoogle: true
                 })
             });
-
             const resData = await res.json();
             
             if (res.ok) {
@@ -72,7 +71,7 @@ export const SignInOptions = () => {
                     <Container className='logo-progressbar1'>
 
                         <Container className='logo-arrow1'>
-                            <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
+                            <Image src={backarrow} className='backarrow' onClick={() => navigate("/")} />
                             <Image src={logo2} alt="Logo" className='logo1' style={{ backgroundColor: 'transparent' }} />
                         </Container>
                         {/* <div className='track-btn1'>

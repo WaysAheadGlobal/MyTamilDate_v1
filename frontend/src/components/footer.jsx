@@ -67,9 +67,7 @@ export const Footer = () => {
                             <a href="https://www.tiktok.com/@mytamildate?lang=en" className='linkf'>
                                 <Image className="socio" src={tiktok}></Image>
                             </a>
-
                         </div>
-
 
 
 
