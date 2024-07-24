@@ -4,75 +4,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyTamilDate Email</title>
+    <title>New Members Email</title>
     <style>
         body {
+            background-color: #fdf4ff;
             font-family: Arial, sans-serif;
-            background-color: #f8f3f9;
             margin: 0;
             padding: 0;
-            height: 100dvh;
+            color: #333;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
-        .email-container {
+        .container {
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
-            background-color: #ffffff;
-            border: 1px solid #e0d8e6;
-            border-radius: 10px;
-            overflow: hidden;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .header {
-            background-color: #ffffff;
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid #e0d8e6;
+            text-align: left;
+            padding-bottom: 20px;
         }
 
-        .header img {
-            max-width: 100px;
+        .header h1 {
+            font-size: 24px;
+            margin: 10px 0;
         }
 
         .content {
-            padding: 20px;
             text-align: center;
+            padding: 20px 0;
         }
 
-        .content h1 {
-            color: #ff7f50;
-            font-size: 24px;
-            margin: 0 0 20px 0;
+        .content h2 {
+            font-size: 22px;
+            color: #ff7648;
         }
 
         .content p {
             font-size: 16px;
-            color: #333333;
-            margin: 0 0 20px 0;
+            color: #666;
         }
 
-        .content img {
-            border-radius: 50%;
-            width: 150px;
-            height: 150px;
+        .members {
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
+            padding: 20px 0;
+        }
+
+        .member {
+            text-align: center;
+        }
+
+        .member img {
+            width: 200px;
+            height: 200px;
             object-fit: cover;
-            margin: 0 auto;
+        }
+
+        .member p {
+            margin: 10px 0;
+            font-size: 14px;
+            color: #ff7648;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 20px 0;
         }
 
         .button {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 20px 0;
-            font-size: 16px;
-            color: #ffffff !important;
-            background-color: #ff7f50;
+            background-color: #ff7648;
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 30px;
             text-decoration: none;
-            border-radius: 5px;
+            font-size: 16px;
         }
 
         .footer {
@@ -101,19 +117,33 @@
 </head>
 
 <body>
-    <div class="email-container">
+    <div class="container">
         <div class="header">
-            <img src="<%= logo %>" alt="MyTamilDate">
+            <img src="<%= logo %>" alt="myTamilDate Logo">
+            <h1>myTamilDate</h1>
         </div>
+
         <div class="content">
-            <h1>You caught their attention</h1>
-            <p>You stood out to this myTamilDate member this week!</p>
-            <img src="<%= image %>" alt="profile">
-            <p>
-                <%= name %>
-            </p>
-            <a href="https://mytamildate.waysdatalabs.com/user/home" class="button" style="color: white;">Login & say
-                hello</a>
+            <h2>New members joined this week</h2>
+            <p>We've had a number of new members join and found a few who might catch your eyes.</p>
+            <h3>New users this week</h3>
+        </div>
+
+        <div class="members" style="justify-content: space-between !important; gap: 1rem !important;">
+            <% profiles.forEach(profile=> { %>
+                <div class="member">
+                    <img src="<%= profile.image %>" alt="<%= profile.name %>">
+                    <a href="<%= profile.link %>" style="text-decoration: none; color: white;">
+                        <p>
+                            <%= profile.name %>
+                        </p>
+                    </a>
+                </div>
+                <% }); %>
+        </div>
+
+        <div class="button-container" style="text-decoration: none; color: white;">
+            <a href="https://mytamildate.waysdatalabs.com/Signinoptions" class="button">Login to myTamilDate</a>
         </div>
     </div>
     <div class="footer">

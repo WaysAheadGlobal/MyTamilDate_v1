@@ -1,6 +1,12 @@
 import ejs from 'ejs';
 import sgMail from '@sendgrid/mail';
 
+type Profile = {
+    name: string;
+    image: string;
+    link: string;
+}
+
 class MailService {
     private from: string;
 
@@ -8,7 +14,7 @@ class MailService {
         this.from = process.env.EMAIL_HOST!;
     }
 
-    private async sendMail(to: string, subject: string, template: string, data: Record<string, string | number>) {
+    private async sendMail(to: string, subject: string, template: string, data: Record<string, string | number | Profile[]>) {
         const html: string = await ejs.renderFile(__dirname + `/templates/${template}.ejs`, {
             ...data,
             logo: `${process.env.IMAGES_URL}/logo.png`,
@@ -90,6 +96,12 @@ class MailService {
     async sendPauseAccountMail(to: string, name: string) {
         await this.sendMail(to, 'Come back! We have a special discount for you.', 'pause', {
             name
+        });
+    }
+
+    async sendWeeklyMail(to: string, profiles: Profile[]) {
+        await this.sendMail(to, 'Your weekly matches are here!', 'week', {
+            profiles: profiles
         });
     }
 }
