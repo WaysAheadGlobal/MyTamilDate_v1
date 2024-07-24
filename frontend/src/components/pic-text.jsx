@@ -111,7 +111,8 @@ export const Pictext = () => {
                         lineHeight: mobile ? '30px' : "36px",
                         marginTop: '1rem',
                         textAlign: "justify",
-                        width: !mobile ? "28rem" : ""
+                        width: !mobile ? "28rem" : "",
+                        wordBreak: "break-word"
                     }}>A surprise engagement at a myTamilDate couple's photoshoot! Find out how <span style={{ color: '#4E1173', }}>Abi & John</span> Bonded Over Faith & Their Tamil-German-British Connection.</p>
                     <a href='https://tamilculture.com/mytamildate-success-abi-john-bonded-over-faith-their-tamil-german-british-connection' className='view-success-btn' style={{ marginTop: "1rem" }}>View Success Story</a>
                 </div>
@@ -121,7 +122,7 @@ export const Pictext = () => {
                 display: 'flex',
                 justifyContent: 'space-around',
                 alignItems: 'center',
-                marginTop: "1rem"
+                marginTop: "1rem",
             }} ref={el => entryRefs.current[1] = el}>
                 <div className='text1' style={{
                     maxWidth: '30rem',
@@ -131,6 +132,7 @@ export const Pictext = () => {
                         fontSize: "clamp(16px, 4vw, 18px)",
                         lineHeight: mobile ? '30px' : "36px",
                         textAlign: "justify",
+                        wordBreak: "break-word"
                     }}>Connect with others who truly understand your unique quirks, share your passions, and appreciate your inside jokes and who value what makes you.</p>
                 </div>
                 <div className='pic1' style={{
@@ -169,8 +171,11 @@ export const Pictext = () => {
                     <p style={{
                         fontSize: "clamp(16px, 4vw, 18px)",
                         lineHeight: mobile ? '30px' : "36px",
-                        textAlign: "justify"
-                    }}>Meet people who share your interests, values, and that undeniable spark who are also looking for a meaningful match. Whether they're around the corner or across the globe, we'll help you find your match.</p>
+                        textAlign: "justify",
+                        wordBreak: "break-word"
+                    }}>
+                        Meet people who share your interests, values, and that undeniable spark who are also looking for a meaningful match. Whether they're around the corner or across the globe, we'll help you find your match.
+                    </p>
                 </div>
             </div>
         </div>
