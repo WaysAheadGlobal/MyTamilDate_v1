@@ -34,9 +34,8 @@ const Selectplan = () => {
         overflowY: "auto",
         scrollbarWidth: "none",
         width: "-webkit-fill-available",
-        
       }}>
-        <div className={styles.bottomdetails} style={{ padding: "0.5rem", }}>
+        <div className={styles.bottomdetails} >
           <div style={{ marginBottom: "10px" }}>
             <Container className='logo-arrow1'>
               <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />

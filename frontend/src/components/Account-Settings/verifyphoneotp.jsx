@@ -210,12 +210,14 @@ console.log()
               </div>
             </div>
           </Container>
-          <Button variant='outline-danger' className='btn-cancel' onClick={handleClosePhoneotp}>
+          <div className="d-flex justify-content-center" style={{ width: "100%", gap: "30px" }}>
+          <button  className='global-red-cencel-button'onClick={handleClosePhoneotp}>
             Cancel
-          </Button>
-          <Button variant='primary' className='btn-save' type='submit'>
+          </button>
+          <button  className="global-save-button"  type='submit'>
             Save
-          </Button>
+          </button>
+          </div>
         </Form>
       </Modal.Body>
     </Modal>

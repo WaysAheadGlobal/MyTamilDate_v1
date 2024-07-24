@@ -8,13 +8,17 @@ import styles from './carousel.module.css';
 
 const CarouselComponent = () => {
   return (
+    <div className={styles.bigcontainer}>
     <div className={styles.carouselContainer} style={{
       marginInline: "auto",
       marginBlock: "1rem",
     }}>
       <Carousel interval={3000} pause="hover" indicators={true} controls={false}>
         <Carousel.Item>
-          <Image src={crousleone} rounded className={styles.carouselImage} />
+      
+
+          
+          <Image src={crousleone}  className={styles.carouselImage} />
           <Carousel.Caption className={styles.carouselCaption}>
             <h5>Premium Membership Benefits</h5>
             <ul>
@@ -22,9 +26,10 @@ const CarouselComponent = () => {
               <li>See who liked you</li>
             </ul>
           </Carousel.Caption>
+        
         </Carousel.Item>
         <Carousel.Item>
-          <Image src={crousletwo} rounded className={styles.carouselImage} />
+          <Image src={crousletwo}  className={styles.carouselImage} />
           <Carousel.Caption className={styles.carouselCaption}>
             <h5>Premium Membership Benefits</h5>
             <ul>
@@ -34,7 +39,7 @@ const CarouselComponent = () => {
           </Carousel.Caption>
         </Carousel.Item>
         <Carousel.Item>
-          <Image src={crouslethree} rounded className={styles.carouselImage} />
+          <Image src={crouslethree} className={styles.carouselImage} />
           <Carousel.Caption className={styles.carouselCaption}>
             <h5>Premium Membership Benefits</h5>
             <ul>
@@ -43,6 +48,7 @@ const CarouselComponent = () => {
           </Carousel.Caption>
         </Carousel.Item>
       </Carousel>
+    </div>
     </div>
   );
 };

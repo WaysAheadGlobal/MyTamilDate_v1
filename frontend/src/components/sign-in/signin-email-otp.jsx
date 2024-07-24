@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './signin-email-otp.css';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -16,6 +16,31 @@ export const SignInEmailOTP = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const cookies = useCookies();
+    const [timer, setTimer] = useState(120);
+    const [canResend, setCanResend] = useState(false);
+    const intervalRef = useRef(null);
+    useEffect(() => {
+       
+            startTimer();
+        
+        return () => clearInterval(intervalRef.current);
+    }, []);
+
+    const startTimer = () => {
+        clearInterval(intervalRef.current);
+        setTimer(120);
+        setCanResend(false);
+        intervalRef.current = setInterval(() => {
+            setTimer(prev => {
+                if (prev === 1) {
+                    clearInterval(intervalRef.current);
+                    setCanResend(true);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    };
 
     const goToSigninEmailSuccessful = () => {
         navigate("/signinemailsuccessful");
@@ -81,6 +106,36 @@ export const SignInEmailOTP = () => {
             window.location.assign('/user/home');
         }
     };
+
+    const handleResendCode = async () => {
+        
+       const  email= location.state?.email
+        if (!email) {
+            setErrorMessage('Please enter a valid email address');
+            return;
+        } else if (!email.includes('@')) {
+            setErrorMessage('Please enter a valid email address');
+            return;
+        }
+        const response = await fetch(`${API_URL}/user/login/email-otp`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email
+            })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            setErrorMessage(data.message);
+            return;
+        }
+        startTimer();
+    
+        setErrorMessage('');
+    };
+
 
     return (
         <div className='entercode-container'>
@@ -157,9 +212,19 @@ export const SignInEmailOTP = () => {
                                     {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
                                 </Form.Group>
                                 <div className='resend-timer'>
-                                    <a href=''> Resend code</a>
-                                    <span>1:48sec</span>
-                                </div>
+    <a 
+        href='#' 
+        onClick={(e) => { 
+            e.preventDefault(); 
+            if (canResend) handleResendCode(); 
+        }} 
+        className={!canResend ? 'disabled' : ''}
+        style={{ pointerEvents: !canResend ? 'none' : 'auto', color: !canResend ? 'grey' : 'initial' }}
+    >
+        Resend code
+    </a>
+    <span>{Math.floor(timer / 60)}:{String(timer % 60).padStart(2, '0')} sec</span>
+</div>
                             </div>
                             <Button variant="primary" type="submit" onClick={handleSubmit} className='entercode-btn'>
                                 Next
