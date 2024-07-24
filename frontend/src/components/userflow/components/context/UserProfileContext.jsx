@@ -34,6 +34,8 @@ import { useCookies } from '../../../../hooks/useCookies';
  * @property {React.Dispatch<React.SetStateAction<number>>} setWave - The setWave function.
  * @property {AbortController} abortController - The abortController.
  * @property {React.Dispatch<React.SetStateAction<AbortController>>} setAbortController - The setAbortController function.
+ * @property {number} refresh - The refresh status.
+ * @property {React.Dispatch<React.SetStateAction<number>>} setRefresh - The setRefresh function.
  */
 
 /**
@@ -61,6 +63,7 @@ export default function UserProfileProvider({ children }) {
     const [abortController, setAbortController] = useState(new AbortController());
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
+    const [refresh, setRefresh] = useState(1);
 
     useEffect(() => {
         const storedWave = cookies.getCookie('wave');
@@ -95,12 +98,42 @@ export default function UserProfileProvider({ children }) {
                     setWave(wave + 1);
                     cookies.setCookie('wave', wave + 1);
                 }
+                setProfiles(data);
+            }
+
+            setLoading(false);
+        })()
+    }, [refresh]);
+
+    useEffect(() => {
+        if (!cookies.getCookie('token')) {
+            return;
+        }
+        
+        (async () => {
+            setLoading(true);
+
+            const response = await fetch(`${API_URL}customer/user/profiles?page=${page}&wave=${wave}`, {
+                headers: {
+                    'Authorization': `Bearer ${cookies.getCookie('token')}`,
+                },
+                signal: abortController.signal
+            });
+            const data = await response.json();
+            if (!data) return;
+            console.log(data)
+
+            if (response.ok) {
+                if (data.length === 0 && wave < 3) {
+                    setWave(wave + 1);
+                    cookies.setCookie('wave', wave + 1);
+                }
                 setProfiles([...profiles, ...data]);
             }
 
             setLoading(false);
         })()
-    }, [page, wave, window.location.pathname]);
+    }, [page, wave]);
 
     const value = useMemo(() => ({
         profiles,
@@ -112,7 +145,9 @@ export default function UserProfileProvider({ children }) {
         wave,
         setWave,
         abortController,
-        setAbortController
+        setAbortController,
+        refresh,
+        setRefresh
     }), [
         profiles,
         setProfiles,
@@ -123,7 +158,9 @@ export default function UserProfileProvider({ children }) {
         wave,
         setWave,
         abortController,
-        setAbortController
+        setAbortController,
+        refresh,
+        setRefresh
     ]);
 
     return (

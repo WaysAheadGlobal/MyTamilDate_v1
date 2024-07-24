@@ -138,7 +138,7 @@ export const ReligionUpdate = () => {
                 flexDirection: "column",
                 gap: "1rem",
                 overflowY: "auto",
-                scrollbarWidth: "none",
+                
                 padding : "2rem"
             }}>
       

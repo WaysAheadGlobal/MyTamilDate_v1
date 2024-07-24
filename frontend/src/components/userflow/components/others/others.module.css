@@ -43,7 +43,7 @@
     display: grid;
     gap: 1rem;
     grid-template-columns: repeat(2, auto);
-    scrollbar-width: none;
+    scrollbar-width: thin;
 }
 
 .profiles>div {

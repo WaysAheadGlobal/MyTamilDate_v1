@@ -24,7 +24,7 @@ export const PrivacyPolicySetting = () => {
             //     flexDirection: "column",
             //     gap: "1rem",
             //     overflowY: "auto",
-            //     scrollbarWidth: "none",
+            //     
             //     marginTop: "-50px",
             //     padding : "2rem"
             // }}>

@@ -708,7 +708,6 @@ export const AccountSetting = () => {
                 flexDirection: "column",
                 gap: "1rem",
                 overflowY: "auto",
-                scrollbarWidth: "none",
                 marginTop: "-30px",
                 width: "100%",
                 paddingInline: "1rem",

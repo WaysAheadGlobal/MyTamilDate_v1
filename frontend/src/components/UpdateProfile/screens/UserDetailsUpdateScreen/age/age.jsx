@@ -115,96 +115,95 @@ export const BasicDetailsUpdate = () => {
 
   return (
     <Sidebar>
- <div style={{
-                flex: "1",
-                marginInline: "auto",
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem",
-                overflowY: "auto",
-                scrollbarWidth: "none",
-                padding : "2rem"
-            }}>
+      <div style={{
+        flex: "1",
+        marginInline: "auto",
+        display: "flex",
+        flexDirection: "column",
+        gap: "1rem",
+        overflowY: "auto",
+        padding: "2rem"
+      }}>
 
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <div className='basicdetails-container'>
-      
-        <Container className='basicdetails-main'>
-          <Container className='basicdetails-content' style={{width : "100%"}}>
-        
-            <Container className='basic-details-text'>
-              <Image className='basic-detail-icon' src={basicdetails}></Image>
-              <p>When is Your Birthday?</p>
-            </Container>
-            <Container className='basic-details-details' >
-              <Form onSubmit={handleSubmit} className='basic-details-form'>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <div className='basicdetails-container'>
+
+            <Container className='basicdetails-main'>
+              <Container className='basicdetails-content' style={{ width: "100%" }}>
+
+                <Container className='basic-details-text'>
+                  <Image className='basic-detail-icon' src={basicdetails}></Image>
+                  <p>When is Your Birthday?</p>
+                </Container>
+                <Container className='basic-details-details' >
+                  <Form onSubmit={handleSubmit} className='basic-details-form'>
 
 
-                <Form.Group controlId="formBirthday" className='basic-details-group'>
-                  <Form.Label className='basic-details-label'></Form.Label>
-                  <div style={{ display: 'flex', alignItems: 'center', width: '100%', position: "relative" }}>
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        width: '100%',
-                        cursor: 'pointer',
-                        border: '1px solid black',
-                        borderRadius: '10px',
-                        overflow: 'hidden',
-                      }}
-                      onClick={handleClick}
-                    >
-                      <Form.Control
-                        className={`basic-details-input-verify custom-input ${errorMessage ? 'error' : ''}`}
-                        type="text"
-                        placeholder="Day / Month / Year"
-                        value={userDetails.birthday || ''}
-                        style={{ flex: 1, border: 0, cursor: 'pointer' }}
-                        readOnly
-                      />
-                      <FaRegCalendar style={{
-                        marginRight: '10px',
-                      }} />
+                    <Form.Group controlId="formBirthday" className='basic-details-group'>
+                      <Form.Label className='basic-details-label'></Form.Label>
+                      <div style={{ display: 'flex', alignItems: 'center', width: '100%', position: "relative" }}>
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            width: '100%',
+                            cursor: 'pointer',
+                            border: '1px solid black',
+                            borderRadius: '10px',
+                            overflow: 'hidden',
+                          }}
+                          onClick={handleClick}
+                        >
+                          <Form.Control
+                            className={`basic-details-input-verify custom-input ${errorMessage ? 'error' : ''}`}
+                            type="text"
+                            placeholder="Day / Month / Year"
+                            value={userDetails.birthday || ''}
+                            style={{ flex: 1, border: 0, cursor: 'pointer' }}
+                            readOnly
+                          />
+                          <FaRegCalendar style={{
+                            marginRight: '10px',
+                          }} />
+                        </div>
+                        <Popper
+                          sx={{
+                            backgroundColor: 'white',
+                            zIndex: 9999,
+                            borderRadius: "10px",
+                            border: "1px solid black",
+                          }} open={open}
+                          anchorEl={anchorEl}
+                          placement='bottom-start'
+                        >
+                          <DateCalendar
+                            onChange={(value) => {
+                              handleBirthdayChange(dayjs(value).format('YYYY-MM-DD'));
+                            }}
+                            disableFuture
+                          />
+                        </Popper>
+                      </div>
+                      {age !== null && age !== 54 && <span className='calculated-age'>Your age is {age}</span>}
+                      {!adulthood && userDetails.birthday && <p className="text-danger error-message">You must be at least 18 years old</p>}
+                    </Form.Group>
+
+                    <div className="d-flex justify-content-center" style={{ position: "fixed", bottom: "30px", width: "100%", gap: "30px" }}>
+                      <button className="global-cancel-button" onClick={() => navigate('/updateprofile')}>
+                        Cancel
+                      </button>
+                      <button type="submit" className="global-save-button">
+                        Save
+                      </button>
                     </div>
-                    <Popper
-                      sx={{
-                        backgroundColor: 'white',
-                        zIndex: 9999,
-                        borderRadius: "10px",
-                        border: "1px solid black",
-                      }} open={open}
-                      anchorEl={anchorEl}
-                      placement='bottom-start'
-                    >
-                      <DateCalendar
-                        onChange={(value) => {
-                          handleBirthdayChange(dayjs(value).format('YYYY-MM-DD'));
-                        }}
-                        disableFuture
-                      />
-                    </Popper>
-                  </div>
-                  {age !== null && age !== 54 && <span className='calculated-age'>Your age is {age}</span>}
-                  {!adulthood && userDetails.birthday && <p className="text-danger error-message">You must be at least 18 years old</p>}
-                </Form.Group>
-
-                <div className="d-flex justify-content-center" style={{ position: "fixed", bottom: "30px", width: "100%", gap : "30px" }}>
-    <button className="global-cancel-button" onClick={()=> navigate('/updateprofile')}>
-        Cancel
-    </button>
-    <button  type="submit" className="global-save-button">
-        Save
-    </button>
-</div>
-              </Form>
+                  </Form>
+                </Container>
+              </Container>
             </Container>
-          </Container>
-        </Container>
+          </div>
+        </LocalizationProvider>
       </div>
-    </LocalizationProvider>
-    </div>
     </Sidebar>
   );
 }

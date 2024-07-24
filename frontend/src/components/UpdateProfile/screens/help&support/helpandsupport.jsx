@@ -259,7 +259,6 @@ Undo matches you've passed on if you change your mind
                 flexDirection: "column",
                 gap: "1rem",
                 overflowY: "auto",
-                scrollbarWidth: "none",
                 width: "-webkit-fill-available",
                 padding: "2rem"
             }}>

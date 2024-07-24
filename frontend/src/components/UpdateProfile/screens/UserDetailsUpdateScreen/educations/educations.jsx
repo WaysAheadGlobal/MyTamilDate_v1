@@ -76,6 +76,8 @@ export const EducationUpdate = () => {
                 overflowY: "auto",
                 scrollbarWidth: "none",
                   
+                
+                  padding : "2rem"
             }}>
       
         <div className='education-container'>
