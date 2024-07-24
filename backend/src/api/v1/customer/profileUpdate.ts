@@ -655,6 +655,22 @@ updateprofile.post('/answer/:questionId', verifyUser, (req: UserRequest, res: ex
   });
 });
 
+// Add this endpoint to your updateprofile router
+updateprofile.delete('/answer/:questionId', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+  const questionId = req.params.questionId;
+
+  const deleteQuery = 'DELETE FROM question_answers WHERE user_id = ? AND question_id = ?';
+
+  db.query(deleteQuery, [userId, questionId], (err, results) => {
+    if (err) {
+      console.error('Error deleting answer:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+    res.status(200).json({ message: 'Answer deleted successfully' });
+  });
+});
+
 
 // Update gender and want_gender
 updateprofile.put('/gender', [

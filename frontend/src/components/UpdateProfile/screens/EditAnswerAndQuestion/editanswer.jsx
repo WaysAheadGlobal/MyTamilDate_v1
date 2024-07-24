@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { Button, Container, Image } from 'react-bootstrap';
 import BModal from 'react-bootstrap/Modal';
 import ans from './editanswer.module.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Router, useNavigate } from 'react-router-dom';
 import { API_URL } from '../../../../api';
+import deleteicon from "../../../../assets/images/deleteicon.png";
 import { useCookies } from '../../../../hooks/useCookies';
 import Sidebar from '../../../userflow/components/sidebar/sidebar';
 import answer from '../../../../assets/images/answer.png';
@@ -22,6 +23,7 @@ export default function UpdateAnswers() {
     const navigate = useNavigate();
     const [alert, setAlert] = useState(false);
     const alertmodal = useAlert();
+
     useEffect(() => {
         (async () => {
             const response = await fetch(`${API_URL}/customer/update/questionss`, {
@@ -50,11 +52,33 @@ export default function UpdateAnswers() {
                 },
             });
             const data = await response.json();
-            
+
             setCount(data.count);
             console.log(count);
         })()
     }, []);
+
+    const handleDeleteAnswer = async (questionId) => {
+        try {
+            const response = await fetch(`${API_URL}customer/update/answer/${questionId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+            });
+        //   const response = await axios.delete(`${API_URL}/answer/${questionId}`);
+          if (response.status === 200) {
+            // Update the state or refetch the data to reflect the deletion
+          
+            window.location.reload();
+          
+          }
+        } catch (error) {
+          console.error('Error deleting answer:', error);
+
+        }
+      };
 
     return (
         <Sidebar>
@@ -65,10 +89,11 @@ export default function UpdateAnswers() {
                 flexDirection: "column",
                 gap: "1rem",
                 overflowY: "auto",
+
             }}>
                 <div className={ans.jobcontainer}>
-                    <Modal show={show} alertmodal={alertmodal} count = {count}  onHide={() => setShow(false)} modalData={modalData} />
-                    <AlertModal show={alert} alertmodal={alertmodal} count = {count} onHide={() => setAlert(false)} />
+                    <Modal show={show} alertmodal={alertmodal} count={count} onHide={() => setShow(false)} modalData={modalData} />
+                    <AlertModal show={alert} alertmodal={alertmodal} count={count} onHide={() => setAlert(false)} />
 
                     <Container className={ans.jobmain}>
                         <Container className={ans.jobcontent}>
@@ -91,13 +116,15 @@ export default function UpdateAnswers() {
                                     <div style={{
                                         maxHeight: "60vh",
                                         overflow: "auto",
-                                        scrollbarColor: "transparent transparent",
+                                        paddingRight: "5px",
                                         scrollBehavior: "smooth",
                                     }}>
                                         <div style={{
                                             display: "flex",
                                             flexDirection: "column",
                                             gap: "1rem",
+                                            overflowY: "auto",
+
                                         }}>
                                             {
                                                 questions.map((question, index) => (
@@ -114,15 +141,16 @@ export default function UpdateAnswers() {
                                                             cursor: "pointer",
                                                         }}
                                                         onClick={() => {
-                                                            if (count === 2 && question.answer ==null) {
+                                                            if (count === 2 && question.answer == null) {
                                                                 setAlert(true);
                                                             } else {
-                                                            setShow(true);
-                                                            setModalData({
-                                                                heading: question.question,
-                                                                apiURL: `${API_URL}/customer/update/answer/${question.question_id}`,
-                                                            });
-                                                        }}}
+                                                                setShow(true);
+                                                                setModalData({
+                                                                    heading: question.question,
+                                                                    apiURL: `${API_URL}/customer/update/answer/${question.question_id}`,
+                                                                });
+                                                            }
+                                                        }}
                                                     >
                                                         <div>
                                                             <div style={{
@@ -150,15 +178,33 @@ export default function UpdateAnswers() {
                                                                 {question.description}
                                                             </div>
                                                         </div>
-                                                        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M12.8346 5.5L7.33464 11V14.6667H11.0013L16.5013 9.16667M12.8346 5.5L15.5846 2.75L19.2513 6.41667L16.5013 9.16667M12.8346 5.5L16.5013 9.16667M9.16797 3.66667L3.66797 3.66667L3.66797 18.3333L18.3346 18.3333V12.8333" stroke="url(#paint0_linear_778_6844)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                            <defs>
-                                                                <linearGradient id="paint0_linear_778_6844" x1="12.0869" y1="2.10069" x2="12.0869" y2="19.9566" gradientUnits="userSpaceOnUse">
-                                                                    <stop stopColor="#FC8C66" />
-                                                                    <stop offset="1" stopColor="#F76A7B" />
-                                                                </linearGradient>
-                                                            </defs>
-                                                        </svg>
+                                                        <div style={{
+                                                            display: "flex",
+                                                            alignItems: "center"
+                                                        }}>
+
+
+                                                            {question.answer ? (
+                                                                <Image
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleDeleteAnswer(question.question_id);
+                                                                    }}
+                                                                    className='userinfoicon'
+                                                                    src={deleteicon}
+                                                                />
+                                                            ) : ""}
+
+                                                            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M12.8346 5.5L7.33464 11V14.6667H11.0013L16.5013 9.16667M12.8346 5.5L15.5846 2.75L19.2513 6.41667L16.5013 9.16667M12.8346 5.5L16.5013 9.16667M9.16797 3.66667L3.66797 3.66667L3.66797 18.3333L18.3346 18.3333V12.8333" stroke="url(#paint0_linear_778_6844)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                                <defs>
+                                                                    <linearGradient id="paint0_linear_778_6844" x1="12.0869" y1="2.10069" x2="12.0869" y2="19.9566" gradientUnits="userSpaceOnUse">
+                                                                        <stop stopColor="#FC8C66" />
+                                                                        <stop offset="1" stopColor="#F76A7B" />
+                                                                    </linearGradient>
+                                                                </defs>
+                                                            </svg>
+                                                        </div>
                                                     </div>
                                                 ))
                                             }
@@ -205,7 +251,7 @@ export default function UpdateAnswers() {
     );
 };
 
-function Modal({ show, onHide, modalData, alert ,alertmodal}) {
+function Modal({ show, onHide, modalData, alert, alertmodal }) {
     const [text, setText] = useState("");
     const { getCookie, setCookie } = useCookies();
 
@@ -245,7 +291,7 @@ function Modal({ show, onHide, modalData, alert ,alertmodal}) {
         console.log(data);
 
         if (response.ok) {
-            
+
             alertmodal.setModal({
                 show: true,
                 title: 'Update Profile Answer',
@@ -303,7 +349,7 @@ function Modal({ show, onHide, modalData, alert ,alertmodal}) {
                 gap: "1rem",
             }}>
                 <button
-                   className='global-cancel-button'
+                    className='global-cancel-button'
                     onClick={() => { onHide(); setText(""); }}
                 >
                     Cancel
@@ -320,7 +366,7 @@ function Modal({ show, onHide, modalData, alert ,alertmodal}) {
     )
 }
 
-function AlertModal({ show, onHide,count }) {
+function AlertModal({ show, onHide, count }) {
     return (
         <BModal centered show={show} onHide={onHide}>
             <div>
@@ -331,7 +377,7 @@ function AlertModal({ show, onHide,count }) {
                     textAlign: "center",
                     marginTop: "1rem",
                 }}>
-                     {
+                    {
                         count != 2 ? "Answer atleast 2 prompts." : "You can answer only 2 prompts"
                     }
                 </p>

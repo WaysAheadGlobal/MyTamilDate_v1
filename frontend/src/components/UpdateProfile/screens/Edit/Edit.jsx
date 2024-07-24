@@ -10,6 +10,7 @@ import locationedit from '../../../../assets/images/locationedit.png';
 import relisionedit from '../../../../assets/images/relisionedit.png';
 import educationedit from '../../../../assets/images/educationedit.png';
 import carear from '../../../../assets/images/carear.png';
+import editlogo from "../../../../assets/images/editlogo.png";
 import height from '../../../../assets/images/height.png';
 import language from '../../../../assets/images/language.png';
 import intersts from '../../../../assets/images/intersts.png';
@@ -161,15 +162,12 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
           />
           <div className={`${edit.whyInfo} ${showInfo ? edit.show : edit.hide}`}>
             <p>
-              Any changes made to the "About Me" section will be sent for Admin review and approval. 
-              Your account will be in a pending status until it gets approved. 
-              You should receive an update within 24 hours. If not, please reach 
-              out to hello@mytamildate.com. Thank you for your patience!
+            Please note that changes to your photos and written prompts will be reviewed by our admin team before going live. This process may take up to 48 hours, but you can continue using your account without any interruptions while we review & approve your updates.
             </p>
           </div>
         </div>
         <div>
-          <Image onClick={ ()=> Navigate("/updateanswer")} src={editicontwo} />
+          <Image style={{ cursor: 'pointer' }}  onClick={ ()=> Navigate("/updateanswer")} src={editicontwo} />
         </div>
       </div>
 
@@ -195,7 +193,7 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
           <p>Personality</p>
         </div>
         <div>
-          <Image onClick={()=> Navigate("/personalityupdate")} src={editicontwo} />
+          <Image style={{ cursor: 'pointer' }}  onClick={()=> Navigate("/personalityupdate")} src={editicontwo} />
         </div>
       </div>
       <div className={edit.personalityarray}>
@@ -212,6 +210,12 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
    {/* <button className={edit.upgradebutton}>Update <span><Image src={update}/></span> </button> */}
 
    <div>
+   <div className='edittext-logo'>
+                                <p className='textofedit'>Tap on each section to edit</p>
+                                <div>
+                                    <Image className='editlogo' src={editlogo} />
+                                </div>
+                            </div>
     <Link to = "/updateage">
    <Carddetails 
   icon={age} 
