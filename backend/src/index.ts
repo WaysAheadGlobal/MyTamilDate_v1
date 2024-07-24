@@ -11,6 +11,7 @@ import { RowDataPacket } from 'mysql2';
 import { getUnsubscribedGroups } from './utils/utils';
 import { UnsubscribeGroup } from './enums/UnsubscribeGroupEnum';
 import { Sendmail } from './sendgrip/mail';
+import './weeklyMailSender';
 
 const mailService = new MailService();
 
@@ -23,6 +24,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", api);
 app.use("/mail-check", Sendmail)
+
+
 const httpServer = createServer(app);
 
 export const io = new Server(httpServer, {
@@ -82,7 +85,7 @@ io.on('connection', (socket) => {
         });
 
         try {
-            const unsubscribeGroup = await getUnsubscribedGroups(recepientId); 
+            const unsubscribeGroup = await getUnsubscribedGroups(recepientId);
             if (!socket.rooms.has(recepientId) && !unsubscribeGroup.includes(UnsubscribeGroup.MESSAGES)) {
                 try {
                     const [user] = await db.promise().query<RowDataPacket[]>('SELECT first_name, email FROM user_profiles WHERE user_id = ?', [recepientId]);
