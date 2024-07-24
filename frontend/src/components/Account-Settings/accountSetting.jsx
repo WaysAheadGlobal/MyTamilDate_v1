@@ -48,6 +48,8 @@ export const AccountSetting = () => {
     const [lastName, setLastName] = useState('');
     const [showFinalDetele, setFinalDetele] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const [timer, setTimer] = useState(120);
+    const [canResend, setCanResend] = useState(false);
     const alert = useAlert();
     const id = getCookie('userId')
     const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
@@ -370,34 +372,29 @@ export const AccountSetting = () => {
     const [errorMessageemail, setErrorMessageemail] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [email, setEmail] = useState('');
+    const intervalRef = useRef(null);
+    useEffect(() => {
+        if (showUserEmailotp) {
+            startTimer();
+        }
+        return () => clearInterval(intervalRef.current);
+    }, [showUserEmailotp]);
 
-
-    // const handleSubmit = async(e) => {
-    //     e.preventDefault();
-
-
-    //     if (!email) {
-    //         setErrorMessageemail('Please enter a valid email address');
-    //         return;
-    //     } else if (!email.includes('@')) {
-    //         setErrorMessageemail('Please enter a valid email address');
-    //         return;
-    //     }
-    //       try{
-
-    //         const response = await fetch (`${API_URL}/customer/setting/request-email-update`)
-
-    //       }catch(err){
-    //         console.log(err);
-    //       }
-
-    //     console.log('Email submitted:', email);
-    //     setEmail('');
-    //     setErrorMessageemail('');
-    //     handleCloseEmail();
-    //     handleShowEmailotp();
-
-    // };
+    const startTimer = () => {
+        clearInterval(intervalRef.current);
+        setTimer(120);
+        setCanResend(false);
+        intervalRef.current = setInterval(() => {
+            setTimer(prev => {
+                if (prev === 1) {
+                    clearInterval(intervalRef.current);
+                    setCanResend(true);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -441,7 +438,51 @@ export const AccountSetting = () => {
             setErrorMessageemail('An error occurred while submitting the email. Please try again later.');
         }
     };
+    const handleResendCode = async () => {
+        const email = getCookie("UpdateEmail")
 
+        if (!email) {
+            setErrorMessageemail('Please enter a valid email address');
+            return;
+        } else if (!email.includes('@')) {
+            setErrorMessageemail('Please enter a valid email address');
+            return;
+        }
+        setErrorMessageemail('');
+        console.log("req send")
+        try {
+            const response = await fetch(`${API_URL}/customer/setting/request-email-update`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await response.json();
+
+            console.log('Response:', response);
+            console.log('Response Data:', data);
+
+            if (response.ok) {
+                console.log('Email submitted:', email);
+                setCookie("UpdateEmail", email, 1);
+                setEmail('');
+                setErrorMessageemail('');
+                handleCloseEmail();
+                handleShowEmailotp();
+                startTimer();
+            } else {
+                setErrorMessageemail(data.message);
+            }
+        } catch (err) {
+            console.error('Error submitting email:', err);
+            setErrorMessageemail('An error occurred while submitting the email. Please try again later.');
+        }
+    };
+
+  
 
 
     //otp for email code 
@@ -901,41 +942,7 @@ export const AccountSetting = () => {
 
                     {/* Update the email Address */}
 
-                    {/* <Modal show={showUserEmail} centered>
-                <Modal.Header >
-                    <Modal.Title>Update Your Emaill</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={handleSubmit} className=''>
-                        <Container className='signin-emailverify-content'>
-                            <div style={{ width: '100%', alignItems: 'center' }}>
-                                <Form.Group controlId="formCode" className='signin-emailverify-form-group'>
-
-
-                                    <Form.Control
-                                        className={`signin-emailverify-input ${errorMessage ? 'error' : ''}`}
-                                        type="text"
-                                        style={{ flex: 1 }}
-                                        placeholder="Example@gmail.com"
-                                        onChange={(e) => setEmail(e.target.value)}
-                                    />
-
-
-                                    {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
-                                </Form.Group>
-                            </div>
-                        </Container>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="outline-danger" className="btn-cancel" onClick={handleCloseEmail}>
-                        Cancel
-                    </Button>
-                    <Button variant="primary" className="btn-save" onClick={handleSubmit}>
-                        Save
-                    </Button>
-                </Modal.Footer>
-            </Modal> */}
+                   
 
                     <Modal show={showUserEmail} centered>
                         <Modal.Header >
@@ -960,12 +967,15 @@ export const AccountSetting = () => {
                             </Form>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant="outline-danger" className="btn-cancel" onClick={handleCloseEmail}>
+                        <div className="d-flex justify-content-center" style={{ width: "100%", gap: "30px" }}>
+                            <button  className='global-red-cencel-button'
+                           onClick={handleCloseEmail}>
                                 Cancel
-                            </Button>
-                            <Button variant="primary" className="btn-save" onClick={handleSubmit}>
+                            </button>
+                            <button  className="global-save-button" onClick={handleSubmit}>
                                 Save
-                            </Button>
+                            </button>
+                            </div>
                         </Modal.Footer>
                     </Modal>
 
@@ -1023,17 +1033,30 @@ export const AccountSetting = () => {
                                             {errorMessageotp && <Form.Text className="text-danger error-message">{errorMessageotp}</Form.Text>}
                                         </Form.Group>
                                         <div className='resend-timer'>
-                                            <a href=''> Resend code</a>
-                                            <span>1:48sec</span>
-                                        </div>
+    <a 
+        href='#' 
+        onClick={(e) => { 
+            e.preventDefault(); 
+            if (canResend) handleResendCode(); 
+        }} 
+        className={!canResend ? 'disabled' : ''}
+        style={{ pointerEvents: !canResend ? 'none' : 'auto', color: !canResend ? 'grey' : 'initial' }}
+    >
+        Resend code
+    </a>
+    <span>{Math.floor(timer / 60)}:{String(timer % 60).padStart(2, '0')} sec</span>
+</div>
+
                                     </div>
                                 </Container>
-                                <Button variant="outline-danger" className="btn-cancel" onClick={handleCloseEmailotp}>
+                                <div className="d-flex justify-content-center" style={{ width: "100%", gap: "30px" }}>
+                                <button  className='global-red-cencel-button' onClick={handleCloseEmailotp}>
                                     Cancel
-                                </Button>
-                                <Button variant="primary" className="btn-save" onClick={handleSubmitEmailotp}>
+                                </button>
+                                <button  className="global-save-button" onClick={handleSubmitEmailotp}>
                                     Save
-                                </Button>
+                                </button>
+                                </div>
                             </Form>
                         </Modal.Body>
                     </Modal>

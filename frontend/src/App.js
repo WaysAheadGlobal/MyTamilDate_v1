@@ -54,6 +54,7 @@ import { SignInPhoneOTP } from "./components/sign-in/signin-phone-otp";
 import { SignInPhoneSuccessful } from "./components/sign-in/signin-phone-successful";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import Protected from "./components/UserPrivateRoute/privateroute";
 import { AboutUsPage } from "./components/aboutus-pg";
 import TotalCount from "./components/totalcount";
 import { Video2 } from "./components/video2";
@@ -201,69 +202,69 @@ function App() {
 
               <Route path="/signinemail" element={<SignInEmail />} />
               <Route path="/signinemailotp" element={<SignInEmailOTP />} />
-
-
               <Route path="/entercode" element={<Entercode />} />
-              <Route path="/emailverify" element={<EmailVerify />} />
-              <Route path="/getstarted" element={<GetStarted />} />
-              <Route path="/basicdetails" element={<BasicDetails />} />
-              <Route path="/abtyourself" element={<AbtYourself />} />
-              <Route path="/selfie" element={<Selfie />} />
-              <Route path="/located" element={<Located />} />
-              <Route path="/religion" element={<Religion />} />
-              <Route path="/edu" element={<Education />} />
-              <Route path="/jobtitle" element={<JobTitle />} />
-              <Route path="/height" element={<Height />}/>
-              <Route path="/personality" element={<Personality />} />
-              <Route path="/profile-answers" element={<ProfileAnswers />} />
-              <Route path="/kids-family" element={<KidsAndFamily />} />
-              <Route path="/smoke-drink" element={<SmokeAndFamily />} />
-              <Route path="/approve" element={<ApproveEmail />} />
-              <Route path="/almost-there" element={<AlmostThere />} />
-              <Route path="/pending" element={<AccountPending />} />
-              <Route path="/not-approved" element={<AccountNotApproved />} />
-              <Route path="/approved" element={<AccountApproved />} />
-              <Route path="/user/verify/:token" element={<AccountPending />} />
+
+              <Route path="/emailverify" element={<Protected><EmailVerify /></Protected>}></Route>
+              <Route path="/getstarted" element={<Protected><GetStarted /></Protected>}></Route>
+              <Route path="/basicdetails" element={<Protected><BasicDetails /></Protected>}></Route>
+              <Route path="/abtyourself" element={<Protected><AbtYourself /></Protected>}></Route>
+              <Route path="/selfie" element={<Protected><Selfie /></Protected>}></Route>
+              <Route path="/located" element={<Protected><Located /></Protected>}></Route>
+              <Route path="/religion" element={<Protected><Religion /></Protected>}></Route>
+              <Route path="/edu" element={<Protected><Education /></Protected>}></Route>
+              <Route path="/jobtitle" element={<Protected><JobTitle /></Protected>}></Route>
+              <Route path="/height" element={<Protected><Height /></Protected>}></Route>
+              <Route path="/personality" element={<Protected><Personality /></Protected>}></Route>
+              <Route path="/profile-answers" element={<Protected><ProfileAnswers /></Protected>}></Route>
+              <Route path="/kids-family" element={<Protected><KidsAndFamily /></Protected>}></Route>
+              <Route path="/smoke-drink" element={<Protected><SmokeAndFamily /></Protected>}></Route>
+              <Route path="/approve" element={<Protected><ApproveEmail /></Protected>}></Route>
+              <Route path="/almost-there" element={<Protected><AlmostThere /></Protected>}></Route>
+              <Route path="/pending" element={<Protected><AccountPending /></Protected>}></Route>
+              <Route path="/not-approved" element={<Protected><AccountNotApproved /></Protected>}></Route>
+              <Route path="/approved" element={<Protected><AccountApproved /></Protected>}></Route>
+              <Route path="/user/verify/:token" element={<Protected><AccountPending /></Protected>}></Route>
 
 
-              <Route path="/accoutsetting" element={<AccountSetting />}></Route>
-              <Route path="/unsubscribe" element={<UnsubscribeComponent />}></Route>
-              <Route path="/PrivacyPolicyDetails" element={<PrivacyPolicySetting />}></Route>
-              <Route path="/termandconditions" element={<TermsConditions />}></Route>
-              <Route path="/paymentmethod" element={<PaymentMethod />}></Route>
-              <Route path="/billinghistory" element={<BillingHistory />}></Route>
-              <Route path="/selectplan" element={<Selectplan />}></Route>
-              <Route path="/addpaymentmethod" element={<AddPaymentMethod />}></Route>
-              <Route path="/paymentdetails" element={<Fillpaymentdetails />}></Route>
+              <Route path="/accoutsetting" element={<Protected><AccountSetting /></Protected>}></Route>
+              <Route path="/unsubscribe" element={<Protected><UnsubscribeComponent /></Protected>}></Route>
+              <Route path="/PrivacyPolicyDetails" element={<Protected><PrivacyPolicySetting /></Protected>}></Route>
+              <Route path="/termandconditions" element={<Protected><TermsConditions /></Protected>}></Route>
+              <Route path="/paymentmethod" element={<Protected><PaymentMethod /></Protected>}></Route>
+              <Route path="/billinghistory" element={<Protected><BillingHistory /></Protected>}></Route>
+              <Route path="/selectplan" element={<Protected><Selectplan /></Protected>}></Route>
+              <Route path="/addpaymentmethod" element={<Protected><AddPaymentMethod /></Protected>}></Route>
+              <Route path="/paymentdetails" element={<Protected><Fillpaymentdetails /></Protected>}></Route>
 
-              <Route path="/updateprofile" element={<UpdateProfile />}></Route>
-              <Route path="/preview" element={<Preview />}></Route>
-              <Route path="/editpicture" element={<EditPicture />}></Route>
-              <Route path="/updateanswer" element={<UpdateAnswers />}></Route>
-             
-              <Route path="/personalityupdate" element = {<PersonalityProfile/>}></Route>
-              <Route path = "/updategender"element = {<GenderUpdate />}></Route>
-              <Route path="/updatelocations" element={<LocatedUpdate/>}></Route>
-              <Route path="/updatereligion" element={<ReligionUpdate/>}></Route>
-              <Route path="/updateheight" element = {<HeightUpdate/>}></Route>
-              <Route path = "/updatejob" element={<JobTitleUpdate/>}></Route>
-              <Route path="/updatesmoke" element = {<Smokeupdate/>}></Route>
-              <Route path = "/updatedrink" element = {<Drinkupdate/>}></Route>
-              <Route path="/updatefamilyplan" element = {<KidsAndFamilyUpdate/>}></Route>
-              <Route path="/updatekids" element = {<KidsUpdate/>}></Route>
-              <Route path = "/updatelanguage" element = {<LanguageUpdate/>}></Route>
-              <Route path = "/updateeducations" element = {<EducationUpdate/>}></Route>
-              <Route path="/updateage" element = {<BasicDetailsUpdate/>}></Route>
-              <Route path="/helpsupport" element={<HelpSupport/>}></Route>          
-             
- 
-              <Route path="/user/home" element={<Home />} />
-              <Route path="/user/recommendations" element={<Recommendations />} />
-              <Route path="/user/preferences" element={<Preferences />} />
-              <Route path="/user/:name/:id" element={<ProfileDetails />} />
-              <Route path="/user/chat/with/:name" element={<ChatWith />} />
-              <Route path="/user/chat/*" element={<Chat />} />
-              <Route path="/user/pause" element = {<PauseMyAccount/>}></Route>
+
+              <Route path="/updateprofile" element={<Protected><UpdateProfile /></Protected>}></Route>
+              <Route path="/preview" element={<Protected><Preview /></Protected>}></Route>
+              <Route path="/editpicture" element={<Protected><EditPicture /></Protected>}></Route>
+              <Route path="/updateanswer" element={<Protected><UpdateAnswers /></Protected>}></Route>
+              <Route path="/personalityupdate" element={<Protected><PersonalityProfile /></Protected>}></Route>
+              <Route path="/updategender" element={<Protected><GenderUpdate /></Protected>}></Route>
+              <Route path="/updatelocations" element={<Protected><LocatedUpdate /></Protected>}></Route>
+              <Route path="/updatereligion" element={<Protected><ReligionUpdate /></Protected>}></Route>
+              <Route path="/updateheight" element={<Protected><HeightUpdate /></Protected>}></Route>
+              <Route path="/updatejob" element={<Protected><JobTitleUpdate /></Protected>}></Route>
+              <Route path="/updatesmoke" element={<Protected><Smokeupdate /></Protected>}></Route>
+              <Route path="/updatedrink" element={<Protected><Drinkupdate /></Protected>}></Route>
+              <Route path="/updatefamilyplan" element={<Protected><KidsAndFamilyUpdate /></Protected>}></Route>
+              <Route path="/updatekids" element={<Protected><KidsUpdate /></Protected>}></Route>
+              <Route path="/updatelanguage" element={<Protected><LanguageUpdate /></Protected>}></Route>
+              <Route path="/updateeducations" element={<Protected><EducationUpdate /></Protected>}></Route>
+              <Route path="/updateage" element={<Protected><BasicDetailsUpdate /></Protected>}></Route>
+              <Route path="/helpsupport" element={<Protected><HelpSupport /></Protected>}></Route>
+
+
+              <Route path="/user/home" element={<Protected><Home /></Protected>}></Route>
+              <Route path="/user/recommendations" element={<Protected><Recommendations /></Protected>}></Route>
+              <Route path="/user/preferences" element={<Protected><Preferences /></Protected>}></Route>
+              <Route path="/user/:name/:id" element={<Protected><ProfileDetails /></Protected>}></Route>
+              <Route path="/user/chat/with/:name" element={<Protected><ChatWith /></Protected>}></Route>
+              <Route path="/user/chat/*" element={<Protected><Chat /></Protected>}></Route>
+              <Route path="/user/pause" element={<Protected><PauseMyAccount /></Protected>}></Route>
+
             </Routes>
           </main>
         </div>

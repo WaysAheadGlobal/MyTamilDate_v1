@@ -4,6 +4,7 @@ import './footer.css';
 
 import logo from "../assets/images/MTDlogo.png";
 import lin from "../assets/images/lin.png";
+import youtube from "../assets/images/youtube.png";
 import tiktok from "../assets/images/tiktok.png";
 import gram from "../assets/images/gram.png";
 import logo2 from "../assets/images/logo2.png";
@@ -57,8 +58,8 @@ export const Footer = () => {
                         <span className="link-heading">Social Links</span>
 
                         <div className='social '>
-                            <a href="https://www.linkedin.com/company/5349365/admin/feed/posts/" className='linkf'>
-                                <Image className="socio" src={lin}></Image>
+                            <a href="http://www.youtube.com/@mytamildate1279" className='linkf'>
+                                <Image className="socio" src={youtube}></Image>
                             </a>
                             <a href="https://www.instagram.com/mytamildate/" className='linkf'>
                                 <Image className="socio" src={gram}></Image>
@@ -66,9 +67,7 @@ export const Footer = () => {
                             <a href="https://www.tiktok.com/@mytamildate?lang=en" className='linkf'>
                                 <Image className="socio" src={tiktok}></Image>
                             </a>
-
                         </div>
-
 
 
 

@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: -30px;
+  margin-top: -20px;
 }
 
 .pricingCard {
@@ -19,6 +19,7 @@
 .selectedCard {
   transform: scale(1.2);
   z-index: 1;
+  
 }
 
 .cardBody {
@@ -57,7 +58,7 @@
 }
 
 .mostPopular {
-  background: rgba(255, 107, 107, 1);
+  background: linear-gradient(90deg, #9663BF 0%, #4B164C 100%);
   color: white;
   padding: 5px 10px;
   border-radius: 10px 10px 0 0;

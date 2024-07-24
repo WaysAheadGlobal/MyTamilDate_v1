@@ -10,7 +10,6 @@ const ProtectedRoute = ({ children }) => {
   const admintoken = getCookie('Admintoken')
   const { isAdmin } = useAppContext();
 
-
   return admintoken ? children : <Navigate to="/adminlogin" />;
 };
 

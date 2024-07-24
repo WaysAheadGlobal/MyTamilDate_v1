@@ -83,3 +83,23 @@ p {
   color: #fff;
   cursor: pointer;
 }
+
+.global-red-cencel-button{
+  width: Fixed (122px)px;
+height: Hug (48px)px;
+top: 404px;
+left: 38px;
+padding: 12px 32px 12px 32px;
+gap: 10px;
+border-radius: 36px;
+border: 1px solid  #F76A7B;
+font-family: Poppins;
+font-size: 16px;
+font-weight: 500;
+line-height: 24px;
+letter-spacing: 0.04em;
+text-align: center;
+color: #F76A7B ;
+background-color: #fff;
+
+}
