@@ -75,7 +75,7 @@ export const EducationUpdate = () => {
                 gap: "1rem",
                 overflowY: "auto",
                 scrollbarWidth: "none",
-                  padding : "2rem"
+                  
             }}>
       
         <div className='education-container'>

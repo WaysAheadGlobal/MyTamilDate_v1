@@ -83,13 +83,11 @@ export const SignInOptions = () => {
                         {/* <Image src={blank} /> */}
                         <span>Hi! It's good to see you again.</span>
                         <div className='signin-option-btn'>
-                            <Button className='opt1' onClick={goToSignIn}>Login with Phone number</Button>
+                            <Button className='opt1' onClick={goToSignIn}>Login with phone number</Button>
                             <Button className='opt2' onClick={goToSignInEmail}>Login with email</Button>
                         </div>
                     </Container>
                     <Container className='signin-options-details'>
-
-
                         <Container className='sign-in-or-option'>
                             <Container className='or-line'>
                                 <div className='line'></div>

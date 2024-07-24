@@ -250,7 +250,7 @@ function Modal({ show, onHide, modalData, alert ,alertmodal}) {
             alertmodal.setModal({
                 show: true,
                 title: 'Update Profile Answer',
-                message: "Thanks for updating your image! It's now under review by myTamilDate. You'll receive an update within 24 hours.",
+                message: "Thanks for updating your profile answer! It's now under review by myTamilDate. You'll receive an update within 24 hours.",
 
             });
             onHide();
@@ -307,7 +307,7 @@ function Modal({ show, onHide, modalData, alert ,alertmodal}) {
                    className='global-cancel-button'
                     onClick={() => { onHide(); setText(""); }}
                 >
-                    Cencel
+                    Cancel
                 </button>
 
                 <button

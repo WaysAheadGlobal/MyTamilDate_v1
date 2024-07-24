@@ -54,7 +54,7 @@ import { SignInPhoneOTP } from "./components/sign-in/signin-phone-otp";
 import { SignInPhoneSuccessful } from "./components/sign-in/signin-phone-successful";
 
 import ProtectedRoute from "./components/ProtectedRoute";
-import Protected from "./components/UserPrivateRoute/privateroute";
+import Protected from "../src/components/PrivateRoute/privateroute";
 import { AboutUsPage } from "./components/aboutus-pg";
 import TotalCount from "./components/totalcount";
 import { Video2 } from "./components/video2";
@@ -110,6 +110,7 @@ import Preferences from "./components/userflow/screens/preferences/Preferences";
 import ProfileDetails from "./components/userflow/screens/profile-details/ProfileDetails";
 import Recommendations from "./components/userflow/screens/recommendations/Recommendations";
 import { useCookies } from "./hooks/useCookies";
+import { WantGenderUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/wantgender/wantgender";
 
 
 function App() {
@@ -255,7 +256,7 @@ function App() {
               <Route path="/updateeducations" element={<Protected><EducationUpdate /></Protected>}></Route>
               <Route path="/updateage" element={<Protected><BasicDetailsUpdate /></Protected>}></Route>
               <Route path="/helpsupport" element={<Protected><HelpSupport /></Protected>}></Route>
-
+              <Route path="/wantgender" element= {<Protected><WantGenderUpdate/></Protected>}></Route>
 
               <Route path="/user/home" element={<Protected><Home /></Protected>}></Route>
               <Route path="/user/recommendations" element={<Protected><Recommendations /></Protected>}></Route>

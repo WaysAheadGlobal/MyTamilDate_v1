@@ -6,6 +6,9 @@ import { API_URL } from '../../../../../api';
 import { useCookies } from '../../../../../hooks/useCookies';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../../../userflow/components/sidebar/sidebar';
+import { useAlert } from '../../../../../Context/AlertModalContext';
+
+
 
 export default function PersonalityProfile() {
     const [searchTerm, setSearchTerm] = useState('');
@@ -13,6 +16,7 @@ export default function PersonalityProfile() {
     const [hasAddedPersonality, setHasAddedPersonality] = useState(false);
     const [personalities, setPersonalities] = useState([]);
     const { getCookie } = useCookies();
+    const alert = useAlert();
     const [selectedPersonalities, setSelectedPersonalities] = useState([]);
     const navigate = useNavigate();
 
@@ -64,6 +68,11 @@ export default function PersonalityProfile() {
     async function savePersonalities() {
         if (selectedPersonalities.length < 2 || selectedPersonalities.length > 8) {
             // Handle the case where there are fewer than 2 personalities selected
+            alert.setModal({
+                show: true,
+                title: 'Update Personalities',
+                message: "Please select between 3 and 8 personalities. Selections below 3 or above 8 are not allowed."
+            });
             return;
         }
 
@@ -96,7 +105,7 @@ export default function PersonalityProfile() {
                 gap: "1rem",
                 overflowY: "auto",
                 scrollbarWidth: "none",
-                
+
             }}>
                 <Container className='job-main'>
                     <Container className='job-content'>
@@ -154,19 +163,19 @@ export default function PersonalityProfile() {
                                 </div>
                             </div>
                         </Container>
-{/* 
+                        {/* 
                         <Button variant="primary" onClick={savePersonalities} type="submit" className='job-nxt-btn'>
                             Save
                         </Button> */}
 
-<div className="d-flex justify-content-center" style={{ position: "fixed", bottom: "30px", width: "100%", gap : "30px" }}>
-    <button className="global-cancel-button" onClick={()=> navigate("/updateprofile")}>
-        Cancel
-    </button>
-    <button onClick={savePersonalities} type="submit" className="global-save-button">
-        Save
-    </button>
-</div>
+                        <div className="d-flex justify-content-center" style={{ position: "fixed", bottom: "30px", width: "100%", gap: "30px" }}>
+                            <button className="global-cancel-button" onClick={() => navigate("/updateprofile")}>
+                                Cancel
+                            </button>
+                            <button onClick={savePersonalities} type="submit" className="global-save-button">
+                                Save
+                            </button>
+                        </div>
                     </Container>
                 </Container>
             </div>

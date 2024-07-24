@@ -688,6 +688,37 @@ updateprofile.put('/gender', [
   });
 });
 
+updateprofile.put('/wantgender', [
+  verifyUser,
+  body('want_gender').isInt().notEmpty().withMessage('Gender is required'),
+
+], (req: UserRequest, res: any) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  const { want_gender } = req.body;
+  const userId = req.userId;
+  console.log(userId);
+
+  const query = `
+      UPDATE user_profiles
+      SET want_gender = ?, updated_at = NOW()
+      WHERE user_id = ?
+    `;
+
+  db.query<ResultSetHeader>(query, [want_gender, userId], (err, results) => {
+    if (err) {
+      console.error('Error updating user profile:', err);
+      return res.status(500).send('Internal Server Error');
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: 'User profile not found' });
+    }
+    res.status(200).json({ message: 'Profile updated successfully' });
+  });
+});
+
 
 export default updateprofile;
 

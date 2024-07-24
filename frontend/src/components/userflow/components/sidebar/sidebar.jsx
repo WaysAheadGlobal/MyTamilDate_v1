@@ -33,7 +33,9 @@ export default function Sidebar({ children }) {
         '/personalityupdate',
         '/unsubscribe',
         '/selectplan',
-       '/editpicture'
+       '/editpicture',
+       '/updategender',
+       '/wantgender'
     ];
 
 
