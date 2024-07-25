@@ -595,18 +595,23 @@ matches.get("/chat/received_", (req: UserRequest, res) => {
             dp.participant_id,
             dp.joined_at,
             CONCAT(up.first_name, ' ', up.last_name) as name,
-            dc.created_at
+            dc.created_at,
+            me.hash,
+            me.extension,
+            me.type,
+            (SELECT body FROM dncm_messages WHERE conversation_id = m.conversation_id ORDER BY sent_at DESC LIMIT 1) as message
         FROM messages m
         INNER JOIN dncm_conversations dc ON dc.id = m.conversation_id
         INNER JOIN dncm_participants dp ON dp.conversation_id = m.conversation_id
         INNER JOIN user_profiles up ON up.user_id = dp.participant_id
+        INNER JOIN media me ON me.user_id = up.user_id AND me.type IN (1, 31)
         WHERE dp.participant_id = ? AND dp.joined_at = 0
         ORDER BY dc.created_at DESC;
     `;
 
     const params = [req.userId, req.userId];
 
-    db.query<RowDataPacket[]>(query, params, (err, result) => {
+    db.query<RowDataPacket[]>(query, params, async (err, result) => {
         if (err) {
             console.log(err);
             res.status(500).send("Failed to get received conversations");

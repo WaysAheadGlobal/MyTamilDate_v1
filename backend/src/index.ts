@@ -73,7 +73,7 @@ io.on('connection', (socket) => {
     socket.on('send-message', async ({ roomId, message, sentAt, type, recepientId }) => {
         const senderId = socket.handshake.auth.userId;
 
-        db.query('INSERT INTO dncm_messages (type, version, conversation_id, sender_id, body, sent_at, updated_at, deleted_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [type, 1, roomId, senderId, message, sentAt, sentAt, 0], (err, results) => {
+        db.query('INSERT INTO dncm_messages (type, version, conversation_id, sender_id, body, sent_at, updated_at, deleted_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [type, 1, roomId, senderId, message, Date.now(), Date.now(), 0], (err, results) => {
             if (err) {
                 console.log('Error sending message:', err);
                 return;
@@ -89,7 +89,10 @@ io.on('connection', (socket) => {
             if (!socket.rooms.has(recepientId) && !unsubscribeGroup.includes(UnsubscribeGroup.MESSAGES)) {
                 try {
                     const [user] = await db.promise().query<RowDataPacket[]>('SELECT first_name, email FROM user_profiles WHERE user_id = ?', [recepientId]);
-                    await mailService.sendMessageMail(user[0].email, user[0].first_name);
+
+                    const [me] = await db.promise().query<RowDataPacket[]>('SELECT first_name FROM user_profiles WHERE user_id = ?', [socket.handshake.auth.userId]);
+
+                    await mailService.sendMessageMail(user[0].email, me[0].first_name);
                 } catch (error) {
                     console.log('Error sending message mail:', error);
                 }
