@@ -704,7 +704,7 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
                 const msg = {
                     from: process.env.EMAIL_HOST!,
                     to: email,
-                    subject: "Approval Notification",
+                    subject: "Your account has been approved.",
                     html: html
                 };
 

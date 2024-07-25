@@ -10,6 +10,7 @@ import { IoIosSearch } from "react-icons/io";
 import { API_URL } from '../api';
 import { useCookies } from '../hooks/useCookies';
 import { useNavigate } from 'react-router-dom';
+import { useAlert } from '../Context/AlertModalContext';
 
 export default function Personality() {
     const [searchTerm, setSearchTerm] = useState('');
@@ -19,7 +20,7 @@ export default function Personality() {
     const { getCookie } = useCookies();
     const [selectedPersonalities, setSelectedPersonalities] = useState([]);
     const navigate = useNavigate();
-
+    const alert = useAlert();
     const filteredPersonality = personalities.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
 
@@ -69,6 +70,11 @@ export default function Personality() {
     async function savePersonalities() {
         if (selectedPersonalities.length < 2 || selectedPersonalities.length > 8) {
             // Handle the case where there are fewer than 2 personalities selected
+            alert.setModal({
+                show: true,
+                title: 'Update Personalities',
+                message: "Please select between 3 and 8 personalities. Selections below 3 or above 8 are not allowed."
+            });
             return;
         }
 

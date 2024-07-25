@@ -86,7 +86,7 @@ const [refresh, setRefresh] = useState(false);
             setCount(data.count);
             console.log(count);
         })()
-    }, []);
+    }, [refresh]);
 
 
     const refreshpage = ()=>{
@@ -159,7 +159,7 @@ const [refresh, setRefresh] = useState(false);
                                                             cursor: "pointer",
                                                         }}
                                                         onClick={() =>  {
-                                                            if (count === 2 && question.answer ==null) {
+                                                            if (count === 2 && question.answer == null) {
                                                                 setAlert(true);
                                                             } else {
                                                                 setModalData({
