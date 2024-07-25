@@ -773,7 +773,7 @@ userFlowRouter.put("/preferences/save/:field", async (req: UserRequest, res) => 
         });
     });
 
-    if (field !== "religion_id" && !isPremium) {
+    if (field !== "religion_id" && field !== "gender_id" && !isPremium) {
         res.status(403).send({ message: "Forbidden" });
         return;
     }
