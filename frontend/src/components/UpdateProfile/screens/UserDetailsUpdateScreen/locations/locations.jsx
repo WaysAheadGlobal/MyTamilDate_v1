@@ -100,24 +100,27 @@ export const LocatedUpdate = () => {
                 flexDirection: "column",
                 gap: "1rem",
                 overflowY: "auto",
-                
+                overflow: "hidden", 
                 padding : "2rem"
             }}>
    
     <div className='located-container'>
-      <Container className='located-main'>
-        <Container className='located-content' style={{width : "100%"}}>
+      <div className='located-main'>
+        <div className='located-content' >
          
-          <Container className='located-text'>
+          <div className='located-text'>
             <Image className='about-yourself-icon' src={location}></Image>
             <p>Where are you located?</p>
-          </Container>
-          <Container className='located-details'>
-            <Container ref={countrySelectRef} className='located-country collasped'>
+          </div>
+          <div className='located-details'>
+            <div ref={countrySelectRef} className='located-country collasped' style={{
+              width : "270px", marginLeft : "10px"
+            }}>
               <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
+              
               }} onClick={() => {
                 countrySelectRef.current.classList.toggle("collasped");
               }}>
@@ -154,9 +157,11 @@ export const LocatedUpdate = () => {
                   ))
                 }
               </div>
-            </Container>
+            </div>
             {selectedCountry && (
-              <Container ref={citySelectRef} className='located-city collasped'>
+              <div ref={citySelectRef} style={{
+                width : "270px", marginLeft : "10px"
+              }} className='located-city collasped'>
                 <div style={{
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -197,9 +202,9 @@ export const LocatedUpdate = () => {
                     ))
                   }
                 </div>
-              </Container>
+              </div>
             )}
-          </Container>
+          </div>
           {/* <Button variant="primary" type="submit" className='located-nxt-btn' onClick={handleSubmit}>
             Next
           </Button> */}
@@ -211,8 +216,8 @@ export const LocatedUpdate = () => {
         Save
     </button>
 </div>
-        </Container>
-      </Container>
+        </div>
+      </div>
     </div>
     </div>
     </Sidebar>

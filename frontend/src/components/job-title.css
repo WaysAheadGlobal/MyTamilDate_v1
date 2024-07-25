@@ -1,11 +1,17 @@
 /* job-title.css */
 
+.all-job::-webkit-scrollbar {
+    width: 4px;  /* Reduced the width */
+    border-radius: 12px;
+}
+
 .job-container {
     display: flex;
     width: 100%;
     height: auto;
     justify-content: flex-start;
 }
+
 
 .job-bg {
     width: 100%;

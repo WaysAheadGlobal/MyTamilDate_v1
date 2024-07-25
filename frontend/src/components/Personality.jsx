@@ -145,7 +145,7 @@ export default function Personality() {
                                         color: "#4E1173",
                                         lineHeight: "18.5%",
                                         marginBottom: "20px"
-                                    }}>Select 3-8 options</p>
+                                    }}>Please select 3-8 options only.</p>
                                 ) : null}
                             </div>
 

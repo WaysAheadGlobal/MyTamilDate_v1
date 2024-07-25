@@ -142,7 +142,8 @@ const Navigate = useNavigate();
         flexDirection: "column",
         gap: "1rem",
         overflowY: "auto",
-        padding : "2rem"
+        padding : "2rem",
+        height: "calc(100vh - 64px)"
       }}>
         <div className={profile.profilemaincontainer}>
           

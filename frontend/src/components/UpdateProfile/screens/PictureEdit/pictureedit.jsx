@@ -378,10 +378,7 @@ const EditPicture = () => {
           />
           <Container className={`${picture.whyInfo} ${showInfo ? picture.show : picture.hide}`}>
             <p>
-              Any changes made to the "Photo" section will be sent for Admin review and approval.
-              Your account will be in a pending status until it gets approved.
-              You should receive an update within 24 hours. If not, please reach
-              out to hello@mytamildate.com. Thank you for your patience!
+            Please note that changes to your photos and written prompts will be reviewed by our admin team before going live. This process may take up to 48 hours, but you can continue using your account without any interruptions while we review & approve your updates.
             </p>
           </Container>
         </div>

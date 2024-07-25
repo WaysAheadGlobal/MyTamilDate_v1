@@ -1020,7 +1020,7 @@ users.post('/updateQuestionAnswers/:user_id', (req: AdminRequest, res: Response)
                     return res.status(500).send('Internal Server Error');
                 });
             }
-
+            console.log("question update")
             const deleteSql = `
                 DELETE FROM question_answers_update 
                 WHERE user_id = ? AND question_id IN (
@@ -1046,8 +1046,9 @@ users.post('/updateQuestionAnswers/:user_id', (req: AdminRequest, res: Response)
 
                     res.status(200).json({
                         message: 'Question answers updated and temporary data deleted successfully',
-                        deleteResults
+                        deleteResults,
                     });
+                    console.log("question deleted")
                 });
             });
         });

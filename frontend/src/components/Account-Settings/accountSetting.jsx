@@ -732,16 +732,27 @@ export const AccountSetting = () => {
                                 </Container>
 
                             </Container>
-                            <div className={profile.maincontainer}>
+                            {/* <div className={profile.maincontainer}>
 
                                 <div className={profile.imgContainer}>
                                     <div >
                                         <img className={profile.profilepicimg} src={images2.main} alt="" />
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
 
+                            {
+                                        getCookie('isPremium') !== 'true' && (
+                                            <div className="upgrade-button">
 
+                                                <div> <span><Image src={premium} /></span> Upgrade Account</div>
+                                                <div className="description">
+                                                    Upgrade your account, you will have unlimited access and wider exposure
+                                                </div>
+                                                <button className={profile.upgradebutton} onClick={() => navigate('/selectplan')} >Upgrade Now</button>
+                                            </div>
+                                        )
+                                    }
 
                             <div className='edittext-logo'>
                                 <p className='textofedit'>Tap on each section to edit</p>
@@ -782,7 +793,7 @@ export const AccountSetting = () => {
                                         </div>
                                     </div>
 
-                                    {
+                                    {/* {
                                         getCookie('isPremium') !== 'true' && (
                                             <div className="upgrade-button">
 
@@ -793,15 +804,12 @@ export const AccountSetting = () => {
                                                 <button className={profile.upgradebutton} onClick={() => navigate('/selectplan')} >Upgrade Now</button>
                                             </div>
                                         )
-                                    }
+                                    } */}
                                     {/* <div style={{marginTop : "50px"}}>
 
                             <PricingCard/>
                             </div> */}
-                                    <div className="pause-button" onClick={handleShowPause}>
-                                        <Image style={{ marginRight: "6px" }} className="fas fa-pause-circle" src={pauseicon} />
-                                        <span>Pause my account</span>
-                                    </div>
+                                   
                                     <div className="payment-button">
                                         Payment
                                     </div>
@@ -887,6 +895,11 @@ export const AccountSetting = () => {
                                         <div>
                                             <Image className='userinfoicon' src={logout} />
                                         </div>
+                                    </div>
+                                    
+                                    <div className="pause-button" onClick={handleShowPause}>
+                                        <Image style={{ marginRight: "6px" }} className="fas fa-pause-circle" src={pauseicon} />
+                                        <span>Pause my account</span>
                                     </div>
                                     <button className="delete-button" onClick={handleShowDeleteAccount}>
                                         <span>Delete my Account</span>
