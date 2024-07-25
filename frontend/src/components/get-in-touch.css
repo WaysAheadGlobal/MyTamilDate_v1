@@ -74,14 +74,14 @@
 
 
 .getintouch-input {
-    border: none;
+  
     height: 51px;
     /* max-width:426px;
 width: 100%; */
 }
 
 .getintouch-message {
-    border: none !important;
+   
     min-height: 109px !important;
     /* height: 100%; */
     /* max-width:426px;
