@@ -6,10 +6,14 @@ import logo from "../assets/images/MTDlogo.png";
 import responsivebg from "../assets/images/responsive-bg.png";
 import { useCookies } from '../hooks/useCookies';
 import './job-title.css';
+import { useNavigate } from 'react-router-dom';
+import { useAlert } from '../Context/AlertModalContext';
 
 export default function ApproveEmail() {
     const { getCookie } = useCookies();
     const [email, setEmail] = React.useState('');
+    const navigate = useNavigate();
+    const alert = useAlert();
 
     React.useEffect(() => {
         (async () => {
@@ -33,7 +37,7 @@ export default function ApproveEmail() {
         })()
     }, []);
 
-    const updateStatus = async (newStatus) => {
+    const resendMail = async () => {
         try {
             const response = await fetch(`${API_URL}/user/verify`, {
                 method: 'POST',
@@ -51,8 +55,47 @@ export default function ApproveEmail() {
         }
     };
 
-    const handleUpdatestatus = () => {
-        updateStatus(10);
+    const checkVerification = async () => {
+        try {
+            const response = await fetch(`${API_URL}/user/check-email-verification`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log('Email verified successfully!');
+                if (data.emailVerified) {
+                    alert.setModal({
+                        show: true,
+                        title: "Email Verified",
+                        message: "Your email has been verified successfully!",
+                        buttonText: "Okay",
+                        onButtonClick: () => {
+                            navigate("/pending");  
+                        }
+                    })                  
+                } else {
+                    alert.setModal({
+                        show: true,
+                        title: "Email Verification",
+                        message: "Your email has not been verified yet. Please check your email and verify your email address.",
+                        buttonText: "Resend mail",
+                        showCancelButton: true,
+                        onButtonClick: () => {
+                            resendMail();
+                        }
+                    })  
+                }
+            }
+
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     return (
@@ -116,7 +159,7 @@ export default function ApproveEmail() {
                         marginTop: "auto",
                         marginBottom: "2rem",
                     }}>
-                        <Button variant="primary" onClick={handleUpdatestatus} style={{
+                        <Button variant="primary" onClick={checkVerification} style={{
                             width: "100%",
                             marginTop: "1rem",
                             background: "linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%)",

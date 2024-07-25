@@ -400,7 +400,7 @@ auth.get("/verify/:token", async (req, res) => {
     db.beginTransaction(err => {
         if (err) {
             console.error('Error starting transaction:', err);
-            return res.redirect(`${process.env.URL}/approve`);
+            return res.status(500).send('Internal Server Error');
         }
 
         db.query<RowDataPacket[]>('SELECT user_id FROM verification_token WHERE token = ?', [token], (err, results) => {
@@ -410,8 +410,8 @@ auth.get("/verify/:token", async (req, res) => {
                     if (err) {
                         console.error('Error rolling back transaction:', err);
                     }
-                    return res.redirect(`${process.env.URL}/approve`);
                 });
+                return res.status(500).send('Internal Server Error');
             }
 
             if (results.length === 0) {
@@ -425,7 +425,7 @@ auth.get("/verify/:token", async (req, res) => {
                         if (err) {
                             console.error('Error rolling back transaction:', err);
                         }
-                        return res.redirect(`${process.env.URL}/approve`);
+                        return res.status(500).send('Internal Server Error');
                     });
                 }
 
@@ -436,7 +436,7 @@ auth.get("/verify/:token", async (req, res) => {
                             if (err) {
                                 console.error('Error rolling back transaction:', err);
                             }
-                            return res.redirect(`${process.env.URL}/approve`);
+                            return res.status(500).send('Internal Server Error');
                         });
                     }
 
@@ -446,7 +446,7 @@ auth.get("/verify/:token", async (req, res) => {
                             return res.status(500).send('Internal Server Error');
                         }
 
-                        res.redirect(`${process.env.URL}/pending`);
+                        res.status(200).json({ message: 'Email verified successfully' });
                     });
                 });
             });
@@ -468,6 +468,21 @@ auth.get("/check-approval", verifyUser, async (req: UserRequest, res) => {
         }
 
         res.status(200).json({ approval: UserApprovalEnum[results[0].approval], active: results[0].active === 1 });
+    });
+});
+
+auth.get("/check-email-verification", verifyUser, async (req: UserRequest, res) => {
+    db.query<RowDataPacket[]>('SELECT email_verified_at FROM user_profiles WHERE user_id = ?', [req.userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+
+        if (results.length === 0) {
+            return res.status(401).json({ message: 'Invalid user' });
+        }
+
+        res.status(200).json({ emailVerified: results[0].email_verified_at !== null });
     });
 });
 
