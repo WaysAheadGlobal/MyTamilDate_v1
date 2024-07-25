@@ -9,9 +9,11 @@ import { useCookies } from '../hooks/useCookies';
 import { API_URL } from '../api';
 
 export default function AccountPending() {
-const {getCookie} = useCookies();
-    const {token} = useParams();
+    const { getCookie } = useCookies();
+    const { token } = useParams();
     const navigate = useNavigate();
+    const [email, setEmail] = React.useState('');
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -19,9 +21,7 @@ const {getCookie} = useCookies();
 
                 const result = await response.json();
                 if (response.ok) {
-                   
-               console.log("all is well")
-               navigate("/pending")
+                    navigate("/pending")
                 } else {
                     console.error('Error fetching user data:', result.message);
                 }
@@ -31,6 +31,28 @@ const {getCookie} = useCookies();
         };
 
         fetchData();
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const response = await fetch(`${API_URL}customer/user/email`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getCookie('token')}`
+                    }
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    setEmail(result.email);
+                } else {
+                    console.error('Error fetching user data:', result.message);
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        })()
     }, []);
 
     return (
@@ -71,7 +93,7 @@ const {getCookie} = useCookies();
                             textAlign: "center",
                             fontFamily: "Inter, sans-serif",
                         }}>
-                            We're reviewing your account and will notify you via e-mail at example@gmail.com. In the meantime, you can update your profile information.
+                            We're reviewing your account and will notify you via e-mail at {email}. In the meantime, you can update your profile information.
                         </p>
                     </div>
                     <div style={{

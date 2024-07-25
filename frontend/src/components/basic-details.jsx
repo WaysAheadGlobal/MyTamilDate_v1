@@ -57,7 +57,7 @@ export const BasicDetails = () => {
     const value = e.target.value.replace(/\s/g, '');
     setUserDetails(prevDetails => ({
       ...prevDetails,
-      first_name: value
+      first_name: value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
     }));
   };
 
@@ -65,7 +65,7 @@ export const BasicDetails = () => {
     const value = e.target.value.replace(/\s/g, '');
     setUserDetails(prevDetails => ({
       ...prevDetails,
-      last_name: value
+      last_name: value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
     }));
   };
 
@@ -96,7 +96,12 @@ export const BasicDetails = () => {
       return;
     }
 
-    if (dayjs().diff(dayjs(userDetails.birthday), 'years') < 18) {
+    if (userDetails.first_name.includes('@') || userDetails.first_name.includes('#') || userDetails.first_name.includes('$') || userDetails.first_name.includes('%') || userDetails.first_name.includes('^') || userDetails.first_name.includes('&') || userDetails.first_name.includes('*') || userDetails.first_name.includes('(') || userDetails.first_name.includes(')') || userDetails.first_name.includes('-') || userDetails.first_name.includes('+') || userDetails.first_name.includes('=') || userDetails.first_name.includes('[') || userDetails.first_name.includes(']') || userDetails.first_name.includes('{') || userDetails.first_name.includes('}') || userDetails.first_name.includes('|') || userDetails.first_name.includes('\\') || userDetails.first_name.includes(';') || userDetails.first_name.includes(':') || userDetails.first_name.includes('\'') || userDetails.first_name.includes('"') || userDetails.first_name.includes('<') || userDetails.first_name.includes('>') || userDetails.first_name.includes(',') || userDetails.first_name.includes('.') || userDetails.first_name.includes('/') || userDetails.first_name.includes('?') || userDetails.first_name.includes('!') || userDetails.first_name.includes('`') || userDetails.first_name.includes('~')) {
+      setErrorMessage('*Please enter a valid name');
+      return;
+    }
+
+    if (dayjs().diff(dayjs(userDetails.birthday), 'years') <= 18) {
       setAdulthood(false);
       return;
     }
@@ -134,6 +139,19 @@ export const BasicDetails = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className='basicdetails-container'>
+        {
+          open && <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'transparent',
+              zIndex: 10
+            }}
+            onClick={() => setAnchorEl(null)}
+          ></div>
+        }
         <div className='basic-details-bg'>
           <Image className='responsive-bg' src={responsivebg}></Image>
         </div>
@@ -155,7 +173,7 @@ export const BasicDetails = () => {
             <Container className='basic-details-details'>
               <Form onSubmit={handleSubmit} className='basic-details-form'>
                 <Form.Group controlId="formName" className='basic-details-group'>
-                  <Form.Label className='basic-details-label'>What's your name?</Form.Label>
+                  <Form.Label className='basic-details-label'>What's your name*?</Form.Label>
                   <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                     <Form.Control
                       className={`basic-details-input custom-input ${errorMessage ? 'error' : ''}`}
@@ -225,7 +243,8 @@ export const BasicDetails = () => {
                         zIndex: 9999,
                         borderRadius: "10px",
                         border: "1px solid black",
-                      }} open={open}
+                      }}
+                      open={open}
                       anchorEl={anchorEl}
                       placement='bottom-start'
                     >
@@ -238,7 +257,7 @@ export const BasicDetails = () => {
                     </Popper>
                   </div>
                   {age !== null && age !== 54 && <span className='calculated-age'>Your age is {age}</span>}
-                  {!adulthood && userDetails.birthday && <p className="text-danger error-message">You must be at least 18 years old</p>}
+                  {!adulthood && userDetails.birthday && <p className="text-danger error-message">You must be over 19 to join MTD</p>}
                 </Form.Group>
 
                 <Button variant="primary" type="submit" className='basic-details-btn'>

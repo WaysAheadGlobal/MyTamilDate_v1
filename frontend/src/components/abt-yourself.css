@@ -147,7 +147,7 @@ align-items: center; */
 }
 
 /* .birthday-text p:last-child {
-    font-family: Work Sans;
+    font-family: Poppins, sans-serif;
     font-size: 14px;
     font-weight: 400;
     line-height: 22px;
@@ -325,9 +325,9 @@ align-items: center; */
 
   box-shadow: 0px 4px 10px 0px #00000029;
   color: #FFFFFF;
-  font-family: Work Sans;
-  font-size: 14px;
-  font-weight: 400;
+  font-family: Poppins, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
   line-height: 22px;
   letter-spacing: 0.04em;
   text-align: center;

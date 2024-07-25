@@ -82,6 +82,10 @@ async function deleteAllDiscoverySkip(userId: string) {
     });
 }
 
+userFlowRouter.get("/email", (req: UserRequest, res) => {
+    res.json({ email: req.user.email });
+});
+
 userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
     const wave = req.query.wave ? Number(req.query.wave) : 1;
     const pageNo = req.query.page ? Number(req.query.page) : 1;

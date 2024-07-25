@@ -9,6 +9,29 @@ import './job-title.css';
 
 export default function ApproveEmail() {
     const { getCookie } = useCookies();
+    const [email, setEmail] = React.useState('');
+
+    React.useEffect(() => {
+        (async () => {
+            try {
+                const response = await fetch(`${API_URL}customer/user/email`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getCookie('token')}`
+                    }
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    setEmail(result.email);
+                } else {
+                    console.error('Error fetching user data:', result.message);
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        })()
+    }, []);
 
     const updateStatus = async (newStatus) => {
         try {
@@ -83,7 +106,8 @@ export default function ApproveEmail() {
                             fontWeight: "400",
                             lineHeight: "20px",
                             textAlign: "center",
-                        }}>You need to approve your email, we have already sent link to you. Please check it.</p>
+                            marginTop: "1rem",
+                        }}>Almost there! Please verify your email address. We've sent a note to {email}.</p>
                     </div>
                     <div style={{
                         display: "flex",
