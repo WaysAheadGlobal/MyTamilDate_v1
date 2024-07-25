@@ -95,7 +95,6 @@ const Forms = {
                             fontWeight: "500",
                         }}>Search nearby people</p>
                         <Select
-                            key={selectedCountry}
                             style={{
                                 width: "100%",
                                 textAlign: "start"
@@ -127,14 +126,13 @@ const Forms = {
                         </Select>
 
                         <Select
-                            key={selectedCity}
                             style={{
                                 width: "100%",
                                 textAlign: "start"
                             }}
                             value={selectedCity}
-                            onChange={(e) => setSelectedCity(e.target.value)}
                             displayEmpty
+                            onChange={(e) => setSelectedCity(e.target.value)}
                             MenuProps={{
                                 PaperProps: {
                                     style: {

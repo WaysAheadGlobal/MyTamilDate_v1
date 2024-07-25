@@ -17,6 +17,27 @@ export default function Requests() {
     const observerRef = useRef(null);
     const [currentRequests, setCurrentRequests] = useState([]);
 
+    const getImageURL = (type, hash, extension, userId) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}` : `${API_URL}media/avatar/${hash}.${extension}`;
+
+    async function likeOrSkip(type, personId) {
+        const response = await fetch(`${API_URL}customer/matches/${type}`, {
+            method: "POST",
+            body: JSON.stringify({
+                personId: personId
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookies.getCookie('token')}`
+            }
+        });
+        const data = await response.json();
+        if (response.ok) {
+            console.log(data);
+        } else {
+            console.error(data);
+        }
+    }
+
     const fetchRequests = useCallback(async () => {
         const path = searchParams[0].get("t") === "s" ? "sent" : "received_";
         try {
@@ -140,28 +161,30 @@ export default function Requests() {
                     (searchParams[0].get("t") === "r" || !searchParams[0].get("t")) ? (
                         Array.isArray(requests) && requests.map((request, i) => (
                             <div key={i} className={[styles.message, "request"].join(" ")}>
-                                <img src="https://via.placeholder.com/75" alt="profile" />
+                                <img src={getImageURL(request.type, request.hash, request.extension, request.owner_id)} alt="profile" width={50} height={50} style={{ objectFit: "contain" }} />
                                 <div>
                                     <p>{request.name}</p>
-                                    <p>Lorem ipsum dolor sit</p>
+                                    <p>{request.message}</p>
                                 </div>
                                 <div style={{ flexGrow: "1" }}></div>
                                 <div style={{
                                     display: "flex",
                                     flexDirection: "column",
                                 }}>
-                                    <p style={{
+                                    {/* <p style={{
                                         fontSize: "small",
                                         color: "#6c6c6c",
                                         fontWeight: "500"
-                                    }}>15 mins ago</p>
+                                    }}>15 mins ago</p> */}
                                     <div style={{
                                         display: "flex",
                                         gap: "1rem",
                                         alignItems: "center",
                                         justifyContent: "space-between"
                                     }}>
-                                        <svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <svg onClick={() => {
+                                            likeOrSkip("like", request.owner_id);
+                                        }} width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <g filter="url(#filter0_dddd_778_15721)">
                                                 <circle cx="17.2222" cy="15.2222" r="14.2222" fill="white" />
                                             </g>
@@ -198,7 +221,9 @@ export default function Requests() {
                                                 </clipPath>
                                             </defs>
                                         </svg>
-                                        <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <svg onClick={() => {
+                                            likeOrSkip("skip", request.owner_id);
+                                        }} width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <circle cx="14.7779" cy="14.2222" r="13.9487" fill="url(#paint0_linear_778_15726)" stroke="#DDCAED" stroke-width="0.547009" />
                                             <g clip-path="url(#clip0_778_15726)">
                                                 <mask id="mask0_778_15726" style={{ maskType: "luminance" }} maskUnits="userSpaceOnUse" x="6" y="7" width="17" height="17">
