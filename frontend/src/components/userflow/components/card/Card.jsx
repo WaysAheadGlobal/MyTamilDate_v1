@@ -59,7 +59,7 @@ export default function Card({ show, ...props }) {
     const [topNavVisible, setTopNavVisible] = useState(true);
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-    /* useEffect(() => {
+    useEffect(() => {
         const bottomNav = document.querySelector("#bottomOptions");
 
         if (!bottomNav) return;
@@ -71,7 +71,7 @@ export default function Card({ show, ...props }) {
         });
 
         observer.observe(bottomNav);
-    }, []) */
+    }, [])
 
     async function getRoom() {
         if (cookies.getCookie("isPremium") !== "true") {
@@ -230,7 +230,9 @@ export default function Card({ show, ...props }) {
                                 }}>{props.location_string}, {props.country}</p>
                             </div>
                         </div>
-                        <div className='options'>
+                        <div className='options' style={{
+                            opacity: !topNavVisible ? "1" : "0",
+                        }}>
                             {/* <IconButton type='undo' onClick={(e) => {
                                 e.stopPropagation();
                                 handleIconButtonClick("undo");
