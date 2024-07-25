@@ -126,7 +126,7 @@
 
 
 .num-verify-lable {
-    font-family: Work Sans;
+    font-family: Poppins, sans-serif;
     font-size: 20px;
     font-weight: 500;
     line-height: 23.46px;
@@ -273,7 +273,7 @@
 .or-line span {
     padding-left: 5px;
     padding-right: 5px;
-    font-family: Work Sans;
+    font-family: Poppins, sans-serif;
     font-size: 14px;
     font-weight: 600;
     line-height: 16.42px;

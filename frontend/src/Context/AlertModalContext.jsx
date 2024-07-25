@@ -59,7 +59,8 @@ export default function AlertModalProvider({ children }) {
                             fontSize: "14px",
                             margin: "0",
                             textAlign: "center",
-                            color: "#6c6c6c"
+                            color: "#6c6c6c",
+                            hyphens: "none"
                         }}
                     >
                         {modal.message}

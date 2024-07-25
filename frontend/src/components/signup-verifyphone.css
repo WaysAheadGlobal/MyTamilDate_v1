@@ -96,7 +96,7 @@
 }
 
 .num-verify-lable {
-    font-family: Work Sans;
+    font-family: Poppins, sans-serif;
     font-size: 20px;
     font-weight: 500;
     line-height: 23.46px;
@@ -201,7 +201,7 @@
     background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
     box-shadow: 0px 4px 10px 0px #00000029;
     color: #FFFFFF;
-    font-family: Work Sans;
+    font-family: Poppins, sans-serif;
     font-size: 14px;
     font-weight: 400;
     line-height: 22px;
@@ -220,7 +220,7 @@
 .or-line span {
     padding-left: 5px;
     padding-right: 5px;
-    font-family: Work Sans;
+    font-family: Poppins, sans-serif;
     font-size: 14px;
     font-weight: 600;
     line-height: 16.42px;

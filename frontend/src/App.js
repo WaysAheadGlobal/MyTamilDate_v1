@@ -111,6 +111,7 @@ import ProfileDetails from "./components/userflow/screens/profile-details/Profil
 import Recommendations from "./components/userflow/screens/recommendations/Recommendations";
 import { useCookies } from "./hooks/useCookies";
 import { WantGenderUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/wantgender/wantgender";
+import Verify from "./components/verify";
 
 
 function App() {
@@ -224,7 +225,7 @@ function App() {
               <Route path="/pending" element={<Protected><AccountPending /></Protected>}></Route>
               <Route path="/not-approved" element={<Protected><AccountNotApproved /></Protected>}></Route>
               <Route path="/approved" element={<Protected><AccountApproved /></Protected>}></Route>
-              <Route path="/user/verify/:token" element={<Protected><AccountPending /></Protected>}></Route>
+              <Route path="/user/verify/:token" element={<Protected><Verify /></Protected>}></Route>
 
 
               <Route path="/accoutsetting" element={<Protected><AccountSetting /></Protected>}></Route>

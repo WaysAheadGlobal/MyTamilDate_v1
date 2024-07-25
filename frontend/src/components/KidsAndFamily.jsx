@@ -198,7 +198,7 @@ export default function KidsAndFamily() {
                             fontSize: "1.25rem",
                             fontWeight: "bold",
                             color: "#6c6c6c",
-                        }} onClick={()=> navigate('/smoke-drink')} >
+                        }} onClick={() => navigate('/smoke-drink')}>
                             Ask me later
                         </Button>
                         <Button variant="primary" style={{

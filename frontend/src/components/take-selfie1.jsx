@@ -13,6 +13,7 @@ import pic from "../assets/images/pic.png";
 import responsivebg from "../assets/images/responsive-bg.png";
 import { useCookies } from '../hooks/useCookies';
 import './take-selfie1.css';
+import { useAlert } from '../Context/AlertModalContext';
 
 export const Selfie = () => {
 
@@ -29,6 +30,8 @@ export const Selfie = () => {
     const { getCookie } = useCookies();
     const [loading, setLoading] = useState(false);
     const [showDuplicateNameModal, setShowDuplicateNameModal] = useState(false);
+    const [originalFileName, setOriginalFileName] = useState("");
+    const alert = useAlert();
 
 
     console.log(selectedImages);
@@ -48,10 +51,10 @@ export const Selfie = () => {
         const existingFileNames = Object.keys(selectedImages)
             .filter(key => key !== imageKey && selectedImages[key] !== null)
             .map(key => selectedImages[key]?.name);
-    
+
         return existingFileNames.includes(fileName);
     };
-    
+
 
     useEffect(() => {
         (async () => {
@@ -87,23 +90,30 @@ export const Selfie = () => {
     }, [])
 
     const handleFileChange = (event, imageKey) => {
-    const file = event.target.files[0];
-    if (file) {
-        if (checkForDuplicateNames(file, imageKey)) {
-            setShowDuplicateNameModal(true);
-            return;
+        const file = event.target.files[0];
+        if (file) {
+            if (checkForDuplicateNames(file, imageKey)) {
+                /* setShowDuplicateNameModal(true); */
+                alert.setModal({
+                    show: true,
+                    message: "Please add a photo you haven't already used",
+                    title: "Duplicate Photo",
+                })
+                return;
+            }
+
+            setOriginalFileName(file.name);
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                setImageToCrop(reader.result);
+            };
+            reader.readAsDataURL(file);
+
+            setCurrentImageKey(imageKey);
+            setShowCropModal(true);
         }
-
-        const reader = new FileReader();
-        reader.onload = () => {
-            setImageToCrop(reader.result);
-        };
-        reader.readAsDataURL(file);
-
-        setCurrentImageKey(imageKey);
-        setShowCropModal(true);
-    }
-};
+    };
 
 
     const handleClick = (imageKey) => {
@@ -170,11 +180,11 @@ export const Selfie = () => {
         getCroppedImg(imageToCrop, croppedAreaPixels)
             /* croppedImage: Blob */
             .then(croppedImage => {
-                console.log(new File([croppedImage], window.crypto.randomUUID(), { type: 'image/jpeg' }));
+                console.log(new File([croppedImage], originalFileName, { type: 'image/jpeg' }));
 
                 setSelectedImages({
                     ...selectedImages,
-                    [currentImageKey]: new File([croppedImage], window.crypto.randomUUID(), { type: 'image/jpeg' })
+                    [currentImageKey]: new File([croppedImage], originalFileName, { type: 'image/jpeg' })
                 })
 
                 setShowCropModal(false);
@@ -243,6 +253,15 @@ export const Selfie = () => {
         setShowDosDontsModal(true);
     }, []);
 
+    console.log(
+        Object.values(selectedImages).some(image => !image),
+        Object.values(images).some(image => !image),
+        (
+            Object.values(selectedImages).some(image => !image)
+            && Object.values(images).some(image => !image)
+        )
+    )
+
     return (
         <div className='selfie-container'>
             <div className='selfie-bg'>
@@ -276,10 +295,10 @@ export const Selfie = () => {
                             {!(selectedImages.main || images.main) && (
                                 <>
                                     <Image className='selfie-icon' src={addplus}></Image>
-                                    <span>Add main photo</span>
+                                    <span>Add your main photo</span>
                                 </>
                             )}
-                            {(selectedImages.main || images.main) && <Image src={images.main ?? URL.createObjectURL(selectedImages.main)} className="user-picture1" style={{
+                            {(selectedImages.main || images.main) && <Image src={selectedImages.main ? URL.createObjectURL(selectedImages.main) : images.main} className="user-picture1" style={{
                                 height: '100%',
                                 width: '100%',
                                 objectFit: 'contain',
@@ -302,7 +321,7 @@ export const Selfie = () => {
                                     <span>Add photo</span>
                                 </>
                             )}
-                            {(selectedImages.first || images.first) && <Image src={images.first ?? URL.createObjectURL(selectedImages.first)} className="user-picture2" style={{
+                            {(selectedImages.first || images.first) && <Image src={selectedImages.first ? URL.createObjectURL(selectedImages.first) : images.first} className="user-picture2" style={{
                                 height: '100%',
                                 width: '100%',
                                 objectFit: 'contain',
@@ -323,12 +342,12 @@ export const Selfie = () => {
                                     <span>Add photo</span>
                                 </>
                             )}
-                            {(selectedImages.second || images.second) && <Image src={images.second ?? URL.createObjectURL(selectedImages.second)} className="user-picture2" style={{
+                            {(selectedImages.second || images.second) && <Image src={selectedImages.second ? URL.createObjectURL(selectedImages.second) : images.second} className="user-picture2" style={{
                                 height: '100%',
                                 width: '100%',
                                 objectFit: 'contain',
                             }} alt="Selected" fluid />}
-                            
+
                             <input
                                 type="file"
                                 ref={fileInputRefSecond}
@@ -345,11 +364,17 @@ export const Selfie = () => {
                     className='selfie-next-btn'
                     onClick={handleNextClick}
                     style={{
-                        background: "#E5E5E5",
-                        
+                        /* background: "#E5E5E5", */
 
-                        // background: 'linear-gradient(90deg, #9663BF 0%, #4B164C 100%)',
-                        color:  '#6C6C6C'
+
+                        background: (
+                            Object.values(selectedImages).some(image => !image)
+                            && Object.values(images).some(image => !image)
+                        ) ? '#E5E5E5' : "linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%)",
+                        color: (
+                            Object.values(selectedImages).some(image => !image)
+                            && Object.values(images).some(image => !image)
+                        ) ? '#6C6C6C' : 'white',
                     }}
                 >
                     Next
@@ -362,7 +387,7 @@ export const Selfie = () => {
                 </Button>
                 <Modal centered className="selfie-modal" show={showModal} onHide={() => setShowModal(false)}>
                     <Modal.Body className='selfie-modal-body'>
-                        3 photos required
+                        Add 3 real pics to help people get to know you! Fake images will be rejected.
                         <Button variant="secondary" className='selfie-modal-btn' onClick={() => setShowModal(false)}>
                             Close
                         </Button>
@@ -429,13 +454,13 @@ export const Selfie = () => {
                     </Modal.Footer> */}
                 </Modal>
                 <Modal centered className="duplicate-name-modal" show={showDuplicateNameModal} onHide={() => setShowDuplicateNameModal(false)}>
-    <Modal.Body className='duplicate-name-modal-body'>
-        Image names must be different.
-        <Button variant="secondary" className='duplicate-name-modal-btn' onClick={() => setShowDuplicateNameModal(false)}>
-            Close
-        </Button>
-    </Modal.Body>
-</Modal>
+                    <Modal.Body className='duplicate-name-modal-body'>
+                        Please add a photo you haven’t already used
+                        <Button variant="secondary" className='duplicate-name-modal-btn' onClick={() => setShowDuplicateNameModal(false)}>
+                            Close
+                        </Button>
+                    </Modal.Body>
+                </Modal>
 
             </Container>
         </div>
