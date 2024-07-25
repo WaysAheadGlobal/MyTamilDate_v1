@@ -708,8 +708,6 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
                     html: html
                 };
 
-
-
                 sgMail.send(msg)
                     .then(() => {
                         console.log("Approval email sent successfully");

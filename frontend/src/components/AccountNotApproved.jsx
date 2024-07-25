@@ -1,11 +1,32 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Container, Image } from 'react-bootstrap'
 import logo from "../assets/images/MTDlogo.png";
 import responsivebg from "../assets/images/responsive-bg.png";
 import './job-title.css';
 import notApproved from "../assets/images/not-approved.png";
+import { API_URL } from '../api';
+import { useCookies } from '../hooks/useCookies';
 
 export default function AccountNotApproved() {
+    const { getCookie } = useCookies();
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        (async () => {
+            const response = await fetch(`${API_URL}/customer/users/latestrejection`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+            });
+
+            const data = await response.json();
+            setData(data);
+            console.log(data);
+        })()
+    }, [])
+
     return (
         <div className='job-container'>
             <div className='job-bg'>
@@ -19,7 +40,7 @@ export default function AccountNotApproved() {
                         </Container>
                     </Container>
                     <div style={{
-                        marginTop: "auto",
+                        
                         display: "flex",
                         flexDirection: "column",
                         gap: "1rem",
@@ -61,6 +82,14 @@ export default function AccountNotApproved() {
                                 color: "#4e1173"
                             }}
                         >Almost there!</p>
+                        {data && (
+                            <p style={{
+                                marginTop: "1em",
+                                marginBottom: "1rem"
+                            }}>
+                                {data.reason}
+                            </p>
+                        )}
                         <p style={{
                             marginTop: "1em"
                         }}>

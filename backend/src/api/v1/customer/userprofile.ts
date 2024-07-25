@@ -1119,6 +1119,36 @@ profile.put('/updatestatus', verifyUser, (req: UserRequest, res: express.Respons
   });
 });
 
+profile.get('/latestrejection', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  const query = `
+    SELECT rr.reason, r.created_at
+    FROM rejects r
+    JOIN reject_reasons rr ON r.reason_id = rr.id
+    WHERE r.user_id = ?
+    ORDER BY r.created_at DESC
+    LIMIT 1
+  `;
+
+  db.query(query, [userId], (err: Error | null, results: any) => {
+    if (err) {
+      console.error('Error fetching latest rejection reason:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No rejection reason found for the user' });
+    }
+
+    const latestRejection = results[0];
+    res.status(200).json({
+      reason: latestRejection.reason,
+      created_at: latestRejection.created_at
+    });
+  });
+});
+
 
 profile.post("/media",
   verifyUser,
