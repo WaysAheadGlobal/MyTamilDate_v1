@@ -80,7 +80,6 @@ const UserDetails = () => {
       const data = await fetch(`${API_URL}/admin/users/customers/${id}`);
       const response = await data.json();
       setDetails(response[0]);
-
     } catch (err) {
       console.log(err);
     }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Grid, Typography, Button, Avatar, useMediaQuery, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
+import {   Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { json, useNavigate, useParams } from 'react-router-dom';
 import Header from '../../components/Header1'; // Adjust path as per your project structure
@@ -26,7 +27,31 @@ const UserDetails = () => {
   const { id } = useParams();
   const [openModal, setOpenModal] = useState(false);
   const [reason, setReason] = useState('');
+  const [customReason, setCustomReason] = useState('');
+  const [selectedReason, setSelectedReason] = useState('');
 
+  const reasons = [
+    "Hi there! Having a complete profile helps you connect better with others. Please complete your bio and add real images which clearly show your face.",
+    "Hi there! Having a complete profile helps you connect better with others. Please complete your bio.",
+    "Hi there! Having a complete profile helps you connect better with others. Please add real images which clearly show your face.",
+    "Hi there! It's best to keep your conversation to MTD until you create a connection. Please remove your contact details from your profile's written bio (phone, social etc)."
+  ];
+
+ 
+
+  const handleSelectChange = (event) => {
+    const selected = event.target.value;
+    setSelectedReason(selected);
+    setCustomReason('');
+    setReason(selected);
+  };
+
+  const handleCustomReasonChange = (event) => {
+    const customText = event.target.value;
+    setCustomReason(customText);
+    setSelectedReason('');
+    setReason(customText);
+  };
   const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
   const [images, setImages] = useState({
     main: null,
@@ -653,52 +678,78 @@ const UserDetails = () => {
       </Grid>
 
       <Dialog
-        open={openModal}
-        onClose={handleCloseModal}
-
-        fullWidth
-        sx={{
-          '& .MuiDialog-paper': {
-            width: '350px',
-            height: '300px',
-          }
-        }}
-      >
-        <DialogTitle>What's the reason?</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Reason"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            multiline
-            rows={5} // Adjust number of rows as needed
-            sx={{
-              '& .MuiInputBase-root': {
-                height: '150px', // Adjust height as needed
-              }
+      open={openModal}
+      onClose={handleCloseModal}
+      fullWidth
+      sx={{
+        '& .MuiDialog-paper': {
+          width: '360px',
+          height: '400px',
+        }
+      }}
+    >
+      <DialogTitle>What's the reason?</DialogTitle>
+      <DialogContent>
+        <FormControl fullWidth margin="dense" variant="outlined">
+          <InputLabel>Select a reason</InputLabel>
+          <Select
+            value={selectedReason}
+            onChange={handleSelectChange}
+            label="Select a reason"
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  maxHeight: 200,
+                  width: 'calc(360px - 32px)',
+                  whiteSpace: 'normal',
+                },
+              },
             }}
-          />
-        </DialogContent>
-        <DialogActions  >
-          <Button onClick={handleCloseModal} variant="contained" color="error" >
-            Cancel
-          </Button>
-          <Button onClick={handleSaveReason} sx={{
+          >
+            {reasons.map((reason, index) => (
+              <MenuItem key={index} value={reason} sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                {reason}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <TextField
+          autoFocus
+          margin="dense"
+          label="Reason"
+          type="text"
+          fullWidth
+          variant="outlined"
+          value={customReason}
+          onChange={handleCustomReasonChange}
+          multiline
+          rows={5}
+          sx={{
+            marginTop: '16px',
+            '& .MuiInputBase-root': {
+              height: '150px',
+            }
+          }}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseModal} variant="contained" color="error">
+          Cancel
+        </Button>
+        <Button
+          onClick={() => handleSaveReason(reason)}
+          sx={{
             background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
             color: '#fff',
             '&:hover': {
               background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
             },
-          }}>
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+          }}
+        >
+          Save
+        </Button>
+      </DialogActions>
+    </Dialog>
     </Box>
   );
 };

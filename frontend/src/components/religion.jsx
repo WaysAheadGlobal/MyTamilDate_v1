@@ -165,7 +165,7 @@ export const Religion = () => {
                         <div className='your-lang'>
                             <Container className='religion-text'>
                                 <Image className='about-yourself-icon' src={langIcon}></Image>
-                                <p>What is your preferred language?</p>
+                                <p>What language(s) do you speak?</p>
                             </Container>
                             <Container className='all-lang'>
                                 {allLanguages.map((language, index) => (

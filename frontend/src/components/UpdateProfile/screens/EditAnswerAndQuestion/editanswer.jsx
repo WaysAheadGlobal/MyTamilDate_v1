@@ -10,19 +10,35 @@ import { useCookies } from '../../../../hooks/useCookies';
 import Sidebar from '../../../userflow/components/sidebar/sidebar';
 import answer from '../../../../assets/images/answer.png';
 import { useAlert } from '../../../../Context/AlertModalContext';
+const answers = [
+    "I invented mutton rolls. I’ve visited 5 countries. I can speak 2 languages.",
+    "Drive 12 hours to New York just to eat some amazing pizza.",
+    "I’d buy my amma her dream home.",
+    "Laugh at my bad jokes.",
+    "I’m free spirited, curious about people and places and always up for a new challenge!",
+    "Family time, working out and trying out a new recipe in the kitchen. Cheesy kotthu roti anyone?",
+    "“And when you want something, all the universe conspires in helping you achieve it”",
+    "Values family, loves Tamil films and music as much as I do and is looking for something serious.",
+    "To visit every country in the world!"
+]
 
 export default function UpdateAnswers() {
     const [show, setShow] = useState(false);
     const [count, setCount] = useState(0)
+    const[updatecount, setUpdatecount] = useState(0)
     const [modalData, setModalData] = useState({
         heading: "",
         apiURL: "",
     });
+    const [refresh, setRefresh] = useState(true);
+
     const { getCookie } = useCookies();
     const [questions, setQuestions] = useState([]);
     const navigate = useNavigate();
     const [alert, setAlert] = useState(false);
     const alertmodal = useAlert();
+    const Totalcount = count + updatecount;
+    console.log(Totalcount);
 
     useEffect(() => {
         (async () => {
@@ -40,7 +56,7 @@ export default function UpdateAnswers() {
                 setQuestions(data.questions);
             }
         })()
-    }, []);
+    }, [refresh]);
 
     useEffect(() => {
         (async () => {
@@ -56,7 +72,24 @@ export default function UpdateAnswers() {
             setCount(data.count);
             console.log(count);
         })()
-    }, []);
+    }, [refresh]);
+
+    useEffect(() => {
+        (async () => {
+            const response = await fetch(`${API_URL}customer/update/updateanswers/count`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+            });
+            const data = await response.json();
+      
+            setUpdatecount(data.count);
+            console.log(updatecount);
+            console.log(count);
+        })()
+    }, [refresh]);
 
     const handleDeleteAnswer = async (questionId) => {
         try {
@@ -70,8 +103,8 @@ export default function UpdateAnswers() {
         //   const response = await axios.delete(`${API_URL}/answer/${questionId}`);
           if (response.status === 200) {
             // Update the state or refetch the data to reflect the deletion
-          
-            window.location.reload();
+            refreshpage();
+           
           
           }
         } catch (error) {
@@ -79,6 +112,10 @@ export default function UpdateAnswers() {
 
         }
       };
+
+      const refreshpage = ()=>{
+        setRefresh(!refresh)
+    }
 
     return (
         <Sidebar>
@@ -93,7 +130,7 @@ export default function UpdateAnswers() {
             }}>
                 <div className={ans.jobcontainer}>
                     <Modal show={show} alertmodal={alertmodal} count={count} onHide={() => setShow(false)} modalData={modalData} />
-                    <AlertModal show={alert} alertmodal={alertmodal} count={count} onHide={() => setAlert(false)} />
+                    <AlertModal show={alert} updatecount={updatecount} alertmodal={alertmodal} count={count} onHide={() => setAlert(false)} />
 
                     <Container className={ans.jobmain}>
                         <Container className={ans.jobcontent}>
@@ -132,7 +169,7 @@ export default function UpdateAnswers() {
                                                         tabIndex={0}
                                                         key={index}
                                                         style={{
-                                                            border: "2px solid #cbcbcb",
+                                                            border: question.answer ? "2px solid #F76A7B" : "2px solid #cbcbcb",
                                                             padding: "1rem",
                                                             borderRadius: "10px",
                                                             display: "flex",
@@ -143,11 +180,21 @@ export default function UpdateAnswers() {
                                                         onClick={() => {
                                                             if (count === 2 && question.answer == null) {
                                                                 setAlert(true);
-                                                            } else {
+                                                            }
+                                                            
+                                                            else if(updatecount===2){
+                                                                setAlert(true);
+                                                            }
+                                                            else if(updatecount === 1 && count === 1 && question.answer == null){
+                                                                setAlert(true);
+                                                            }
+                                                            else {
                                                                 setShow(true);
                                                                 setModalData({
                                                                     heading: question.question,
                                                                     apiURL: `${API_URL}/customer/update/answer/${question.question_id}`,
+                                                                    placeholder : answers[index],
+                                                                    refreshpage : refreshpage,
                                                                 });
                                                             }
                                                         }}
@@ -167,7 +214,7 @@ export default function UpdateAnswers() {
                                                                 lineHeight: "20px",
                                                                 fontWeight: "400",
                                                             }}>
-                                                                {question.answer || ""}
+                                                                {question.answer || answers[index].substring(0,30)+"..."}
                                                             </div>
                                                             <div style={{
                                                                 color: "#6C6C6C",
@@ -220,9 +267,14 @@ export default function UpdateAnswers() {
                                 gap: "30px",
                                 bottom: "38px"
                             }}>
-                                <Button variant="primary" type="submit" className={ans.jobnxtbtn} onClick={() => {
+                                <Button  type="submit" className={ans.jobnxtbtn} onClick={() => {
                                     const answers = getCookie('answers');
-                                    navigate('/updateprofile');
+                                  
+                                    if (count == 2 || updatecount == 2 || Totalcount === 2) {
+                                        navigate('/updateprofile');
+                                    } else {
+                                        setAlert(true);
+                                    }
                                     // if (answers && Number(answers) >= 2) {
                                     //     navigate('/updateprofile');
                                     // } else {
@@ -233,7 +285,12 @@ export default function UpdateAnswers() {
                                 </Button>
                                 <Button variant="primary" type="submit" className={ans.jobnxtbtn2} onClick={() => {
                                     const answers = getCookie('answers');
-                                    navigate('/updateprofile');
+                                   
+                                    if (count == 2 || updatecount == 2 || Totalcount === 2) {
+                                        navigate('/updateprofile');
+                                    } else {
+                                        setAlert(true);
+                                    }
                                     // if (answers && Number(answers) >= 2) {
                                     //     navigate('/updateprofile');
                                     // } else {
@@ -251,7 +308,7 @@ export default function UpdateAnswers() {
     );
 };
 
-function Modal({ show, onHide, modalData, alert, alertmodal }) {
+function Modal({ show, onHide, modalData, alert, alertmodal ,placeholder,refreshpage}) {
     const [text, setText] = useState("");
     const { getCookie, setCookie } = useCookies();
 
@@ -278,6 +335,7 @@ function Modal({ show, onHide, modalData, alert, alertmodal }) {
     }, [modalData.apiURL]);
 
     async function saveAnswer() {
+          const finalanswer = text ? text : modalData.placeholder
         onHide();
         const response = await fetch(modalData.apiURL, {
             method: 'POST',
@@ -285,7 +343,7 @@ function Modal({ show, onHide, modalData, alert, alertmodal }) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${getCookie('token')}`
             },
-            body: JSON.stringify({ answer: text }),
+            body: JSON.stringify({ answer: finalanswer }),
         });
         const data = await response.json();
         console.log(data);
@@ -298,7 +356,9 @@ function Modal({ show, onHide, modalData, alert, alertmodal }) {
                 message: "Thanks for updating your profile answer! It's now under review by myTamilDate. You'll receive an update within 24 hours.",
 
             });
+        
             onHide();
+            modalData.refreshpage();
             const answers = getCookie('answers');
             setCookie('answers', answers ? Number(answers) + 1 : 0, { path: '/' });
         }
@@ -321,6 +381,7 @@ function Modal({ show, onHide, modalData, alert, alertmodal }) {
                     name={modalData.heading}
                     id={modalData.heading}
                     value={text}
+                    placeholder={modalData.placeholder}
                     onChange={(e) => { setText(e.target.value) }}
                     maxLength={200}
                     style={{
@@ -366,7 +427,7 @@ function Modal({ show, onHide, modalData, alert, alertmodal }) {
     )
 }
 
-function AlertModal({ show, onHide, count }) {
+function AlertModal({ show, onHide, count,updatecount }) {
     return (
         <BModal centered show={show} onHide={onHide}>
             <div>
@@ -377,9 +438,17 @@ function AlertModal({ show, onHide, count }) {
                     textAlign: "center",
                     marginTop: "1rem",
                 }}>
+
                     {
-                        count != 2 ? "Answer atleast 2 prompts." : "You can answer only 2 prompts"
+                      updatecount === 2 ? "You can Update Only 2 prompts"  : (
+
+                        count === 2 ? "You can answer only 2 prompts" : (updatecount === 1 && count ===1 ? "Since only two prompts can be answered, and one has already been submitted for review. You'll receive an update within 24 hours." :"Answer at least 2 prompts." ) 
+                      ) 
                     }
+              {
+}
+
+                    
                 </p>
             </div>
             <Button style={{

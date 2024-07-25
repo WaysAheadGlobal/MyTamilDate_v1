@@ -10,6 +10,18 @@ import { Link, useNavigate } from 'react-router-dom';
 import { API_URL } from '../api';
 import { useCookies } from '../hooks/useCookies';
 
+const answer = [
+    "I invented mutton rolls. I’ve visited 5 countries. I can speak 2 languages.",
+    "Drive 12 hours to New York just to eat some amazing pizza.",
+    "I’d buy my amma her dream home.",
+    "Laugh at my bad jokes.",
+    "I’m free spirited, curious about people and places and always up for a new challenge!",
+    "Family time, working out and trying out a new recipe in the kitchen. Cheesy kotthu roti anyone?",
+    "“And when you want something, all the universe conspires in helping you achieve it”",
+    "Values family, loves Tamil films and music as much as I do and is looking for something serious.",
+    "To visit every country in the world!"
+]
+
 export default function ProfileAnswers() {
 
     const [show, setShow] = useState(false);
@@ -40,6 +52,7 @@ export default function ProfileAnswers() {
     //         }
     //     })()
     // }, [])
+const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -57,7 +70,7 @@ export default function ProfileAnswers() {
                 setQuestions(data.questions);
             }
         })()
-    }, []);
+    }, [refresh]);
     
     useEffect(() => {
         (async () => {
@@ -77,8 +90,9 @@ export default function ProfileAnswers() {
 
 
     const refreshpage = ()=>{
-        window.location.reload();
+        setRefresh(!refresh)
     }
+
     return (
         <div className='job-container'>
             <Modal show={show} onHide={() => setShow(false)} modalData={modalData} />
@@ -136,7 +150,7 @@ export default function ProfileAnswers() {
                                                         tabIndex={0}
                                                         key={index}
                                                         style={{
-                                                            border: "2px solid #cbcbcb",
+                                                            border: question.answer ? "2px solid #F76A7B" : "2px solid #cbcbcb",
                                                             padding: "1rem",
                                                             borderRadius: "10px",
                                                             display: "flex",
@@ -151,7 +165,8 @@ export default function ProfileAnswers() {
                                                                 setModalData({
                                                                     heading: question.prompt,
                                                                    apiURL: `${API_URL}/customer/users/answer/${question.question_id}`,
-                                                                   refreshpage : refreshpage
+                                                                   refreshpage : refreshpage,
+                                                                   placeholder : answer[index]
                                                                 });
                                                                 setShow(true);
                                                             }
@@ -167,7 +182,7 @@ export default function ProfileAnswers() {
                                                                 {question.question}
                                                             </div>
                                                             <div>
-                                                                {question.answer || ""}
+                                                            {question.answer || answer[index].substring(0,30)+"..."}
                                                             </div>
                                                             <div style={{
                                                                 color: "#6C6C6C",
@@ -211,7 +226,7 @@ export default function ProfileAnswers() {
     );
 };
 
-function Modal({ show, onHide, modalData, alert }) {
+function Modal({ show, onHide, modalData, alert ,placeholder}) {
     const [text, setText] = useState("");
     const { getCookie, setCookie } = useCookies();
 
@@ -220,7 +235,7 @@ function Modal({ show, onHide, modalData, alert }) {
 
         (async () => {
             if (!modalData.apiURL) return;
-
+  
             const response = await fetch(modalData.apiURL, {
                 method: 'GET',
                 headers: {
@@ -238,13 +253,14 @@ function Modal({ show, onHide, modalData, alert }) {
     }, [modalData.apiURL]);
 
     async function saveAnswer() {
+        const finalanswer = text ? text : modalData.placeholder
         const response = await fetch(modalData.apiURL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${getCookie('token')}`
             },
-            body: JSON.stringify({ answer: text }),
+            body: JSON.stringify({ answer: finalanswer }),
         });
         const data = await response.json();
         console.log(data);
@@ -274,6 +290,7 @@ function Modal({ show, onHide, modalData, alert }) {
                     name={modalData.heading}
                     id={modalData.heading}
                     value={text}
+                    placeholder={modalData.placeholder}
                     onChange={(e) => { setText(e.target.value) }}
                     maxLength={200}
                     style={{
@@ -302,24 +319,12 @@ function Modal({ show, onHide, modalData, alert }) {
                 alignItems: "center",
                 gap: "1rem",
             }}>
-                <Button style={{
-                    backgroundColor: "white",
-                    borderColor: "#6c6c6c",
-                    borderRadius: "9999px",
-                    padding: "0.5rem 1rem",
-                    color: "#6c6c6c",
-                    fontWeight: "600",
-                }} onClick={() => { onHide(); setText(""); }}>
+                <button className='global-cancel-button' onClick={() => { onHide(); setText(""); }}>
                     Close
-                </Button>
-                <Button variant="primary" style={{
-                    backgroundColor: "#F76A7B",
-                    borderColor: "#F76A7B",
-                    borderRadius: "9999px",
-                    padding: "0.5rem 1rem",
-                }} onClick={saveAnswer}>
-                    Save Changes
-                </Button>
+                </button>
+                <button className='global-save-button' onClick={saveAnswer}>
+                    Save
+                </button>
             </div>
         </BModal>
     )
@@ -337,7 +342,7 @@ function AlertModal({ show, onHide,count }) {
                     marginTop: "1rem",
                 }}>
                     {
-                        count != 2 ? "Answer atleast 2 prompts." : "You can answer only 2 prompts"
+                        count != 2 ? "Answer 2 prompts, please! Contact info (e.g., phone, social handles) will be rejected." : "You can answer only 2 prompts"
                     }
                     
                 </p>

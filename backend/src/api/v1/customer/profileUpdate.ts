@@ -655,6 +655,25 @@ updateprofile.post('/answer/:questionId', verifyUser, (req: UserRequest, res: ex
   });
 });
 
+updateprofile.get('/updateanswers/count', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  const query = 'SELECT COUNT(*) as count FROM question_answers_update WHERE user_id = ?';
+
+  db.query<RowDataPacket[]>(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching answer count:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No answers found' });
+    }
+
+    res.status(200).json({ count: results[0].count });
+  });
+});
+
 // Add this endpoint to your updateprofile router
 updateprofile.delete('/answer/:questionId', verifyUser, (req: UserRequest, res: express.Response) => {
   const userId = req.userId;

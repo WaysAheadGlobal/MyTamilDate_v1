@@ -43,7 +43,6 @@ export const EmailVerify = () => {
             const result = await response.json();
             if (response.ok) {
                 updateStatus();
-               
                 navigate("/getstarted");
                 setErrorMessage('');
             } else {
@@ -64,7 +63,6 @@ export const EmailVerify = () => {
                     'Authorization': `Bearer ${getCookie('token')}`
                 },
             });
-
             if (response.ok) {
                 console.log('Mail sent successfully! Please check your email.');
             }
