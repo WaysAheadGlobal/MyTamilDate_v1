@@ -89,7 +89,40 @@ auth.post('/login',
                 return res.status(401).json({ message: otpResponse.message });
             }
 
-            const query = 'SELECT up.id, up.user_id, up.email, up.email_verified_at, up.first_name, u.approval, u.deleted_at FROM user_profiles up INNER JOIN users u ON u.id = up.user_id WHERE phone = ?';
+            const query = `
+        SELECT 
+            up.id AS profile_id, 
+            up.user_id,
+            up.email,
+            up.gender,
+            up.email_verified_at,
+            up.location_id,
+            up.religion_id,
+            up.job_id,
+            up.growth_id,
+            up.study_id,
+            up.first_name, 
+            u.approval,
+            MIN(m.id) AS media, 
+            MIN(upers.id) AS personality, 
+            MIN(qa.id) AS question_answer
+        FROM 
+            user_profiles up
+        INNER JOIN 
+            users u ON u.id = up.user_id
+        LEFT JOIN 
+            media m ON m.user_id = up.user_id
+        LEFT JOIN 
+            user_personalities upers ON upers.user_id = up.user_id
+        LEFT JOIN 
+            question_answers qa ON qa.user_id = up.user_id
+        WHERE 
+            up.phone = ?
+        GROUP BY 
+            up.id, up.user_id, up.first_name, u.approval
+        ORDER BY 
+            up.created_at DESC;
+        `;
             db.query<RowDataPacket[]>(query, [phone], (err, results) => {
                 if (err) {
                     console.error('Error fetching data:', err);
@@ -177,7 +210,40 @@ auth.post("/login/email", async (req, res) => {
     const usingGoogle = req.body.usingGoogle;
 
     if (usingGoogle) {
-        const query = 'SELECT up.id, up.user_id, up.first_name, u.approval FROM user_profiles up INNER JOIN users u ON u.id = up.user_id WHERE email = ?';
+        const query = `
+        SELECT 
+            up.id AS profile_id, 
+            up.user_id,
+            up.email,
+            up.gender,
+            up.email_verified_at,
+            up.location_id,
+            up.religion_id,
+            up.job_id,
+            up.growth_id,
+            up.study_id,
+            up.first_name, 
+            u.approval,
+            MIN(m.id) AS media, 
+            MIN(upers.id) AS personality, 
+            MIN(qa.id) AS question_answer
+        FROM 
+            user_profiles up
+        INNER JOIN 
+            users u ON u.id = up.user_id
+        LEFT JOIN 
+            media m ON m.user_id = up.user_id
+        LEFT JOIN 
+            user_personalities upers ON upers.user_id = up.user_id
+        LEFT JOIN 
+            question_answers qa ON qa.user_id = up.user_id
+        WHERE 
+            up.email = ?
+        GROUP BY 
+            up.id, up.user_id, up.first_name, u.approval
+        ORDER BY 
+            up.created_at DESC;
+        `;
         db.query<RowDataPacket[]>(query, [email], (err, results) => {
             if (err) {
                 console.error('Error fetching data:', err);
@@ -206,8 +272,41 @@ auth.post("/login/email", async (req, res) => {
         if (!verify) {
             return res.status(400).json({ message: 'Invalid verification code' });
         }
-
-        const query = 'SELECT up.id, up.user_id, up.first_name, u.approval FROM user_profiles up INNER JOIN users u ON u.id = up.user_id WHERE email = ? ORDER BY up.created_at DESC';
+        const query = `
+        SELECT 
+            up.id AS profile_id, 
+            up.user_id,
+            up.email,
+            up.gender,
+            up.email_verified_at,
+            up.location_id,
+            up.religion_id,
+            up.job_id,
+            up.growth_id,
+            up.study_id,
+            up.first_name, 
+            u.approval,
+            MIN(m.id) AS media, 
+            MIN(upers.id) AS personality, 
+            MIN(qa.id) AS question_answer
+        FROM 
+            user_profiles up
+        INNER JOIN 
+            users u ON u.id = up.user_id
+        LEFT JOIN 
+            media m ON m.user_id = up.user_id
+        LEFT JOIN 
+            user_personalities upers ON upers.user_id = up.user_id
+        LEFT JOIN 
+            question_answers qa ON qa.user_id = up.user_id
+        WHERE 
+            up.email = ?
+        GROUP BY 
+            up.id, up.user_id, up.first_name, u.approval
+        ORDER BY 
+            up.created_at DESC;
+        `;
+        
         db.query<RowDataPacket[]>(query, [email], (err, results) => {
             if (err) {
                 console.error('Error fetching data:', err);

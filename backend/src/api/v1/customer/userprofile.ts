@@ -83,24 +83,38 @@ profile.post('/updateemail', verifyUser, [
   // Log the values for debugging
   console.log(`Updating email for userId: ${userId}, new email: ${email}`);
 
-  const updateQuery = 'UPDATE user_profiles SET email = ?, updated_at = NOW() WHERE user_id = ?';
-  db.query<ResultSetHeader>(updateQuery, [email, userId], (err, results) => {
+  // Check if the email already exists
+  const checkEmailQuery = 'SELECT user_id FROM user_profiles WHERE email = ?';
+  db.query(checkEmailQuery, [email], (err, results:any) => {
     if (err) {
-      console.error('Error updating email:', err);
+      console.error('Error checking email uniqueness:', err);
       return res.status(500).json({ message: 'Internal Server Error' });
     }
 
-    if (results.affectedRows === 0) {
-      return res.status(404).json({ message: 'User profile not found' });
+    if (results.length > 0 && results[0].user_id !== userId) {
+      return res.status(400).json({ message: 'Email already in use' });
     }
 
-    const selectQuery = 'SELECT * FROM user_profiles WHERE user_id = ?';
-    db.query(selectQuery, [userId], (err, updatedResults) => {
+    // Proceed with the update if the email is unique
+    const updateQuery = 'UPDATE user_profiles SET email = ?, updated_at = NOW() WHERE user_id = ?';
+    db.query<ResultSetHeader>(updateQuery, [email, userId], (err, updateResults) => {
       if (err) {
-        console.error('Error fetching updated profile data:', err);
+        console.error('Error updating email:', err);
         return res.status(500).json({ message: 'Internal Server Error' });
       }
-      res.status(200).json({ message: 'Email updated successfully', data: updatedResults });
+
+      if (updateResults.affectedRows === 0) {
+        return res.status(404).json({ message: 'User profile not found' });
+      }
+
+      const selectQuery = 'SELECT * FROM user_profiles WHERE user_id = ?';
+      db.query(selectQuery, [userId], (err, updatedResults) => {
+        if (err) {
+          console.error('Error fetching updated profile data:', err);
+          return res.status(500).json({ message: 'Internal Server Error' });
+        }
+        res.status(200).json({ message: 'Email updated successfully', data: updatedResults });
+      });
     });
   });
 });

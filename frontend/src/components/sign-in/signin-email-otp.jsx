@@ -14,6 +14,7 @@ import { useCookies } from '../../hooks/useCookies';
 import { useAlert } from '../../Context/AlertModalContext';
 
 export const SignInEmailOTP = () => {
+    
     const navigate = useNavigate();
     const location = useLocation();
     const cookies = useCookies();
@@ -109,29 +110,73 @@ export const SignInEmailOTP = () => {
             cookies.setCookie('token', result.token, 30);
             cookies.setCookie('userId', result.Result[0].user_id);
             if (result.Result && result.Result.length > 0) {
-                if(result.Result[0].approval === 40){
-                   alertmodal.setModal({
-                       show: true,
-                       title: 'Incomplete Registration',
-                       message: "To access the application's features, please complete your registration process first.",
-                   });
-                   
-                   navigate('/basicdetails');
-                   
-                }
+              
 
-           else if (result.Result[0].approval === 10) {
+           if (result.Result[0].approval === 10) {
                    navigate('/pending');
                } else if (result.Result[0].approval === 30) {
                    navigate('/not-approved');
                } else if (result.Result[0].approval === 20) {
                 cookies.setCookie('Name', result.Result[0].first_name, 20);
                    goToSignsuccessful();
-               } else {
+               }
+               
+               else if(result.Result[0].approval === 40){
+                alertmodal.setModal({
+                    show: true,
+                    title: 'Incomplete Registration',
+                    message: "To access the application's features, please complete your registration process first.",
+                });
+
+                if(!result.Result[0].email){
+                    navigate('/emailverify');
+                }
+                else if(!result.Result[0].first_name){
+                    navigate('/basicdetails');
+                }
+                else if(!result.Result[0].gender){
+                    navigate('/abtyourself');
+                }
+                else if(!result.Result[0].media){
+                    navigate('/selfie');
+                }
+                else if(!result.Result[0].location_id){
+                    navigate('/located');
+                }
+                else if(!result.Result[0].religion_id){
+                    navigate('/religion');
+                }
+                else if(!result.Result[0].study_id ){
+                    navigate('/edu');
+                }
+                else if(!result.Result[0].job_id ){
+                    navigate('/jobtitle');
+                }
+                else if(!result.Result[0].growth_id){
+                    navigate('/height');
+                }
+                else if(!result.Result[0].personality
+                ){
+                    navigate('/personality');
+                }
+                else if(!result.Result[0].question_answer
+                ){
+                    navigate('/profile-answers');
+                }
+                else if(!result.Result[0].email_verified_at)
+                {
+                    navigate('/almost-there');
+                }
+            }
+                else {
                    setErrorMessage('Please signup firsttt');
                }
            }
             
+        }
+        else{
+            setErrorMessage(result.message)
+          console.log(result.message);
         }
     };
 
@@ -180,9 +225,7 @@ export const SignInEmailOTP = () => {
                             <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
                             <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
                         </Container>
-                        {/* <div className='track-btn2'>
-                        <div></div>
-                    </div> */}
+                       
                     </Container>
 
                     <Container className='entercode-text'>

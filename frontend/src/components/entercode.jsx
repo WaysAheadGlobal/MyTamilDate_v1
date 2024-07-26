@@ -89,7 +89,7 @@ export const Entercode = () => {
         console.log(phoneNumber);
         console.log("post called");
         if (otp.length !== 4) {
-            setErrorMessage('*Invalid OTP, please re-enter again');
+            setErrorMessage('Invalid verification code');
         } else {
             setErrorMessage('');
             try {

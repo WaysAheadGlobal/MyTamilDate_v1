@@ -100,9 +100,7 @@ export const SignIn = () => {
                             <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
                             <Image src={logo2} alt="Logo" className='logo1' style={{ backgroundColor: 'transparent' }} />
                         </Container>
-                        <div className='track-btn1'>
-                            <div></div>
-                        </div>
+                      
                     </Container>
 
 
