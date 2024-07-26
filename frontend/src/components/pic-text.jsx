@@ -110,7 +110,7 @@ export const Pictext = () => {
                         fontSize: "clamp(16px, 4vw, 18px)",
                         lineHeight: mobile ? '30px' : "36px",
                         marginTop: '1rem',
-                        textAlign: "justify",
+                        textAlign: "left",
                         width: !mobile ? "28rem" : "",
                         wordBreak: "break-word"
                     }}>A surprise engagement at a myTamilDate couple's photoshoot! Find out how <span style={{ color: '#4E1173', }}>Abi & John</span> Bonded Over Faith & Their Tamil-German-British Connection.</p>
@@ -131,7 +131,7 @@ export const Pictext = () => {
                     <p style={{
                         fontSize: "clamp(16px, 4vw, 18px)",
                         lineHeight: mobile ? '30px' : "36px",
-                        textAlign: "justify",
+                        textAlign: "left",
                         wordBreak: "break-word"
                     }}>Connect with others who truly understand your unique quirks, share your passions, and appreciate your inside jokes and who value what makes you.</p>
                 </div>
@@ -171,7 +171,7 @@ export const Pictext = () => {
                     <p style={{
                         fontSize: "clamp(16px, 4vw, 18px)",
                         lineHeight: mobile ? '30px' : "36px",
-                        textAlign: "justify",
+                        textAlign: "left",
                         wordBreak: "break-word"
                     }}>
                         Meet people who share your interests, values, and that undeniable spark who are also looking for a meaningful match. Whether they're around the corner or across the globe, we'll help you find your match.

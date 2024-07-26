@@ -144,7 +144,7 @@ export const SignupPhone = () => {
                                 fontWeight: '600',
                                 fontFamily: 'Poppins, sans-serif',
                                 fontSize: '14px',
-                            }}>Already have an account? <a href='/signin' className='signup-signin'>Sign in here</a></p>
+                            }}>Already have an account? <a href='/signinoptions' className='signup-signin'>Sign in here</a></p>
                             <p style={{
                                 fontWeight: '600',
                                 fontFamily: 'Poppins, sans-serif',
