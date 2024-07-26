@@ -7,7 +7,6 @@ import responsivebg from "../../assets/images/responsive-bg.png";
 import backarrow from "../../assets/images/backarrow.jpg";
 import logo from "../../assets/images/MTDlogo.png";
 import message from "../../assets/images/message.png";
-
 import mail from "../../assets/images/Gmail.jpg";
 import { Container, Image, Form, Button } from 'react-bootstrap';
 import { API_URL } from '../../api';
