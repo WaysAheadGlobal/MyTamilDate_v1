@@ -587,29 +587,50 @@ matches.get("/chat/sent", (req: UserRequest, res) => {
 
 matches.get("/chat/received_", (req: UserRequest, res) => {
     const query = `
-        WITH messages as (
-            SELECT DISTINCT conversation_id FROM dncm_messages WHERE sender_id != ?
-        ) SELECT 
-            m.conversation_id,
+        WITH received_messages AS (
+            SELECT DISTINCT conversation_id, sender_id
+            FROM dncm_messages
+            WHERE sender_id != ?
+        ),
+        sent_messages AS (
+            SELECT DISTINCT conversation_id
+            FROM dncm_messages
+            WHERE sender_id = ?
+        )
+        SELECT
+            rm.conversation_id,
             dc.owner_id,
-            dp.participant_id,
-            dp.joined_at,
-            CONCAT(up.first_name, ' ', up.last_name) as name,
+            rm.sender_id,
+            CONCAT(up.first_name, ' ', up.last_name) as sender_name,
             dc.created_at,
             me.hash,
             me.extension,
             me.type,
-            (SELECT body FROM dncm_messages WHERE conversation_id = m.conversation_id ORDER BY sent_at DESC LIMIT 1) as message
-        FROM messages m
-        INNER JOIN dncm_conversations dc ON dc.id = m.conversation_id
-        INNER JOIN dncm_participants dp ON dp.conversation_id = m.conversation_id
-        INNER JOIN user_profiles up ON up.user_id = dp.participant_id
+            (
+                SELECT body
+                FROM dncm_messages dm
+                WHERE dm.conversation_id = rm.conversation_id
+                ORDER BY dm.sent_at DESC
+                LIMIT 1
+            ) as last_message_body,
+            (
+                SELECT sent_at
+                FROM dncm_messages dm
+                WHERE dm.conversation_id = rm.conversation_id
+                ORDER BY dm.sent_at DESC
+                LIMIT 1
+            ) as last_message_sent_at
+        FROM received_messages rm
+        INNER JOIN dncm_conversations dc ON dc.id = rm.conversation_id
+        INNER JOIN dncm_participants dp ON dp.conversation_id = rm.conversation_id
+        INNER JOIN user_profiles up ON up.user_id = rm.sender_id
         INNER JOIN media me ON me.user_id = up.user_id AND me.type IN (1, 31)
-        WHERE dp.participant_id = ? AND dp.joined_at = 0
-        ORDER BY dc.created_at DESC;
+        LEFT JOIN sent_messages sm ON sm.conversation_id = rm.conversation_id
+        WHERE dp.participant_id = ? AND sm.conversation_id IS NULL
+        ORDER BY last_message_sent_at DESC;
     `;
 
-    const params = [req.userId, req.userId];
+    const params = [req.userId, req.userId, req.userId];
 
     db.query<RowDataPacket[]>(query, params, async (err, result) => {
         if (err) {

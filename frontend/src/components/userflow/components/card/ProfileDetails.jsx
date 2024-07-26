@@ -6,6 +6,7 @@ import { API_URL } from '../../../../api';
 import { useCookies } from '../../../../hooks/useCookies';
 import styles from './profiledetails.module.css';
 import IconButton from './IconButton';
+import { AiOutlineClose } from "react-icons/ai";
 
 export default function ProfileDetails({ userId, handleIconButtonClick, liked, setLiked }) {
     const dialogRef = React.useRef(null);
@@ -297,8 +298,9 @@ export default function ProfileDetails({ userId, handleIconButtonClick, liked, s
                         </Carousel>
                     </div>
                 </div>
-                {/* <div id="bottomOptions" style={{
+                <div id="bottomOptions" style={{
                     position: "sticky",
+                    zIndex: "50",
                     bottom: "0",
                     width: "100%",
                     display: "flex",
@@ -307,24 +309,54 @@ export default function ProfileDetails({ userId, handleIconButtonClick, liked, s
                     gap: "1rem",
                     backgroundColor: "white",
                 }}>
-                    <IconButton type='undo' onClick={(e) => {
-                        e.stopPropagation();
-                        handleIconButtonClick("undo");
-                    }} />
-                    <IconButton type='skip' onClick={(e) => {
+                    {/* <IconButton type='undo' onClick={(e) => {
+                                e.stopPropagation();
+                                handleIconButtonClick("undo");
+                            }} /> */}
+                    {/* <IconButton type='skip' onClick={(e) => {
                         e.stopPropagation();
                         handleIconButtonClick("skip");
-                    }} />
-                    <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
-                        e.stopPropagation();
-                        setLiked(!liked);
-                        handleIconButtonClick("like");
-                    }} />
-                    <IconButton type='chat' onClick={(e) => {
-                        e.stopPropagation();
-                        handleIconButtonClick("chat");
-                    }} />
-                </div> */}
+                    }} /> */}
+                    <div style={{
+                        padding: "1rem",
+                        borderRadius: "9999px",
+                        backgroundColor: "#fdf7ff",
+                        cursor: "pointer",
+                    }}>
+                        <AiOutlineClose size={30} color="#4e1173" onClick={(e) => {
+                            e.stopPropagation();
+                            handleIconButtonClick("skip");
+                        }} />
+                    </div>
+                    {/* <div style={{
+                                position: "relative",
+                                top: "1.5rem"
+                            }} className='scrollBtn'>
+                                <IconButton
+                                    type={"details"}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        document.querySelector("#scroll-anchor").scrollIntoView({ behavior: "smooth" });
+                                    }} />
+                            </div> */}
+                    <div style={{
+                        display: "flex",
+                        gap: "1rem",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}>
+                        <IconButton type='chat' onClick={(e) => {
+                            e.stopPropagation();
+                            handleIconButtonClick("chat");
+                        }} />
+                        <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
+                            e.stopPropagation();
+                            setLiked(!liked);
+                            handleIconButtonClick("like");
+                        }} />
+                    </div>
+
+                </div>
             </div>
         </>
     )
