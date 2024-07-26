@@ -36,6 +36,9 @@ export const JobTitle = () => {
     const jobListEndRef = useRef(null);
     const [hasAddedJob, setHasAddedJob] = useState(false);
     const { getCookie } = useCookies();
+
+    const[errorMessage, setErrorMessege] = useState("");
+  
     const [selectedOption, setSelectedOption] = React.useState(null);
     const navigate = useNavigate();
 
@@ -74,6 +77,11 @@ export const JobTitle = () => {
     }, [customJobs, hasAddedJob]);
 
     async function saveJobTitle() {
+
+        if(!selectedOption){
+            setErrorMessege("Please select your job title")
+            return;
+        }
         const response = await fetch(`${API_URL}/customer/users/jobs`, {
             method: 'POST',
             headers: {
@@ -114,6 +122,10 @@ export const JobTitle = () => {
                                 <Image className='about-yourself-icon' src={job} alt="Job Icon" />
                                 <p>What’s your job title?</p>
                             </Container>
+                            {errorMessage && <p className="text-danger error-message" style={{
+        marginLeft :"10px",
+        marginTop :"5px"
+    }}>{errorMessage}</p>}
                             <InputGroup className='job-search-bar'>
                                 <Form.Control
                                     className='job-search'

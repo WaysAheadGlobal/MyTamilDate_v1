@@ -11,14 +11,19 @@ import code from "../../assets/images/code.png";
 import { Container, Image, Form, Button } from 'react-bootstrap';
 import { API_URL } from '../../api';
 import { useCookies } from '../../hooks/useCookies';
+import { useAlert } from '../../Context/AlertModalContext';
 
 export const SignInEmailOTP = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const cookies = useCookies();
+    const alertmodal = useAlert();
     const [timer, setTimer] = useState(120);
     const [canResend, setCanResend] = useState(false);
     const intervalRef = useRef(null);
+    const goToSignsuccessful = () => {
+        window.location.assign('/user/home');
+    };
     useEffect(() => {
        
             startTimer();
@@ -98,12 +103,35 @@ export const SignInEmailOTP = () => {
             })
         });
 
-        const resData = await res.json();
-
+        const result = await res.json();
+     console.log(result);
         if (res.ok) {
-            cookies.setCookie('token', resData.token, 30);
-            cookies.setCookie('userId', resData.Result[0].user_id);
-            window.location.assign('/user/home');
+            cookies.setCookie('token', result.token, 30);
+            cookies.setCookie('userId', result.Result[0].user_id);
+            if (result.Result && result.Result.length > 0) {
+                if(result.Result[0].approval === 40){
+                   alertmodal.setModal({
+                       show: true,
+                       title: 'Incomplete Registration',
+                       message: "To access the application's features, please complete your registration process first.",
+                   });
+                   
+                   navigate('/basicdetails');
+                   
+                }
+
+           else if (result.Result[0].approval === 10) {
+                   navigate('/pending');
+               } else if (result.Result[0].approval === 30) {
+                   navigate('/not-approved');
+               } else if (result.Result[0].approval === 20) {
+                cookies.setCookie('Name', result.Result[0].first_name, 20);
+                   goToSignsuccessful();
+               } else {
+                   setErrorMessage('Please signup firsttt');
+               }
+           }
+            
         }
     };
 

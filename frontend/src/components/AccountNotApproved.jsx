@@ -54,7 +54,9 @@ export default function AccountNotApproved() {
                             fontWeight: "bold",
                             lineHeight: "36px",
                             textAlign: "center",
+                            marginTop : "-50px"
                         }}>We can't approve your profile just yet!</p>
+                        
                         <p style={{
                             fontSize: "14px",
                             fontWeight: "500",
@@ -66,6 +68,21 @@ export default function AccountNotApproved() {
                             Sorry! Your profile approval request has been denied by the administrator. We are unable to approve your profile at this time as it lacks necessary information. Please update the required details for approval. An email has been sent to you regarding this.
                         </p>
                     </div>
+
+                    {data && (
+                            <p style={{
+                                marginTop: "1em",
+                                marginBottom: "1rem",
+                                fontSize :"14px",
+                                fontWeight : "600",
+                                textAlign :"center",
+                                border : "1px solid red",
+                                padding : "12px",
+                                borderRadius : "16px"
+                            }}>
+                                {data.reason}
+                            </p>
+                        )}
                     <div style={{
                         display: "flex",
                         flexDirection: "column",
@@ -82,14 +99,7 @@ export default function AccountNotApproved() {
                                 color: "#4e1173"
                             }}
                         >Almost there!</p>
-                        {data && (
-                            <p style={{
-                                marginTop: "1em",
-                                marginBottom: "1rem"
-                            }}>
-                                {data.reason}
-                            </p>
-                        )}
+                        
                         <p style={{
                             marginTop: "1em"
                         }}>

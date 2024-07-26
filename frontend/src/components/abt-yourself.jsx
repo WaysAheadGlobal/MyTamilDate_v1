@@ -18,7 +18,8 @@ export const AbtYourself = () => {
 
     const [havegender, setHavegender] = useState(0);
     const [wantGender, setWantGender] = useState(0);
-    const [errorMessage, setErrorMessage] = useState('');
+    const [haveerrorMessage, setHaveErrorMessage] = useState('');
+    const [wanthaveerrorMessage, setWantHaveErrorMessage] = useState('');
     const [femaleActive, setFemaleActive] = useState(false);
     const [maleActive, setMaleActive] = useState(false);
     const [nonBinaryActive, setNonBinaryActive] = useState(false);
@@ -65,7 +66,17 @@ export const AbtYourself = () => {
     };
 
     const handleSubmit = async (event) => {
+        setHaveErrorMessage("")
+        setWantHaveErrorMessage("")
         event.preventDefault();
+        if(!havegender){
+            setHaveErrorMessage("Please choose gender")
+            return;
+        }
+        if(!wantGender){
+            setWantHaveErrorMessage("Please choose gender")
+            return;
+        }
         try {
             const response = await fetch(`${API_URL}/customer/users/gender`, {
                 method: 'PUT',
@@ -85,9 +96,7 @@ export const AbtYourself = () => {
     
             if (response.ok) {
                 navigate("/selfie");
-            } else {
-                setErrorMessage(result.errors ? result.errors.map(error => error.msg).join(', ') : 'Error updating profile');
-            }
+            } 
         } catch (error) {
             console.error('Error:', error);
             // setErrorMessage('Error updating profile');
@@ -202,7 +211,7 @@ export const AbtYourself = () => {
                                         <span>Non-Binary</span>
                                     </div>
                                 </div>
-                                {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
+                                {haveerrorMessage && <Form.Text className="text-danger error-message">{haveerrorMessage}</Form.Text>}
                             </Form.Group>
 
                             <Form.Group controlId="formgender" className='birthday-group'>
@@ -257,7 +266,7 @@ export const AbtYourself = () => {
                                         All
                                     </Button>
                                 </div>
-                                {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
+                                {wanthaveerrorMessage && <Form.Text className="text-danger error-message">{wanthaveerrorMessage}</Form.Text>}
                             </Form.Group>
 
                             <Button variant="primary" type="submit" className='birthday-nxt-btn'>

@@ -68,7 +68,7 @@ export async function verifyOTP({ phone, otp }: OTPVerificationDetails): Promise
       delete otpStore[phone];
       return { status: 'approved', message: 'OTP verified successfully!' };
     } else {
-      return { status: 'failed', message: 'Invalid OTP' };
+      return { status: 'failed', message: 'Invalid verification code' };
     }
   } catch (err) {
     console.error(err);

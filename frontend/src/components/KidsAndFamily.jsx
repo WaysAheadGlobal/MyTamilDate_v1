@@ -26,6 +26,8 @@ const familyOptions = [
 export default function KidsAndFamily() {
     const [selectedHaveKids, setSelectedHaveKids] = useState(null);
     const [selectedWantKids, setSelectedWantKids] = useState(null);
+    const[errorMessagehaveKids, setErrorMessagehaveKids] = useState("")
+    const[errorMessageWantKids, setErrorMessageWantKids] = useState("")
     const { getCookie } = useCookies();
     const navigate = useNavigate();
 
@@ -50,6 +52,11 @@ export default function KidsAndFamily() {
     }, [])
 
     async function saveHaveKids() {
+            console.log(selectedHaveKids);
+        if(!selectedHaveKids){
+            setErrorMessagehaveKids("Please tell about kids");
+            return;
+        }
         const response = await fetch(`${API_URL}/customer/users/update-have-kids`, {
             method: 'POST',
             headers: {
@@ -68,6 +75,12 @@ export default function KidsAndFamily() {
     }
 
     async function saveWantKids() {
+     
+        if(!selectedWantKids){
+            setErrorMessageWantKids("Please tell family plan");
+            return;
+        }
+        
         const response = await fetch(`${API_URL}/customer/users/update-want-kids`, {
             method: 'POST',
             headers: {
@@ -86,6 +99,16 @@ export default function KidsAndFamily() {
     }
 
     async function saveAll() {
+        setErrorMessagehaveKids("");
+        setErrorMessageWantKids("")
+        if(!selectedHaveKids){
+            setErrorMessagehaveKids("Please choose a option");
+            return;
+        }
+        if(!selectedWantKids){
+            setErrorMessageWantKids("Please choose a option");
+            return;
+        }
         try {
             await Promise.all([saveHaveKids(), saveWantKids()]);
             navigate('/smoke-drink');
@@ -129,6 +152,9 @@ export default function KidsAndFamily() {
 
                                 <p>What about kids?</p>
                             </Container>
+
+                            {errorMessagehaveKids && <p className="text-danger error-message">{errorMessagehaveKids}</p>}
+
                             <div style={{
                                 maxHeight: "50vh",
                                 overflow: "auto",
@@ -160,6 +186,9 @@ export default function KidsAndFamily() {
 
                                 <p>What about family plans?</p>
                             </Container>
+
+                            {errorMessageWantKids && <p className="text-danger error-message">{errorMessageWantKids}</p>}
+                            
                             <div style={{
                                 maxHeight: "50vh",
                                 overflow: "auto",
@@ -183,33 +212,35 @@ export default function KidsAndFamily() {
                     </Container>
                     <div style={{
                         display: "flex",
+                        justifyContent : "space-around",
                         width: "100%",
                         gap: "5rem",
                         marginTop: "auto",
                         marginBottom: "2rem",
                     }}>
                         <Button variant="primary" style={{
-                            width: "100%",
+                            width: "148px",
                             marginTop: "1rem",
                             background: "white",
                             border: "2px solid #6c6c6c",
                             borderRadius: "9999px",
                             padding: "0.75rem",
-                            fontSize: "1.25rem",
-                            fontWeight: "bold",
+                            fontSize: "16px",
+                            fontWeight: "600",
                             color: "#6c6c6c",
                         }} onClick={() => navigate('/smoke-drink')}>
                             Ask me later
                         </Button>
                         <Button variant="primary" style={{
-                            width: "100%",
+                            width: "132px",
                             marginTop: "1rem",
                             background: "linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%)",
                             border: "none",
                             borderRadius: "9999px",
                             padding: "0.75rem",
-                            fontSize: "1.25rem",
-                            fontWeight: "bold",
+                            fontSize: "16px",
+                            fontWeight: "600",
+                            
                         }} onClick={saveAll}>
                             Next
                         </Button>

@@ -1107,7 +1107,7 @@ export const AccountSetting = () => {
                                             <Form.Control
                                                 className={`num-verify-input ${errorMessagephoneupdate ? 'error' : ''}`}
                                                 type="text"
-                                                placeholder="(905)258-2258"
+                                                placeholder="(xxx)xxx-xxx"
                                                 value={phoneNumberupdate}
                                                 onChange={handlePhoneNumberChange}
                                                 style={{ flex: 1, marginLeft: '10px' }}

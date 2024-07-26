@@ -364,7 +364,7 @@ export const Selfie = () => {
                     className='selfie-next-btn'
                     onClick={handleNextClick}
                     style={{
-                        /* background: "#E5E5E5", */
+                        //  background: "#E5E5E5",
 
 
                         background: (
@@ -412,12 +412,21 @@ export const Selfie = () => {
                         )}
                     </Modal.Body>
                     <Modal.Footer className='crop-modal-footer'>
+                        <div style={{
+                            display : "flex",
+                            justifyContent :"space-between",
+                            alignItems : "center",
+                            gap :"80px"
+                        }}>
+
+                       
                         <button variant="secondary" className='crop-cancel-btn' onClick={handleCropCancel}>
                             Cancel
                         </button>
                         <button variant="secondary" className='crop-save-btn' onClick={handleCropSave}>
-                            Save
+                            Add Photo
                         </button>
+                        </div>
                     </Modal.Footer>
                 </Modal>
 

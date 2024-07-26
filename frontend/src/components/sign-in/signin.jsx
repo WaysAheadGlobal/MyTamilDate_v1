@@ -53,9 +53,8 @@ export const SignIn = () => {
         const completePhoneNumber = selectedCountryInfo.dial_code + phoneNumber;
         if (phoneNumber.length === 0) {
             setErrorMessage('Please enter phone number');
-        } else if (phoneNumber.length < 10) {
-            setErrorMessage('Phone number must be at least 10 digits');
-        } else {
+        } 
+        else {
             setErrorMessage('');
             try {
                 const response = await fetch(`${API_URL}/user/login/otp`, {
@@ -132,7 +131,7 @@ export const SignIn = () => {
                                     <Form.Control
                                         className={`num-verify-input ${errorMessage ? 'error' : ''}`}
                                         type="text"
-                                        placeholder="(905)258-2258"
+                                        placeholder="(xxx)xxx-xxx"
                                         value={phoneNumber}
                                         onChange={handlePhoneNumberChange}
                                         style={{ flex: 1, marginLeft: '10px' }}
@@ -193,8 +192,6 @@ export const SignIn = () => {
                     ))}
                 </Modal.Body>
             </Modal>
-
-
 
         </div>
     );

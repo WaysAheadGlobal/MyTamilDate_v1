@@ -21,6 +21,8 @@ export const Religion = () => {
     const [selectedReligion, setSelectedReligion] = useState(null);
     const [allLanguages, setAllLanguages] = useState([]);
     const [selectedLanguages, setSelectedLanguages] = useState([]);
+    const[errorMessage, setErrorMessege] = useState("");
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -88,6 +90,10 @@ export const Religion = () => {
 
     const handleReligionClick = (e) => {
         e.preventDefault();
+              if(!selectedReligion){
+                setErrorMessege("Please choose a religion")
+                return;
+              }
 
         const religionId = allReligions.find(r => r.name === selectedReligion)?.id;
 
@@ -150,6 +156,7 @@ export const Religion = () => {
                                 <Image className='about-yourself-icon' src={religionIcon}></Image>
                                 <p>What are your religious beliefs?</p>
                             </Container>
+                            {errorMessage && <p className="text-danger error-message">{errorMessage}</p>}
                             <Container className='all-religion'>
                                 {allReligions.map((religion, index) => (
                                     <div
@@ -161,6 +168,7 @@ export const Religion = () => {
                                     </div>
                                 ))}
                             </Container>
+                            
                         </div>
                         <div className='your-lang'>
                             <Container className='religion-text'>

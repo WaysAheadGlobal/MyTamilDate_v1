@@ -17,6 +17,7 @@ export default function Height() {
     const [selectedHeight, setSelectedHeight] = useState({});
     const [heights, setHeights] = useState([]);
     const locationSelectRef = useRef(null);
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
         // Fetch existing location data on component mount
@@ -63,6 +64,10 @@ export default function Height() {
         e.preventDefault();
 
         console.log('Selected Height:', selectedHeight);
+        if (Object.keys(selectedHeight).length === 0) {
+            setErrorMessage("Please select your height");
+            return;
+        }
 
         try {
             const response = await fetch(`${API_URL}/customer/users/growths`, {
@@ -105,9 +110,22 @@ export default function Height() {
                             <div></div>
                         </div>
                     </Container>
-                    <Container className='located-text'>
+                    <Container >
+                        <div className='located-text'>
                         <Image className='about-yourself-icon' src={location}></Image>
                         <p>How tall are you?</p>
+                        </div>
+                     
+                        <div style={{
+                        display: "flex",
+                        justifyContent: "flex-start",
+                        alignItems :"flex-start",
+                        marginLeft: "10px",
+                        marginTop: "5px"
+                    }}>
+
+                        {errorMessage && <p className="text-danger error-message" >{errorMessage}</p>}
+                    </div>
                     </Container>
                     <Container className='located-details'>
                         <Container ref={locationSelectRef} className='located-country collasped' style={{

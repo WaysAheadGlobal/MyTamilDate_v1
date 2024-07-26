@@ -20,6 +20,8 @@ const options = [
 export default function SmokeAndFamily() {
     const [selectedSmoke, setSelectedSmoke] = useState(null);
     const [selectedDrink, setSelectedDrink] = useState(null);
+    const[errorSmoke, setErrorSmoke] = useState('');
+    const[errorDrink, setErrorDrink] = useState("");
     const { getCookie } = useCookies();
     const navigate = useNavigate();
 
@@ -44,6 +46,10 @@ export default function SmokeAndFamily() {
     }, [])
 
     async function saveSmoke() {
+        if(!selectedSmoke){
+            setErrorSmoke("Please select an option");
+            return;
+        }
         const response = await fetch(`${API_URL}/customer/users/update-smoke`, {
             method: 'POST',
             headers: {
@@ -62,6 +68,9 @@ export default function SmokeAndFamily() {
     }
 
     async function saveDrink() {
+        if(!selectedDrink){
+            setErrorDrink("Please select an option")
+        }
         const response = await fetch(`${API_URL}/customer/users/update-drink`, {
             method: 'POST',
             headers: {
@@ -81,6 +90,8 @@ export default function SmokeAndFamily() {
 
     async function saveAll() {
         try {
+            setErrorSmoke("");
+            setErrorDrink("");
             await Promise.all([saveSmoke(), saveDrink()]);
             
             navigate('/approve');
@@ -116,6 +127,7 @@ export default function SmokeAndFamily() {
 
                                 <p>Do you smoke?</p>
                             </Container>
+                            {errorSmoke && <p className="text-danger error-message">{errorSmoke}</p>}
                             <div style={{
                                 maxHeight: "50vh",
                                 overflow: "auto",
@@ -146,6 +158,7 @@ export default function SmokeAndFamily() {
 
                                 <p>Do you drink?</p>
                             </Container>
+                            {errorDrink && <p className="text-danger error-message">{errorDrink}</p>}
                             <div style={{
                                 maxHeight: "50vh",
                                 overflow: "auto",
@@ -168,33 +181,34 @@ export default function SmokeAndFamily() {
                     </Container>
                     <div style={{
                         display: "flex",
+                        justifyContent : "space-around",
                         width: "100%",
                         gap: "5rem",
                         marginTop: "auto",
                         marginBottom: "2rem",
                     }}>
                         <Button variant="primary" style={{
-                            width: "100%",
+                            width: "148px",
                             marginTop: "1rem",
                             background: "white",
                             border: "2px solid #6c6c6c",
                             borderRadius: "9999px",
                             padding: "0.75rem",
-                            fontSize: "1.25rem",
-                            fontWeight: "bold",
+                            fontSize: "16px",
+                            fontWeight: "600",
                             color: "#6c6c6c",
                         }} onClick={() => navigate("/approve")}>
                             Ask me later
                         </Button>
                         <Button variant="primary" style={{
-                            width: "100%",
+                            width: "132px",
                             marginTop: "1rem",
                             background: "linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%)",
                             border: "none",
                             borderRadius: "9999px",
                             padding: "0.75rem",
-                            fontSize: "1.25rem",
-                            fontWeight: "bold",
+                            fontSize: "16px",
+                            fontWeight: "600",
                         }} onClick={saveAll}>
                             Continue
                         </Button>

@@ -129,6 +129,7 @@ export const Entercode = () => {
     // Function to resend OTP
     const resendotp = async (e) => {
         e.preventDefault();
+        setErrorMessage('');
         if (resendTimer === 0) {
             try {
                 const response = await fetch(`${API_URL}/user/signup/otp`, {

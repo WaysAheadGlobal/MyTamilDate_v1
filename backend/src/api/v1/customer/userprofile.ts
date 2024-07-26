@@ -191,13 +191,22 @@ profile.get('/namedetails', verifyUser, (req: UserRequest, res: any) => {
 
     const userProfile = results[0];
 
-    // Format the birthday using toLocaleDateString
-    const birthdayDate = new Date(userProfile.birthday);
-    userProfile.birthday = birthdayDate.toLocaleDateString('en-CA'); // 'en-CA' gives 'YYYY-MM-DD' format
+    // Check if birthday is null before formatting
+    if (userProfile.birthday) {
+      const birthdayDate = new Date(userProfile.birthday);
+      if (!isNaN(birthdayDate.getTime())) {
+        userProfile.birthday = birthdayDate.toLocaleDateString('en-CA'); // 'en-CA' gives 'YYYY-MM-DD' format
+      } else {
+        userProfile.birthday = null; // or any other value you prefer to indicate an invalid date
+      }
+    } else {
+      userProfile.birthday = null; // explicitly setting it to null if it was null in the database
+    }
 
     res.status(200).json(userProfile);
   });
 });
+
 
 //gender want and whom to date
 // Update gender and want_gender

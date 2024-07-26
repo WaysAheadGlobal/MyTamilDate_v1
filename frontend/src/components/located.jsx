@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './located.css';
 import { useNavigate } from 'react-router-dom';
-import { Container, Image, Button } from 'react-bootstrap';
+import { Container, Image, Button, Form } from 'react-bootstrap';
 import backarrow from "../assets/images/backarrow.jpg";
 import logo from "../assets/images/MTDlogo.png";
 import responsivebg from "../assets/images/responsive-bg.png";
@@ -23,7 +23,8 @@ export const Located = () => {
   const [citySearch, setCitySearch] = useState('');
   const countrySelectRef = useRef(null);
   const citySelectRef = useRef(null);
-
+  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessageCity, setErrorMessageCity] = useState('');
   useEffect(() => {
     (async () => {
       const response = await fetch(`${API_URL}/customer/users/location-options`, {
@@ -59,6 +60,7 @@ export const Located = () => {
   }, [])
 
   const handleCountrySelect = (country) => {
+    setErrorMessage("");
     setSelectedCountry(country);
     setSelectedCity(null);
   };
@@ -71,7 +73,14 @@ export const Located = () => {
     e.preventDefault();
     console.log('Selected Country:', selectedCountry);
     console.log('Selected City:', selectedCity);
-
+if(!selectedCountry){
+  setErrorMessage("Please choose a country");
+  return;
+}
+if(!selectedCity){
+  setErrorMessageCity("Please choose a city");
+  return;
+}
     // Make POST request to save location
     fetch(`${API_URL}/customer/users/locations`, {
       method: 'POST',
@@ -191,6 +200,7 @@ export const Located = () => {
                 }
               </div>
             </Container>
+            {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
             {selectedCountry && (
               <Container ref={citySelectRef} className='located-city collasped'>
                 <div style={{
@@ -233,8 +243,11 @@ export const Located = () => {
                     ))
                   }
                 </div>
+              
               </Container>
+              
             )}
+          {errorMessageCity && <Form.Text className="text-danger error-message">{errorMessageCity}</Form.Text>}
           </Container>
           <Button variant="primary" type="submit" className='located-nxt-btn' onClick={handleSubmit}>
             Next

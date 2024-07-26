@@ -27,13 +27,15 @@ export const BasicDetails = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [adulthood, setAdulthood] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(null); // Initialize with null
+  const[errorBrithday, setErrorBrithday] = useState("");
 
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
   useEffect(() => {
-    // Fetch user profile details on mount
+  
     fetch(`${API_URL}/customer/users/namedetails`, {
       method: 'GET',
       headers: {
@@ -44,7 +46,9 @@ export const BasicDetails = () => {
       .then(response => response.json())
       .then(data => {
         setUserDetails(data);
+        console.log(data);
         if (data.birthday) {
+          setSelectedDate(dayjs(data.birthday)); // Set the initial selected date
           calculateAge(data.birthday);
         }
       })
@@ -54,6 +58,7 @@ export const BasicDetails = () => {
   }, [setUserDetails]);
 
   const handleNameChange = (e) => {
+    setErrorMessage("");
     const value = e.target.value.replace(/\s/g, '');
     setUserDetails(prevDetails => ({
       ...prevDetails,
@@ -70,14 +75,20 @@ export const BasicDetails = () => {
   };
 
   const handleBirthdayChange = (value) => {
-    setUserDetails(prevDetails => ({
-      ...prevDetails,
-      birthday: value
-    }));
-    calculateAge(value);
+    const date = dayjs(value);
+    if (date.isValid()) {
+      setSelectedDate(date); // Update the selected date state
+      setUserDetails(prevDetails => ({
+        ...prevDetails,
+        birthday: date.format('YYYY-MM-DD')
+      }));
+      calculateAge(date);
+    }
   };
 
   const calculateAge = (birthday) => {
+    setErrorBrithday("");
+    setAdulthood(true);
     const birthDate = new Date(birthday);
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
@@ -90,12 +101,16 @@ export const BasicDetails = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (userDetails.first_name.trim() === '') {
-      setErrorMessage('*Please fill in all required fields');
+  
+    if (!userDetails.first_name) {
+      setErrorMessage('*Please add your first name');
       return;
     }
-
+    if(!userDetails.birthday)
+      {
+        setErrorBrithday("Please choose your birthday date");
+        return;
+      }
     if (userDetails.first_name.includes('@') || userDetails.first_name.includes('#') || userDetails.first_name.includes('$') || userDetails.first_name.includes('%') || userDetails.first_name.includes('^') || userDetails.first_name.includes('&') || userDetails.first_name.includes('*') || userDetails.first_name.includes('(') || userDetails.first_name.includes(')') || userDetails.first_name.includes('-') || userDetails.first_name.includes('+') || userDetails.first_name.includes('=') || userDetails.first_name.includes('[') || userDetails.first_name.includes(']') || userDetails.first_name.includes('{') || userDetails.first_name.includes('}') || userDetails.first_name.includes('|') || userDetails.first_name.includes('\\') || userDetails.first_name.includes(';') || userDetails.first_name.includes(':') || userDetails.first_name.includes('\'') || userDetails.first_name.includes('"') || userDetails.first_name.includes('<') || userDetails.first_name.includes('>') || userDetails.first_name.includes(',') || userDetails.first_name.includes('.') || userDetails.first_name.includes('/') || userDetails.first_name.includes('?') || userDetails.first_name.includes('!') || userDetails.first_name.includes('`') || userDetails.first_name.includes('~')) {
       setErrorMessage('*Please enter a valid name');
       return;
@@ -117,11 +132,9 @@ export const BasicDetails = () => {
       .then(response => response.json())
       .then(data => {
         if (data.errors) {
-
           setErrorMessage(data.errors.map(error => error.msg).join(', '));
         } else {
           setErrorMessage('');
-
           console.log(data);
           navigate("/abtyourself");
         }
@@ -208,7 +221,6 @@ export const BasicDetails = () => {
                     <p>It helps us to build a trusted and authentic community for you and others. Only your first name is shown publicly.</p>
                   </Container>
                 </Form.Group>
-
                 <Form.Group controlId="formBirthday" className='basic-details-group'>
                   <Form.Label className='basic-details-label'>When is Your Birthday?</Form.Label>
                   <div style={{ display: 'flex', alignItems: 'center', width: '100%', position: "relative" }}>
@@ -249,6 +261,7 @@ export const BasicDetails = () => {
                       placement='bottom-start'
                     >
                       <DateCalendar
+                        value={selectedDate} // Set the initial selected date
                         onChange={(value) => {
                           handleBirthdayChange(dayjs(value).format('YYYY-MM-DD'));
                         }}
@@ -256,7 +269,8 @@ export const BasicDetails = () => {
                       />
                     </Popper>
                   </div>
-                  {age !== null && age !== 54 && <span className='calculated-age'>Your age is {age}</span>}
+                  {errorBrithday && <Form.Text className="text-danger error-message">{errorBrithday}</Form.Text>}
+                  {age !== null && age !== 54 && <span className='calculated-age'>Your age will be displayed as {age}</span>}
                   {!adulthood && userDetails.birthday && <p className="text-danger error-message">You must be over 19 to join MTD</p>}
                 </Form.Group>
 

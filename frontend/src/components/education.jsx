@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './education.css';
 import backarrow from "../assets/images/backarrow.jpg";
@@ -20,6 +20,7 @@ export const Education = () => {
     const navigate = useNavigate();
     const { getCookie } = useCookies();
     const [selectedOption, setSelectedOption] = React.useState(null);
+    const[errorMessage, setErrorMessege] = useState("");
 
     useEffect(() => {
 
@@ -41,11 +42,18 @@ export const Education = () => {
 
     }, [])
 
+
+
     const goTojobTitle = () => {
         navigate("/jobtitle");
     };
 
     async function saveEducation() {
+        
+        if(!selectedOption){
+            setErrorMessege("Please select your highest level education")
+            return;
+        }
         const response = await fetch(`${API_URL}/customer/users/studies`, {
             method: 'POST',
             headers: {
@@ -90,6 +98,10 @@ export const Education = () => {
             <Image className='about-yourself-icon' src={edu} alt="Education Icon" />
             <p>What’s the highest level you’ve attained?</p>
         </Container>
+        {errorMessage && <p className="text-danger error-message" style={{
+            marginLeft :"10px",
+            marginTop :"5px"
+        }}>{errorMessage}</p>}
         <Container className='all-education'>
             <div className="outer-div">
                 <div className="first-div">
@@ -142,7 +154,7 @@ export const Education = () => {
                         >Doctorate</div>
                     </div>
                 </div>
-                <div
+                {/* <div
                     onClick={() => setSelectedOption("Prefer not to say")}
                     className="second-div"
                     style={{
@@ -150,7 +162,7 @@ export const Education = () => {
                     }}
                 >
                     Prefer not to say
-                </div>
+                </div> */}
             </div>
         </Container>
     </div>

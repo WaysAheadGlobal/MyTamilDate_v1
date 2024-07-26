@@ -58,7 +58,6 @@ auth.post('/login/otp',
             }
 
             try {
-
                 await sendOTPtoPhoneNumber({ phone: phone });
                 return res.status(200).json({ message: 'OTP sent successfully!' });
                 // return res.status(200).json({ message: 'Your OTP is ',otp });
@@ -90,7 +89,7 @@ auth.post('/login',
                 return res.status(401).json({ message: otpResponse.message });
             }
 
-            const query = 'SELECT up.id, up.user_id, up.email_verified_at, up.first_name, u.approval, u.deleted_at FROM user_profiles up INNER JOIN users u ON u.id = up.user_id WHERE phone = ?';
+            const query = 'SELECT up.id, up.user_id, up.email, up.email_verified_at, up.first_name, u.approval, u.deleted_at FROM user_profiles up INNER JOIN users u ON u.id = up.user_id WHERE phone = ?';
             db.query<RowDataPacket[]>(query, [phone], (err, results) => {
                 if (err) {
                     console.error('Error fetching data:', err);
@@ -98,11 +97,11 @@ auth.post('/login',
                 }
 
                 if (results.length === 0) {
-                    return res.status(401).json({ message: 'Invalid phone' });
+                    return res.status(401).json({ message: 'Invalid code' });
                 }
 
                 if (results[0].deleted_at) {
-                    return res.status(401).json({ message: 'Invalid phone' });
+                    return res.status(401).json({ message: 'Invalid code' });
                 }
 
                 const jwt = sign({ phone: phone, userId: results[0].user_id }, process.env.JWT_SECRET as string, { expiresIn: '30 days' });
@@ -130,6 +129,7 @@ auth.post("/login/email-otp", async (req, res) => {
         }
 
         if (results.length === 0) {
+    
             return res.status(401).json({ message: 'Please signup first' });
         }
 
@@ -202,12 +202,12 @@ auth.post("/login/email", async (req, res) => {
 
     try {
         const verify = await getOTPFromDBByEmail(otp, email);
-
+       
         if (!verify) {
-            return res.status(400).json({ message: 'Invalid OTP' });
+            return res.status(400).json({ message: 'Invalid verification code' });
         }
 
-        const query = 'SELECT up.id, up.user_id, up.first_name, u.approval FROM user_profiles up INNER JOIN users u ON u.id = up.user_id WHERE email = ?';
+        const query = 'SELECT up.id, up.user_id, up.first_name, u.approval FROM user_profiles up INNER JOIN users u ON u.id = up.user_id WHERE email = ? ORDER BY up.created_at DESC';
         db.query<RowDataPacket[]>(query, [email], (err, results) => {
             if (err) {
                 console.error('Error fetching data:', err);
@@ -215,6 +215,7 @@ auth.post("/login/email", async (req, res) => {
             }
 
             if (results.length === 0) {
+
                 return res.status(401).json({ message: 'Invalid email' });
             }
 
@@ -235,7 +236,7 @@ auth.post("/login/email", async (req, res) => {
 });
 
 // Route to send OTP for signup
-auth.post('/signup/otp', body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'en-AU']), async (req, res) => {
+auth.post('/signup/otp', body('phone').notEmpty().withMessage('Phone number is required'), async (req, res) => {
     const result = validationResult(req);
 
     if (!result.isEmpty()) {
@@ -259,27 +260,32 @@ auth.post('/signup/otp', body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US',
 
         try {
             await sendOTPtoPhoneNumber({ phone });
-            res.status(200).json({ message: 'OTP sent successfully!' });
-        } catch (error) {
-            res.status(500).json({ message: 'Internal Server Error' });
+            res.status(200).json({ message: 'Code sent successfully!' });
+        } catch (error: any) {
+            // Handle specific error for invalid phone number
+            if (error.message === 'Invalid phone number') {
+                res.status(400).json({ message: 'Invalid phone number' });
+            } else {
+                const errorMessage = error.message || 'Internal Server Error';
+                res.status(500).json({ message: 'Invalid phone number' });
+            }
             console.error('Error sending OTP:', error);
         }
     });
 });
 
+
 // Route to verify OTP and signup
-auth.post('/signup', [body('phone').isMobilePhone(['en-IN', 'en-CA', 'en-US', 'en-AU'])], async (req: UserRequest, res: any) => {
+auth.post('/signup', body('otp').notEmpty().withMessage('Please enter valid code'), async (req: UserRequest, res: any) => {
     const result = validationResult(req);
-    if (!result.isEmpty()) {
-        return res.status(400).json({ message: 'Invalid phone number' });
-    }
+
 
     const { phone, otp } = req.body;
 
     try {
         const otpResponse = await verifyOTP({ phone, otp });
         if (otpResponse.status !== 'approved') {
-            return res.status(401).json({ message: 'Invalid OTP' });
+            return res.status(401).json({ message: 'Invalid verification code' });
         }
 
         const query = 'SELECT id FROM user_profiles WHERE phone = ?';

@@ -68,7 +68,7 @@ export default function Personality() {
     }, [hasAddedPersonality]);
 
     async function savePersonalities() {
-        if (selectedPersonalities.length < 2 || selectedPersonalities.length > 8) {
+        if (selectedPersonalities.length < 3 || selectedPersonalities.length > 8) {
             // Handle the case where there are fewer than 2 personalities selected
             alert.setModal({
                 show: true,
@@ -155,11 +155,15 @@ export default function Personality() {
                                 ) : null}
                             </div>
 
-                            <div style={{
+                            <div className='job-colums' style={{
                                 maxHeight: "50vh",
                                 overflow: "auto",
                             }}>
-                                <div className="job-columns">
+                                <div className="job-columns"
+                                    style={{
+                                        marginRight: "10px",
+                                        maxHeight: "40vh",
+                                    }}>
                                     {filteredPersonality.map((personality, index) => (
                                         <div
                                             key={index}
