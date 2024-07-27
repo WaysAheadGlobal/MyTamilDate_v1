@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import responsivebg from "../assets/images/responsive-bg.png";
 import backarrow from "../assets/images/backarrow.jpg";
 import logo from "../assets/images/MTDlogo.png";
+import logo2 from "../assets/images/logo2.png";
 import code from "../assets/images/code.png";
 import google from "../assets/images/google 1.jpg";
 import mail from "../assets/images/Gmail.jpg";
@@ -65,8 +66,20 @@ export const Entercode = () => {
     // Function to handle OTP code input change
     const handleCodeChange = (e, setter, nextRef) => {
         const value = e.target.value;
+        const otp = code1 + code2 + code3 + code4;
+       
+        if (otp.length !== 5) {
+            setErrorMessage('*Code must be at least 4 characters');
+        }
+
+        if(otp.length === 3 ){
+            setErrorMessage("")
+        }
+
+
         if (!isNaN(value) && value.length <= 1) {
             setter(value);
+           
             if (value.length === 1 && nextRef) {
                 nextRef.current.focus();
             }
@@ -84,11 +97,16 @@ export const Entercode = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage("") 
+       
         const otp = code1 + code2 + code3 + code4;
         console.log(otp);
         console.log(phoneNumber);
         console.log("post called");
-        if (otp.length !== 4) {
+        if(otp.length !==4 ){
+            
+            setErrorMessage('*Code is required');
+        }
+      else  if (otp.length !== 4) {
             setErrorMessage('Invalid verification code');
         } else {
             setErrorMessage('');
@@ -148,7 +166,7 @@ export const Entercode = () => {
                     setResendTimer(120); // Reset timer to 2 minutes on successful resend
                     setIsResendDisabled(true); // Disable resend button after OTP is sent
                 } else {
-                    setErrorMessage(result.message || 'Failed to send OTP');
+                    setErrorMessage('Failed to send OTP');
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -176,7 +194,7 @@ export const Entercode = () => {
                 <Container className='logo-progressbar2'>
                     <Container className='logo-arrow2'>
                         <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
-                        <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
+                        <Image src={logo2} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
                     </Container>
                     <div className='track-btn2'>
                         <div></div>
@@ -234,17 +252,24 @@ export const Entercode = () => {
                                         style={{ flex: 1, marginLeft: '10px' }}
                                     />
                                 </div>
-                                {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
+                                <div style={{marginTop : "5px"}}>
+
+                                {errorMessage && <Form.Text  className="text-danger error-message">{errorMessage}</Form.Text>}
+                                </div>
                             </Form.Group>
 
                             <div className='resend-timer'>
-                                <a href="#" onClick={resendotp} disabled={isResendDisabled}>Resend code</a>
+                                <a href="#" onClick={resendotp} disabled={isResendDisabled} 
+                                style={{ color : isResendDisabled ? "#cbcbcb" : "#5E5E5E" }}>Resend code</a>
                                 <span>{formatTime(resendTimer)} sec</span>
                             </div>
                         </div>
-                        <Button variant="primary" type="submit" className='entercode-btn'>
+                        {/* <Button variant="primary" type="submit" className='entercode-btn'>
                             Next
-                        </Button>
+                        </Button> */}
+                          <button  type="submit" className='global-next-btn'>
+                                Next
+                            </button>
                     </Container>
                 </Form>
             </Container>

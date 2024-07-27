@@ -77,9 +77,12 @@ width:85%;
 }
 .logo{
 
+    max-width: 219.47px;
+    height: 71.9px;
+    width: 100%;
     position: absolute;
     left: 50%;
-      transform: translate(-50%);
+    transform: translate(-50%);
     
     }
 
@@ -105,7 +108,7 @@ display: flex;
 .signinphone-successful-t1
 {
     font-family: Poppins;
-    font-size: 20px;
+    font-size: var( --font-size-24);
     font-weight: 500;
     line-height: 36px;
     text-align: center;

@@ -52,7 +52,7 @@ export const SignupPhone = () => {
         e.preventDefault();
         const completePhoneNumber = selectedCountryInfo.dial_code + phoneNumber;
         if (phoneNumber.length === 0) {
-            setErrorMessage('Please enter phone number');
+            setErrorMessage('*Phone is required');
         } 
         else {
             setErrorMessage('');
@@ -84,9 +84,10 @@ export const SignupPhone = () => {
 
     useEffect(() => {
         if (showModal) {
-            searchInputRef.current.focus(); // Focus on the input field when the modal is shown
+            searchInputRef.current.focus(); 
         }
     }, [showModal]);
+    
 
     return (
         <div className='signupphone-container'>
@@ -111,9 +112,11 @@ export const SignupPhone = () => {
                         <Form onSubmit={handleSubmit} className='verify-phone-form'>
                             <Form.Group controlId="formPhoneNumber" className='verify-form-group'>
                                 <Form.Label className='num-verify-lable'> What's your phone number?</Form.Label>
-                                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                                    <Dropdown>
-                                        <div id="dropdown-basic" onClick={() => setShowModal(true)} className='flag-box'>
+                                <div  style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                    <Dropdown  >
+                                        <div id="dropdown-basic"  onClick={() => setShowModal(true)} className='flag-box' style={{
+                                        borderColor  : errorMessage ? "red" : "",
+                                    }}>
                                             <Flag code={selectedCountry} style={{ width: '34px', height: '25px', marginRight: '10px' }} className='flag' />
                                             <span>{selectedCountryInfo.dial_code}</span>
                                         </div>
@@ -128,11 +131,14 @@ export const SignupPhone = () => {
                                         style={{ flex: 1, marginLeft: '10px' }}
                                     />
                                 </div>
-                                {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
+                                <div  style={{marginTop : "5px"}}>
+
+                                {errorMessage && <Form.Text style={{marginTop : "10px"}} className="text-danger error-message">{errorMessage}</Form.Text>}
+                                </div>
                             </Form.Group>
-                            <Button variant="primary" type="submit" className='verify-phone-btn'>
+                            <button  type="submit" className='global-next-btn'>
                                 Next
-                            </Button>
+                            </button>
                         </Form>
                         <Container className='or-option'>
                             <Container className='or-line'>

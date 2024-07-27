@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import responsivebg from "../assets/images/responsive-bg.png";
 import backarrow from "../assets/images/backarrow.jpg";
 import logo from "../assets/images/MTDlogo.png";
+import logo2 from "../assets/images/logo2.png";
 import message from "../assets/images/message.png";
 
 import mail from "../assets/images/Gmail.jpg";
@@ -24,7 +25,7 @@ export const EmailVerify = () => {
         setErrorMessage('');
 
         if (!email || !email.includes('@')) {
-            setErrorMessage('Please enter a valid email address');
+            setErrorMessage('*Please enter a valid email address');
             return;
         }
 
@@ -46,7 +47,7 @@ export const EmailVerify = () => {
                 navigate("/getstarted");
                 setErrorMessage('');
             } else {
-                setErrorMessage(result.message || 'Failed to update email, try again');
+                setErrorMessage( "*"+result.message || 'Failed to update email, try again');
             }
         } catch (error) {
             console.error('Error:', error);
@@ -81,7 +82,7 @@ export const EmailVerify = () => {
                     <Container className='logo-progressbar3'>
                         <Container className='logo-arrow3'>
                             <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
-                            <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
+                            <Image src={logo2} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
                         </Container>
                         <div className='track-btn3'>
                             <div></div>
@@ -100,15 +101,21 @@ export const EmailVerify = () => {
                                         className={`emailverify-input ${errorMessage ? 'error' : ''}`}
                                         type="text"
                                         style={{ flex: 1 }}
-                                        placeholder="Example@gmail.com"
+                                        placeholder="example@example.com"
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
+                                    <div style={{marginTop : "5px"}}>
+
                                     {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
+                                    </div>
                                 </Form.Group>
                             </div>
-                            <Button variant="primary" type="submit" className='emailverify-btn'>
+                            {/* <Button variant="primary" type="submit" className='emailverify-btn'>
                                 Next
-                            </Button>
+                            </Button> */}
+                            <button  type="submit" className='global-next-btn'>
+                                Next
+                            </button>
                         </Container>
                     </Form>
                 </Container>

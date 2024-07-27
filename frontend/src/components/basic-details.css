@@ -114,14 +114,12 @@
 
 .basic-details-text p {
   font-family: Poppins;
-  font-size: 20px;
+  font-size: var(--font-size-24);
   font-weight: 500;
   line-height: 36px;
   text-align: left;
   color: #515151;
   margin-bottom: 0px;
-
-
 }
 
 
@@ -290,17 +288,13 @@
 .calculated-age {
   font-family: "Inter";
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 22px;
   text-align: left;
 
-  background: -webkit-linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+ background: #4E1173;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-
-
-
-
   margin-top: 8px;
 
 

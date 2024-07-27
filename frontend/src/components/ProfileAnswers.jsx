@@ -126,10 +126,11 @@ const [refresh, setRefresh] = useState(false);
                             </Container>
                             <p style={{
                                 color: "#4E1173",
-                                fontSize: "14px",
+                                fontSize: "16px",
                                 lineHeight: "20px",
-                                textAlign: "center",
+                                textAlign: "left",
                                 fontWeight: "600",
+                                marginLeft : "10px"
                             }}>
                           Answer 2 prompts only
                             </p>
@@ -209,7 +210,7 @@ const [refresh, setRefresh] = useState(false);
                             </div>
                         </div>
                     </Container>
-                    <Button variant="primary" type="submit" className='job-nxt-btn' onClick={() => {
+                    {/* <Button variant="primary" type="submit" className='job-nxt-btn' onClick={() => {
                         const answers = getCookie('answers');
 
                         if (count == 2) {
@@ -219,7 +220,19 @@ const [refresh, setRefresh] = useState(false);
                         }
                     }}>
                         Next
-                    </Button>
+                    </Button> */}
+
+                    <button  type="submit" className='global-next-bottom-fix-btn'  onClick={() => {
+                        const answers = getCookie('answers');
+
+                        if (count == 2) {
+                            navigate('/kids-family');
+                        } else {
+                            setAlert(true);
+                        }
+                    }}>
+                                Next
+                            </button>
                 </Container>
             </Container>
         </div>
@@ -335,9 +348,9 @@ function AlertModal({ show, onHide,count }) {
         <BModal centered show={show} onHide={onHide}>
             <div>
                 <p style={{
-                    fontSize: "large",
+                    fontSize: "20px",
                     lineHeight: "24px",
-                    fontWeight: "600",
+                    fontWeight: "500",
                     textAlign: "center",
                     marginTop: "1rem",
                 }}>
@@ -347,6 +360,7 @@ function AlertModal({ show, onHide,count }) {
                     
                 </p>
             </div>
+{/* 
             <Button style={{
                 backgroundColor: "white",
                 borderColor: "#6c6c6c",
@@ -358,7 +372,19 @@ function AlertModal({ show, onHide,count }) {
                 width: "50%",
             }} onClick={() => { onHide(); }}>
                 Okay
-            </Button>
+            </Button> */}
+
+
+           <div style={{
+            display : "flex",
+            alignItems : "center",
+            justifyContent : "center",
+            marginTop : "60px"
+           }}>
+            <button  type="submit" className='global-save-button' onClick={() => { onHide(); }}>
+                                Okay
+                            </button>
+                            </div>
         </BModal>
     )
 }

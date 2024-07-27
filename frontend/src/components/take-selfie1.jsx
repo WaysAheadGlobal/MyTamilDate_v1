@@ -5,6 +5,7 @@ import Cropper from 'react-easy-crop';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../api';
 import logo from "../assets/images/MTDlogo.png";
+import logo2 from "../assets/images/logo2.png";
 import addplus from "../assets/images/add-plus.png";
 import backarrow from "../assets/images/backarrow.jpg";
 import dont from "../assets/images/do.png";
@@ -271,7 +272,7 @@ export const Selfie = () => {
                 <Container className='logo-progressbar6'>
                     <Container className='logo-arrow6'>
                         <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
-                        <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
+                        <Image src={logo2} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
                     </Container>
                     <div className='track-btn6'>
                         <div></div>
@@ -358,7 +359,16 @@ export const Selfie = () => {
                         </Col>
                     </Row>
                 </Container>
-                <Button
+                <button  type="submit" className='global-next-bottom-fix-btn'   onClick={handleNextClick} >
+                                Next
+                                {
+                        loading && <div className="spinner-border spinner-border-sm" style={{
+                            marginLeft: '10px',
+                        }} role="status">
+                        </div>
+                    }
+                            </button>
+                {/* <Button
                     variant="primary"
                     type="button"
                     className='selfie-next-btn'
@@ -377,13 +387,16 @@ color : "#fff"
                         }} role="status">
                         </div>
                     }
-                </Button>
+                </Button> */}
                 <Modal centered className="selfie-modal" show={showModal} onHide={() => setShowModal(false)}>
                     <Modal.Body className='selfie-modal-body'>
                         Add 3 real pics to help people get to know you! Fake images will be rejected.
-                        <Button variant="secondary" className='selfie-modal-btn' onClick={() => setShowModal(false)}>
+                        {/* <Button variant="secondary" className='selfie-modal-btn' onClick={() => setShowModal(false)}>
                             Close
-                        </Button>
+                        </Button> */}
+                        <button   className='global-next-btn'  onClick={() => setShowModal(false)}>
+                        Close
+                            </button>
                     </Modal.Body>
                 </Modal>
 
@@ -409,16 +422,17 @@ color : "#fff"
                             display : "flex",
                             justifyContent :"space-between",
                             alignItems : "center",
-                            gap :"80px"
+                            gap :"20px"
                         }}>
 
                        
-                        <button variant="secondary" className='crop-cancel-btn' onClick={handleCropCancel}>
+                        <button variant="secondary" style={ { width : "160px"}} className='global-cancel-button' onClick={handleCropCancel}>
                             Cancel
                         </button>
-                        <button variant="secondary" className='crop-save-btn' onClick={handleCropSave}>
+                        <button  variant="secondary" style={ { width : "160px"}} className='global-save-button' onClick={handleCropSave}>
                             Add Photo
                         </button>
+
                         </div>
                     </Modal.Footer>
                 </Modal>
@@ -458,9 +472,12 @@ color : "#fff"
                 <Modal centered className="duplicate-name-modal" show={showDuplicateNameModal} onHide={() => setShowDuplicateNameModal(false)}>
                     <Modal.Body className='duplicate-name-modal-body'>
                         Please add a photo you haven’t already used
-                        <Button variant="secondary" className='duplicate-name-modal-btn' onClick={() => setShowDuplicateNameModal(false)}>
+                        {/* <Button variant="secondary" className='duplicate-name-modal-btn' onClick={() => setShowDuplicateNameModal(false)}>
                             Close
-                        </Button>
+                        </Button> */}
+                        <button  type="submit" className='global-next-btn'  onClick={() => setShowDuplicateNameModal(false)}>
+                        Close
+                            </button>
                     </Modal.Body>
                 </Modal>
 

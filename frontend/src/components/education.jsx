@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './education.css';
 import backarrow from "../assets/images/backarrow.jpg";
 import logo from "../assets/images/MTDlogo.png";
+import logo2 from "../assets/images/logo2.png";
 import { useNavigate } from 'react-router-dom';
 import { Container, Image, Button } from 'react-bootstrap';
 import responsivebg from "../assets/images/responsive-bg.png";
@@ -51,7 +52,7 @@ export const Education = () => {
     async function saveEducation() {
         
         if(!selectedOption){
-            setErrorMessege("Please select your highest level education")
+            setErrorMessege("*Please make a selection")
             return;
         }
         const response = await fetch(`${API_URL}/customer/users/studies`, {
@@ -86,7 +87,7 @@ export const Education = () => {
                     <Container className='logo-progressbar9'>
                         <Container className='logo-arrow9'>
                             <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} alt="Back Arrow" />
-                            <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
+                            <Image src={logo2} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
                         </Container>
                         <div className='track-btn9'>
                             <div></div>
@@ -98,10 +99,7 @@ export const Education = () => {
             <Image className='about-yourself-icon' src={edu} alt="Education Icon" />
             <p>What’s the highest level you’ve attained?</p>
         </Container>
-        {errorMessage && <p className="text-danger error-message" style={{
-            marginLeft :"10px",
-            marginTop :"5px"
-        }}>{errorMessage}</p>}
+       
         <Container className='all-education'>
             <div className="outer-div">
                 <div className="first-div">
@@ -153,6 +151,10 @@ export const Education = () => {
                             }}
                         >Doctorate</div>
                     </div>
+                    {errorMessage && <p className="text-danger error-message" style={{
+            marginLeft :"10px",
+            marginTop :"-10px"
+        }}>{errorMessage}</p>}
                 </div>
                 {/* <div
                     onClick={() => setSelectedOption("Prefer not to say")}
@@ -168,9 +170,12 @@ export const Education = () => {
     </div>
 </Container>
 
-                    <Button variant="primary" type="submit" className='education-nxt-btn' onClick={saveEducation}>
+                    {/* <Button variant="primary" type="submit" className='education-nxt-btn' onClick={saveEducation}>
                         Next
-                    </Button>
+                    </Button> */}
+                    <button  type="submit" onClick={saveEducation} className='global-next-bottom-fix-btn'>
+                                Next
+                            </button>
                 </Container>
             </Container>
         </div>

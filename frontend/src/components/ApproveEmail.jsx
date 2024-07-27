@@ -3,6 +3,7 @@ import React from 'react';
 import { Button, Container, Image } from 'react-bootstrap';
 import { API_URL } from '../api';
 import logo from "../assets/images/MTDlogo.png";
+import logo2 from "../assets/images/logo2.png";
 import responsivebg from "../assets/images/responsive-bg.png";
 import { useCookies } from '../hooks/useCookies';
 import './job-title.css';
@@ -107,7 +108,7 @@ export default function ApproveEmail() {
                 <Container className='job-content'>
                     <Container className='logo-progressbar10'>
                         <Container className='logo-arrow10'>
-                            <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
+                            <Image src={logo2} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
                         </Container>
                     </Container>
                     <div style={{
@@ -154,12 +155,14 @@ export default function ApproveEmail() {
                     </div>
                     <div style={{
                         display: "flex",
+                        alignItems :"center",
+                        justifyContent : "center",
                         width: "100%",
                         gap: "5rem",
                         marginTop: "auto",
                         marginBottom: "2rem",
                     }}>
-                        <Button variant="primary" onClick={checkVerification} style={{
+                        {/* <Button variant="primary" onClick={checkVerification} style={{
                             width: "100%",
                             marginTop: "1rem",
                             background: "linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%)",
@@ -170,7 +173,10 @@ export default function ApproveEmail() {
                             fontWeight: "bold",
                         }}>
                             Submit
-                        </Button>
+                        </Button> */}
+                        <button   onClick={checkVerification} type="submit" className='global-next-btn'>
+                                Next
+                            </button>
                     </div>
                 </Container>
             </Container>

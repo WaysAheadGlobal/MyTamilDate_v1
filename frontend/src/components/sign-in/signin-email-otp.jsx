@@ -297,9 +297,12 @@ export const SignInEmailOTP = () => {
     <span>{Math.floor(timer / 60)}:{String(timer % 60).padStart(2, '0')} sec</span>
 </div>
                             </div>
-                            <Button variant="primary" type="submit" onClick={handleSubmit} className='entercode-btn'>
+                            {/* <Button variant="primary" type="submit" onClick={handleSubmit} className='entercode-btn'>
                                 Next
-                            </Button>
+                            </Button> */}
+                            <button  type="submit" onClick={handleSubmit} className='global-next-btn'>
+                                Next
+                            </button>
                         </Container>
                     </Form>
                     {/* <Container className='or-option'>

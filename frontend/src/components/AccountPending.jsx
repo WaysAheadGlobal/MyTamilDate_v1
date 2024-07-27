@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect } from 'react';
 import { Button, Container, Image } from 'react-bootstrap';
 import logo from "../assets/images/MTDlogo.png";
+import logo2 from "../assets/images/logo2.png";
 import responsivebg from "../assets/images/responsive-bg.png";
 import './job-title.css';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -64,7 +65,7 @@ export default function AccountPending() {
                 <Container className='job-content'>
                     <Container className='logo-progressbar10'>
                         <Container className='logo-arrow10'>
-                            <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
+                            <Image src={logo2} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
                         </Container>
                     </Container>
                     <div style={{

@@ -60,9 +60,10 @@ export const Located = () => {
   }, [])
 
   const handleCountrySelect = (country) => {
-    setErrorMessage("");
+   
     setSelectedCountry(country);
     setSelectedCity(null);
+    setErrorMessage("");
   };
 
   const handleCitySelect = (city) => {
@@ -74,11 +75,11 @@ export const Located = () => {
     console.log('Selected Country:', selectedCountry);
     console.log('Selected City:', selectedCity);
 if(!selectedCountry){
-  setErrorMessage("Please choose a country");
+  setErrorMessage("*Please fill out the required fields.");
   return;
 }
 if(!selectedCity){
-  setErrorMessageCity("Please choose a city");
+  setErrorMessageCity("*Please fill out the required fields.");
   return;
 }
     // Make POST request to save location
@@ -200,7 +201,10 @@ if(!selectedCity){
                 }
               </div>
             </Container>
+            <div style={{marginTop : "-7px"}}>
+
             {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
+            </div>
             {selectedCountry && (
               <Container ref={citySelectRef} className='located-city collasped'>
                 <div style={{
@@ -247,11 +251,17 @@ if(!selectedCity){
               </Container>
               
             )}
+             <div style={{marginTop : "-7px"}}>
+
           {errorMessageCity && <Form.Text className="text-danger error-message">{errorMessageCity}</Form.Text>}
+             </div>
           </Container>
-          <Button variant="primary" type="submit" className='located-nxt-btn' onClick={handleSubmit}>
+          {/* <Button variant="primary" type="submit" className='located-nxt-btn' onClick={handleSubmit}>
             Next
-          </Button>
+          </Button> */}
+          <button  type="submit" className='global-next-bottom-fix-btn'  onClick={handleSubmit}>
+                                Next
+                            </button>
         </Container>
       </Container>
     </div>

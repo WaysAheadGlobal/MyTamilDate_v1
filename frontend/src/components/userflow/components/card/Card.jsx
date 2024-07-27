@@ -6,6 +6,8 @@ import './card.css';
 import IconButton from './IconButton';
 import { useCookies } from '../../../../hooks/useCookies';
 import ladyIcon from '../../../../assets/images/ladyIcon.png';
+
+import Briefcase from '../../../../assets/images/Briefcase.png';
 import { FaLocationDot } from "react-icons/fa6";
 import { useUserProfile } from '../context/UserProfileContext';
 import ProfileDetails from './ProfileDetails';
@@ -206,14 +208,22 @@ export default function Card({ show, ...props }) {
                         width: "100%",
                     }}>
                         <div className='details' style={{ marginLeft: "1rem", marginBottom: "2rem" }}>
-                            <p>{`${props.first_name} ${props.last_name ?? ""}`}, {dayjs().diff(props.birthday, "y")}</p>
+                            <p> <span style={{
+                                fontSize : "32px",
+                                fontWeight : "600",
+                                lineHeight : "48px"
+                            }}>{`${props.first_name}`}</span>,  <span style={{
+                                fontSize : "32px",
+                                fontWeight : "300",
+                                lineHeight : "48px"
+                            }}>{dayjs().diff(props.birthday, "y")}</span></p>
                             <div style={{
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "flex-start",
                                 gap: "0.5rem"
                             }}>
-                                <img src={ladyIcon} alt="icon" width={30} height={30} />
+                                <img src={Briefcase} alt="icon" width={30} height={30} />
                                 <p style={{
                                     fontSize: "medium",
                                 }}>{props.job}</p>

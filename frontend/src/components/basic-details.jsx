@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../Context/UseContext';
 import { API_URL } from '../api';
 import logo from "../assets/images/MTDlogo.png";
+import logo2 from "../assets/images/logo2.png";
 import backarrow from "../assets/images/backarrow.jpg";
 import basicdetails from "../assets/images/basic-details.png";
 import responsivebg from "../assets/images/responsive-bg.png";
@@ -103,12 +104,12 @@ export const BasicDetails = () => {
     e.preventDefault();
   
     if (!userDetails.first_name) {
-      setErrorMessage('*Please add your first name');
+      setErrorMessage('*Please fill out the required fields.');
       return;
     }
     if(!userDetails.birthday)
       {
-        setErrorBrithday("Please choose your birthday date");
+        setErrorBrithday("*Please choose your birthday date");
         return;
       }
     if (userDetails.first_name.includes('@') || userDetails.first_name.includes('#') || userDetails.first_name.includes('$') || userDetails.first_name.includes('%') || userDetails.first_name.includes('^') || userDetails.first_name.includes('&') || userDetails.first_name.includes('*') || userDetails.first_name.includes('(') || userDetails.first_name.includes(')') || userDetails.first_name.includes('-') || userDetails.first_name.includes('+') || userDetails.first_name.includes('=') || userDetails.first_name.includes('[') || userDetails.first_name.includes(']') || userDetails.first_name.includes('{') || userDetails.first_name.includes('}') || userDetails.first_name.includes('|') || userDetails.first_name.includes('\\') || userDetails.first_name.includes(';') || userDetails.first_name.includes(':') || userDetails.first_name.includes('\'') || userDetails.first_name.includes('"') || userDetails.first_name.includes('<') || userDetails.first_name.includes('>') || userDetails.first_name.includes(',') || userDetails.first_name.includes('.') || userDetails.first_name.includes('/') || userDetails.first_name.includes('?') || userDetails.first_name.includes('!') || userDetails.first_name.includes('`') || userDetails.first_name.includes('~')) {
@@ -173,7 +174,7 @@ export const BasicDetails = () => {
             <Container className='logo-progressbar4'>
               <Container className='logo-arrow4'>
                 <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
-                <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
+                <Image src={logo2} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
               </Container>
               <div className='track-btn4'>
                 <div></div>
@@ -186,7 +187,7 @@ export const BasicDetails = () => {
             <Container className='basic-details-details'>
               <Form onSubmit={handleSubmit} className='basic-details-form'>
                 <Form.Group controlId="formName" className='basic-details-group'>
-                  <Form.Label className='basic-details-label'>What's your name*?</Form.Label>
+                  <Form.Label className='basic-details-label'>What's your name?</Form.Label>
                   <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                     <Form.Control
                       className={`basic-details-input custom-input ${errorMessage ? 'error' : ''}`}
@@ -197,7 +198,10 @@ export const BasicDetails = () => {
                       style={{ flex: 1 }}
                     />
                   </div>
+                  <div style={{marginTop : "5px"}}>
+
                   {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
+                  </div>
                 </Form.Group>
 
                 <Form.Group controlId="formLastName" className='basic-details-group purplebox'>
@@ -240,7 +244,7 @@ export const BasicDetails = () => {
                       <Form.Control
                         className={`basic-details-input-verify custom-input ${errorMessage ? 'error' : ''}`}
                         type="text"
-                        placeholder="Day / Month / Year"
+                        placeholder="Year / Month / Day"
                         value={userDetails.birthday || ''}
                         style={{ flex: 1, border: 0, cursor: 'pointer' }}
                         readOnly
@@ -269,14 +273,20 @@ export const BasicDetails = () => {
                       />
                     </Popper>
                   </div>
+                  <div style={{marginTop : "5px"}}>
                   {errorBrithday && <Form.Text className="text-danger error-message">{errorBrithday}</Form.Text>}
+                  
                   {age !== null && age !== 54 && <span className='calculated-age'>Your age will be displayed as {age}</span>}
-                  {!adulthood && userDetails.birthday && <p className="text-danger error-message">You must be over 19 to join MTD</p>}
+                  {!adulthood && userDetails.birthday && <p  className="text-danger error-message" >You must be over 19 to join MTD</p>}
+                  </div>
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className='basic-details-btn'>
+                {/* <Button variant="primary" type="submit" className='basic-details-btn'>
                   Next
-                </Button>
+                </Button> */}
+                <button  type="submit" className='global-next-bottom-fix-btn'>
+                                Next
+                            </button>
               </Form>
             </Container>
           </Container>

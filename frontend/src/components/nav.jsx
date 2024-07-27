@@ -34,11 +34,10 @@ export const NavBar = () => {
   return (
     <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary Navbar-container sticky">
       <Container>
-        <Navbar.Brand href="/" ><Image src={logo2} className='nav-logo' style={{ height: '50px', width: '144px' }}></Image></Navbar.Brand>
+        <Navbar.Brand href="/" ><Image src={logo2} style={{ height: '50px', width: '144px' }}></Image></Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <div className="me-auto">
-
           </div>
           <Nav style={{
             alignItems: mobile && "flex-start"

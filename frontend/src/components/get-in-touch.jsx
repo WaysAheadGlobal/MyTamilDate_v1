@@ -165,9 +165,12 @@ export const GetInTouch = () => {
                                 />
                             </Form.Group>
                             <div className='connect-btn-box'>
-                                <Button variant="primary" className='getintouch-btn' type="submit">
+                                {/* <Button variant="primary" className='getintouch-btn' type="submit">
                                     Submit
-                                </Button>
+                                </Button> */}
+                                <button  type="submit" className='global-next-btn'>
+                                Submit
+                            </button>
                             </div>
                         </Form>
                     </Container>

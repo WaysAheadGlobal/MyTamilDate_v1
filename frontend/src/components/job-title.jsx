@@ -122,10 +122,7 @@ export const JobTitle = () => {
                                 <Image className='about-yourself-icon' src={job} alt="Job Icon" />
                                 <p>What’s your job title?</p>
                             </Container>
-                            {errorMessage && <p className="text-danger error-message" style={{
-        marginLeft :"10px",
-        marginTop :"5px"
-    }}>{errorMessage}</p>}
+                            
                             <InputGroup className='job-search-bar'>
                                 <Form.Control
                                     className='job-search'
@@ -160,10 +157,17 @@ export const JobTitle = () => {
                                 <a href='#' onClick={() => setShowModal(true)}>Add here</a>
                             </div>
                         </div>
+                        {errorMessage && <p className="text-danger error-message" style={{
+        marginLeft :"10px",
+        marginTop :"5px"
+    }}>{errorMessage}</p>}
                     </Container>
-                    <Button variant="primary" type="submit" onClick={saveJobTitle} className='job-nxt-btn'>
+                    {/* <Button variant="primary" type="submit" onClick={saveJobTitle} className='job-nxt-btn'>
                         Next
-                    </Button>
+                    </Button> */}
+                    <button   type="submit" className='global-next-bottom-fix-btn' onClick={saveJobTitle}>
+                                Next
+                            </button>
                 </Container>
             </Container>
             <Modal show={showModal} centered onHide={() => setShowModal(false)}>
@@ -180,12 +184,12 @@ export const JobTitle = () => {
                     />
                 </Modal.Body>
                 <Modal.Footer className='job-model-footer'>
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                    <button className='global-cancel-button' onClick={() => setShowModal(false)}>
                         Cancel
-                    </Button>
-                    <Button variant="primary" onClick={handleSave}>
+                    </button>
+                    <button className='global-save-button' onClick={handleSave}>
                         Save
-                    </Button>
+                    </button>
                 </Modal.Footer>
             </Modal>
         </div>

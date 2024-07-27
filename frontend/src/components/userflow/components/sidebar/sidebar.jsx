@@ -173,7 +173,7 @@ export default function Sidebar({ children }) {
                         <span>Account</span>
                     </li>
                 </ul>
-                <button className={styles['recommendation']} onClick={() => navigate("/user/recommendations")}>
+                {/* <button className={styles['recommendation']} onClick={() => navigate("/user/recommendations")}>
                     <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g filter="url(#filter0_i_3340_10418)">
                             <path d="M27 15C27 21.6274 21.6274 27 15 27C8.37258 27 3 21.6274 3 15C3 8.37258 8.37258 3 15 3C21.6274 3 27 8.37258 27 15Z" stroke="url(#paint0_angular_3340_10418)" stroke-width="6" />
@@ -197,7 +197,7 @@ export default function Sidebar({ children }) {
                         </defs>
                     </svg>
                     <span>AI Recommendation</span>
-                </button>
+                </button> */}
                 <div className={styles['last-section']}>
                     <div style={{
                         marginTop: '1.5rem',

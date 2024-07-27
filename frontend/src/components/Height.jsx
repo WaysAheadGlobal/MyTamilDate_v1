@@ -58,6 +58,7 @@ export default function Height() {
 
     const handleHeightSelect = (height) => {
         setSelectedHeight(height);
+        setErrorMessage("");
     };
 
     const handleSubmit = async (e) => {
@@ -116,16 +117,7 @@ export default function Height() {
                         <p>How tall are you?</p>
                         </div>
                      
-                        <div style={{
-                        display: "flex",
-                        justifyContent: "flex-start",
-                        alignItems :"flex-start",
-                        marginLeft: "10px",
-                        marginTop: "5px"
-                    }}>
-
-                        {errorMessage && <p className="text-danger error-message" >{errorMessage}</p>}
-                    </div>
+                
                     </Container>
                     <Container className='located-details'>
                         <Container ref={locationSelectRef} className='located-country collasped' style={{
@@ -168,10 +160,23 @@ export default function Height() {
                                 ))}
                             </div>
                         </Container>
+                        <div style={{
+                        display: "flex",
+                        justifyContent: "flex-start",
+                        alignItems :"flex-start",
+                        
+                        marginTop: "-6px"
+                    }}>
+
+                        {errorMessage && <p className="text-danger error-message" >{errorMessage}</p>}
+                    </div>
                     </Container>
-                    <Button variant="primary" type="submit" className='located-nxt-btn' onClick={handleSubmit}>
+                    {/* <Button variant="primary" type="submit" className='located-nxt-btn' onClick={handleSubmit}>
                         Next
-                    </Button>
+                    </Button> */}
+                    <button  type="submit" className='global-next-bottom-fix-btn' onClick={handleSubmit}>
+                                Next
+                            </button>
                 </Container>
             </Container>
         </div>

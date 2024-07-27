@@ -83,7 +83,7 @@
 
 .job-text p {
     font-family: 'Poppins', sans-serif;
-    font-size: 20px;
+    font-size: var(--font-size-24);
     font-weight: 500;
     line-height: 30px;
     text-align: left;
@@ -139,7 +139,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    height: 20dvh;
+    height: 35dvh;
     overflow-y: auto;
     padding: 10px;
 }

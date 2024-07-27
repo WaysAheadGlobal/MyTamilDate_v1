@@ -153,7 +153,7 @@ export default function KidsAndFamily() {
                                 <p>What about kids?</p>
                             </Container>
 
-                            {errorMessagehaveKids && <p className="text-danger error-message">{errorMessagehaveKids}</p>}
+                          
 
                             <div style={{
                                 maxHeight: "50vh",
@@ -175,6 +175,10 @@ export default function KidsAndFamily() {
                                 </div>
                             </div>
                         </div>
+                        <div style={{ marginTop : "5px"}}>
+
+                        {errorMessagehaveKids && <p className="text-danger error-message">{errorMessagehaveKids}</p>}
+                        </div>
                     </Container>
                     <Container className='job-details'>
                         <div className='your-job'>
@@ -187,7 +191,7 @@ export default function KidsAndFamily() {
                                 <p>What about family plans?</p>
                             </Container>
 
-                            {errorMessageWantKids && <p className="text-danger error-message">{errorMessageWantKids}</p>}
+                         
                             
                             <div style={{
                                 maxHeight: "50vh",
@@ -208,6 +212,10 @@ export default function KidsAndFamily() {
                                     ))}
                                 </div>
                             </div>
+                        </div>
+                        <div style={{marginTop : "5px"}}>
+
+                        {errorMessageWantKids && <p className="text-danger error-message">{errorMessageWantKids}</p>}
                         </div>
                     </Container>
                     <div style={{
@@ -232,7 +240,7 @@ export default function KidsAndFamily() {
                             Ask me later
                         </Button>
                         <Button variant="primary" style={{
-                            width: "132px",
+                            width: "148px",
                             marginTop: "1rem",
                             background: "linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%)",
                             border: "none",
@@ -244,6 +252,10 @@ export default function KidsAndFamily() {
                         }} onClick={saveAll}>
                             Next
                         </Button>
+
+                        {/* <button  onClick={saveAll} type="submit" className='global-next-btn'>
+                                Next
+                            </button> */}
                     </div>
                 </Container>
             </Container>

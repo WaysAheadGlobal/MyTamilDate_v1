@@ -52,7 +52,7 @@ export default function Suggestions() {
                                 fontWeight: "600",
                                 fontSize: "1rem",
                                 marginBottom: "-0.5rem",
-                            }}>{profile.first_name} {profile.last_name}</p>
+                            }}>{profile.first_name}</p>
                             <p>Suggested for you</p>
                         </div>
                     </div>

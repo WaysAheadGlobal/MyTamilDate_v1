@@ -100,9 +100,9 @@ export const SignInEmail = () => {
                                 </Form.Group>
 
                             </div>
-                            <Button variant="primary" type="submit" className='signin-emailverify-btn' onClick={handleSubmit}>
+                            <button  type="submit" className='global-next-btn'>
                                 Next
-                            </Button>
+                            </button>
                         </Container>
                     </Form>
                     {/* <Container className='or-option'>

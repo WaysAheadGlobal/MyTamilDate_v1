@@ -303,9 +303,9 @@ export const SignInPhoneOTP = () => {
                                     <span>{formatTime(resendTimer)} sec</span>
                                 </div>
                             </div>
-                            <Button variant="primary" type="submit" className='entercode-btn'>
+                            <button  type="submit" className='global-next-btn'>
                                 Next
-                            </Button>
+                            </button>
                         </Container>
                     </Form>
                 </Container>

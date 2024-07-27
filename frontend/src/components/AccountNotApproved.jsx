@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Container, Image } from 'react-bootstrap'
 import logo from "../assets/images/MTDlogo.png";
+import logo2 from "../assets/images/logo2.png";
 import responsivebg from "../assets/images/responsive-bg.png";
 import './job-title.css';
 import notApproved from "../assets/images/not-approved.png";
@@ -36,7 +37,7 @@ export default function AccountNotApproved() {
                 <Container className='job-content'>
                     <Container className='logo-progressbar10'>
                         <Container className='logo-arrow10'>
-                            <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
+                            <Image src={logo2} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
                         </Container>
                     </Container>
                     <div style={{

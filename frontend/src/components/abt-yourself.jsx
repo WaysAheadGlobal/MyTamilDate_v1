@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Image, Container, Form, Button } from 'react-bootstrap';
 import backarrow from "../assets/images/backarrow.jpg";
 import logo from "../assets/images/MTDlogo.png";
+import logo2 from "../assets/images/logo2.png";
 import basicdetails from "../assets/images/basic-details.png";
 import responsivebg from "../assets/images/responsive-bg.png";
 import { useAppContext } from '../Context/UseContext';
@@ -70,11 +71,11 @@ export const AbtYourself = () => {
         setWantHaveErrorMessage("")
         event.preventDefault();
         if(!havegender){
-            setHaveErrorMessage("Please choose gender")
+            setHaveErrorMessage("*Please make a selection.")
             return;
         }
-        if(!wantGender){
-            setWantHaveErrorMessage("Please choose gender")
+        if(!wantGender ){
+            setWantHaveErrorMessage("*Please make a selection.")
             return;
         }
         try {
@@ -157,7 +158,7 @@ export const AbtYourself = () => {
                     <Container className='logo-progressbar5'>
                         <Container className='logo-arrow5'>
                             <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
-                            <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
+                            <Image src={logo2} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
                         </Container>
                         <div className='track-btn5'>
                             <div></div>
@@ -211,7 +212,9 @@ export const AbtYourself = () => {
                                         <span>Non-Binary</span>
                                     </div>
                                 </div>
+                                <div style={{marginTop : "-15px"}}>
                                 {haveerrorMessage && <Form.Text className="text-danger error-message">{haveerrorMessage}</Form.Text>}
+                                </div>
                             </Form.Group>
 
                             <Form.Group controlId="formgender" className='birthday-group'>
@@ -225,7 +228,7 @@ export const AbtYourself = () => {
                                             fontFamily: '"Inter"',
                                             fontSize: '16px',
                                             fontWeight: '500',
-                                            color: selectedOption === 'female' ? 'white' : '#6C6C6C',
+                                            color: selectedOption === 'female' ? 'white' : '#515151',
                                             lineHeight: '24px',
                                             letterSpacing: '0.04em',
                                             border: selectedOption === 'female' ? 'none' : '1px solid #6C6C6C '
@@ -241,7 +244,7 @@ export const AbtYourself = () => {
                                             fontFamily: '"Inter"',
                                             fontSize: '16px',
                                             fontWeight: '500',
-                                            color: selectedOption === 'male' ? 'white' : '#6C6C6C',
+                                            color: selectedOption === 'male' ? 'white' : '#515151',
                                             lineHeight: '24px',
                                             letterSpacing: '0.04em',
                                             border: selectedOption === 'male' ? 'none' : '1px solid #6C6C6C '
@@ -257,7 +260,7 @@ export const AbtYourself = () => {
                                             fontFamily: '"Inter"',
                                             fontSize: '16px',
                                             fontWeight: '500',
-                                            color: selectedOption === 'all' ? 'white' : '#6C6C6C',
+                                            color: selectedOption === 'all' ? 'white' : '#515151',
                                             lineHeight: '24px',
                                             letterSpacing: '0.04em',
                                             border: selectedOption === 'all' ? 'none' : '1px solid #6C6C6C '
@@ -266,12 +269,18 @@ export const AbtYourself = () => {
                                         All
                                     </Button>
                                 </div>
-                                {wanthaveerrorMessage && <Form.Text className="text-danger error-message">{wanthaveerrorMessage}</Form.Text>}
+                                <div style={{marginTop : "5px"}}>
+
+                                {wanthaveerrorMessage && <Form.Text className="text-danger error-message" >{wanthaveerrorMessage}</Form.Text>}
+                                </div>
                             </Form.Group>
 
-                            <Button variant="primary" type="submit" className='birthday-nxt-btn'>
+                            {/* <Button variant="primary" type="submit" className='birthday-nxt-btn'>
                                 Next
-                            </Button>
+                            </Button> */}
+                            <button  type="submit" className='global-next-bottom-fix-btn'>
+                                Next
+                            </button>
                         </Form>
                     </Container>
                 </Container>

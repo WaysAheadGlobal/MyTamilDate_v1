@@ -113,7 +113,9 @@ export const SignIn = () => {
                                 <Form.Label className='num-verify-lable'> What's your phone number?</Form.Label>
                                 <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                                     <Dropdown>
-                                        <div id="dropdown-basic" onClick={() => setShowModal(true)} className='flag-box'>
+                                        <div id="dropdown-basic" onClick={() => setShowModal(true)} className='flag-box' style={{
+                                        borderColor  : errorMessage ? "red" : "",
+                                    }}>
                                             <Flag code={selectedCountry} style={{ width: '34px', height: '25px', marginRight: '10px' }} className='flag' />
                                             <span>{selectedCountryInfo.dial_code}</span>
                                         </div>
@@ -135,13 +137,16 @@ export const SignIn = () => {
                                         style={{ flex: 1, marginLeft: '10px' }}
                                     />
                                 </div>
+                                <div >
+
                                 {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
+                                </div>
                             </Form.Group>
 
 
-                            <Button variant="primary" type="submit" className='verify-phone-btn'>
+                            <button  type="submit" className='global-next-btn'>
                                 Next
-                            </Button>
+                            </button>
                         </Form>
                         {/*                    
                     <Container className='or-option'>

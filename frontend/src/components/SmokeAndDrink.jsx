@@ -127,7 +127,7 @@ export default function SmokeAndFamily() {
 
                                 <p>Do you smoke?</p>
                             </Container>
-                            {errorSmoke && <p className="text-danger error-message">{errorSmoke}</p>}
+                           
                             <div style={{
                                 maxHeight: "50vh",
                                 overflow: "auto",
@@ -147,6 +147,10 @@ export default function SmokeAndFamily() {
                                 </div>
                             </div>
                         </div>
+                        <div style={{marginTop : "5px"}}>
+
+                        {errorSmoke && <p className="text-danger error-message">{errorSmoke}</p>}
+                        </div>
                     </Container>
                     <Container className='job-details'>
                         <div className='your-job'>
@@ -158,7 +162,7 @@ export default function SmokeAndFamily() {
 
                                 <p>Do you drink?</p>
                             </Container>
-                            {errorDrink && <p className="text-danger error-message">{errorDrink}</p>}
+                          
                             <div style={{
                                 maxHeight: "50vh",
                                 overflow: "auto",
@@ -177,6 +181,9 @@ export default function SmokeAndFamily() {
                                     ))}
                                 </div>
                             </div>
+                        </div>
+                        <div style={{marginTop : "5px"}}>
+                        {errorDrink && <p className="text-danger error-message">{errorDrink}</p>}
                         </div>
                     </Container>
                     <div style={{
@@ -201,7 +208,7 @@ export default function SmokeAndFamily() {
                             Ask me later
                         </Button>
                         <Button variant="primary" style={{
-                            width: "132px",
+                            width: "148px",
                             marginTop: "1rem",
                             background: "linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%)",
                             border: "none",
@@ -210,7 +217,7 @@ export default function SmokeAndFamily() {
                             fontSize: "16px",
                             fontWeight: "600",
                         }} onClick={saveAll}>
-                            Continue
+                            Next
                         </Button>
                     </div>
                 </Container>

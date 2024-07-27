@@ -43,7 +43,10 @@ export const SignInPhoneSuccessful = () => {
                             <span className='signinphone-successful-t2'>
                                 Login has been successfulplease click on on continue to start discovering new people
                             </span>
-                            <Button onClick={() => navigate("/user/home")}>Continue</Button>
+                            {/* <Button onClick={() => navigate("/user/home")}>Continue</Button> */}
+                            <button onClick={() => navigate("/user/home")} className='global-next-btn'>
+                            Continue
+                            </button>
                         </Container>
                     </Container>
                 </Container>

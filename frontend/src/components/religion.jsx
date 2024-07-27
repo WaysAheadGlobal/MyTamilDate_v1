@@ -91,7 +91,7 @@ export const Religion = () => {
     const handleReligionClick = (e) => {
         e.preventDefault();
               if(!selectedReligion){
-                setErrorMessege("Please choose a religion")
+                setErrorMessege("*Please make a selection.")
                 return;
               }
 
@@ -156,7 +156,7 @@ export const Religion = () => {
                                 <Image className='about-yourself-icon' src={religionIcon}></Image>
                                 <p>What are your religious beliefs?</p>
                             </Container>
-                            {errorMessage && <p className="text-danger error-message">{errorMessage}</p>}
+                        
                             <Container className='all-religion'>
                                 {allReligions.map((religion, index) => (
                                     <div
@@ -168,7 +168,10 @@ export const Religion = () => {
                                     </div>
                                 ))}
                             </Container>
-                            
+                            <div style={{marginTop : "-20px"}}>
+
+                            {errorMessage && <p className="text-danger error-message">{errorMessage}</p>}
+                            </div>
                         </div>
                         <div className='your-lang'>
                             <Container className='religion-text'>
@@ -188,9 +191,12 @@ export const Religion = () => {
                             </Container>
                         </div>
                     </Container>
-                    <Button variant="primary" type="submit" className='religion-nxt-btn' onClick={handleReligionClick}>
+                    {/* <Button variant="primary" type="submit" className='religion-nxt-btn' onClick={handleReligionClick}>
                         Next
-                    </Button>
+                    </Button> */}
+                    <button  type="submit" className='global-next-bottom-fix-btn'  onClick={handleReligionClick}>
+                                Next
+                            </button>
                 </Container>
             </Container>
         </div>

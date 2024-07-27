@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button, Container, Image } from 'react-bootstrap'
 import logo from "../assets/images/MTDlogo.png";
+import logo2 from "../assets/images/logo2.png";
 import responsivebg from "../assets/images/responsive-bg.png";
 import './job-title.css';
 
@@ -14,7 +15,7 @@ export default function AccountApproved() {
                 <Container className='job-content'>
                     <Container className='logo-progressbar10'>
                         <Container className='logo-arrow10'>
-                            <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
+                            <Image src={logo2} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
                         </Container>
                     </Container>
                     <div style={{
@@ -53,7 +54,7 @@ export default function AccountApproved() {
                         alignItems: "center",
                         justifyContent: "center",
                     }}>
-                        <Button variant="primary" style={{
+                        {/* <Button variant="primary" style={{
                             width: "70%",
                             marginTop: "1rem",
                             background: "linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%)",
@@ -64,7 +65,10 @@ export default function AccountApproved() {
                             fontWeight: "bold",
                         }}>
                             Start exploring
-                        </Button>
+                        </Button> */}
+                        <button  type="submit" className='global-next-btn'>
+                        Start exploring
+                            </button>
                     </div>
                 </Container>
             </Container>

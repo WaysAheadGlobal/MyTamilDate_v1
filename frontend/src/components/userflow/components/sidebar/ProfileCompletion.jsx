@@ -137,7 +137,7 @@ function ProfileCompletion() {
             </div>
             <p style={{
                 fontSize: "18px"
-            }}>{Profile.Name} {Profile.Surname}</p>
+            }}>{Profile.Name}</p>
             <p style={{
                 marginTop: "-0.5rem",
                 fontSize: "14px"
