@@ -66,6 +66,14 @@ export const SignInPhoneOTP = () => {
     // Function to handle OTP code input change
     const handleCodeChange = (e, setter, nextRef) => {
         const value = e.target.value;
+        // const otp = code1 + code2 + code3 + code4;
+        // if (otp.length !== 5) {
+        //     setErrorMessage('*Code must be at least 4 characters.');
+        // }
+
+        // if(otp.length === 3 ){
+        //     setErrorMessage("")
+        // }
         if (!isNaN(value) && value.length <= 1) {
             setter(value);
             if (value.length === 1 && nextRef) {
@@ -89,7 +97,7 @@ export const SignInPhoneOTP = () => {
         console.log(otp);
         console.log(phoneNumber);
         if (otp.length !== 4) {
-            setErrorMessage('*Invalid OTP, please re-enter again');
+            setErrorMessage('*Invalid code, please re-enter again');
         } else {
             setErrorMessage('');
             try {
@@ -295,11 +303,14 @@ export const SignInPhoneOTP = () => {
                                             style={{ flex: 1, marginLeft: '10px' }}
                                         />
                                     </div>
+                                    <div style={{marginTop : "5px"}}>
                                     {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
+                                    </div>
                                 </Form.Group>
 
                                 <div className='resend-timer'>
-                                    <a href="#" onClick={resendotp} disabled={isResendDisabled}>Resend code</a>
+                                    <a href="#" onClick={resendotp} disabled={isResendDisabled}
+                                    style={{ color : isResendDisabled ? "#cbcbcb" : "#5E5E5E" }}>Resend code</a>
                                     <span>{formatTime(resendTimer)} sec</span>
                                 </div>
                             </div>

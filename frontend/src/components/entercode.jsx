@@ -66,15 +66,15 @@ export const Entercode = () => {
     // Function to handle OTP code input change
     const handleCodeChange = (e, setter, nextRef) => {
         const value = e.target.value;
-        const otp = code1 + code2 + code3 + code4;
+        // const otp = code1 + code2 + code3 + code4;
        
-        if (otp.length !== 5) {
-            setErrorMessage('*Code must be at least 4 characters');
-        }
+        // if (otp.length !== 5) {
+        //     setErrorMessage('*Code must be at least 4 characters');
+        // }
 
-        if(otp.length === 3 ){
-            setErrorMessage("")
-        }
+        // if(otp.length === 3 ){
+        //     setErrorMessage("")
+        // }
 
 
         if (!isNaN(value) && value.length <= 1) {
@@ -135,7 +135,7 @@ export const Entercode = () => {
                     setCookie('userId',  result.user_id,15);
                     goToEmailVerify();
                 } else {
-                    setErrorMessage(result.message || 'Failed to send OTP');
+                    setErrorMessage(result.message || '*Failed to send code');
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -166,7 +166,7 @@ export const Entercode = () => {
                     setResendTimer(120); // Reset timer to 2 minutes on successful resend
                     setIsResendDisabled(true); // Disable resend button after OTP is sent
                 } else {
-                    setErrorMessage('Failed to send OTP');
+                    setErrorMessage('*Failed to send OTP');
                 }
             } catch (error) {
                 console.error('Error:', error);

@@ -68,6 +68,14 @@ export const SignInEmailOTP = () => {
 
     const handleCodeChange = (e, setter, nextRef) => {
         const value = e.target.value;
+        // const otp = code1 + code2 + code3 + code4;
+        // if (otp.length !== 5) {
+        //     setErrorMessage('*Code must be at least 4 characters.');
+        // }
+
+        // if(otp.length === 3 ){
+        //     setErrorMessage("")
+        // }
         if (!isNaN(value) && value.length <= 1) {
             setter(value);
             if (value.length === 1 && nextRef) {
@@ -86,7 +94,7 @@ export const SignInEmailOTP = () => {
         e.preventDefault();
         const code = code1 + code2 + code3 + code4;
         if (code.length !== 4) {
-            setErrorMessage('*Invalid code, please re-enter again');
+            setErrorMessage('*Invalid verification code.');
         } else {
             setErrorMessage('');
 
@@ -175,7 +183,7 @@ export const SignInEmailOTP = () => {
             
         }
         else{
-            setErrorMessage(result.message)
+            setErrorMessage("*"+result.message+".")
           console.log(result.message);
         }
     };
@@ -184,10 +192,10 @@ export const SignInEmailOTP = () => {
         
        const  email= location.state?.email
         if (!email) {
-            setErrorMessage('Please enter a valid email address');
+            setErrorMessage('*Please re-enter email address.');
             return;
         } else if (!email.includes('@')) {
-            setErrorMessage('Please enter a valid email address');
+            setErrorMessage('*Please re-enter email address.');
             return;
         }
         const response = await fetch(`${API_URL}/user/login/email-otp`, {
@@ -280,7 +288,10 @@ export const SignInEmailOTP = () => {
                                             style={{ flex: 1, marginLeft: '10px' }}
                                         />
                                     </div>
+                                    <div style={{marginTop :"5px"}}>
+
                                     {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
+                                    </div>
                                 </Form.Group>
                                 <div className='resend-timer'>
     <a 
@@ -290,7 +301,7 @@ export const SignInEmailOTP = () => {
             if (canResend) handleResendCode(); 
         }} 
         className={!canResend ? 'disabled' : ''}
-        style={{ pointerEvents: !canResend ? 'none' : 'auto', color: !canResend ? 'grey' : 'initial' }}
+        style={{ pointerEvents: !canResend ? 'none' : 'auto', color: !canResend ? '#cbcbcb' : '#5E5E5E' }}
     >
         Resend code
     </a>

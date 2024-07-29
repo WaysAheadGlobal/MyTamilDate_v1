@@ -259,12 +259,11 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
   <Carddetails 
   icon={intersts} 
   title="Language"
-  detail={language?.map(e=> e.name).join(", ")??"N/A"} 
-
+  detail={language?.map(e=> e.name).join(", ")??"N/A"}
 />
 </Link>
 <Link to = "/wantgender">
-  <Carddetails icon={intersts }title="Interrests" detail={Profile.PreferredGender ? Profile.PreferredGender : "N/A"} />
+  <Carddetails icon={intersts }title="Interests" detail={Profile.PreferredGender ? Profile.PreferredGender : "N/A"} />
 </Link>
    
   <Link to = "/updatekids">

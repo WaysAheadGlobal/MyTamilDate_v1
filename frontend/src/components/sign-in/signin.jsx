@@ -52,7 +52,7 @@ export const SignIn = () => {
         e.preventDefault();
         const completePhoneNumber = selectedCountryInfo.dial_code + phoneNumber;
         if (phoneNumber.length === 0) {
-            setErrorMessage('Please enter phone number');
+            setErrorMessage('*Phone is required');
         } 
         else {
             setErrorMessage('');

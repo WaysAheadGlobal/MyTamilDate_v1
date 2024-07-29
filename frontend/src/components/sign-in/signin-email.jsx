@@ -26,10 +26,10 @@ export const SignInEmail = () => {
 
 
         if (!email) {
-            setErrorMessage('Please enter a valid email address');
+            setErrorMessage('*Please enter a valid email address');
             return;
         } else if (!email.includes('@')) {
-            setErrorMessage('Please enter a valid email address');
+            setErrorMessage('*Please enter a valid email address');
             return;
         }
 
@@ -45,7 +45,7 @@ export const SignInEmail = () => {
         const data = await response.json();
           
         if (!response.ok) {
-            setErrorMessage(data.message);
+            setErrorMessage("*" + data.message+ ".");
             return;
         }
 
@@ -95,8 +95,10 @@ export const SignInEmail = () => {
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
 
+                <div style={{marginTop : "5px"}}>
 
                                     {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
+                </div>
                                 </Form.Group>
 
                             </div>
