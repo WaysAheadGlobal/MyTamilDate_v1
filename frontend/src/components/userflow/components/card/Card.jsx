@@ -9,6 +9,7 @@ import ladyIcon from '../../../../assets/images/ladyIcon.png';
 
 import Briefcase from '../../../../assets/images/Briefcase.png';
 import { FaLocationDot } from "react-icons/fa6";
+import { PiSuitcase } from "react-icons/pi";
 import { useUserProfile } from '../context/UserProfileContext';
 import ProfileDetails from './ProfileDetails';
 import { Dropdown, Modal } from 'react-bootstrap';
@@ -223,7 +224,7 @@ export default function Card({ show, ...props }) {
                                 justifyContent: "flex-start",
                                 gap: "0.5rem"
                             }}>
-                                <img src={Briefcase} alt="icon" width={30} height={30} />
+                                <PiSuitcase size={25} />
                                 <p style={{
                                     fontSize: "medium",
                                 }}>{props.job}</p>
