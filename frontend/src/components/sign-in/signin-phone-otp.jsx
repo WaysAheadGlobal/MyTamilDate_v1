@@ -183,13 +183,13 @@ export const SignInPhoneOTP = () => {
                              }
                          }
                              else {
-                                setErrorMessage('Please signup firsttt');
+                                setErrorMessage('*Please signup first');
                             }
                         }
                     
                 }
                 else {
-                    setErrorMessage(result.message || 'Failed to send OTP');
+                    setErrorMessage("*"+result.message+"." || '*Failed to send code');
                 }
             } catch (error) {
                 console.error('Error:', error);
