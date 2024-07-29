@@ -7,6 +7,8 @@ import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
+import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
+import ReportIcon from '@mui/icons-material/Report';
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import GroupsIcon from "@mui/icons-material/Groups";
@@ -202,6 +204,20 @@ const Sidebar = () => {
                 icon={<PendingActionsIcon />}
                 selected={selected}
                 setSelected={() => setSelected("Approval")}
+              />
+               <Item
+                title="Rejected"
+                to="/rejected"
+                icon={<PlaylistRemoveIcon />}
+                selected={selected}
+                setSelected={() => setSelected("Rejected")}
+              />
+              <Item
+                title="Reports"
+                to="/reports"
+                icon={<ReportIcon />}
+                selected={selected}
+                setSelected={() => setSelected("Reports")}
               />
             </Category>
 

@@ -53,6 +53,7 @@ const getDateConditionage = (timeRange: string): string => {
     }
     return condition;
 };
+
 const getDateConditionoflike = (timeRange: string): string => {
     let condition = '';
     switch (timeRange) {

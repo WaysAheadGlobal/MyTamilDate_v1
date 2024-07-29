@@ -112,6 +112,10 @@ import Recommendations from "./components/userflow/screens/recommendations/Recom
 import { useCookies } from "./hooks/useCookies";
 import { WantGenderUpdate } from "./components/UpdateProfile/screens/UserDetailsUpdateScreen/wantgender/wantgender";
 import Verify from "./components/verify";
+import RejectedList from "./scenes/Rejected/rejected";
+import RejectDetails from "./scenes/Rejected/userDetails";
+import ReportList from "./scenes/Reports/reports";
+import ReportDetails from "./scenes/Reports/reportsdetails";
 
 
 function App() {
@@ -142,7 +146,11 @@ function App() {
     "/calendar",
     "/geography",
     "/addpromotionalcode",
-    "/editpromotionalcode/:id"
+    "/editpromotionalcode/:id",
+    "/rejected",
+    "/rejected/:id",
+    "/reports",
+    "/reporteduserdetails/:id"
   ];
 
 
@@ -167,6 +175,11 @@ function App() {
               <Route path="/team" element={<ProtectedRoute><Team /></ProtectedRoute>} />
               <Route path="/contacts" element={<ProtectedRoute><Contacts /></ProtectedRoute>} />
               <Route path="/approval" element={<ProtectedRoute><Approval /></ProtectedRoute>} />
+              <Route path="/rejected" element={<ProtectedRoute><RejectedList /></ProtectedRoute>} />
+              <Route path="/rejected/:id" element={<ProtectedRoute> <RejectDetails /> </ProtectedRoute>} />
+              <Route path="/reports" element={<ProtectedRoute><ReportList /></ProtectedRoute>}></Route>
+              <Route path="/reporteduserdetails/:id" element={<ProtectedRoute><ReportDetails /></ProtectedRoute>}></Route>
+
               <Route path="/promotionalcodedetails/:id" element={<ProtectedRoute><Details /></ProtectedRoute>} />
               <Route path="/editpromotionalcode/:id" element={<ProtectedRoute>< EditDetails /></ProtectedRoute>} />
               <Route path="/userdetails/:id" element={<ProtectedRoute><ApprovalUserDetails /></ProtectedRoute>} />
@@ -257,7 +270,7 @@ function App() {
               <Route path="/updateeducations" element={<Protected><EducationUpdate /></Protected>}></Route>
               <Route path="/updateage" element={<Protected><BasicDetailsUpdate /></Protected>}></Route>
               <Route path="/helpsupport" element={<Protected><HelpSupport /></Protected>}></Route>
-              <Route path="/wantgender" element= {<Protected><WantGenderUpdate/></Protected>}></Route>
+              <Route path="/wantgender" element={<Protected><WantGenderUpdate /></Protected>}></Route>
 
               <Route path="/user/home" element={<Protected><Home /></Protected>}></Route>
               <Route path="/user/recommendations" element={<Protected><Recommendations /></Protected>}></Route>
