@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, Container, Form, Image, InputGroup } from 'react-bootstrap';
+import { Button, Container, Form, Image, InputGroup, Modal } from 'react-bootstrap';
 import logo from "../assets/images/MTDlogo.png";
 import backarrow from "../assets/images/backarrow.jpg";
 import responsivebg from "../assets/images/responsive-bg.png";
@@ -21,6 +21,7 @@ export default function Personality() {
     const [selectedPersonalities, setSelectedPersonalities] = useState([]);
     const navigate = useNavigate();
     const alert = useAlert();
+    const [showModal, setShowModal] = useState(false);
     const filteredPersonality = personalities.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
 
@@ -70,11 +71,12 @@ export default function Personality() {
     async function savePersonalities() {
         if (selectedPersonalities.length < 3 || selectedPersonalities.length > 8) {
             // Handle the case where there are fewer than 2 personalities selected
-            alert.setModal({
-                show: true,
-                title: 'Update Personalities',
-                message: "Please select between 3 and 8 personalities. Selections below 3 or above 8 are not allowed."
-            });
+            // alert.setModal({
+            //     show: true,
+            //     title: 'Update Personalities',
+            //     message: "Please select between 3 and 8 personalities. Selections below 3 or above 8 are not allowed."
+            // });
+            setShowModal(true);
             return;
         }
 
@@ -201,6 +203,18 @@ export default function Personality() {
                                 Next
                             </button>
                 </Container>
+
+                <Modal centered className="selfie-modal" show={showModal} onHide={() => setShowModal(false)}>
+                    <Modal.Body className='selfie-modal-body'>
+                    Please select between 3 and 8 personalities. Selections below 3 or above 8 are not allowed.
+                        {/* <Button variant="secondary" className='selfie-modal-btn' onClick={() => setShowModal(false)}>
+                            Close
+                        </Button> */}
+                        <button   className='global-save-button'  onClick={() => setShowModal(false)}>
+                        Okey
+                            </button>
+                    </Modal.Body>
+                </Modal>
             </Container>
         </div>
     );

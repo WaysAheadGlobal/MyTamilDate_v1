@@ -46,9 +46,10 @@ export default function AlertModalProvider({ children }) {
     return (
         <AlertModalContext.Provider value={value}>
             <Modal size='sm' centered show={modal.show}>
-                <Modal.Body>
+                <Modal.Body >
                     <p style={{
-                        fontSize: "large",
+                        fontSize: "20px",
+                        fontFamily : "poppins",
                         fontWeight: "600",
                         margin: "0",
                         marginBottom: "1rem",
@@ -56,7 +57,7 @@ export default function AlertModalProvider({ children }) {
                     }}>{modal.title}</p>
                     <p
                         style={{
-                            fontSize: "14px",
+                            fontSize: "20px",
                             margin: "0",
                             textAlign: "center",
                             color: "#6c6c6c",
@@ -111,6 +112,8 @@ export default function AlertModalProvider({ children }) {
                             }}
                             style={{
                                 borderRadius: "9999px",
+                                fontSize :"16px",
+                                fontWeight :"600",
                                 padding: "0.75rem 1.5rem",
                             }}
                         >

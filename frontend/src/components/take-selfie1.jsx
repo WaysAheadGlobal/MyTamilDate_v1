@@ -94,12 +94,13 @@ export const Selfie = () => {
         const file = event.target.files[0];
         if (file) {
             if (checkForDuplicateNames(file, imageKey)) {
-                /* setShowDuplicateNameModal(true); */
-                alert.setModal({
-                    show: true,
-                    message: "Please add a photo you haven't already used",
-                    title: "Duplicate Photo",
-                })
+                 setShowDuplicateNameModal(true);
+                 console.log("duplicate photo");
+                // alert.setModal({
+                //     show: true,
+                //     message: "Please add a photo you haven't already used",
+                //     title: "Duplicate Photo",
+                // })
                 return;
             }
 
@@ -394,8 +395,8 @@ color : "#fff"
                         {/* <Button variant="secondary" className='selfie-modal-btn' onClick={() => setShowModal(false)}>
                             Close
                         </Button> */}
-                        <button   className='global-next-btn'  onClick={() => setShowModal(false)}>
-                        Close
+                        <button   className='global-save-button'  onClick={() => setShowModal(false)}>
+                        Okey
                             </button>
                     </Modal.Body>
                 </Modal>
@@ -469,17 +470,22 @@ color : "#fff"
                         </Button>
                     </Modal.Footer> */}
                 </Modal>
-                <Modal centered className="duplicate-name-modal" show={showDuplicateNameModal} onHide={() => setShowDuplicateNameModal(false)}>
-                    <Modal.Body className='duplicate-name-modal-body'>
+                <Modal centered className="selfie-modal" show={showDuplicateNameModal} onHide={() => setShowDuplicateNameModal(false)}>
+                    <Modal.Body className='selfie-modal-body'>
                         Please add a photo you haven’t already used
                         {/* <Button variant="secondary" className='duplicate-name-modal-btn' onClick={() => setShowDuplicateNameModal(false)}>
                             Close
                         </Button> */}
-                        <button  type="submit" className='global-next-btn'  onClick={() => setShowDuplicateNameModal(false)}>
-                        Close
+                        <div style={{marginTop : "65px"}}>
+                        <button  type="submit" className='global-save-buttton'  onClick={() => setShowDuplicateNameModal(false)}>
+                        Okey
                             </button>
+                        </div>
+                       
                     </Modal.Body>
                 </Modal>
+
+                
 
             </Container>
         </div>

@@ -63,10 +63,9 @@ export default function Height() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         console.log('Selected Height:', selectedHeight);
         if (Object.keys(selectedHeight).length === 0) {
-            setErrorMessage("Please select your height");
+            setErrorMessage("*Please make a selection.");
             return;
         }
 

@@ -54,7 +54,7 @@ export default function KidsAndFamily() {
     async function saveHaveKids() {
             console.log(selectedHaveKids);
         if(!selectedHaveKids){
-            setErrorMessagehaveKids("Please tell about kids");
+            setErrorMessagehaveKids("*Please make a selection.");
             return;
         }
         const response = await fetch(`${API_URL}/customer/users/update-have-kids`, {
@@ -77,7 +77,7 @@ export default function KidsAndFamily() {
     async function saveWantKids() {
      
         if(!selectedWantKids){
-            setErrorMessageWantKids("Please tell family plan");
+            setErrorMessageWantKids("*Please make a selection.");
             return;
         }
         
@@ -102,11 +102,11 @@ export default function KidsAndFamily() {
         setErrorMessagehaveKids("");
         setErrorMessageWantKids("")
         if(!selectedHaveKids){
-            setErrorMessagehaveKids("Please choose a option");
+            setErrorMessagehaveKids("*Please make a selection.");
             return;
         }
         if(!selectedWantKids){
-            setErrorMessageWantKids("Please choose a option");
+            setErrorMessageWantKids("*Please make a selection.");
             return;
         }
         try {

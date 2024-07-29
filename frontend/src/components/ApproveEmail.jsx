@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React from 'react';
-import { Button, Container, Image } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Button, Container, Image, Modal } from 'react-bootstrap';
 import { API_URL } from '../api';
 import logo from "../assets/images/MTDlogo.png";
 import logo2 from "../assets/images/logo2.png";
@@ -15,7 +15,9 @@ export default function ApproveEmail() {
     const [email, setEmail] = React.useState('');
     const navigate = useNavigate();
     const alert = useAlert();
-
+    const [showModal, setShowModal] = useState(false);
+    const [showModalverified, setShowModalVerified] = useState(false);
+    
     React.useEffect(() => {
         (async () => {
             try {
@@ -39,6 +41,7 @@ export default function ApproveEmail() {
     }, []);
 
     const resendMail = async () => {
+        setShowModal(false);
         try {
             const response = await fetch(`${API_URL}/user/verify`, {
                 method: 'POST',
@@ -71,32 +74,41 @@ export default function ApproveEmail() {
             if (response.ok) {
                 console.log('Email verified successfully!');
                 if (data.emailVerified) {
-                    alert.setModal({
-                        show: true,
-                        title: "Email Verified",
-                        message: "Your email has been verified successfully!",
-                        buttonText: "Okay",
-                        onButtonClick: () => {
-                            navigate("/pending");  
-                        }
-                    })                  
+                    // alert.setModal({
+                    //     show: true,
+                    //     title: "Email Verified",
+                    //     message: "Your email has been verified successfully!",
+                    //     buttonText: "Okay",
+                    //     onButtonClick: () => {
+                    //         navigate("/pending");  
+                    //     }
+                    // })      
+                    setShowModalVerified(true);     
+
                 } else {
-                    alert.setModal({
-                        show: true,
-                        title: "Email Verification",
-                        message: "Your email has not been verified yet. Please check your email and verify your email address.",
-                        buttonText: "Resend mail",
-                        showCancelButton: true,
-                        onButtonClick: () => {
-                            resendMail();
-                        }
-                    })  
+                    // alert.setModal({
+                    //     show: true,
+                    //     title: "Email Verification",
+                    //     message: "Your email has not been verified yet. Please check your email and verify your email address.",
+                    //     buttonText: "Resend mail",
+                    //     showCancelButton: true,
+                    //     onButtonClick: () => {
+                    //         resendMail();
+                    //     }
+                    // }) 
+                    setShowModal(true);      
                 }
             }
 
         } catch (err) {
             console.error(err);
         }
+    }
+
+    const EmailVerifiedSuccess = ()=>{
+        setShowModalVerified(false);
+        navigate("/pending");  
+
     }
 
     return (
@@ -179,6 +191,53 @@ export default function ApproveEmail() {
                             </button>
                     </div>
                 </Container>
+                <Modal centered className="selfie-modal" show={showModal} onHide={() => setShowModal(false)}>
+                    <Modal.Body className='selfie-modal-body'>
+                    Your email has not been verified yet. Please check your email and verify your email address.
+                        {/* <Button variant="secondary" className='selfie-modal-btn' onClick={() => setShowModal(false)}>
+                            Close
+                        </Button> */}
+
+
+                        <div style={{
+                            display : "flex",
+                            justifyContent :"space-between",
+                            alignItems :"center",
+                            gap : "40px"
+                        }}>
+
+                       
+                        <button   className='global-save-button'  onClick={() => setShowModal(false)}>
+                        Okey
+                            </button>
+                        <button   className='global-save-button'  onClick={resendMail}>
+                        Resend
+                            </button>
+                            </div>
+                    </Modal.Body>
+                </Modal>
+                
+                
+                <Modal centered className="selfie-modal" show={showModalverified} onHide={() => setShowModalVerified(false)}>
+                    <Modal.Body className='selfie-modal-body'>
+                    Your email has been verified successfully!
+                        {/* <Button variant="secondary" className='selfie-modal-btn' onClick={() => setShowModal(false)}>
+                            Close
+                        </Button> */}
+                        <div style={{
+                            marginTop : "60px"
+                        }}>
+
+                        <button   className='global-save-button'  onClick={ EmailVerifiedSuccess}>
+                        Okey
+                            </button>
+                        </div>
+                     
+                        
+                    </Modal.Body>
+                </Modal>
+
+
             </Container>
         </div >
     );

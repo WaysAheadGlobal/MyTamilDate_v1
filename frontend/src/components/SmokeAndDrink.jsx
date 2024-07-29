@@ -46,10 +46,7 @@ export default function SmokeAndFamily() {
     }, [])
 
     async function saveSmoke() {
-        if(!selectedSmoke){
-            setErrorSmoke("Please select an option");
-            return;
-        }
+      
         const response = await fetch(`${API_URL}/customer/users/update-smoke`, {
             method: 'POST',
             headers: {
@@ -68,9 +65,7 @@ export default function SmokeAndFamily() {
     }
 
     async function saveDrink() {
-        if(!selectedDrink){
-            setErrorDrink("Please select an option")
-        }
+       
         const response = await fetch(`${API_URL}/customer/users/update-drink`, {
             method: 'POST',
             headers: {
@@ -92,6 +87,15 @@ export default function SmokeAndFamily() {
         try {
             setErrorSmoke("");
             setErrorDrink("");
+            if(!selectedSmoke){
+                setErrorSmoke("*Please make a selection.");
+                return;
+            }
+            
+            if(!selectedDrink){
+                setErrorDrink("Please make a selection.")
+                return;
+            }
             await Promise.all([saveSmoke(), saveDrink()]);
             
             navigate('/approve');

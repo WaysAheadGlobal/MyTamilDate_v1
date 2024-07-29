@@ -79,7 +79,7 @@ export const JobTitle = () => {
     async function saveJobTitle() {
 
         if(!selectedOption){
-            setErrorMessege("Please select your job title")
+            setErrorMessege("*Please make a selection.")
             return;
         }
         const response = await fetch(`${API_URL}/customer/users/jobs`, {

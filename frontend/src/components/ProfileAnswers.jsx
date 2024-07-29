@@ -348,11 +348,12 @@ function AlertModal({ show, onHide,count }) {
         <BModal centered show={show} onHide={onHide}>
             <div>
                 <p style={{
-                    fontSize: "20px",
-                    lineHeight: "24px",
+                    fontSize: "24px",
+                    lineHeight: "36px",
                     fontWeight: "500",
                     textAlign: "center",
                     marginTop: "1rem",
+                      color: "#515151"
                 }}>
                     {
                         count != 2 ? "Answer 2 prompts, please! Contact info (e.g., phone, social handles) will be rejected." : "You can answer only 2 prompts"
@@ -379,7 +380,8 @@ function AlertModal({ show, onHide,count }) {
             display : "flex",
             alignItems : "center",
             justifyContent : "center",
-            marginTop : "60px"
+            marginTop : "60px",
+          
            }}>
             <button  type="submit" className='global-save-button' onClick={() => { onHide(); }}>
                                 Okay

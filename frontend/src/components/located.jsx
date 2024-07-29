@@ -25,6 +25,7 @@ export const Located = () => {
   const citySelectRef = useRef(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [errorMessageCity, setErrorMessageCity] = useState('');
+  
   useEffect(() => {
     (async () => {
       const response = await fetch(`${API_URL}/customer/users/location-options`, {
@@ -60,7 +61,7 @@ export const Located = () => {
   }, [])
 
   const handleCountrySelect = (country) => {
-   
+
     setSelectedCountry(country);
     setSelectedCity(null);
     setErrorMessage("");
@@ -74,14 +75,14 @@ export const Located = () => {
     e.preventDefault();
     console.log('Selected Country:', selectedCountry);
     console.log('Selected City:', selectedCity);
-if(!selectedCountry){
-  setErrorMessage("*Please fill out the required fields.");
-  return;
-}
-if(!selectedCity){
-  setErrorMessageCity("*Please fill out the required fields.");
-  return;
-}
+    if (!selectedCountry) {
+      setErrorMessage("*Please fill out the required fields.");
+      return;
+    }
+    if (!selectedCity) {
+      setErrorMessageCity("*Please fill out the required fields.");
+      return;
+    }
     // Make POST request to save location
     fetch(`${API_URL}/customer/users/locations`, {
       method: 'POST',
@@ -201,9 +202,9 @@ if(!selectedCity){
                 }
               </div>
             </Container>
-            <div style={{marginTop : "-7px"}}>
+            <div style={{ marginTop: "-7px" }}>
 
-            {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
+              {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
             </div>
             {selectedCountry && (
               <Container ref={citySelectRef} className='located-city collasped'>
@@ -218,19 +219,24 @@ if(!selectedCity){
                   <FaAngleDown size={16} style={{ marginRight: "1rem" }} />
                 </div>
                 <div className='scroll-container-vertical'>
-                  {!citySearch && options[selectedCountry]?.sort((a, b) => a.location_string?.localeCompare(b.location_string))?.map((city) => (
-                    <div
-                      key={city.id}
-                      className={`scroll-item ${selectedCity === city.id ? 'selected' : ''}`}
-                      onClick={() => {
-                        handleCitySelect(city.id)
-                        setCitySearch(city.location_string)
-                        citySelectRef.current.classList.add("collasped");
-                      }}
-                    >
-                      {city.location_string}
-                    </div>
-                  ))}
+                  {!citySearch &&
+                    options[selectedCountry]
+                      ?.filter(city => city.location_string?.trim() !== '')  // Filter out blank location strings
+                      ?.sort((a, b) => a.location_string?.localeCompare(b.location_string))
+                      ?.map((city) => (
+                        <div
+                          key={city.id}
+                          className={`scroll-item ${selectedCity === city.id ? 'selected' : ''}`}
+                          onClick={() => {
+                            handleCitySelect(city.id);
+                            setCitySearch(city.location_string);
+                            citySelectRef.current.classList.add("collasped");
+                          }}
+                        >
+                          {city.location_string}
+                        </div>
+                      ))}
+
                   {
                     citySearch && options[selectedCountry].filter(city => city.location_string?.toLowerCase().includes(citySearch.toLowerCase()))?.sort((a, b) => a.location_string?.localeCompare(b.location_string))?.map((city) => (
                       <div
@@ -247,21 +253,21 @@ if(!selectedCity){
                     ))
                   }
                 </div>
-              
-              </Container>
-              
-            )}
-             <div style={{marginTop : "-7px"}}>
 
-          {errorMessageCity && <Form.Text className="text-danger error-message">{errorMessageCity}</Form.Text>}
-             </div>
+              </Container>
+
+            )}
+            <div style={{ marginTop: "-7px" }}>
+
+              {errorMessageCity && <Form.Text className="text-danger error-message">{errorMessageCity}</Form.Text>}
+            </div>
           </Container>
           {/* <Button variant="primary" type="submit" className='located-nxt-btn' onClick={handleSubmit}>
             Next
           </Button> */}
-          <button  type="submit" className='global-next-bottom-fix-btn'  onClick={handleSubmit}>
-                                Next
-                            </button>
+          <button type="submit" className='global-next-bottom-fix-btn' onClick={handleSubmit}>
+            Next
+          </button>
         </Container>
       </Container>
     </div>
