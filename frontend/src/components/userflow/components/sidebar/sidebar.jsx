@@ -12,11 +12,18 @@ import ProfileCompletion from './ProfileCompletion';
 export default function Sidebar({ children }) {
     const [isMobile, setIsMobile] = useState(false);
     const [isTablet, setIsTablet] = useState(false);
+    const[Rejected, setRejected] = useState (false);
     const [pathname, setPathname] = useState([]);
     const location = useLocation();
     const suffix = pathname.at(-1);
     const navigate = useNavigate();
     const cookies = useCookies();
+    const RejectedorNot = cookies.getCookie('approval');
+
+    if(RejectedorNot === 30){
+        setRejected(true);
+    }
+
     const noNavbarRoutes = [
         '/updatelocations',
         '/updatereligion',
@@ -89,7 +96,6 @@ export default function Sidebar({ children }) {
             });
 
             const result = await response.json();
-
             cookies.setCookie('approval', result.approval);
             cookies.setCookie('active', result.active);
 
@@ -98,14 +104,17 @@ export default function Sidebar({ children }) {
                 return;
             }
 
+
             if (result.approval === "PENDING") {
                 window.location.replace("/pending");
                 return;
             }
-
+                
             if (result.approval === "REJECTED") {
-                window.location.replace("/not-approved")
+                setRejected(true);
+                // window.location.replace("/updateprofile")
             }
+
         })()
     }, [pathname])
 
@@ -121,7 +130,7 @@ export default function Sidebar({ children }) {
                 }
                 {
                     cookies.getCookie('isPremium') !== "true" && (
-                        <button className={styles["upgradeBtn"]} onClick={() => navigate("/selectplan")}>
+                        <button className={styles["upgradeBtn"]} onClick={() => !Rejected && navigate("/selectplan")}>
                             <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M7.84167 9.06245C8.53827 9.06245 9.10527 9.62945 9.10527 10.326C9.10527 10.7778 8.86767 11.1846 8.46987 11.415C8.28267 11.523 8.21967 11.7624 8.32767 11.9496L12.5829 19.3189C12.6531 19.4395 12.7809 19.5151 12.9213 19.5151C13.0617 19.5151 13.1895 19.4413 13.2597 19.3189L17.5149 11.9479C17.6229 11.7607 17.5599 11.523 17.3727 11.415C16.9749 11.1846 16.7391 10.7779 16.7391 10.3279C16.7391 9.63125 17.3061 9.06425 18.0027 9.06425C18.6993 9.06425 19.2663 9.63125 19.2663 10.3279C19.2663 10.7797 19.0287 11.1865 18.6291 11.4169C18.5391 11.4691 18.4743 11.5536 18.4473 11.6544C18.4203 11.7552 18.4347 11.8614 18.4869 11.9514L22.7457 19.3207C22.8159 19.4412 22.9437 19.5169 23.0841 19.5169C23.2245 19.5169 23.3523 19.4431 23.4225 19.3207L27.6777 11.9514C27.7857 11.7642 27.7209 11.5249 27.5355 11.4169C27.1377 11.1865 26.9001 10.7797 26.9001 10.3279C26.9001 9.63125 27.4671 9.06425 28.1637 9.06425C28.8603 9.06425 29.4273 9.63125 29.4273 10.3279C29.4273 11.0245 28.8603 11.5914 28.1637 11.5914C27.9477 11.5914 27.7731 11.766 27.7731 11.982V23.1493H19.0107C18.7947 23.1493 18.6201 23.3239 18.6201 23.5399C18.6201 23.7559 18.7947 23.9304 19.0107 23.9304H27.7731V26.9328H8.23407V11.9803C8.23407 11.7643 8.05947 11.5896 7.84348 11.5896C7.14688 11.5896 6.57987 11.0226 6.57987 10.326C6.57987 9.62945 7.14507 9.06245 7.84167 9.06245Z" fill="white" />
                             </svg>
@@ -130,21 +139,21 @@ export default function Sidebar({ children }) {
                     )
                 }
                 <ul>
-                    <li className={suffix === "home" ? styles["active"] : ""} onClick={() => navigate("/user/home")}>
+                    <li className={suffix === "home" ? styles["active"] : ""} onClick={() => !Rejected && navigate("/user/home")}>
                         <div className={styles['indicator']}></div>
                         <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M4.66406 12.1667L13.9974 4L23.3307 12.1667L23.3307 23.8333H17.4974V19.1667C17.4974 18.2384 17.1287 17.3482 16.4723 16.6918C15.8159 16.0354 14.9257 15.6667 13.9974 15.6667C13.0691 15.6667 12.1789 16.0354 11.5225 16.6918C10.8661 17.3482 10.4974 18.2384 10.4974 19.1667V23.8333H4.66407L4.66406 12.1667Z" stroke="#515151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                         <span>Home</span>
                     </li>
-                    <li className={suffix === "preferences" ? styles["active"] : ""} onClick={() => navigate("/user/preferences")}>
+                    <li className={suffix === "preferences" ? styles["active"] : ""} onClick={() => !Rejected && navigate("/user/preferences")}>
                         <div className={styles['indicator']}></div>
                         <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M4.66406 6.33333L11.6641 6.33333M11.6641 6.33333C11.6641 7.622 12.7087 8.66667 13.9974 8.66667C15.2861 8.66667 16.3307 7.622 16.3307 6.33333M11.6641 6.33333C11.6641 5.04467 12.7087 4 13.9974 4C15.2861 4 16.3307 5.04467 16.3307 6.33333M16.3307 6.33333L23.3307 6.33333M4.66406 14.5H18.6641M18.6641 14.5C18.6641 15.7887 19.7087 16.8333 20.9974 16.8333C22.2861 16.8333 23.3307 15.7887 23.3307 14.5C23.3307 13.2113 22.2861 12.1667 20.9974 12.1667C19.7087 12.1667 18.6641 13.2113 18.6641 14.5ZM9.33073 22.6667H23.3307M9.33073 22.6667C9.33073 21.378 8.28606 20.3333 6.9974 20.3333C5.70873 20.3333 4.66406 21.378 4.66406 22.6667C4.66406 23.9553 5.70873 25 6.9974 25C8.28606 25 9.33073 23.9553 9.33073 22.6667Z" stroke="#515151" stroke-width="2" stroke-linecap="round" />
                         </svg>
                         <span>Preferences</span>
                     </li>
-                    <li className={pathname.includes("chat") ? styles["active"] : ""} onClick={() => navigate("/user/chat")}>
+                    <li className={pathname.includes("chat") ? styles["active"] : ""} onClick={() => !Rejected && navigate("/user/chat")}>
                         <div className={styles['indicator']}></div>
                         <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M14.0012 4.23438C8.33684 4.23438 3.73458 8.83664 3.73458 14.501C3.73458 16.1577 4.15831 17.7798 4.92458 19.2461L3.74718 24.1928C3.72861 24.2704 3.73026 24.3515 3.75198 24.4283C3.77369 24.5051 3.81474 24.575 3.8712 24.6315C3.92765 24.6879 3.99764 24.7289 4.07446 24.7505C4.15128 24.7722 4.23237 24.7737 4.30998 24.7551L9.25664 23.5777C10.7224 24.344 12.3446 24.7677 14.0012 24.7677C19.6652 24.7677 24.2679 20.1659 24.2679 14.501C24.2679 8.83617 19.6661 4.23438 14.0012 4.23438ZM14.0012 5.16771C19.1616 5.16771 23.3346 9.34111 23.3346 14.501C23.3346 19.661 19.1612 23.8344 14.0012 23.8344C12.4309 23.8344 10.8853 23.4377 9.50864 22.6817C9.40713 22.626 9.28854 22.61 9.17591 22.6369L4.83124 23.671L5.86538 19.3264C5.89238 19.2138 5.87658 19.0952 5.82104 18.9936C5.06484 17.617 4.66822 16.0717 4.66791 14.501C4.66791 9.34064 8.84131 5.16771 14.0012 5.16771Z" fill="#2B2B2B" />
@@ -157,7 +166,7 @@ export default function Sidebar({ children }) {
                         border: "1px solid #939393",
                         padding: "0",
                     }} />
-                    <li className={suffix === "updateprofile" ? styles["active"] : ""} onClick={() => navigate("/updateprofile")}>
+                    <li className={suffix === "updateprofile" ? styles["active"] : ""} onClick={() =>  navigate("/updateprofile")}>
                         <div className={styles['indicator']}></div>
                         <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M21 22.3264C21 20.4366 19.633 17.9999 17.5 18H10.5C8.367 17.9999 7 20.4366 7 22.3264M3.5 14.5C3.5 8.70101 8.20101 4 14 4C19.799 4 24.5 8.70101 24.5 14.5C24.5 20.299 19.799 25 14 25C8.20101 25 3.5 20.299 3.5 14.5ZM17.5 11C17.5 12.933 15.933 14.5 14 14.5C12.067 14.5 10.5 12.933 10.5 11C10.5 9.067 12.067 7.5 14 7.5C15.933 7.5 17.5 9.067 17.5 11Z" stroke="#515151" stroke-width="2" />
@@ -224,10 +233,13 @@ export default function Sidebar({ children }) {
             <div className={styles['main-contains']}>
                 {children}
                 {showNavbar && <Navbar />}
+                {Rejected}
             </div>
             <aside className={styles['upcoming']}>
                 <ProfileCompletion />
-                <Suggestions />
+               {
+                !RejectedorNot && <Suggestions />
+               } 
             </aside>
         </section>
     )
@@ -235,6 +247,7 @@ export default function Sidebar({ children }) {
 
 export function MobileSidebar() {
     const [pathname, setPathname] = useState([]);
+    const[Rejected, setRejected] = useState (false);
     const suffix = pathname.at(-1);
     const navigate = useNavigate();
     const cookies = useCookies();
@@ -256,7 +269,7 @@ export function MobileSidebar() {
             const result = await response.json();
 
             cookies.setCookie('approval', result.approval);
-
+         console.log(result);
             if (!result.active) {
                 window.location.replace("/user/pause");
                 return;
@@ -266,9 +279,10 @@ export function MobileSidebar() {
                 window.location.replace("/pending");
                 return;
             }
-
+            
             if (result.approval === 30) {
-                window.location.replace("/not-approved");
+                setRejected(true);
+                // window.location.replace("/updateprofile");
             }
         }
         if (window.location.pathname !== "/user/pause") {
@@ -284,19 +298,19 @@ export function MobileSidebar() {
                 objectFit: 'contain',
             }} />
             <ul>
-                <li className={suffix === "home" ? styles["active"] : ""} onClick={() => navigate("/user/home")}>
+                <li className={suffix === "home" ? styles["active"] : ""} onClick={() => !Rejected && navigate("/user/home")}>
                     <div className={styles['indicator']}></div>
                     <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M4.66406 12.1667L13.9974 4L23.3307 12.1667L23.3307 23.8333H17.4974V19.1667C17.4974 18.2384 17.1287 17.3482 16.4723 16.6918C15.8159 16.0354 14.9257 15.6667 13.9974 15.6667C13.0691 15.6667 12.1789 16.0354 11.5225 16.6918C10.8661 17.3482 10.4974 18.2384 10.4974 19.1667V23.8333H4.66407L4.66406 12.1667Z" stroke="#515151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </li>
-                <li className={suffix === "preferences" ? styles["active"] : ""} onClick={() => navigate("/user/preferences")}>
+                <li className={suffix === "preferences" ? styles["active"] : ""} onClick={() => !Rejected && navigate("/user/preferences")}>
                     <div className={styles['indicator']}></div>
                     <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M4.66406 6.33333L11.6641 6.33333M11.6641 6.33333C11.6641 7.622 12.7087 8.66667 13.9974 8.66667C15.2861 8.66667 16.3307 7.622 16.3307 6.33333M11.6641 6.33333C11.6641 5.04467 12.7087 4 13.9974 4C15.2861 4 16.3307 5.04467 16.3307 6.33333M16.3307 6.33333L23.3307 6.33333M4.66406 14.5H18.6641M18.6641 14.5C18.6641 15.7887 19.7087 16.8333 20.9974 16.8333C22.2861 16.8333 23.3307 15.7887 23.3307 14.5C23.3307 13.2113 22.2861 12.1667 20.9974 12.1667C19.7087 12.1667 18.6641 13.2113 18.6641 14.5ZM9.33073 22.6667H23.3307M9.33073 22.6667C9.33073 21.378 8.28606 20.3333 6.9974 20.3333C5.70873 20.3333 4.66406 21.378 4.66406 22.6667C4.66406 23.9553 5.70873 25 6.9974 25C8.28606 25 9.33073 23.9553 9.33073 22.6667Z" stroke="#515151" stroke-width="2" stroke-linecap="round" />
                     </svg>
                 </li>
-                <li className={pathname.includes("chat") ? styles["active"] : ""} onClick={() => navigate("/user/chat")}>
+                <li className={pathname.includes("chat") ? styles["active"] : ""} onClick={() => !Rejected && navigate("/user/chat")}>
                     <div className={styles['indicator']}></div>
                     <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M14.0012 4.23438C8.33684 4.23438 3.73458 8.83664 3.73458 14.501C3.73458 16.1577 4.15831 17.7798 4.92458 19.2461L3.74718 24.1928C3.72861 24.2704 3.73026 24.3515 3.75198 24.4283C3.77369 24.5051 3.81474 24.575 3.8712 24.6315C3.92765 24.6879 3.99764 24.7289 4.07446 24.7505C4.15128 24.7722 4.23237 24.7737 4.30998 24.7551L9.25664 23.5777C10.7224 24.344 12.3446 24.7677 14.0012 24.7677C19.6652 24.7677 24.2679 20.1659 24.2679 14.501C24.2679 8.83617 19.6661 4.23438 14.0012 4.23438ZM14.0012 5.16771C19.1616 5.16771 23.3346 9.34111 23.3346 14.501C23.3346 19.661 19.1612 23.8344 14.0012 23.8344C12.4309 23.8344 10.8853 23.4377 9.50864 22.6817C9.40713 22.626 9.28854 22.61 9.17591 22.6369L4.83124 23.671L5.86538 19.3264C5.89238 19.2138 5.87658 19.0952 5.82104 18.9936C5.06484 17.617 4.66822 16.0717 4.66791 14.501C4.66791 9.34064 8.84131 5.16771 14.0012 5.16771Z" fill="#2B2B2B" />
@@ -321,7 +335,7 @@ export function MobileSidebar() {
                         <path d="M16.3333 14.5C16.3333 15.7887 15.2887 16.8333 14 16.8333C12.7113 16.8333 11.6667 15.7887 11.6667 14.5C11.6667 13.2113 12.7113 12.1667 14 12.1667C15.2887 12.1667 16.3333 13.2113 16.3333 14.5Z" stroke="#515151" stroke-width="2" />
                     </svg>
                 </li>
-                <li onClick={() => navigate("/user/recommendations")}>
+                <li onClick={() => !Rejected && navigate("/user/recommendations")}>
                     <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g filter="url(#filter0_i_3340_10418)">
                             <path d="M27 15C27 21.6274 21.6274 27 15 27C8.37258 27 3 21.6274 3 15C3 8.37258 8.37258 3 15 3C21.6274 3 27 8.37258 27 15Z" stroke="url(#paint0_angular_3340_10418)" stroke-width="6" />

@@ -141,7 +141,8 @@ letter-spacing: 0.04em;
 text-align: center;
 background: #F7ECFF;
 width: 50%;
-Font : Poppins
+Font : Poppins;
+color : 515151
 }
 
 .button:hover {
@@ -171,4 +172,5 @@ text-align: center;
 background: #F7ECFF;
   flex-basis: 100%;
   margin-top: 7px;
+  color: 515151;
 }

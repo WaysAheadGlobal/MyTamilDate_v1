@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './navbar.module.css';
 import heartLogo from "../../../../assets/images/heart-logo.png";
 import profile from "../../../../assets/images/basic-details.png";
 import { useNavigate } from 'react-router-dom';
+import { useCookies } from '../../../../hooks/useCookies';
+import { API_URL } from '../../../../api';
 
 export default function Navbar({ style }) {
     const [isMobile, setIsMobile] = React.useState(false);
+    const[Rejected, setRejected] = useState (false);
+    const cookies = useCookies();
+   
     const navigate = useNavigate();
     const [pathname, setPathname] = React.useState([]);
     const suffix = pathname.at(-1);
@@ -31,10 +36,47 @@ export default function Navbar({ style }) {
         }
     }, []);
 
+    React.useEffect(() => {
+        if (window.location.pathname === "/user/pause") {
+            return;
+        }
+
+        (async () => {
+            const response = await fetch(`${API_URL}/user/check-approval`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.getCookie('token')}`,
+                },
+            });
+
+            const result = await response.json();
+            cookies.setCookie('approval', result.approval);
+            cookies.setCookie('active', result.active);
+
+            if (!result.active) {
+                window.location.replace("/user/pause");
+                return;
+            }
+
+
+            if (result.approval === "PENDING") {
+                window.location.replace("/pending");
+                return;
+            }
+                
+            if (result.approval === "REJECTED") {
+                setRejected(true);
+                // window.location.replace("/updateprofile")
+            }
+
+        })()
+    }, [pathname])
+
     return (
         <nav className={styles.nav} style={style}>
             <ul>
-                <li className={pathname.includes("chat") ? styles["active"] : ""} onClick={() => navigate("/user/chat")}>
+                <li className={pathname.includes("chat") ? styles["active"] : ""} onClick={() => !Rejected && navigate("/user/chat")}>
                     {
                         !pathname.includes("chat") ? (
                             <svg width="32" height="31" viewBox="0 0 32 31" fill="blue" xmlns="http://www.w3.org/2000/svg">
@@ -64,7 +106,7 @@ export default function Navbar({ style }) {
                     }
                     <div className={styles['indicator']}></div>
                 </li>
-                <li className={suffix === "home" ? styles["active"] : ""} onClick={() => navigate("/user/home")}>
+                <li className={suffix === "home" ? styles["active"] : ""} onClick={() => !Rejected  && navigate("/user/home")}>
                     <img src={heartLogo} alt="" width={30} height={30} />
                     <div className={styles['indicator']}></div>
                 </li>

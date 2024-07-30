@@ -49,14 +49,20 @@ const PauseMyAccount = () => {
         flexDirection: "column",
         gap: "1rem",
         overflowY: "auto",
-        
         padding: "2rem"
       }}>
-        <div className={pause.logo}>
+        {/* <div className={pause.logo}>
           <div>
-            <Image src={logo} />
+            <Image  src={logo} />
           </div>
-        </div>
+        </div> */}
+        <div className='logo-progressbar5'>
+                        <div className='logo-arrow5'>
+                         
+                            <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
+                        </div>
+          
+                    </div>
 
 
         <div className={pause.alldetails}>

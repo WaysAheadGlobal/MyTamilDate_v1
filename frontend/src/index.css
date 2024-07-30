@@ -149,3 +149,30 @@ background-color: #fff;
   Padding : 12px, 32px, 12px, 32px;
   Gap :10px
 }
+
+/* For Chrome, Edge, and Safari */
+::-webkit-scrollbar {
+  width: 4px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color of the track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #909090; /* Color of the thumb */
+  border-radius: 10px; /* Roundness of the thumb */
+  border: 3px solid #a1a1a1; /* Padding around the thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1; /* Color of the thumb on hover */
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: #a1a1a1 #f1f1f1;
+}
+
+

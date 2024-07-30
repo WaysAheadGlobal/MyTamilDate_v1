@@ -77,7 +77,7 @@ export const SignIn = () => {
                     }
                     navigate("/signinphoneotp");
                 } else {
-                    setErrorMessage(result.message || 'Failed to send OTP');
+                    setErrorMessage( "*" + result.message + "."|| 'Failed to send code');
                 }
             } catch (error) {
                 console.error('Error:', error);

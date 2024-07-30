@@ -24,12 +24,15 @@
     color: #515151;
     margin-top: 20px;
   }
-  .logo{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-  }
+
+    .logo {
+
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%);
+    
+    }
+   
 
   .alldetails{
     display: flex;

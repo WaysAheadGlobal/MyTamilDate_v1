@@ -72,7 +72,7 @@ console.log()
     setOtpErrorMessage('');
     const otp = otpCode1 + otpCode2 + otpCode3 + otpCode4;
     if (otp.length !== 4) {
-      setOtpErrorMessage('*Invalid OTP, please re-enter again');
+      setOtpErrorMessage('*Invalid verification code.');
     } else {
       try {
         const response = await fetch(`${API_URL}/customer/setting/updatephone`, {
@@ -97,7 +97,7 @@ console.log()
           setOtpCode3('');
           setOtpCode4('');
         } else {
-          setOtpErrorMessage(result.message || 'Failed to verify OTP');
+          setOtpErrorMessage("*"+result.message+"." || '*Failed to send code');
         }
       } catch (error) {
         console.error('Error:', error);
@@ -124,7 +124,7 @@ console.log()
           setResendTimer(120); // Reset timer to 120 seconds
           setIsResendDisabled(true); // Disable resend button
         } else {
-          seterrorMessagephone(result.message || 'Failed to send OTP');
+          seterrorMessagephone('*Please re-enter phone number');
         }
       } catch (error) {
         console.error('Error:', error);
@@ -198,9 +198,11 @@ console.log()
                     style={{ flex: 1, marginLeft: '10px' }}
                   />
                 </div>
+                <div style={{marginTop : "5px"}}>
                 {otpErrorMessage && (
                   <Form.Text className='text-danger error-message'>{otpErrorMessage}</Form.Text>
                 )}
+                 </div>
               </Form.Group>
               <div className='resend-timer'>
                 <a href='' onClick={handleResendOtp} disabled={isResendDisabled}>

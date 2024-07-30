@@ -398,12 +398,12 @@ updateprofile.get('/profileCompletion', verifyUser, (req: UserRequest, res: expr
     const profile = results[0];
 
     // const completionPercentage = calculateCompletionPercentage(profile);
-    const totalFields = 16; // Number of fields used to calculate completion
+    const totalFields = 15; // Number of fields used to calculate completion
     let completedFields = 0;
 
     // List of fields to consider for profile completion
     const fields = [
-      'first_name', 'last_name', 'email', 'phone', 'birthday',
+      'first_name',  'email', 'phone', 'birthday',
       'location_id', 'gender', 'want_gender', 'study_id', 'job_id',
       'growth_id', 'religion_id', 'want_kid_id', 'have_kid_id',
       'smoke_id', 'drink_id'

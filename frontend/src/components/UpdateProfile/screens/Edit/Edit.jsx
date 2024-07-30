@@ -43,10 +43,33 @@ const Edit = () => {
   const[language, setLanguage] = useState([]);
   const[quesAns, setQuestionAns] = useState([]);
   const[expandsall,setexpandall] = useState(false);
+  const [pathname, setPathname] = useState([]);
+    const [Rejected, setRejected] = useState(false);
   const{getCookie} = useCookies();
   const toggleInfoVisibility = () => {
     setShowInfo(!showInfo);
   };
+
+  useEffect(() => {
+    if (window.location.pathname === "/user/pause") {
+        return;
+    }
+
+    (async () => {
+        const response = await fetch(`${API_URL}/user/check-approval`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`,
+            },
+        });
+
+        const result = await response.json();
+        if (result.approval === "REJECTED") {
+            setRejected(true);
+        }
+    })()
+}, [pathname])
 
 
 
@@ -285,7 +308,7 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
 
    <div>
     <div style={{display : "flex", marginTop : "20px", justifyContent : "space-between",gap : "5px" }}>
-    <div className={edit.button} onClick={()=> Navigate("/user/preferences")}>
+    <div className={edit.button} onClick={()=> !Rejected && Navigate("/user/preferences")}>
         <img src={prefarance} alt="Preferences Icon" />
         Preferences
       </div>

@@ -50,8 +50,34 @@ export const AccountSetting = () => {
     const [showLogoutModal, setShowLogoutModal] = useState(false);
     const [timer, setTimer] = useState(120);
     const [canResend, setCanResend] = useState(false);
+    const [pathname, setPathname] = useState([]);
+    const [Rejected, setRejected] = useState(false);
     const alert = useAlert();
     const id = getCookie('userId')
+
+
+    useEffect(() => {
+        if (window.location.pathname === "/user/pause") {
+            return;
+        }
+
+        (async () => {
+            const response = await fetch(`${API_URL}/user/check-approval`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`,
+                },
+            });
+
+            const result = await response.json();
+            if (result.approval === "REJECTED") {
+                setRejected(true);
+            }
+        })()
+    }, [pathname])
+
+
     const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
     const [images2, setImages2] = useState({
         main: null,
@@ -400,10 +426,10 @@ export const AccountSetting = () => {
         e.preventDefault();
 
         if (!email) {
-            setErrorMessageemail('Please enter a valid email address');
+            setErrorMessageemail('*Please enter a valid email address');
             return;
         } else if (!email.includes('@')) {
-            setErrorMessageemail('Please enter a valid email address');
+            setErrorMessageemail('*Please enter a valid email address');
             return;
         }
         setErrorMessageemail('');
@@ -431,7 +457,7 @@ export const AccountSetting = () => {
                 handleCloseEmail();
                 handleShowEmailotp();
             } else {
-                setErrorMessageemail(data.message);
+                setErrorMessageemail( "*" + data.message + ".");
             }
         } catch (err) {
             console.error('Error submitting email:', err);
@@ -442,10 +468,10 @@ export const AccountSetting = () => {
         const email = getCookie("UpdateEmail")
 
         if (!email) {
-            setErrorMessageemail('Please enter a valid email address');
+            setErrorMessageemail('*Please re-enter email address');
             return;
         } else if (!email.includes('@')) {
-            setErrorMessageemail('Please enter a valid email address');
+            setErrorMessageemail('*Please re-enter email address');
             return;
         }
         setErrorMessageemail('');
@@ -482,7 +508,7 @@ export const AccountSetting = () => {
         }
     };
 
-  
+
 
 
     //otp for email code 
@@ -523,7 +549,7 @@ export const AccountSetting = () => {
         const otp = `${code1}${code2}${code3}${code4}`;
 
         if (otp.length !== 4) {
-            setErrorMessageotp('Please enter the complete OTP');
+            setErrorMessageotp('*Invalid verification code.');
             return;
         }
 
@@ -552,7 +578,7 @@ export const AccountSetting = () => {
                 fetchData();
 
             } else {
-                setErrorMessageotp(data.message);
+                setErrorMessageotp( "*" + data.message + ".");
             }
         } catch (err) {
             console.error('Error verifying OTP:', err);
@@ -606,9 +632,7 @@ export const AccountSetting = () => {
         console.log('Submitting phone number:', completePhoneNumber);
         setModalPhoneNumber(completePhoneNumber);
         if (phoneNumberupdate.length === 0) {
-            setErrorMessagephoneupdate('This Phone Number is Invalid');
-        } else if (phoneNumberupdate.length < 10) {
-            setErrorMessagephoneupdate('Phone number must be at least 10 digits');
+            setErrorMessagephoneupdate('*Phone is required.');
         } else {
             setErrorMessagephoneupdate('');
 
@@ -634,7 +658,7 @@ export const AccountSetting = () => {
                     if (response.status === 409) {
                         setErrorMessagephoneupdate('Phone number already exists. Please use a different number.');
                     } else {
-                        setErrorMessagephoneupdate(result.message || 'Failed to send OTP');
+                        setErrorMessagephoneupdate( "*" + result.message + "." || 'Failed to send OTP');
                     }
                     console.error('Server response:', result);
                 }
@@ -742,17 +766,17 @@ export const AccountSetting = () => {
                             </div> */}
 
                             {
-                                        getCookie('isPremium') !== 'true' && (
-                                            <div className="upgrade-button">
+                                getCookie('isPremium') !== 'true' && (
+                                    <div className="upgrade-button">
 
-                                                <div> <span><Image src={premium} /></span> Upgrade Account</div>
-                                                <div className="description">
-                                                    Upgrade your account, you will have unlimited access and wider exposure
-                                                </div>
-                                                <button className={profile.upgradebutton} onClick={() => navigate('/selectplan')} >Upgrade Now</button>
-                                            </div>
-                                        )
-                                    }
+                                        <div> <span><Image src={premium} /></span> Upgrade Account</div>
+                                        <div className="description">
+                                            Upgrade your account, you will have unlimited access and wider exposure
+                                        </div>
+                                        <button className={profile.upgradebutton} onClick={() => !Rejected && navigate('/selectplan')} >Upgrade Now</button>
+                                    </div>
+                                )
+                            }
 
                             <div className='edittext-logo'>
                                 <p className='textofedit'>Tap on each section to edit</p>
@@ -771,7 +795,7 @@ export const AccountSetting = () => {
                                             <span className='userleftinfo' >User name</span>
                                         </div>
                                         <div>
-                                            <span className="value">{NamePhoneEmail.first_name + " " + NamePhoneEmail.last_name}</span>
+                                            <span className="value">{NamePhoneEmail.first_name + " " + (NamePhoneEmail.last_name ? NamePhoneEmail.last_name : "")}</span>
                                         </div>
                                     </div>
                                     <div className="user-info-item" onClick={handleShowPhone}>
@@ -809,16 +833,24 @@ export const AccountSetting = () => {
 
                             <PricingCard/>
                             </div> */}
-                                   
+
                                     <div className="payment-button">
                                         Payment
                                     </div>
                                     <div style={{ marginTop: "20px", marginBottom: "20px", borderBottom: "1px solid #e0e0e0", width: "100%" }} >
 
-                                        <div className="user-info-item-payment" onClick={() => navigate("/paymentmethod")}>
-                                            <div className='leftsideinfo'>
+                                        <div className="user-info-item-payment" onClick={() => !Rejected &&  navigate("/paymentmethod")}>
+                                            <div className='leftsideinfo'  style={{
+                                                display : "flex",
+                                                alignItems : "center",
+                                                justifyContent : "center",
+                                                gap : "10px"
+                                            }}>
                                                 <Image className='userinfoicon' src={CreditCard} />
-                                                <span className='userleftinfo'>Payment Method</span>
+                                                <p className='userleftinfo'>
+                                                Payment Method
+                                                </p>
+                                                {/* <span className='userleftinfo'>Payment Method</span> */}
                                             </div>
                                             <div>
                                                 <span className="value"></span>
@@ -827,29 +859,47 @@ export const AccountSetting = () => {
                                     </div>
                                     <div className='paymentforbox' style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0", width: "100%" }} >
 
-                                        <div className="user-info-item-payment" onClick={() => navigate("/billinghistory")}>
-                                            <div className='leftsideinfo'>
+                                        <div className="user-info-item-payment" onClick={() => !Rejected && navigate("/billinghistory")}>
+                                            <div className='leftsideinfo' 
+                                            style={{
+                                                display : "flex",
+                                                alignItems : "center",
+                                                justifyContent : "center",
+                                                gap : "10px"
+                                            }}>
                                                 <Image className='userinfoicon' src={emailicon} />
-                                                <span className='userleftinfo'>Billing History</span>
+                                                <p className='userleftinfo'> Billing History</p>
+                                                {/* <span >Billing History</span> */}
                                             </div>
                                             <div>
                                                 <span className="value"></span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div onClick={() => {
-                                        alert.setModal({
-                                            title: "Subscription Cancel",
-                                            message: "Are you sure you want to cancel your subscription?",
-                                            show: true,
-                                            onButtonClick: cancelSubscription
-                                        })
+                                    <div oonClick={() => {
+                                        if (!Rejected) {
+                                            alert.setModal({
+                                                title: "Subscription Cancel",
+                                                message: "Are you sure you want to cancel your subscription?",
+                                                show: true,
+                                                onButtonClick: cancelSubscription,
+                                            });
+                                        }
                                     }} style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0", width: "100%" }} >
 
                                         <div className="user-info-item-payment">
-                                            <div className='leftsideinfo'>
-                                                <Image className='userinfoicon' src={pauseicon} />
-                                                <span className='userleftinfo'>Disable Subscription</span>
+                                            <div className='leftsideinfo' style={{
+                                                display : "flex",
+                                                alignItems : "center",
+                                                justifyContent : "center",
+                                                gap : "10px"
+                                            }}>
+                                                <Image  className='userinfoicon' src={pauseicon} />
+                                                <p className='userleftinfo'>
+
+                                               Disable Subscription
+                                                </p>
+                                                
                                             </div>
                                             <div>
                                                 <span className="value"></span>
@@ -863,7 +913,7 @@ export const AccountSetting = () => {
 
                                 <div className="user-info-container">
                                     <div className="last-user-info-item">
-                                        <div className='lastleftsideinfo' onClick={handleUnsubscribeEmail}>
+                                        <div className='lastleftsideinfo' onClick={!Rejected ? handleUnsubscribeEmail : null}>
                                             <span className='lastuserleftinfo'>Email Unsubscribe</span>
                                         </div>
                                         <div>
@@ -896,15 +946,20 @@ export const AccountSetting = () => {
                                             <Image className='userinfoicon' src={logout} />
                                         </div>
                                     </div>
-                                    
-                                    <div className="pause-button" onClick={handleShowPause}>
+
+                                    <div className="pause-button" onClick={!Rejected ? handleShowPause : null}>
                                         <Image style={{ marginRight: "6px" }} className="fas fa-pause-circle" src={pauseicon} />
                                         <span>Pause my account</span>
                                     </div>
-                                    <button className="delete-button" onClick={handleShowDeleteAccount}>
+                                    <div className="pause-button" onClick={!Rejected ? handleShowDeleteAccount : null}>
+                                        <Image style={{ marginRight: "6px" }} className="fas fa-pause-circle" src={deleteicon} />
+                                        <span>Delete my Account</span>
+                                    </div>
+
+                                    {/* <button className="delete-button" onClick={!Rejected ? handleShowDeleteAccount : null}>
                                         <span>Delete my Account</span>
                                         <Image className='userinfoicon' src={deleteicon} />
-                                    </button>
+                                    </button> */}
 
 
 
@@ -954,7 +1009,7 @@ export const AccountSetting = () => {
 
                     {/* Update the email Address */}
 
-                   
+
 
                     <Modal show={showUserEmail} centered>
                         <Modal.Header >
@@ -972,21 +1027,26 @@ export const AccountSetting = () => {
                                                 placeholder="Example@gmail.com"
                                                 onChange={(e) => setEmail(e.target.value)}
                                             />
+                                            <div style={{
+                                                marginTop : "5px"
+                                            }}>
+
                                             {errorMessageemail && <Form.Text className="text-danger error-message">{errorMessageemail}</Form.Text>}
+                                            </div>
                                         </Form.Group>
                                     </div>
                                 </Container>
                             </Form>
                         </Modal.Body>
                         <Modal.Footer>
-                        <div className="d-flex justify-content-center" style={{ width: "100%", gap: "30px" }}>
-                            <button  className='global-red-cencel-button'
-                           onClick={handleCloseEmail}>
-                                Cancel
-                            </button>
-                            <button  className="global-save-button" onClick={handleSubmit}>
-                                Save
-                            </button>
+                            <div className="d-flex justify-content-center" style={{ width: "100%", gap: "30px" }}>
+                                <button className='global-red-cencel-button'
+                                    onClick={handleCloseEmail}>
+                                    Cancel
+                                </button>
+                                <button className="global-save-button" onClick={handleSubmit}>
+                                    Save
+                                </button>
                             </div>
                         </Modal.Footer>
                     </Modal>
@@ -1045,29 +1105,29 @@ export const AccountSetting = () => {
                                             {errorMessageotp && <Form.Text className="text-danger error-message">{errorMessageotp}</Form.Text>}
                                         </Form.Group>
                                         <div className='resend-timer'>
-    <a 
-        href='#' 
-        onClick={(e) => { 
-            e.preventDefault(); 
-            if (canResend) handleResendCode(); 
-        }} 
-        className={!canResend ? 'disabled' : ''}
-        style={{ pointerEvents: !canResend ? 'none' : 'auto', color: !canResend ? 'grey' : 'initial' }}
-    >
-        Resend code
-    </a>
-    <span>{Math.floor(timer / 60)}:{String(timer % 60).padStart(2, '0')} sec</span>
-</div>
+                                            <a
+                                                href='#'
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    if (canResend) handleResendCode();
+                                                }}
+                                                className={!canResend ? 'disabled' : ''}
+                                                style={{ pointerEvents: !canResend ? 'none' : 'auto', color: !canResend ? 'grey' : 'initial' }}
+                                            >
+                                                Resend code
+                                            </a>
+                                            <span>{Math.floor(timer / 60)}:{String(timer % 60).padStart(2, '0')} sec</span>
+                                        </div>
 
                                     </div>
                                 </Container>
                                 <div className="d-flex justify-content-center" style={{ width: "100%", gap: "30px" }}>
-                                <button  className='global-red-cencel-button' onClick={handleCloseEmailotp}>
-                                    Cancel
-                                </button>
-                                <button  className="global-save-button" onClick={handleSubmitEmailotp}>
-                                    Save
-                                </button>
+                                    <button className='global-red-cencel-button' onClick={handleCloseEmailotp}>
+                                        Cancel
+                                    </button>
+                                    <button className="global-save-button" onClick={handleSubmitEmailotp}>
+                                        Save
+                                    </button>
                                 </div>
                             </Form>
                         </Modal.Body>
@@ -1099,7 +1159,10 @@ export const AccountSetting = () => {
 
                                         <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                                             <Dropdown>
-                                                <div id="dropdown-basic" onClick={() => setshowModalcountry(true)} className='flag-box'>
+                                                <div id="dropdown-basic" onClick={() => setshowModalcountry(true)} className='flag-box'
+                                                    style={{
+                                                        borderColor  : errorMessagephoneupdate ? "red" : "",
+                                                    }}>
                                                     <Flag code={selectedCountry} style={{ width: '34px', height: '25px', marginRight: '10px' }} className='flag' />
                                                     <span>{selectedCountryInfo.dial_code}</span>
                                                 </div>
@@ -1113,7 +1176,14 @@ export const AccountSetting = () => {
                                                 style={{ flex: 1, marginLeft: '10px' }}
                                             />
                                         </div>
+                                        <div style={{
+                                            marginTop : "1px",
+                                            display : "flex"
+
+                                        }}>
+
                                         {errorMessagephoneupdate && <Form.Text className="text-danger error-message">{errorMessagephoneupdate}</Form.Text>}
+                                        </div>
                                     </Form.Group>
                                     <Container style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 

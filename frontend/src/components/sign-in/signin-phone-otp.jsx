@@ -97,7 +97,7 @@ export const SignInPhoneOTP = () => {
         console.log(otp);
         console.log(phoneNumber);
         if (otp.length !== 4) {
-            setErrorMessage('*Invalid code, please re-enter again');
+            setErrorMessage('*Invalid verification code.');
         } else {
             setErrorMessage('');
             try {
@@ -123,6 +123,7 @@ export const SignInPhoneOTP = () => {
                     setIsResendDisabled(true);
                     setCookie('token', result.token, 15);
                     setCookie('userId', result.Result[0].user_id, 15);
+                    setCookie('Approval', result.Result[0].approval,15)
                     if (result.Result && result.Result.length > 0) {
               
 
@@ -219,7 +220,7 @@ export const SignInPhoneOTP = () => {
                     setResendTimer(120); // Reset timer to 2 minutes on successful resend
                     setIsResendDisabled(true); // Disable resend button after OTP is sent
                 } else {
-                    setErrorMessage(result.message || 'Failed to send OTP');
+                    setErrorMessage('*Please re-enter phone number');
                 }
             } catch (error) {
                 console.error('Error:', error);

@@ -7,11 +7,12 @@ import './job-title.css';
 import notApproved from "../assets/images/not-approved.png";
 import { API_URL } from '../api';
 import { useCookies } from '../hooks/useCookies';
+import { useNavigate } from 'react-router-dom';
 
 export default function AccountNotApproved() {
     const { getCookie } = useCookies();
     const [data, setData] = useState(null);
-
+const Navigate = useNavigate();
     useEffect(() => {
         (async () => {
             const response = await fetch(`${API_URL}/customer/users/latestrejection`, {
@@ -56,7 +57,7 @@ export default function AccountNotApproved() {
                             lineHeight: "36px",
                             textAlign: "center",
                             marginTop : "-50px"
-                        }}>We can't approve your profile just yet!</p>
+                        }}>Sorry, we can’t approve your profile just yet.</p>
                         
                         <p style={{
                             fontSize: "14px",
@@ -66,24 +67,30 @@ export default function AccountNotApproved() {
                             fontFamily: "Inter, sans-serif",
                             color: "#6c6c6c"
                         }}>
-                            Sorry! Your profile approval request has been denied by the administrator. We are unable to approve your profile at this time as it lacks necessary information. Please update the required details for approval. An email has been sent to you regarding this.
+                            We're excited to help you find your perfect match! But we need a few more details to approve your profile. Please update the following information.
                         </p>
                     </div>
 
-                    {data && (
+                   
+                       {data && (
                             <p style={{
-                                marginTop: "1em",
+                               
                                 marginBottom: "1rem",
                                 fontSize :"14px",
                                 fontWeight : "600",
                                 textAlign :"center",
-                                border : "1px solid red",
+                               
                                 padding : "12px",
                                 borderRadius : "16px"
                             }}>
-                                {data.reason}
+                               Hi there! Having a complete profile helps you connect better with others. Please complete your bio and add real images which clearly show your face.
+
                             </p>
                         )}
+
+                        <button className='global-next-btn' onClick={()=> Navigate("/updateprofile")}>
+                            Update
+                        </button>
                     <div style={{
                         display: "flex",
                         flexDirection: "column",
@@ -104,7 +111,7 @@ export default function AccountNotApproved() {
                         <p style={{
                             marginTop: "1em"
                         }}>
-                            Your profile is under review, but we need a bit more information.
+                            Have questions? Contact us at hello@myTamilDate.com
                         </p>
                     </div>
                 </Container>
