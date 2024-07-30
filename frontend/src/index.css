@@ -39,6 +39,7 @@ body,
 :root {
   --font-size-24: 24px;
   --modal-font-size-16 : 16px;
+  --modal-line-height-24 : 24px;
 }
 
 

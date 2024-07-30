@@ -397,7 +397,7 @@ color : "#fff"
                         {/* <Button variant="secondary" className='selfie-modal-btn' onClick={() => setShowModal(false)}>
                             Close
                         </Button> */}
-                        <button   className='global-save-button'  onClick={() => setShowModal(false)}>
+                        <button  className='global-save-button'  onClick={() => setShowModal(false)}>
                         Okey
                             </button>
                     </Modal.Body>

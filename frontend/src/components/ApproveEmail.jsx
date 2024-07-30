@@ -158,7 +158,7 @@ export default function ApproveEmail() {
                             textAlign: "center",
                         }}>You are almost there</p>
                         <p style={{
-                            fontSize: "14px",
+                            fontSize: "16px",
                             fontWeight: "400",
                             lineHeight: "20px",
                             textAlign: "center",

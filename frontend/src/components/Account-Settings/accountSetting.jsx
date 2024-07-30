@@ -791,7 +791,14 @@ export const AccountSetting = () => {
                                 <div className="user-info-container">
                                     <div className="user-info-item" onClick={handleShowName}>
                                         <div className='leftsideinfo'>
-                                            <Image className='userinfoicon' src={username} />
+                                            {/* <Image className='userinfoicon' src={username} /> */}
+                                            <div>
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M16 15H8C5.79086 15 4 16.7909 4 19V21H20V19C20 16.7909 18.2091 15 16 15Z" stroke="#4E1173" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="#4E1173" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+                                            </div>
                                             <span className='userleftinfo' >User name</span>
                                         </div>
                                         <div>
@@ -800,16 +807,28 @@ export const AccountSetting = () => {
                                     </div>
                                     <div className="user-info-item" onClick={handleShowPhone}>
                                         <div className='leftsideinfo'>
-                                            <Image className='userinfoicon' src={phonenumber} />
+                                            {/* <Image className='userinfoicon' src={phonenumber} /> */}
+                                            <div>
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.9994 19.1864V16.4767C21.0104 16.0337 20.8579 15.6021 20.5709 15.264C19.7615 14.3106 16.9855 13.7008 15.8851 13.935C15.0273 14.1176 14.4272 14.9788 13.8405 15.5644C11.5746 14.2785 9.69858 12.4062 8.41019 10.1448C8.9969 9.55929 9.85987 8.96036 10.0428 8.10428C10.2771 7.00777 9.66813 4.24949 8.72131 3.43684C8.38828 3.151 7.96247 2.99577 7.52325 3.00009H4.80811C3.77358 3.00106 2.91287 3.92895 3.00706 4.96919C3 13.935 10 21 19.0264 20.9929C20.0722 21.0873 21.0036 20.2223 20.9994 19.1864Z" stroke="#4E1173" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+                                            </div>
                                             <span className='userleftinfo'>Phone Number</span>
                                         </div>
                                         <div>
                                             <span className="value">{NamePhoneEmail.phone}</span>
                                         </div>
                                     </div>
-                                    <div className="user-info-item" onClick={handleShowEmail}>
+                                    <div className="user-info-item" style={{border : "none"}} onClick={handleShowEmail}>
                                         <div className='leftsideinfo'>
-                                            <Image className='userinfoicon' src={emailicon} />
+                                            {/* <Image className='userinfoicon' src={emailicon} /> */}
+                                            <div>
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3.29289 5.29289C3.47386 5.11193 3.72386 5 4 5H20C20.2761 5 20.5261 5.11193 20.7071 5.29289M3.29289 5.29289C3.11193 5.47386 3 5.72386 3 6V18C3 18.5523 3.44772 19 4 19H20C20.5523 19 21 18.5523 21 18V6C21 5.72386 20.8881 5.47386 20.7071 5.29289M3.29289 5.29289L10.5858 12.5857C11.3668 13.3668 12.6332 13.3668 13.4142 12.5857L20.7071 5.29289" stroke="#4E1173" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+                                            </div>
                                             <span className='userleftinfo'>Email</span>
                                         </div>
                                         <div>
@@ -885,14 +904,15 @@ export const AccountSetting = () => {
                                                 onButtonClick: cancelSubscription,
                                             });
                                         }
-                                    }} style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0", width: "100%" }} >
+                                    }} style={{ marginBottom: "20px", border : "none", width: "100%" }} >
 
-                                        <div className="user-info-item-payment">
+                                        <div className="user-info-item-payment" style={{border : "none"}} >
                                             <div className='leftsideinfo' style={{
                                                 display : "flex",
                                                 alignItems : "center",
                                                 justifyContent : "center",
-                                                gap : "10px"
+                                                gap : "10px",
+                                                border : "none"
                                             }}>
                                                 <Image  className='userinfoicon' src={pauseicon} />
                                                 <p className='userleftinfo'>
@@ -913,38 +933,42 @@ export const AccountSetting = () => {
 
                                 <div className="user-info-container">
                                     <div className="last-user-info-item">
+                                    <div>
+                                            <Image className='userinfoicon' src={emailicon} />
+                                        </div>
                                         <div className='lastleftsideinfo' onClick={!Rejected ? handleUnsubscribeEmail : null}>
                                             <span className='lastuserleftinfo'>Email Unsubscribe</span>
                                         </div>
-                                        <div>
-                                            <Image className='userinfoicon' src={emailicon} />
-                                        </div>
+                                        
                                     </div>
 
                                     <div className="last-user-info-item" onClick={GotoPrivacyPolicy}>
+                                    <div>
+                                            <Image className='userinfoicon' src={privacy} />
+                                        </div>
                                         <div className='lastleftsideinfo'>
                                             <span className='lastuserleftinfo'>Privacy Policy</span>
                                         </div>
-                                        <div>
-                                            <Image className='userinfoicon' src={privacy} />
-                                        </div>
+                                        
                                     </div>
                                     <div className="last-user-info-item" onClick={Gototermandconditions}>
+                                    <div>
+                                            <Image className='userinfoicon' src={service} />
+                                        </div>
                                         <div className='lastleftsideinfo'>
                                             <span className='lastuserleftinfo'>Terms of Service</span>
                                         </div>
-                                        <div>
-                                            <Image className='userinfoicon' src={service} />
-                                        </div>
+                                       
                                     </div>
 
                                     <div className="last-user-info-item" style={{ border: "none" }} onClick={handleShowLogout}>
+                                    <div>
+                                            <Image className='userinfoicon' src={logout} />
+                                        </div>
                                         <div className='lastleftsideinfo' >
                                             <span className='lastuserleftinfo' >Logout</span>
                                         </div>
-                                        <div>
-                                            <Image className='userinfoicon' src={logout} />
-                                        </div>
+                                       
                                     </div>
 
                                     <div className="pause-button" onClick={!Rejected ? handleShowPause : null}>
