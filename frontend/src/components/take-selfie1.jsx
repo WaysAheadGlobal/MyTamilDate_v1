@@ -284,7 +284,9 @@ export const Selfie = () => {
                     <p className='pic-heading'>Add your photos</p>
                 </Container>
                 <Container>
-                    <p className='pic-text'>
+                    <p className='pic-text' style={{
+                        fontSize  : "16px"
+                    }}>
                         Use pics of yourself which clearly show your face, your hobbies & more! Check out more tips here.<br />
                         <a href='#' onClick={handleDosDontsClick}>Click here</a>
                     </p>
@@ -477,7 +479,7 @@ color : "#fff"
                             Close
                         </Button> */}
                         <div style={{marginTop : "65px"}}>
-                        <button  type="submit" className='global-save-buttton'  onClick={() => setShowDuplicateNameModal(false)}>
+                        <button  type="submit" className='global-save-button'  onClick={() => setShowDuplicateNameModal(false)}>
                         Okey
                             </button>
                         </div>

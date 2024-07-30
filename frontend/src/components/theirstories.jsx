@@ -38,7 +38,9 @@ export const TheirStories = () => {
             marginTop: '4rem'
         }}>
             <div className='story-text'>
-                <p className='story-heading'>
+                <p className='story-heading' style={{
+                     hyphens: "none"
+                }}>
                     They met their Match on <span style={{ color: '#4E1173' }}>myTamilDate</span>
                 </p>
             </div>

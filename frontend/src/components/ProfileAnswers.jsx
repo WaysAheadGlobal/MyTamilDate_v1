@@ -151,7 +151,7 @@ const [refresh, setRefresh] = useState(false);
                                                         tabIndex={0}
                                                         key={index}
                                                         style={{
-                                                            border: question.answer ? "2px solid #F76A7B" : "2px solid #cbcbcb",
+                                                            border: question.answer ? "2px solid #4E1173" : "2px solid #cbcbcb",
                                                             padding: "1rem",
                                                             borderRadius: "10px",
                                                             display: "flex",

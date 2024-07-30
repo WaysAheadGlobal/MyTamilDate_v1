@@ -51,6 +51,9 @@ const Navigate = useNavigate();
                         justifyContent: "center",
                     }}>
                         <img src={notApproved} alt="not-approved" />
+                        <div>
+                            
+                        </div>
                         <p style={{
                             fontSize: "24px",
                             fontWeight: "bold",
@@ -60,7 +63,7 @@ const Navigate = useNavigate();
                         }}>Sorry, we can’t approve your profile just yet.</p>
                         
                         <p style={{
-                            fontSize: "14px",
+                            fontSize: "16px",
                             fontWeight: "500",
                             lineHeight: "20px",
                             textAlign: "center",
@@ -76,8 +79,8 @@ const Navigate = useNavigate();
                             <p style={{
                                
                                 marginBottom: "1rem",
-                                fontSize :"14px",
-                                fontWeight : "600",
+                                fontSize :"16px",
+                                fontWeight : "500",
                                 textAlign :"center",
                                
                                 padding : "12px",
@@ -104,12 +107,14 @@ const Navigate = useNavigate();
                         <p
                             style={{
                                 fontFamily: "Inter, sans-serif",
-                                color: "#4e1173"
+                                color: "#4e1173",
+                                fontSize :"16px"
                             }}
                         >Almost there!</p>
                         
                         <p style={{
-                            marginTop: "1em"
+                            marginTop: "1em",
+                            fontSize : "16px"
                         }}>
                             Have questions? Contact us at hello@myTamilDate.com
                         </p>

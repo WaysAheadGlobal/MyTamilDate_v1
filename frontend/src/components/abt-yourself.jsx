@@ -146,7 +146,8 @@ export const AbtYourself = () => {
 
         fetchData();
     }, []);
-    
+
+
 
     return (
         <div className='birthday-container'>
@@ -171,7 +172,7 @@ export const AbtYourself = () => {
                     <Container className='birthday-details'>
                         <Form className='birthday-form' onSubmit={handleSubmit}>
                             <Form.Group controlId="formgender" className='birthday-group'>
-                                <Form.Label className='birthday-label'>What is Your Gender? *</Form.Label>
+                                <Form.Label className='birthday-label'>What is Your Gender?</Form.Label>
                                 <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: "24px", justifyContent: "space-around" }}>
                                     <div className='gender-name'>
                                         <Button className={`gender-btn ${femaleActive ? 'active' : ''}`} onClick={handleFemaleButtonClick}>
@@ -218,7 +219,7 @@ export const AbtYourself = () => {
                             </Form.Group>
 
                             <Form.Group controlId="formgender" className='birthday-group'>
-                                <Form.Label className='birthday-label'>Who do you want to date? *</Form.Label>
+                                <Form.Label className='birthday-label'>Who do you want to date?</Form.Label>
                                 <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: "space-around" }}>
                                     <Button
                                         className="prefer-whome"

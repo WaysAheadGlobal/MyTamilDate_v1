@@ -207,56 +207,76 @@ export const Located = () => {
               {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
             </div>
             {selectedCountry && (
-              <Container ref={citySelectRef} className='located-city collasped'>
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }} onClick={() => {
-                  citySelectRef.current.classList.toggle("collasped");
-                }}>
-                  <input type="text" placeholder='Select a city' value={citySearch} onChange={(e) => setCitySearch(e.currentTarget.value)} />
-                  <FaAngleDown size={16} style={{ marginRight: "1rem" }} />
-                </div>
-                <div className='scroll-container-vertical'>
-                  {!citySearch &&
-                    options[selectedCountry]
-                      ?.filter(city => city.location_string?.trim() !== '')  // Filter out blank location strings
-                      ?.sort((a, b) => a.location_string?.localeCompare(b.location_string))
-                      ?.map((city) => (
-                        <div
-                          key={city.id}
-                          className={`scroll-item ${selectedCity === city.id ? 'selected' : ''}`}
-                          onClick={() => {
-                            handleCitySelect(city.id);
-                            setCitySearch(city.location_string);
-                            citySelectRef.current.classList.add("collasped");
-                          }}
-                        >
-                          {city.location_string}
-                        </div>
-                      ))}
+  <Container ref={citySelectRef} className="located-city collapsed">
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        position: 'relative',
+      }}
+    >
+      <input
+        type="text"
+        placeholder="Select a city"
+        value={citySearch}
+        onChange={(e) => setCitySearch(e.currentTarget.value)}
+        style={{ flexGrow: 1, paddingRight: '2rem' }} // Ensure space for the icon
+      />
+      <FaAngleDown
+        size={16}
+        style={{
+          position: 'absolute',
+          right: '1rem',
+          cursor: 'pointer',
+        }}
+        onClick={() => {
+          citySelectRef.current.classList.toggle('collapsed');
+        }}
+      />
+    </div>
+    <div className="scroll-container-vertical">
+      {!citySearch &&
+        options[selectedCountry]
+          ?.filter((city) => city.location_string?.trim() !== '')
+          ?.sort((a, b) => a.location_string?.localeCompare(b.location_string))
+          ?.map((city) => (
+            <div
+              key={city.id}
+              className={`scroll-item ${selectedCity === city.id ? 'selected' : ''}`}
+              onClick={() => {
+                handleCitySelect(city.id);
+                setCitySearch(city.location_string);
+                citySelectRef.current.classList.add('collapsed');
+              }}
+            >
+              {city.location_string}
+            </div>
+          ))}
 
-                  {
-                    citySearch && options[selectedCountry].filter(city => city.location_string?.toLowerCase().includes(citySearch.toLowerCase()))?.sort((a, b) => a.location_string?.localeCompare(b.location_string))?.map((city) => (
-                      <div
-                        key={city.id}
-                        className={`scroll-item ${selectedCity === city.id ? 'selected' : ''}`}
-                        onClick={() => {
-                          handleCitySelect(city.id)
-                          setCitySearch(city.location_string)
-                          citySelectRef.current.classList.add("collasped");
-                        }}
-                      >
-                        {city.location_string}
-                      </div>
-                    ))
-                  }
-                </div>
+      {citySearch &&
+        options[selectedCountry]
+          .filter((city) =>
+            city.location_string?.toLowerCase().includes(citySearch.toLowerCase())
+          )
+          ?.sort((a, b) => a.location_string?.localeCompare(b.location_string))
+          ?.map((city) => (
+            <div
+              key={city.id}
+              className={`scroll-item ${selectedCity === city.id ? 'selected' : ''}`}
+              onClick={() => {
+                handleCitySelect(city.id);
+                setCitySearch(city.location_string);
+                citySelectRef.current.classList.add('collapsed');
+              }}
+            >
+              {city.location_string}
+            </div>
+          ))}
+    </div>
+  </Container>
+)}
 
-              </Container>
-
-            )}
             <div style={{ marginTop: "-7px" }}>
 
               {errorMessageCity && <Form.Text className="text-danger error-message">{errorMessageCity}</Form.Text>}

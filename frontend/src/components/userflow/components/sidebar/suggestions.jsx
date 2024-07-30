@@ -4,7 +4,7 @@ import { useUserProfile } from '../context/UserProfileContext'
 import { API_URL } from '../../../../api';
 import { useNavigate } from 'react-router-dom';
 
-export default function Suggestions() {
+export default function Suggestions({Rejected}) {
     const { profiles } = useUserProfile()
     const navigate = useNavigate();
 
@@ -13,11 +13,13 @@ export default function Suggestions() {
     return (
         <div className={styles.suggestions} style={{ borderTop: "2px solid #e0e0e0" }}>
             <div>
-                <p>Suggested for you</p>
-                <p style={{ cursor: "pointer" }} onClick={() => navigate("/user/recommendations")}>See All</p>
+                <p style={{fontSize :"16px"}}>Suggested for you</p>
+                <p style={{ cursor: "pointer",fontSize : "16px" }} onClick={() =>  !Rejected &&  navigate("/user/recommendations")}>See All</p>
             </div>
+
+          
             {
-                Array.isArray(profiles) && profiles.slice(0, 3).map(profile => (
+              !Rejected &&  Array.isArray(profiles) && profiles.slice(0, 3).map(profile => (
                     <div
                         key={profile.id}
                         style={{
