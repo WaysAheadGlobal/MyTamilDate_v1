@@ -54,15 +54,17 @@ export const Pictext = () => {
                             }}>
                                 <h4><span className='discover-love' style={{
                                     // fontFamily: "PT serif, sans-serif",
-                                    fontSize: "24px",
-                                    color: "#4E1173"
+                                    fontSize: "18px",
+                                    color: "#4E1173",
+                                    fontWeight : "bold"
                                 }}>Discover Love with</span></h4>
                                 <h4 style={{
                                     background: 'linear-gradient(360deg, #F87077 0%, #FB8968 100%)',
                                     color: 'transparent',
                                     backgroundClip: 'text',
                                     // fontFamily: "Poly, serif",
-                                    fontSize: "24px"
+                                    fontSize: "18px",
+                                    fontWeight : "bold"
                                 }}>myTamilDate</h4>
                                 <img src={arrow} alt="Arrow" width={200} height={200} style={{ position: "absolute", top: "-11px" }} />
                             </div>
@@ -94,7 +96,8 @@ export const Pictext = () => {
                                 width: "26rem",
                             }}>
                                 <h4><span  style={{
-                                    fontWeight : "bold"
+                                    fontWeight : "bold",
+                                    color: "#4E1173"
                                 }}>Discover Love with</span></h4>
                                 <h4 style={{
                                     background: 'linear-gradient(360deg, #F87077 0%, #FB8968 100%)',
@@ -114,7 +117,8 @@ export const Pictext = () => {
                         marginTop: '1rem',
                         textAlign: "left",
                         width: !mobile ? "28rem" : "",
-                        wordBreak: "break-word"
+                        wordBreak: "break-word",
+                        hyphens: "none"
                     }}>A surprise engagement at a myTamilDate couple's photoshoot! Find out how <span style={{ color: '#4E1173', }}>Abi & John</span> Bonded Over Faith & Their Tamil-German-British Connection.</p>
                     <a href='https://tamilculture.com/mytamildate-success-abi-john-bonded-over-faith-their-tamil-german-british-connection' className='view-success-btn' style={{ marginTop: "1rem" }}>View Success Story</a>
                 </div>
@@ -129,12 +133,13 @@ export const Pictext = () => {
                 <div className='text1' style={{
                     maxWidth: '30rem',
                 }}>
-                    <h4 style={{ fontWeight: "bold" }}>Meet like-minded people from your community</h4>
+                    <h4 style={{ fontWeight: "bold", hyphens: "none" }}>Meet like-minded people from your community</h4>
                     <p style={{
                         fontSize: "clamp(16px, 4vw, 18px)",
                         lineHeight: mobile ? '30px' : "36px",
                         textAlign: "left",
-                        wordBreak: "break-word"
+                        wordBreak: "break-word",
+                         hyphens: "none"
                     }}>Connect with others who truly understand your unique quirks, share your passions, and appreciate your inside jokes and who value what makes you.</p>
                 </div>
                 <div className='pic1' style={{
@@ -174,7 +179,8 @@ export const Pictext = () => {
                         fontSize: "clamp(16px, 4vw, 18px)",
                         lineHeight: mobile ? '30px' : "36px",
                         textAlign: "left",
-                        wordBreak: "break-word"
+                        wordBreak: "break-word",
+                         hyphens: "none"
                     }}>
                         Meet people who share your interests, values, and that undeniable spark who are also looking for a meaningful match. Whether they're around the corner or across the globe, we'll help you find your match.
                     </p>

@@ -31,8 +31,9 @@ export const SuccessPage = () => {
                         fontSize: "clamp(30px, 5vw, 40px)"
                     }}>Success Stories</p>
                     <p className='success-pg-sub' style={{
-                        fontSize: "clamp(16px, 4vw, 20px)",
-                        textAlign: 'center'
+                        fontSize: "clamp(18px, 4vw, 18px)",
+                        textAlign: 'center',
+                        hyphens: "none"
                     }}>Matches are made daily & serious relationships are created monthly across North America, Europe & more on MTD! Get to know some of our couples.</p>
                 </Container>
                 <Container className='team-content'>

@@ -140,17 +140,17 @@ function ProfileCompletion() {
             }}>{Profile.Name}</p>
             <p style={{
                 marginTop: "-0.5rem",
-                fontSize: "14px"
+                fontSize: "16px"
             }}>{profileCompletion}% complete</p>
             {
                 profileCompletion < 100 && (
                     <p style={{
-                        fontSize: "14px",
+                        fontSize: "16px",
                         fontWeight: "600"
                     }}>Complete your profile for better matches</p>
                 )
             }
-            <button className={styles['recommendation']} onClick={() => Navigate("/updateprofile")}>Update</button>
+            <button className={styles['recommendation']} onClick={() => Navigate("/updateprofile")} style={{fontSize : "16px"}}>Update</button>
         </div>
     )
 }
