@@ -102,7 +102,7 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
     }
 
     let query = "";
-    let params = [] as any[];
+    let params;
 
     const currentUserFilters: any = await getUserFilters(req.userId);
     const userPreferences: any = await getUserPreferences(req.userId);
@@ -173,6 +173,8 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                         up_inner.user_id != ? 
                         AND l_inner.continent IS NOT NULL
                         AND u_inner.approval = ${UserApprovalEnum.APPROVED}
+                        AND u_inner.active = 1
+                        AND u_inner.deleted_at IS NULL
                         ${whereClauses.length > 0 ? " AND " + whereClauses.join(" AND ") : ""}
                         AND l_inner.continent IN (?)
                         AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
@@ -229,6 +231,8 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                     INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
                     WHERE 
                         up_inner.user_id != ?
+                        AND u_inner.active = 1
+                        AND u_inner.deleted_at IS NULL
                         AND DATEDIFF(NOW(), up_inner.birthday) BETWEEN (DATEDIFF(NOW(), ?) - (5 * 365)) AND (DATEDIFF(NOW(), ?) + (10 * 365))
                         AND up_inner.gender = ?
                         AND up_inner.want_gender = ?
@@ -290,8 +294,11 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                     FROM 
                         user_profiles up_inner 
                     INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
+                    INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
                     WHERE 
                         up_inner.user_id != ?
+                        AND u_inner.active = 1
+                        AND u_inner.deleted_at IS NULL
                         AND up_inner.gender = ?
                         AND up_inner.want_gender = ?
                         AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
@@ -346,10 +353,13 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                     up_inner.id 
                 FROM 
                     user_profiles up_inner 
+                INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
                 INNER JOIN media m_inner ON up_inner.user_id = m_inner.user_id 
                 INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
                 WHERE 
                     m_inner.type IN (1, 31) AND m_inner.hash IS NOT NULL
+                    AND u_inner.active = 1
+                    AND u_inner.deleted_at IS NULL
                     AND up_inner.user_id != ?
                     AND up_inner.gender = ?
                     AND up_inner.want_gender = ?
@@ -402,7 +412,12 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
         ];
     }
 
-    query = query.concat(` AND up.user_id NOT IN (SELECT b.person_id FROM blocks b WHERE b.user_id = ?) AND up.user_id NOT IN (SELECT r.person_id FROM reports r WHERE r.user_id = ?) AND up.user_id NOT IN (SELECT b.user_id FROM blocks b WHERE b.person_id = ?) AND up.user_id NOT IN (SELECT r.user_id FROM reports r WHERE r.person_id = ?);`);
+    query = query.concat(` 
+        AND up.user_id NOT IN (SELECT b.person_id FROM blocks b WHERE b.user_id = ?) 
+        AND up.user_id NOT IN (SELECT r.person_id FROM reports r WHERE r.user_id = ?) 
+        AND up.user_id NOT IN (SELECT b.user_id FROM blocks b WHERE b.person_id = ?) 
+        AND up.user_id NOT IN (SELECT r.user_id FROM reports r WHERE r.person_id = ?);
+    `);
 
     params.push(req.userId, req.userId, req.userId, req.userId);
 

@@ -52,12 +52,14 @@ io.use((socket, next) => {
     next();
 });
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
     console.log('a user connected', socket.handshake.auth.userId);
     socket.join(socket.handshake.auth.userId);
+    await db.promise().query('UPDATE users SET is_online = 1 WHERE id = ?', [socket.handshake.auth.userId]);
 
-    socket.on('disconnect', () => {
+    socket.on('disconnect', async () => {
         console.log('user disconnected');
+        await db.promise().query('UPDATE users SET is_online = 0 WHERE id = ?', [socket.handshake.auth.userId]);
     });
 
     socket.on('join-room', (roomId) => {
@@ -86,7 +88,12 @@ io.on('connection', (socket) => {
 
         try {
             const unsubscribeGroup = await getUnsubscribedGroups(recepientId);
-            if (!socket.rooms.has(recepientId) && !unsubscribeGroup.includes(UnsubscribeGroup.MESSAGES)) {
+            const [data] = await db.promise().query<RowDataPacket[]>('SELECT is_online FROM users WHERE id = ?', [recepientId]);
+            const [blocks] = await db.promise().query<RowDataPacket[]>('SELECT id FROM blocks WHERE user_id = ? AND person_id = ?', [recepientId, senderId]);
+            const [reports] = await db.promise().query<RowDataPacket[]>('SELECT id FROM reports WHERE user_id = ? AND person_id = ?', [recepientId, senderId]);
+
+
+            if (!data[0].is_online && !unsubscribeGroup.includes(UnsubscribeGroup.MESSAGES) && !blocks.length && !reports.length) {
                 try {
                     const [user] = await db.promise().query<RowDataPacket[]>('SELECT first_name, email FROM user_profiles WHERE user_id = ?', [recepientId]);
 
