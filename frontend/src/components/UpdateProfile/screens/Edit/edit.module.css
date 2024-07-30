@@ -105,6 +105,7 @@
 .upgradebutton{
 width: 100%;
 padding: 10px 14px 10px 14px;
+height: 52px;
 gap: 12px;
 border-radius: 34px;
 background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
@@ -142,7 +143,8 @@ text-align: center;
 background: #F7ECFF;
 width: 50%;
 Font : Poppins;
-color : 515151
+color : 515151;
+height: 52px;
 }
 
 .button:hover {
@@ -173,4 +175,5 @@ background: #F7ECFF;
   flex-basis: 100%;
   margin-top: 7px;
   color: 515151;
+  height: 52px;
 }

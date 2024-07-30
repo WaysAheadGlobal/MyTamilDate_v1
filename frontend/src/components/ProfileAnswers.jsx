@@ -348,8 +348,8 @@ function AlertModal({ show, onHide,count }) {
         <BModal centered show={show} onHide={onHide}>
             <div>
                 <p style={{
-                    fontSize: "24px",
-                    lineHeight: "36px",
+                     fontSize: "var(--modal-font-size-16)",
+                     lineHeight: "var(--modal-line-height-24)",
                     fontWeight: "500",
                     textAlign: "center",
                     marginTop: "1rem",

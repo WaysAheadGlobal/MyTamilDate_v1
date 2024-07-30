@@ -259,11 +259,12 @@
 
 
 
+
 .selfie-modal-body {
   font-family: Poppins;
-  font-size: 24px;
+  font-size: var(--modal-font-size-16);
   font-weight: 500;
-  line-height: 36px;
+  line-height: var(----modal-line-height-24);
   text-align: center;
   color: #515151;
   height: 249px;

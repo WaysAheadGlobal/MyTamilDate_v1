@@ -112,13 +112,16 @@ margin-top: 13px;
 
 .user-info-item-payment {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
     padding: 16px;
     border-bottom: 1px solid #e0e0e0;
     cursor: pointer;
 }
+
+
+
 
 .paymentforbox{
     border-bottom: 1px solid #e0e0e0;
@@ -232,7 +235,7 @@ color: #515151;
 
 .last-user-info-item{
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
     padding: 15px 20px;
@@ -244,6 +247,7 @@ color: #515151;
     /* border-bottom: 1px solid #e0e0e0; */
     border-bottom: 1px solid #e0e0e0;
     cursor: pointer;
+    gap: 8px;
 }
 
 .delete-button {

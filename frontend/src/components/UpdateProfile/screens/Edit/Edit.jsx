@@ -261,7 +261,21 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
    </div>
 
    <div>
-   <button className={edit.upgradebutton} onClick={expandall}>Expand All <span><Image src={update}/></span> </button>
+   <button className={edit.upgradebutton} onClick={expandall}>Expand All <span style={{marginLeft : "10px"}}>
+   {
+    expandsall ?  <svg width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M11.5 6L6.5 1L1.5 6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg> : <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1 1L6 6L11 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+   }
+  
+
+    </span> </button>
+
+
+
    </div>
 {
  expandsall ? 

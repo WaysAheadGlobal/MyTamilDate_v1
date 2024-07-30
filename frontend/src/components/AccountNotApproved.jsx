@@ -59,7 +59,7 @@ const Navigate = useNavigate();
                             fontWeight: "bold",
                             lineHeight: "36px",
                             textAlign: "center",
-                            marginTop : "-50px"
+                            marginTop : "-20px"
                         }}>Sorry, we can’t approve your profile just yet.</p>
                         
                         <p style={{
