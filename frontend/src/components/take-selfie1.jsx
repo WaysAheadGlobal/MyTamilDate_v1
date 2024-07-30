@@ -94,8 +94,8 @@ export const Selfie = () => {
         const file = event.target.files[0];
         if (file) {
             if (checkForDuplicateNames(file, imageKey)) {
-                 setShowDuplicateNameModal(true);
-                 console.log("duplicate photo");
+                setShowDuplicateNameModal(true);
+                console.log("duplicate photo");
                 // alert.setModal({
                 //     show: true,
                 //     message: "Please add a photo you haven't already used",
@@ -360,15 +360,15 @@ export const Selfie = () => {
                         </Col>
                     </Row>
                 </Container>
-                <button  type="submit" className='global-next-bottom-fix-btn'   onClick={handleNextClick} >
-                                Next
-                                {
+                <button type="submit" className='global-next-bottom-fix-btn' onClick={handleNextClick} >
+                    Next
+                    {
                         loading && <div className="spinner-border spinner-border-sm" style={{
                             marginLeft: '10px',
                         }} role="status">
                         </div>
                     }
-                            </button>
+                </button>
                 {/* <Button
                     variant="primary"
                     type="button"
@@ -395,9 +395,9 @@ color : "#fff"
                         {/* <Button variant="secondary" className='selfie-modal-btn' onClick={() => setShowModal(false)}>
                             Close
                         </Button> */}
-                        <button   className='global-save-button'  onClick={() => setShowModal(false)}>
-                        Okey
-                            </button>
+                        <button className='global-save-button' onClick={() => setShowModal(false)}>
+                            Okey
+                        </button>
                     </Modal.Body>
                 </Modal>
 
@@ -420,19 +420,19 @@ color : "#fff"
                     </Modal.Body>
                     <Modal.Footer className='crop-modal-footer'>
                         <div style={{
-                            display : "flex",
-                            justifyContent :"space-between",
-                            alignItems : "center",
-                            gap :"20px"
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            gap: "20px"
                         }}>
 
-                       
-                        <button variant="secondary" style={ { width : "160px"}} className='global-cancel-button' onClick={handleCropCancel}>
-                            Cancel
-                        </button>
-                        <button  variant="secondary" style={ { width : "160px"}} className='global-save-button' onClick={handleCropSave}>
-                            Add Photo
-                        </button>
+
+                            <button variant="secondary" style={{ width: "160px" }} className='global-cancel-button' onClick={handleCropCancel}>
+                                Cancel
+                            </button>
+                            <button variant="secondary" style={{ width: "160px" }} className='global-save-button' onClick={handleCropSave}>
+                                Add Photo
+                            </button>
 
                         </div>
                     </Modal.Footer>
@@ -476,16 +476,16 @@ color : "#fff"
                         {/* <Button variant="secondary" className='duplicate-name-modal-btn' onClick={() => setShowDuplicateNameModal(false)}>
                             Close
                         </Button> */}
-                        <div style={{marginTop : "65px"}}>
-                        <button  type="submit" className='global-save-buttton'  onClick={() => setShowDuplicateNameModal(false)}>
-                        Okey
+                        <div style={{ marginTop: "65px" }}>
+                            <button type="submit" className='global-save-buttton' onClick={() => setShowDuplicateNameModal(false)}>
+                                Okay
                             </button>
                         </div>
-                       
+
                     </Modal.Body>
                 </Modal>
 
-                
+
 
             </Container>
         </div>
