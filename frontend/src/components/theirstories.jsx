@@ -5,8 +5,8 @@ import './theirstories.css';
 import { Button, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
-import st1 from '../assets/images/st1.png';
-import st2 from '../assets/images/st2.png';
+import st1 from '../assets/images/st11.png';
+import st2 from '../assets/images/st6.png';
 import st3 from '../assets/images/st3.png';
 
 import { Image } from 'react-bootstrap';
@@ -92,9 +92,9 @@ export const TheirStories = () => {
                         <div className="team-item">
                             <Image fluid className='team-image' src={st2} />
                             <div className="successpg-details">
-                                <span className='person-name'>Abi & John</span>
-                                <span className='person-title'>Abi & John bonded over faith & connection...</span>
-                                <a href='https://tamilculture.com/mytamildate-success-abi-john-bonded-over-faith-their-tamil-german-british-connection' className='read-more'>Read more</a>
+                                <span className='person-name'>Suji & Sinthu</span>
+                                <span className='person-title'>Suji & Sinthu's journey Is A Heartwarming...</span>
+                                <a href='https://tamilculture.com/mytamildate-love-story-patience-and-taking-chances-brought-suji-sinthu-together' className='read-more'>Read more</a>
                             </div>
                         </div>
                     </Col>

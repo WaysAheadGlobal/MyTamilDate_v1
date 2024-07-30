@@ -53,14 +53,15 @@ export const Pictext = () => {
                                 marginBottom: '4rem'
                             }}>
                                 <h4><span className='discover-love' style={{
-                                    fontFamily: "PT serif, sans-serif",
-                                    fontSize: "24px"
+                                    // fontFamily: "PT serif, sans-serif",
+                                    fontSize: "24px",
+                                    color: "#4E1173"
                                 }}>Discover Love with</span></h4>
                                 <h4 style={{
                                     background: 'linear-gradient(360deg, #F87077 0%, #FB8968 100%)',
                                     color: 'transparent',
                                     backgroundClip: 'text',
-                                    fontFamily: "Poly, serif",
+                                    // fontFamily: "Poly, serif",
                                     fontSize: "24px"
                                 }}>myTamilDate</h4>
                                 <img src={arrow} alt="Arrow" width={200} height={200} style={{ position: "absolute", top: "-11px" }} />
@@ -92,15 +93,16 @@ export const Pictext = () => {
                                 alignItems: 'center',
                                 width: "26rem",
                             }}>
-                                <h4><span className='discover-love' style={{
-                                    fontFamily: "PT serif, sans-serif",
+                                <h4><span  style={{
+                                    fontWeight : "bold"
                                 }}>Discover Love with</span></h4>
                                 <h4 style={{
                                     background: 'linear-gradient(360deg, #F87077 0%, #FB8968 100%)',
                                     color: 'transparent',
                                     backgroundClip: 'text',
                                     marginBottom: '4rem',
-                                    fontFamily: "PT serif, sans-serif",
+                                     fontWeight : "bold"
+                                    // fontFamily: "PT serif, sans-serif",
                                 }}>myTamilDate</h4>
                                 <img src={arrow} alt="Arrow" width={200} height={200} style={{ position: "absolute", top: "1.5rem" }} />
                             </div>
