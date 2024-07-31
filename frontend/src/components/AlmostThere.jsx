@@ -33,7 +33,7 @@ export default function AlmostThere() {
                             color: "transparent",
                         }}>Almost there!</p>
                         <p style={{
-                            fontSize: "14px",
+                            fontSize: "16px",
                             fontWeight: "500",
                             lineHeight: "20px",
                             textAlign: "center",

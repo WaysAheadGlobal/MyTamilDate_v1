@@ -145,7 +145,7 @@ const Navigate = useNavigate();
         padding : "2rem",
         height: "calc(100vh - 64px)"
       }}>
-        <div className={profile.profilemaincontainer}>
+        <div className={profile.profilemaincontainer} >
           
           <div className={profile.maincontainer}>
             {/* <ProfileProgress completion={completion} profilepic={images2.main} /> */}
@@ -161,7 +161,7 @@ const Navigate = useNavigate();
           <div className=" row d-flex justify-content-center">
             <div className="d-flex flex-column align-items-center">
               <p style={{ fontSize: '18px', color: "#515151" }}>{Profile.Name}</p>
-              <p style={{ fontSize: '14px', color: "#6C6C6C" }}>  {profileCompletion}% complete</p>
+              <p style={{ fontSize: '16px', color: "#6C6C6C" }}>  {profileCompletion}% complete</p>
             </div>
 
             <div className={profile.editpreview}>

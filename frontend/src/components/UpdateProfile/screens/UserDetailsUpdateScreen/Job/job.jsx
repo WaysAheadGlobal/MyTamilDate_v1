@@ -14,7 +14,17 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../../../userflow/components/sidebar/sidebar';
 
 const jobTypes = [
-    'Anesthesiologist', 'Actor', 'Analyst', 'Anthropologist', 'Biologist', 'Business owner', 'Chef', 'Civil Engineer', 'Designer', 'Entrepreneur'
+    'Anesthesiologist', 'Actor', 'Analyst', 'Anthropologist', 'Biologist', 'Business owner', 'Chef', 'Civil Engineer', 'Designer', 'Entrepreneur',
+    'Accountant', 'Architect', 'Astronomer', 'Attorney', 'Barber', 'Bartender', 'Carpenter', 'Cashier', 'Chemist', 'Dentist', 'Economist',
+    'Electrician', 'Farmer', 'Geologist', 'Graphic Designer', 'Hairdresser', 'Journalist', 'Librarian', 'Mathematician', 'Mechanical Engineer',
+    'Nurse', 'Pharmacist', 'Photographer', 'Physicist', 'Pilot', 'Plumber', 'Police Officer', 'Professor', 'Psychologist', 'Radiologist',
+    'Real Estate Agent', 'Sales Manager', 'Scientist', 'Software Developer', 'Surgeon', 'Teacher', 'Therapist', 'Veterinarian', 'Waiter', 'Writer',
+    'Web Developer', 'UX/UI Designer', 'Marketing Specialist', 'Content Creator', 'Social Media Manager', 'Financial Advisor', 'Project Manager',
+    'Consultant', 'Data Scientist', 'Data Analyst', 'Environmental Engineer', 'Logistician', 'Statistician', 'Event Planner', 'Fashion Designer',
+    'Film Director', 'Game Developer', 'Interior Designer', 'Investment Banker', 'IT Specialist', 'Kindergarten Teacher', 'Music Producer',
+    'Occupational Therapist', 'Operations Manager', 'Paralegal', 'Pet Groomer', 'Physical Therapist', 'Public Relations Specialist', 'Researcher',
+    'Robotics Engineer', 'Sound Engineer', 'Speech Pathologist', 'Tax Advisor', 'Translator', 'Travel Agent', 'Urban Planner', 'Video Editor',
+    'Zoologist'
 ];
 
 export const JobTitleUpdate = () => {
@@ -94,7 +104,7 @@ export const JobTitleUpdate = () => {
                   padding : "2rem"
             }}>
    
-        <div className='job-container'>
+        <div className='job-container' style={{ overflow: 'hidden' }}>
             
             <Container className='job-main'>
                 <Container className='job-content'>

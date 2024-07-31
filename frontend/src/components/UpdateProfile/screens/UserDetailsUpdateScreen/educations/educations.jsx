@@ -80,7 +80,7 @@ export const EducationUpdate = () => {
                   padding : "2rem"
             }}>
       
-        <div className='education-container'>
+        <div className='education-container' style={{ overflow: 'hidden' }}>
             
             <Container className='education-main'>
                 <Container className='education-content'>

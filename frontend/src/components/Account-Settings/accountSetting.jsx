@@ -33,7 +33,7 @@ import PricingCard from './payment/SelectPlan/plandetails';
 export const AccountSetting = () => {
     const navigate = useNavigate();
     const { getCookie, setCookie, deleteCookie } = useCookies();
-
+    const [showRejectedModal, setShowRejectedModal] = useState(false);
     const [showUserName, setshowUserName] = useState(false);
     const [showUserEmail, setshowUserEmail] = useState(false);
     const [showUserEmailotp, setshowUserEmailotp] = useState(false);
@@ -56,6 +56,7 @@ export const AccountSetting = () => {
     const id = getCookie('userId')
 
 
+
     useEffect(() => {
         if (window.location.pathname === "/user/pause") {
             return;
@@ -76,7 +77,14 @@ export const AccountSetting = () => {
             }
         })()
     }, [pathname])
-
+      
+    function navigateTo(path) {
+        if (Rejected) {
+            setShowRejectedModal(true);
+        } else {
+            navigate(path);
+        }
+    }
 
     const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
     const [images2, setImages2] = useState({
@@ -361,7 +369,7 @@ export const AccountSetting = () => {
 
     const handleUnsubscribeEmail = () => {
 
-        navigate("/unsubscribe")
+        navigateTo("/unsubscribe")
     };
 
     //pause my account 
@@ -736,12 +744,10 @@ export const AccountSetting = () => {
                 width: "100%",
                 paddingInline: "1rem",
             }}>
-
-
                 <div className='account-setting-container' style={{
                     width: "100%",
                 }}>
-
+  <RejectModal show={showRejectedModal} setShow={setShowRejectedModal} />
                     <div className='account-setting-main' style={{
                         width: "100%",
                     }}>
@@ -773,7 +779,7 @@ export const AccountSetting = () => {
                                         <div className="description">
                                             Upgrade your account, you will have unlimited access and wider exposure
                                         </div>
-                                        <button className={profile.upgradebutton} onClick={() => !Rejected && navigate('/selectplan')} >Upgrade Now</button>
+                                        <button className={profile.upgradebutton} onClick={() => navigateTo('/selectplan')} >Upgrade Now</button>
                                     </div>
                                 )
                             }
@@ -858,7 +864,7 @@ export const AccountSetting = () => {
                                     </div>
                                     <div style={{ marginTop: "20px", marginBottom: "20px", borderBottom: "1px solid #e0e0e0", width: "100%" }} >
 
-                                        <div className="user-info-item-payment" onClick={() => !Rejected &&  navigate("/paymentmethod")}>
+                                        <div className="user-info-item-payment" onClick={() => navigateTo("/paymentmethod")}>
                                             <div className='leftsideinfo'  style={{
                                                 display : "flex",
                                                 alignItems : "center",
@@ -878,7 +884,7 @@ export const AccountSetting = () => {
                                     </div>
                                     <div className='paymentforbox' style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0", width: "100%" }} >
 
-                                        <div className="user-info-item-payment" onClick={() => !Rejected && navigate("/billinghistory")}>
+                                        <div className="user-info-item-payment" onClick={() => navigateTo("/paymentmethod")("/billinghistory")}>
                                             <div className='leftsideinfo' 
                                             style={{
                                                 display : "flex",
@@ -895,8 +901,12 @@ export const AccountSetting = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div oonClick={() => {
-                                        if (!Rejected) {
+                                    <div onClick={() => {
+                                        if (Rejected ) {
+                                            setShowRejectedModal(true)
+                                         
+                                        }
+                                        else{
                                             alert.setModal({
                                                 title: "Subscription Cancel",
                                                 message: "Are you sure you want to cancel your subscription?",
@@ -936,7 +946,7 @@ export const AccountSetting = () => {
                                     <div>
                                             <Image className='userinfoicon' src={emailicon} />
                                         </div>
-                                        <div className='lastleftsideinfo' onClick={!Rejected ? handleUnsubscribeEmail : null}>
+                                        <div className='lastleftsideinfo' onClick={ handleUnsubscribeEmail }>
                                             <span className='lastuserleftinfo'>Email Unsubscribe</span>
                                         </div>
                                         
@@ -971,11 +981,33 @@ export const AccountSetting = () => {
                                        
                                     </div>
 
-                                    <div className="pause-button" onClick={!Rejected ? handleShowPause : null}>
-                                        <Image style={{ marginRight: "6px" }} className="fas fa-pause-circle" src={pauseicon} />
-                                        <span>Pause my account</span>
-                                    </div>
-                                    <div className="pause-button" onClick={!Rejected ? handleShowDeleteAccount : null}>
+                                    <div
+  className="pause-button"
+  onClick={() => {
+    if (!Rejected) {
+      handleShowPause();
+    } else {
+      setShowRejectedModal(true);
+    }
+  }}
+>
+  <Image
+    style={{ marginRight: "6px" }}
+    className="fas fa-pause-circle"
+    src={pauseicon}
+  />
+  <span>Pause my account</span>
+</div>
+
+                                    <div className="pause-button"
+                                     onClick={() => {
+                                        if (!Rejected) {
+                                            handleShowDeleteAccount();
+                                        } else {
+                                          setShowRejectedModal(true);
+                                        }
+                                      }}
+                                   >
                                         <Image style={{ marginRight: "6px" }} className="fas fa-pause-circle" src={deleteicon} />
                                         <span>Delete my Account</span>
                                     </div>
@@ -1516,3 +1548,21 @@ export const AccountSetting = () => {
         </Sidebar>
     );
 };
+
+
+function RejectModal({ show, setShow }) {
+    return (
+        <Modal centered className="selfie-modal" show={show} onHide={() => setShow(false)}>
+            <Modal.Body className='selfie-modal-body'>
+                Your profile is currently not approved. Please update your profile to access this feature.
+
+                <div>
+                    <button type="submit" className='global-save-button' onClick={() => setShow(false)}>
+                        Okay
+                    </button>
+                </div>
+
+            </Modal.Body>
+        </Modal>
+    )
+}

@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import bgl from "../assets/images/l-bg.png";
 import bgr from "../assets/images/r-bg.png";
+import newdesktop from "../assets/images/successdesktop.png"
 import mobileBg from "../assets/images/responsive-bg.png";
 
 export const GetStarted = () => {
@@ -30,39 +31,34 @@ export const GetStarted = () => {
 
   return (
     <section style={{
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr",
+ 
       position: "relative",
       maxHeight: "100dvh",
       height: "100dvh",
+      
+      
     }}>
-      <img src={bgl} alt="" style={{
+      {/* <img src={bgl} alt="" style={{
         width: "100%",
         height: "100dvh",
         objectFit: "cover",
-      }} />
-      <img src={bgr} alt="" style={{
+      }} /> */}
+      {/* <img src={bgr} alt="" style={{
         width: "100%",
         height: "100dvh",
         objectFit: "cover",
-      }} />
-      <div style={{
-        position: "absolute",
-        width: "100%",
-        height: "100dvh",
-        backdropFilter: "blur(30px)",
-        inset: "0px",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}>
-        <div style={{
-          maxWidth: "500px",
+      }} /> */}
+  <div 
+  style={{
+    backgroundImage: `url(${mobile ? bgl : newdesktop})`,
+    backgroundSize: "cover",
+    backgroundPosition:  "center",
+    backgroundRepeat: "no-repeat", 
+  }}>
+  <div style={{
+          maxWidth: "100%",
           height: "100dvh",
-          backgroundImage: `url(${mobile ? mobileBg : bgl})`,
-          backgroundSize: "cover",
-          backgroundPosition: mobile ? "-10.5rem center" : "center",
-          backgroundRepeat: "no-repeat",          
+                  
           display: "flex",
           flexDirection: "column",
         }}>
@@ -102,8 +98,8 @@ export const GetStarted = () => {
               border: "none",
               borderRadius: "9999px",
               padding: "1rem 2.5rem",
-              fontSize: "20px",
-              fontWeight: "bold",
+              fontSize: "16px",
+              fontWeight: "600",
               marginInline: "auto",
               display: "flex",
               justifyContent: "center",
@@ -129,7 +125,9 @@ export const GetStarted = () => {
             </button>
           </div>
         </div>
-      </div>
+  </div>
+       
+      
     </section >
   )
 }

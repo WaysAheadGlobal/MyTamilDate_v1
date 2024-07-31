@@ -149,7 +149,7 @@ export const GenderUpdate = () => {
                   padding : "2rem"
             }}>
      
-        <div className='birthday-container'>
+        <div className='birthday-container' style={{ overflow: 'hidden' }}>
        
             <Container className='birthday-main'>
                 <Container className='birthday-content' style={{width : "100%"}}>

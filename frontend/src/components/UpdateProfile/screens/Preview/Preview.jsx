@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import Basics from '../../Components/mybasics/Basics';
 import { API_URL } from '../../../../api';
 import { useCookies } from '../../../../hooks/useCookies';
+import ProfileDetailsPreview from './previewmain';
 
 const Preview = () => {
   const [activeTab, setActiveTab] = useState('preview');
@@ -205,9 +206,9 @@ const Preview = () => {
       }}>
 
         <div>
-          <div className={prev.previewContainer}>
+          <div className={prev.previewContainer} >
 
-            <div className={prev.carouselContainer}>
+            {/* <div className={prev.carouselContainer}>
               <Carousel interval={3000} pause='hover' indicators={true} controls={false}>
                 <Carousel.Item>
                   <Image src={images2.main} rounded className={prev.carouselImage} />
@@ -219,7 +220,7 @@ const Preview = () => {
                   <Image src={images2.second} rounded className={prev.carouselImage} />
                 </Carousel.Item>
               </Carousel>
-            </div>
+            </div> */}
 
             <div>
               <div className={prev.editpreview}>
@@ -243,14 +244,18 @@ const Preview = () => {
                 </div>
               </div>
             </div>
+       <div style={{marginTop : "10px"}}>
 
-            <div className={prev.namelocation}>
+            <ProfileDetailsPreview/>
+       </div>
+
+            {/* <div className={prev.namelocation}>
 
               <p className={prev.name}>{Profile.Name} {Profile.Surname}</p>
               <p className={prev.location}>
                 {Profile.Country}
               </p>
-            </div>
+            </div> */}
 
             {/* <div style={{marginTop : "20px"}}>
             <p className={prev.name}>I get along best with people who</p>
@@ -259,7 +264,7 @@ const Preview = () => {
             </p>
            </div> */}
 
-
+{/* 
             <div className={prev.basicsdetailscontainer}>
 
               <p className={prev.headingpre}>My Basics</p>
@@ -272,9 +277,9 @@ const Preview = () => {
                 )) : "N/A"} />
                 <Basics icon={Familypre} detail={Profile.WantChildren} />
               </div>
-            </div>
+            </div> */}
 
-
+{/* 
             <div className={prev.basicsdetailscontainer} >
 
               <p className={prev.headingpre}>About</p>
@@ -292,13 +297,10 @@ const Preview = () => {
                   ))
                   : "Please Add Profile Answer"
               }
-              {/* <p className={prev.name} style={{marginTop : "15px"}}>A life goal of mine</p>
-             <p className={prev.location}> Fueled by a deep love for nature,
-               I strive to leave the world a more beautiful place, 
-              where future generations can experience its wonders</p> */}
-            </div>
+             
+            </div> */}
 
-            <div className={prev.Personality}>
+            {/* <div className={prev.Personality}>
               <p className={prev.headingpre}>Personality</p>
               <div>
 
@@ -321,7 +323,7 @@ const Preview = () => {
 
 
               </div>
-            </div>
+            </div> */}
 
             {/* <div className={prev.Personality}>
             <p className={prev.headingpre}>Interests</p>

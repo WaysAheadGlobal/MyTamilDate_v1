@@ -264,17 +264,14 @@ export default function ProfileDetails({ userId, handleIconButtonClick, liked, s
                     <div className={styles.smokeDrink}>
 
                     </div>
-
-                    {/* {
+                    {
                         profile.answers?.map(answer => (
                             <div key={answer.id}>
                                 <p className={styles.heading}>{answer.question}</p>
                                 <p className={styles.subHeading}>{answer.answer}</p>
                             </div>
                         ))
-                    } */}
-
-
+                    }
                     <div className={styles.personalityContainer}>
                         <span className={styles.heading}>Traits & Interest</span>
                         <div className={styles.personalities} style={{ alignItems: "center", justifyContent: "center" }}>
@@ -283,69 +280,7 @@ export default function ProfileDetails({ userId, handleIconButtonClick, liked, s
                             }
                         </div>
                     </div>
-
-
-                    <div>
-                        <div style={{ marginTop: "20px" }}>
-                            {
-                                media?.length > 1 && (
-                                    <img
-                                        src={media[1]?.url}
-                                        alt=""
-                                        style={{
-                                            width: '100%',
-
-                                            objectFit: 'cover',
-                                            borderRadius: '10px'
-                                        }}
-                                    />
-                                )
-                            }
-                        </div>
-
-                        <div style={{marginLeft : "20px"}}>
-                            {
-                                profile.answers?.length > 1 && (
-                                    <div>
-                                        <p className={styles.heading}>{profile.answers[0]?.question}</p>
-                                        <p className={styles.subHeading}>{profile.answers[0]?.answer}</p>
-                                    </div>
-                                )
-                            }
-                        </div>
-
-
-                        <div style={{ marginTop: "20px" }}>
-                            {
-                                media?.length > 1 && (
-                                    <img
-                                        src={media[2]?.url}
-                                        alt=""
-                                        style={{
-                                            width: '100%',
-
-                                            objectFit: 'cover',
-                                            borderRadius: '10px'
-                                        }}
-                                    />
-                                )
-                            }
-                        </div>
-
-                        <div style={{marginLeft : "20px", marginBottom : "10px"}}>
-                        {
-                            profile.answers?.length > 1 && (
-                                <div>
-                                    <p className={styles.heading}>{profile.answers[1].question}</p>
-                                    <p className={styles.subHeading}>{profile.answers[1].answer}</p>
-                                </div>
-                            )
-                        }
-                        </div>
-                     
-
-                    </div>
-                    {/* <div style={{
+                    <div style={{
                         marginTop: '1rem',
                     }}>
                         <Carousel slide controls interval={null} touch>
@@ -361,10 +296,8 @@ export default function ProfileDetails({ userId, handleIconButtonClick, liked, s
                                 ))
                             }
                         </Carousel>
-                    </div> */}
+                    </div>
                 </div>
-
-
                 <div id="bottomOptions" style={{
                     position: "sticky",
                     zIndex: "50",

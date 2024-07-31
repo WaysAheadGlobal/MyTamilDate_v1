@@ -142,7 +142,7 @@ export const ReligionUpdate = () => {
                 padding : "2rem"
             }}>
       
-        <div className='religion-container'>
+        <div className='religion-container' style={{ overflow: 'hidden' }}>
             
             <Container className='religion-main'>
                 <Container className='religion-content'>

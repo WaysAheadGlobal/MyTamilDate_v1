@@ -146,7 +146,10 @@ function ProfileCompletion() {
                 profileCompletion < 100 && (
                     <p style={{
                         fontSize: "16px",
-                        fontWeight: "600"
+                        fontWeight: "500",
+                        hyphens: "none",
+                       color : "515151"
+
                     }}>Complete your profile for better matches</p>
                 )
             }
