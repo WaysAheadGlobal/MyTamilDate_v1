@@ -104,11 +104,10 @@ export const LocatedUpdate = () => {
                 padding : "2rem"
             }}>
    
-    <div className='located-container'>
-      <div className='located-main'>
+    <div className='located-container' style={{ overflow: 'hidden',width : "100%" }}>
+      <div className='located-main' style={{width : "100%"}}>
         <div className='located-content' >
-         
-          <div className='located-text'>
+          <div className='located-text' style={{width : "100%"}}>
             <Image className='about-yourself-icon' src={location}></Image>
             <p>Where are you located?</p>
           </div>

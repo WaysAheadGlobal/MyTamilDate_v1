@@ -126,7 +126,7 @@ export const BasicDetailsUpdate = () => {
       }}>
 
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <div className='basicdetails-container'>
+          <div className='basicdetails-container' style={{ overflow: 'hidden' }}>
 
             <Container className='basicdetails-main'>
               <Container className='basicdetails-content' style={{ width: "100%" }}>

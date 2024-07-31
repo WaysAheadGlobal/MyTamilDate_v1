@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { div, Image, Nav } from 'react-bootstrap';
+import { div, Image, Modal, Nav } from 'react-bootstrap';
 import edit from './edit.module.css';
 import questionmark from '../../../../assets/images/questionmark.png';
 import editicontwo from '../../../../assets/images/editicontwo.png';
@@ -38,6 +38,7 @@ const personalityArray = [
 
 const Edit = () => {
   const Navigate = useNavigate();
+  const [showRejectedModal, setShowRejectedModal] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const[Profile, setProfileData] = useState({});
   const[language, setLanguage] = useState([]);
@@ -49,6 +50,14 @@ const Edit = () => {
   const toggleInfoVisibility = () => {
     setShowInfo(!showInfo);
   };
+
+  function navigateTo(path) {
+    if (Rejected) {
+        setShowRejectedModal(true);
+    } else {
+        Navigate(path);
+    }
+}
 
   useEffect(() => {
     if (window.location.pathname === "/user/pause") {
@@ -174,6 +183,7 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
   return (
     <div>
       <div className={edit.aboutme}>
+      <RejectModal show={showRejectedModal} setShow={setShowRejectedModal} />
         <div className='d-flex align-items-center'>
           <p>About me</p>
           <Image
@@ -322,7 +332,7 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
 
    <div>
     <div style={{display : "flex", marginTop : "20px", justifyContent : "space-between",gap : "5px" }}>
-    <div className={edit.button} onClick={()=> !Rejected && Navigate("/user/preferences")}>
+    <div className={edit.button} onClick={()=> navigateTo("/user/preferences")}>
         <img src={prefarance} alt="Preferences Icon" />
         Preferences
       </div>
@@ -344,3 +354,21 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
 };
 
 export default Edit;
+
+
+function RejectModal({ show, setShow }) {
+  return (
+      <Modal centered className="selfie-modal" show={show} onHide={() => setShow(false)}>
+          <Modal.Body className='selfie-modal-body'>
+              Your profile is currently not approved. Please update your profile to access this feature.
+
+              <div>
+                  <button type="submit" className='global-save-button' onClick={() => setShow(false)}>
+                      Okay
+                  </button>
+              </div>
+
+          </Modal.Body>
+      </Modal>
+  )
+}

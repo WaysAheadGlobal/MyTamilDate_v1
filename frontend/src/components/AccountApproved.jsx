@@ -39,7 +39,7 @@ export default function AccountApproved() {
                             textAlign: "center",
                         }}>Your profile is approved!</p>
                         <p style={{
-                            fontSize: "14px",
+                            fontSize: "16px",
                             fontWeight: "500",
                             lineHeight: "20px",
                             textAlign: "center",

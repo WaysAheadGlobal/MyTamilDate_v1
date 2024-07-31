@@ -107,7 +107,7 @@ export default function PersonalityProfile() {
                 
 
             }}>
-                <Container className='job-main'>
+                <Container className='job-main' style={{ overflow: 'hidden' }}>
                     <Container className='job-content'>
                         <Container className='job-details'>
                             <div className='your-job'>

@@ -107,7 +107,7 @@ export default function KidsAndFamilyUpdate() {
                 padding : "2rem"
             }}>
    
-        <div className='job-container'>
+        <div className='job-container' style={{ overflow: 'hidden' }}>
           
             <Container className='job-main'>
                 <Container className='job-content'>

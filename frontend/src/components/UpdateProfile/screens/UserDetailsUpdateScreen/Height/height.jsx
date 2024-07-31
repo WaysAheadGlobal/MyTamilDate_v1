@@ -103,7 +103,7 @@ export default function HeightUpdate() {
                 padding : "2rem"
             }}>
         
-        <div className='located-container'>
+        <div className='located-container' style={{ overflow: 'hidden' }}>
          
             <Container className='located-main'>
                 <Container className='located-content' style={{width : "100%"}}>
