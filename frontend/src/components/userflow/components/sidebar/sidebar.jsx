@@ -357,7 +357,7 @@ export function MobileSidebar() {
                         <path d="M16.3333 14.5C16.3333 15.7887 15.2887 16.8333 14 16.8333C12.7113 16.8333 11.6667 15.7887 11.6667 14.5C11.6667 13.2113 12.7113 12.1667 14 12.1667C15.2887 12.1667 16.3333 13.2113 16.3333 14.5Z" stroke="#515151" stroke-width="2" />
                     </svg>
                 </li>
-                <li onClick={() => !Rejected && navigate("/user/recommendations")}>
+                {/* <li onClick={() => !Rejected && navigate("/user/recommendations")}>
                     <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g filter="url(#filter0_i_3340_10418)">
                             <path d="M27 15C27 21.6274 21.6274 27 15 27C8.37258 27 3 21.6274 3 15C3 8.37258 8.37258 3 15 3C21.6274 3 27 8.37258 27 15Z" stroke="url(#paint0_angular_3340_10418)" stroke-width="6" />
@@ -380,7 +380,7 @@ export function MobileSidebar() {
                             </radialGradient>
                         </defs>
                     </svg>
-                </li>
+                </li> */}
             </ul>
             <div className={styles['last-section']}>
                 <div style={{
