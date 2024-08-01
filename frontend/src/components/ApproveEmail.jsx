@@ -163,7 +163,7 @@ export default function ApproveEmail() {
                             lineHeight: "20px",
                             textAlign: "center",
                             marginTop: "1rem",
-                        }}>Almost there! Please verify your email address. We've sent a note to {email}.</p>
+                        }}>Please verify your email address. We've sent a note to {email}.</p>
                     </div>
                     <div style={{
                         display: "flex",
@@ -208,7 +208,7 @@ export default function ApproveEmail() {
 
                        
                         <button   className='global-save-button'  onClick={() => setShowModal(false)}>
-                        Okey
+                        Okay
                             </button>
                         <button   className='global-save-button'  onClick={resendMail}>
                         Resend
@@ -229,7 +229,7 @@ export default function ApproveEmail() {
                         }}>
 
                         <button   className='global-save-button'  onClick={ EmailVerifiedSuccess}>
-                        Okey
+                        Okay
                             </button>
                         </div>
                      

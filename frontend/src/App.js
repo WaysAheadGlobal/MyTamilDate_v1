@@ -116,6 +116,7 @@ import RejectedList from "./scenes/Rejected/rejected";
 import RejectDetails from "./scenes/Rejected/userDetails";
 import ReportList from "./scenes/Reports/reports";
 import ReportDetails from "./scenes/Reports/reportsdetails";
+import Paymentfinal from "./components/Account-Settings/payment/newpayment/payment";
 
 
 function App() {
@@ -250,6 +251,7 @@ function App() {
               <Route path="/selectplan" element={<Protected><Selectplan /></Protected>}></Route>
               <Route path="/addpaymentmethod" element={<Protected><AddPaymentMethod /></Protected>}></Route>
               <Route path="/paymentdetails" element={<Protected><Fillpaymentdetails /></Protected>}></Route>
+              <Route path="/paymentplan" element={<Paymentfinal/>}></Route>
 
 
               <Route path="/updateprofile" element={<Protected><UpdateProfile /></Protected>}></Route>

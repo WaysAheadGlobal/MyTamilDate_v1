@@ -54,7 +54,7 @@ export const Pictext = () => {
                             }}>
                                 <h4><span className='discover-love' style={{
                                     // fontFamily: "PT serif, sans-serif",
-                                    fontSize: "18px",
+                                    fontSize: "24px",
                                     color: "#4E1173",
                                     fontWeight : "bold"
                                 }}>Discover Love with</span></h4>
@@ -97,7 +97,8 @@ export const Pictext = () => {
                             }}>
                                 <h4><span  style={{
                                     fontWeight : "bold",
-                                    color: "#4E1173"
+                                    color: "#4E1173",
+                                    fontSize : "40px"
                                 }}>Discover Love with</span></h4>
                                 <h4 style={{
                                     background: 'linear-gradient(360deg, #F87077 0%, #FB8968 100%)',

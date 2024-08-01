@@ -218,7 +218,7 @@ export const AbtYourself = () => {
                                 </div>
                             </Form.Group>
 
-                            <Form.Group controlId="formgender" className='birthday-group'>
+                            <Form.Group controlId="formgender" className='birthday-group' style={{marginTop : "30px"}}>
                                 <Form.Label className='birthday-label'>Who do you want to date?</Form.Label>
                                 <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: "space-around" }}>
                                     <Button

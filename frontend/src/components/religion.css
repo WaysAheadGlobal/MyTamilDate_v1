@@ -157,7 +157,7 @@ align-items: center; */
 .all-lang {
     display: flex;
     flex-wrap: wrap;
-    max-height: 19dvh;
+    max-height: 20dvh;
     /* Adjust height to show 4 items initially */
     overflow-y: auto;
     /* border: 1px solid #6C6C6C; */
@@ -191,12 +191,12 @@ align-items: center; */
 
 .religion-item:hover,
 .lang-item:hover {
-    background-color: #f0f0f0;
+    background-color: #F7ECFF;
 }
 
 .religion-item.selected,
 .lang-item.selected {
-    background-color: #d0d0d0;
+    background-color: #F7ECFF;
 }
 
 
@@ -306,6 +306,6 @@ align-items: center; */
 
     .all-lang,
     .all-religion {
-        max-height: 21vh;
+        max-height: 20vh;
     }
 }

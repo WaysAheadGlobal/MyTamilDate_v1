@@ -24,7 +24,7 @@ export const Footer = () => {
                     <div className="foot-logo-txt">
                         <Image src={logo2} className='foot-logo'></Image>
                         <p style={{
-                            textAlign: 'justify',
+                            textAlign: 'left',
                         }}>myTamilDate (MTD) is a leading dating community for the global Tamil diaspora. Join today to find your special someone!</p>
 
                     </div>

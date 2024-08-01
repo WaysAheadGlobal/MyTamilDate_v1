@@ -107,9 +107,13 @@ export const BasicDetails = () => {
       setErrorMessage('*Please fill out the required fields.');
       return;
     }
+    if(userDetails.first_name.length < 2){
+      setErrorMessage('*Name must be at least two letters long.');
+      return;
+    }
     if(!userDetails.birthday)
       {
-        setErrorBrithday("*Please choose your birthday date");
+        setErrorBrithday("*Please select your birth date.");
         return;
       }
     if (userDetails.first_name.includes('@') || userDetails.first_name.includes('#') || userDetails.first_name.includes('$') || userDetails.first_name.includes('%') || userDetails.first_name.includes('^') || userDetails.first_name.includes('&') || userDetails.first_name.includes('*') || userDetails.first_name.includes('(') || userDetails.first_name.includes(')') || userDetails.first_name.includes('-') || userDetails.first_name.includes('+') || userDetails.first_name.includes('=') || userDetails.first_name.includes('[') || userDetails.first_name.includes(']') || userDetails.first_name.includes('{') || userDetails.first_name.includes('}') || userDetails.first_name.includes('|') || userDetails.first_name.includes('\\') || userDetails.first_name.includes(';') || userDetails.first_name.includes(':') || userDetails.first_name.includes('\'') || userDetails.first_name.includes('"') || userDetails.first_name.includes('<') || userDetails.first_name.includes('>') || userDetails.first_name.includes(',') || userDetails.first_name.includes('.') || userDetails.first_name.includes('/') || userDetails.first_name.includes('?') || userDetails.first_name.includes('!') || userDetails.first_name.includes('`') || userDetails.first_name.includes('~')) {
@@ -226,7 +230,7 @@ export const BasicDetails = () => {
                   </Container>
                 </Form.Group>
                 <Form.Group controlId="formBirthday" className='basic-details-group'>
-                  <Form.Label className='basic-details-label'>When is Your Birthday?</Form.Label>
+                  <Form.Label className='basic-details-label'>When is your birthday?</Form.Label>
                   <div style={{ display: 'flex', alignItems: 'center', width: '100%', position: "relative" }}>
                     <div
                       style={{

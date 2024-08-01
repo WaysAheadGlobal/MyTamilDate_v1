@@ -218,6 +218,27 @@
         font-size: 14px;
     }
 }
+.paymentplanSidebar {
+  
+
+        span {
+            display: none;
+        }
+
+        button {
+            padding: 0.5rem !important;
+        }
+
+        button > svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+    }
+
+    .paymentplanupcoming{
+        display: none;
+    }
 
 @media screen and (max-width: 1000px) {
     .sidebar span {

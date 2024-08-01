@@ -211,7 +211,7 @@ export default function Personality() {
                             Close
                         </Button> */}
                         <button   className='global-save-button'  onClick={() => setShowModal(false)}>
-                        Okey
+                        Okay
                             </button>
                     </Modal.Body>
                 </Modal>

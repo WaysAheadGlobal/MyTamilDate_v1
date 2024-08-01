@@ -284,12 +284,12 @@ export const Selfie = () => {
                     <p className='pic-heading'>Add your photos</p>
                 </Container>
                 <Container>
-                    <p className='pic-text' style={{
-                        fontSize  : "16px"
-                    }}>
-                        Use pics of yourself which clearly show your face, your hobbies & more! Check out more tips here.<br />
-                        <a href='#' onClick={handleDosDontsClick}>Click here</a>
-                    </p>
+                <p className='pic-text' style={{
+    fontSize: "16px"
+}}>
+    Use pics of yourself which clearly show your face, your hobbies & more! Check out more <a href='#' onClick={handleDosDontsClick} style={{ textDecoration: 'underline' }}>tips here</a>.<br />
+</p>
+
                 </Container>
                 <Container className='selfie-adding'>
                     <Row className='selfie-row' onClick={() => handleClick('main')}>
@@ -398,7 +398,7 @@ color : "#fff"
                             Close
                         </Button> */}
                         <button  className='global-save-button'  onClick={() => setShowModal(false)}>
-                        Okey
+                        Okay
                             </button>
                     </Modal.Body>
                 </Modal>
@@ -480,7 +480,7 @@ color : "#fff"
                         </Button> */}
                         <div style={{marginTop : "65px"}}>
                         <button  type="submit" className='global-save-button'  onClick={() => setShowDuplicateNameModal(false)}>
-                        Okey
+                        Okay
                             </button>
                         </div>
 

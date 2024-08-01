@@ -178,7 +178,7 @@ export const JobTitle = () => {
                     <Form.Control
                         className='job-model-form'
                         type="text"
-                        placeholder="Type here...!"
+                        placeholder="Type here..."
                         value={newJobTitle}
                         onChange={(e) => setNewJobTitle(e.target.value)}
                     />

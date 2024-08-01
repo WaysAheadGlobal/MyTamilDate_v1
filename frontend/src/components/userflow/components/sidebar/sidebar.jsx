@@ -26,7 +26,7 @@ export default function Sidebar({ children }) {
         if (RejectedorNot === 'REJECTED') {
             setRejected(true);
         }
-    }, [])
+    }, []);
 
     const noNavbarRoutes = [
         '/updatelocations',
@@ -49,7 +49,6 @@ export default function Sidebar({ children }) {
         '/wantgender'
     ];
 
-
     const showNavbar = isMobile && !noNavbarRoutes.includes(location.pathname);
 
     useEffect(() => {
@@ -57,24 +56,13 @@ export default function Sidebar({ children }) {
     }, []);
 
     useEffect(() => {
-
-        if (window.innerWidth < 1000) {
-            setIsTablet(true);
-        } else {
-            setIsTablet(false);
-        }
-
-        if (window.innerWidth < 768) {
-            setIsMobile(true);
-        } else {
-            setIsMobile(false);
-        }
-
-        window.addEventListener('resize', () => {
-            if (window.innerWidth < 1000) {
+        const handleResize = () => {
+            if (window.innerWidth < 1000 || window.location.pathname === "/paymentplan") {
                 setIsTablet(true);
+                console.log("Tablet view enabled");
             } else {
                 setIsTablet(false);
+                console.log("Tablet view disabled");
             }
 
             if (window.innerWidth < 768) {
@@ -82,7 +70,14 @@ export default function Sidebar({ children }) {
             } else {
                 setIsMobile(false);
             }
-        });
+        };
+
+        handleResize(); // Initial check
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
     }, []);
 
     useEffect(() => {
@@ -108,7 +103,6 @@ export default function Sidebar({ children }) {
                 return;
             }
 
-
             if (result.approval === "PENDING") {
                 window.location.replace("/pending");
                 return;
@@ -122,7 +116,7 @@ export default function Sidebar({ children }) {
             }
 
         })()
-    }, [pathname])
+    }, [pathname]);
 
     function navigateTo(path) {
         if (Rejected) {
@@ -135,7 +129,7 @@ export default function Sidebar({ children }) {
     return (
         <section className={styles['section-container']}>
             <RejectModal show={showRejectedModal} setShow={setShowRejectedModal} />
-            <aside className={styles['sidebar']}>
+            <aside className={`${styles['sidebar']} ${location.pathname === "/paymentplan" ? styles['paymentplanSidebar'] : ''}`}>
                 {
                     isTablet ? <img src={heartLogo} alt="" style={{
                         width: '50px',
@@ -250,7 +244,7 @@ export default function Sidebar({ children }) {
                 {showNavbar && <Navbar />}
                 {Rejected}
             </div>
-            <aside className={styles['upcoming']}>
+            <aside className={`${styles['upcoming']} ${location.pathname === "/paymentplan" ? styles['paymentplanupcoming'] : ''}`}>
                 <ProfileCompletion />
                 <Suggestions Rejected={Rejected} />
 

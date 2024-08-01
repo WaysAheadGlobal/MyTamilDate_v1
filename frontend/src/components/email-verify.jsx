@@ -47,7 +47,7 @@ export const EmailVerify = () => {
                 navigate("/getstarted");
                 setErrorMessage('');
             } else {
-                setErrorMessage( "*"+result.message || 'Failed to update email, try again');
+                setErrorMessage(result.message || (result.message === undefined ? '*Email is invalid.' : '*Failed to update email, try again'));
             }
         } catch (error) {
             console.error('Error:', error);
