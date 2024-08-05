@@ -30,6 +30,7 @@ const PaymentMethod = () => {
       const data = await response.json();
       if (response.ok) {
         setPaymentMethods(data);
+        console.log(paymentMethods);
       }
     })()
   }, []);

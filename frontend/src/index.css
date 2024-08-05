@@ -42,7 +42,7 @@ body,
 
 
 p {
-  hyphens: auto;
+  hyphens: none;
 }
 
 .global-cancel-button {

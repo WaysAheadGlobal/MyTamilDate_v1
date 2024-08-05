@@ -192,7 +192,8 @@ export default function Card({ show, ...props }) {
                         backgroundImage: `url(${image})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
-                        backgroundRepeat: 'no-repeat'
+                        backgroundRepeat: 'no-repeat',
+                        borderRadius : "8px"
                     }}
                 >
                     {/* <span className="firstUndoBtn" style={{
@@ -208,8 +209,10 @@ export default function Card({ show, ...props }) {
                     <div className='details-container' style={{
                         width: "100%",
                     }}>
-                        <div className='details' style={{ marginLeft: "1rem", marginBottom: "2rem" }}>
-                            <p> <span style={{
+                        <div className='details' style={{ marginLeft: "1rem", marginBottom: "1rem" }}>
+                            <p style={{
+                                marginBottom : "-10px"
+                            }} > <span style={{
                                 fontSize : "32px",
                                 fontWeight : "600",
                                 lineHeight : "48px"
@@ -222,7 +225,8 @@ export default function Card({ show, ...props }) {
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "flex-start",
-                                gap: "0.5rem"
+                                gap: "0.5rem",
+                                marginBottom : "-10px"
                             }}>
                                 <PiSuitcase size={25} />
                                 <p style={{
@@ -265,7 +269,7 @@ export default function Card({ show, ...props }) {
                             </div> */}
                             <div style={{
                                 display: "flex",
-                                gap: "1rem",
+                               
                                 alignItems: "center",
                                 justifyContent: "center",
                             }}>
@@ -273,11 +277,14 @@ export default function Card({ show, ...props }) {
                                     e.stopPropagation();
                                     handleIconButtonClick("chat");
                                 }} />
-                                <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
+                              <div style={{   boxShadow: "5px 4px 4px 0px #00000040",}}>
+                              <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
                                     e.stopPropagation();
                                     setLiked(!liked);
                                     handleIconButtonClick("like");
                                 }} />
+                              </div>
+                              
                             </div>
                         </div>
                     </div>
@@ -622,6 +629,9 @@ function UpgradeModal({ show, setShow }) {
                         style={{
                             borderRadius: "9999px",
                             padding: "0.75rem 1.5rem",
+                         
+
+
                         }}
                     >
                         Upgrade now

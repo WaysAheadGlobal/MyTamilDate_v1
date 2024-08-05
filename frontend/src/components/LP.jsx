@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Routes, Route } from 'react-router-dom';
 
@@ -15,9 +15,27 @@ import { TheirStories } from "./theirstories";
 
 
 export const LP = () => {
+    const [mobile, setMobile] = useState(false);
+
+    useEffect(() => {
+      if (window.innerWidth <= 768) {
+        setMobile(true);
+      }
+      window.addEventListener("resize", () => {
+        if (window.innerWidth <= 768) {
+          setMobile(true);
+        } else {
+          setMobile(false);
+        }
+      });
+    }, [])
+    
     return (
         <>
-            <NavBar />
+        {
+            !mobile && <NavBar />
+        }
+            
             <Headerlp />
             <Pictext />
             <TheirStories />

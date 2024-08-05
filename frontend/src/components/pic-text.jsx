@@ -141,7 +141,8 @@ export const Pictext = () => {
                         textAlign: "left",
                         wordBreak: "break-word",
                          hyphens: "none"
-                    }}>Connect with others who truly understand your unique quirks, share your passions, and appreciate your inside jokes and who value what makes you.</p>
+                    }}>Connect with others who truly understand your unique quirks, share your passions, and appreciate your inside jokes and who value what makes you, you.
+</p>
                 </div>
                 <div className='pic1' style={{
                     width: "auto"

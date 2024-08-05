@@ -35,6 +35,7 @@
     gap: 10px;
     display: flex;
     align-items: center;
+    
   }
 
   .nav-link-container .nav-link {
@@ -48,5 +49,9 @@
   .Navbar-container .nav-link-container .nav-link.active-link {
     color: #FC8C66;
     text-decoration: none;
+  }
+
+  .mobileresponsive{
+    display: none;
   }
 }

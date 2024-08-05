@@ -202,7 +202,7 @@ const Preview = () => {
         flexDirection: "column",
         gap: "1rem",
         overflowY: "auto",
-        padding: "2rem"
+        // padding: "2rem"
       }}>
 
         <div>

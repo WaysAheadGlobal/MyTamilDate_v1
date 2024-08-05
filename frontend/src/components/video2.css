@@ -33,6 +33,7 @@
     display: flex;
     justify-content: center;
     margin-top: 25px;
+    gap: 40px;
 }
 
 .vid2 {
@@ -117,6 +118,7 @@
         img {
             object-fit: cover;
             width: 16rem;
+            height: 545px;
         }
     }
 
@@ -129,6 +131,13 @@
         font-size: 18px;
         line-height: 30px;
         font-weight: 550;
+    }
+
+    .video2-content{
+          display: flex;
+    justify-content: center;
+    margin-top: 25px;
+    gap: 0px;
     }
 
 

@@ -11,6 +11,7 @@ p {
     flex-direction: column;
     gap: 1rem;
     width: 500px;
+    padding: 12px;
 }
 
 .card-container {

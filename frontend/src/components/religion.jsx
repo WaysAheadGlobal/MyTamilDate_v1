@@ -22,7 +22,7 @@ export const Religion = () => {
     const [allLanguages, setAllLanguages] = useState([]);
     const [selectedLanguages, setSelectedLanguages] = useState([]);
     const[errorMessage, setErrorMessege] = useState("");
-
+    const[lerrorMessage, setLErrorMessege] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -94,6 +94,11 @@ export const Religion = () => {
                 setErrorMessege("*Please make a selection.")
                 return;
               }
+              if(selectedLanguages.length <1){
+                setLErrorMessege("*Please make a selection.")
+                return;
+              }
+             
 
         const religionId = allReligions.find(r => r.name === selectedReligion)?.id;
 
@@ -189,6 +194,10 @@ export const Religion = () => {
                                     </div>
                                 ))}
                             </Container>
+                            <div style={{marginTop : "-13px",marginLeft : "20px"}}>
+
+                            {lerrorMessage && <p className="text-danger error-message">{lerrorMessage}</p>}
+                            </div>
                         </div>
                     </Container>
                     {/* <Button variant="primary" type="submit" className='religion-nxt-btn' onClick={handleReligionClick}>

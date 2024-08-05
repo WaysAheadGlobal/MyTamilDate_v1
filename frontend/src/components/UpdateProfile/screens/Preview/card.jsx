@@ -47,6 +47,11 @@ import ProfileDetailsPreview from './previewmain';
  * @param {Profile} props - The properties passed to the component.
  * @returns {JSX.Element} The Card component.
  */
+
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 export default function Card({ show, ...props }) {
     const navigate = useNavigate();
     const image = props.type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${props.user_id}/avatar/${props.hash}-large.${props.extension}` : `${API_URL}media/avatar/${props.hash}.${props.extension}`;
@@ -181,7 +186,11 @@ export default function Card({ show, ...props }) {
         //     }
         // }
     }
-
+    const capitalizeFirstLetter = (input) => {
+        const string = String(input); // Convert the input to a string
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    };
+    
     return (
         <>
             <UpgradeModal show={showUpgradeModal} setShow={setShowUpgradeModal} />
@@ -193,7 +202,8 @@ export default function Card({ show, ...props }) {
                         backgroundImage: `url(${image})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
-                        backgroundRepeat: 'no-repeat'
+                        backgroundRepeat: 'no-repeat',
+                        borderRadius : "8px"
                     }}
                 >
                     {/* <span className="firstUndoBtn" style={{
@@ -209,12 +219,14 @@ export default function Card({ show, ...props }) {
                     <div className='details-container' style={{
                         width: "100%",
                     }}>
-                        <div className='details' style={{ marginLeft: "1rem", marginBottom: "2rem" }}>
-                            <p> <span style={{
+                        <div className='details' style={{ marginLeft: "1rem", marginBottom: "1rem" }}>
+                            <p style={{
+                                marginBottom : "-10px"
+                            }}> <span style={{
                                 fontSize : "32px",
                                 fontWeight : "600",
                                 lineHeight : "48px"
-                            }}>{`${props.first_name}`}</span>,  <span style={{
+                            }}>{capitalizeFirstLetter(props.first_name)}</span>,  <span style={{
                                 fontSize : "32px",
                                 fontWeight : "300",
                                 lineHeight : "48px"
@@ -223,7 +235,8 @@ export default function Card({ show, ...props }) {
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "flex-start",
-                                gap: "0.5rem"
+                                gap: "0.5rem",
+                                marginBottom : "-10px"
                             }}>
                                 <PiSuitcase size={25} />
                                 <p style={{
@@ -266,7 +279,7 @@ export default function Card({ show, ...props }) {
                             </div> */}
                             <div style={{
                                 display: "flex",
-                                gap: "1rem",
+                                // gap: "1rem",
                                 alignItems: "center",
                                 justifyContent: "center",
                             }}>

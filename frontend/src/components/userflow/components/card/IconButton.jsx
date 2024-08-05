@@ -1,5 +1,5 @@
 import React from 'react'
-
+import heartIcon from '../../../../assets/images/heartIcon.png';
 
 const Icons = {
     undo: <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -13,26 +13,53 @@ const Icons = {
             </clipPath>
         </defs>
     </svg>,
-    like: <svg width="67" height="67" viewBox="0 0 67 67" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="33.4665" cy="33.322" r="32.164" fill="white" stroke="white" stroke-width="1.26133" />
-        <g clip-path="url(#clip0_969_22045)">
-            <mask id="mask0_969_22045" style={{ maskType: "luminance" }} maskUnits="userSpaceOnUse" x="14" y="16" width="39" height="39">
-                <path d="M14.5469 16.9256H52.3869V54.7656H14.5469V16.9256Z" fill="white" />
-            </mask>
-            <g mask="url(#mask0_969_22045)">
-                <path d="M17.6016 29.1994C17.6016 20.4374 29.7343 17.1901 33.4675 27.3332C37.2007 17.1901 49.3334 20.4374 49.3334 29.1994C49.3334 38.7191 33.4675 50.7891 33.4675 50.7891C33.4675 50.7891 17.6016 38.7191 17.6016 29.1994Z" fill="url(#paint0_linear_969_22045)" />
-            </g>
-        </g>
-        <defs>
-            <linearGradient id="paint0_linear_969_22045" x1="34.7448" y1="52.0282" x2="34.7448" y2="17.9517" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#FC8C66" />
-                <stop offset="1" stop-color="#F76A7B" />
-            </linearGradient>
-            <clipPath id="clip0_969_22045">
-                <rect width="37.84" height="37.84" fill="white" transform="translate(14.5469 16.9219)" />
-            </clipPath>
-        </defs>
-    </svg>,
+    like: <img src={ heartIcon} alt="" />  ,
+    // like :  <svg width="84" height="83" viewBox="0 0 84 83" fill="none" xmlns="http://www.w3.org/2000/svg">
+    // <g filter="url(#filter0_d_4810_11613)">
+    // <g filter="url(#filter1_d_4810_11613)">
+    // <ellipse cx="37.3076" cy="37.3086" rx="37.3076" ry="37.3086" fill="url(#paint0_linear_4810_11613)"/>
+    // <path d="M74.3652 37.3086C74.3652 57.7755 57.774 74.3672 37.3076 74.3672C16.8413 74.3672 0.25 57.7755 0.25 37.3086C0.25 16.8417 16.8413 0.25 37.3076 0.25C57.774 0.25 74.3652 16.8417 74.3652 37.3086Z" stroke="black" stroke-width="0.5"/>
+    // </g>
+    // <g clip-path="url(#clip0_4810_11613)">
+    // <mask id="mask0_4810_11613" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="15" y="18" width="44" height="44">
+    // <path d="M15.7832 18.6547H58.8305V61.7031H15.7832V18.6547Z" fill="white"/>
+    // </mask>
+    // <g mask="url(#mask0_4810_11613)">
+    // <path d="M19.2578 32.6144C19.2578 22.6465 33.0605 18.9522 37.3075 30.4915C41.5546 18.9522 55.3573 22.6465 55.3573 32.6144C55.3573 43.4445 37.3075 57.1758 37.3075 57.1758C37.3075 57.1758 19.2578 43.4445 19.2578 32.6144Z" fill="white"/>
+    // </g>
+    // </g>
+    // </g>
+    // <defs>
+    // <filter id="filter0_d_4810_11613" x="0" y="0" width="82.6152" height="82.6172" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+    // <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+    // <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+    // <feOffset dx="4" dy="4"/>
+    // <feGaussianBlur stdDeviation="2"/>
+    // <feComposite in2="hardAlpha" operator="out"/>
+    // <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.75 0"/>
+    // <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4810_11613"/>
+    // <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_4810_11613" result="shape"/>
+    // </filter>
+    // <filter id="filter1_d_4810_11613" x="0" y="0" width="83.6152" height="82.6172" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+    // <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+    // <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+    // <feOffset dx="5" dy="4"/>
+    // <feGaussianBlur stdDeviation="2"/>
+    // <feComposite in2="hardAlpha" operator="out"/>
+    // <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+    // <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4810_11613"/>
+    // <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_4810_11613" result="shape"/>
+    // </filter>
+    // <linearGradient id="paint0_linear_4810_11613" x1="37.3076" y1="0" x2="37.3076" y2="74.6172" gradientUnits="userSpaceOnUse">
+    // <stop stop-color="#FC8C66"/>
+    // <stop offset="1" stop-color="#F76A7B"/>
+    // </linearGradient>
+    // <clipPath id="clip0_4810_11613">
+    // <rect width="43.0473" height="43.0484" fill="white" transform="translate(15.7832 18.6562)"/>
+    // </clipPath>
+    // </defs>
+    // </svg>
+// ,    
     skip: <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g filter="url(#filter0_d_4123_10370)">
             <circle cx="28" cy="28" r="28" fill="white" fill-opacity="0.35" />
@@ -163,7 +190,6 @@ const Icons = {
             <path d="M9.12152 18.4668C9.33883 18.4668 9.55269 18.5496 9.70791 18.7151L18.9487 28.3115L28.1895 18.7118C28.4896 18.4005 28.9967 18.3807 29.3209 18.6688C29.6452 18.9569 29.6659 19.4436 29.3658 19.7549L19.5351 29.9672C19.2316 30.2818 18.6624 30.2818 18.3589 29.9672L8.53168 19.7549C8.23159 19.4436 8.25229 18.9569 8.57653 18.6688C8.73175 18.533 8.92836 18.4668 9.12152 18.4668Z" fill="white" />
         </svg>
     </div>
-
 }
 
 export default function IconButton({ type, onClick }) {
@@ -173,7 +199,7 @@ export default function IconButton({ type, onClick }) {
                 width: "fit-content",
                 borderRadius: "9999px",
                 border: "none",
-                backgroundColor: "transparent"
+                backgroundColor: "transparent",
             }}
             onClick={onClick}
         >

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './navbar.module.css';
 import heartLogo from "../../../../assets/images/heart-logo.png";
 import profile from "../../../../assets/images/basic-details.png";
@@ -14,6 +14,79 @@ export default function Navbar({ style }) {
     const navigate = useNavigate();
     const [pathname, setPathname] = React.useState([]);
     const suffix = pathname.at(-1);
+    const [Profile, setProfileData] = useState({});
+    const { getCookie } = useCookies();
+    const Navigate = useNavigate();
+    const id = getCookie('userId')
+    const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
+    const [images, setImages] = useState({
+        main: null,
+        first: null,
+        second: null,
+    });
+
+    const [images2, setImages2] = useState({
+        main: null,
+        first: null,
+        second: null,
+    });
+
+    const ImageURL = async () => {
+        try {
+            const response = await fetch(`${API_URL}/customer/update/media`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${getCookie('token')}`
+                }
+            });
+            const data = await response.json();
+            console.log("datadaa", data);
+            if (response.ok) {
+                if (data[0].type === 31 || data[1].type === 31 || data[2].type === 31) {
+                    const others = data.filter(image => image.type === 32);
+                    const main = data.filter(image => image.type === 31)[0];
+
+                    setImages2({
+                        main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
+                        first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
+                        second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
+                    })
+
+
+                    console.log('imges', {
+                        main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
+                        first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
+                        second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
+                    })
+                }
+                else {
+                    const others = data.filter(image => image.type === 2);
+                    const main = data.filter(image => image.type === 1)[0];
+                    console.log(others, main)
+                    setImages2({
+                        main: OldImageURL + "/" + id + "/avatar/" + main.hash + "-large" + "." + main.extension,
+                        first: OldImageURL + "/" + id + "/photo/" + others[0].hash + "-large" + "." + main.extension,
+                        second: OldImageURL + "/" + id + "/photo/" + others[1].hash + "-large" + "." + main.extension,
+                    })
+
+                    console.log({
+                        main: OldImageURL + "/" + id + "/avatar/" + main.hash + "-large" + "." + main.extension,
+                        first: OldImageURL + "/" + id + "/photo/" + others[0].hash + "-large" + "." + main.extension,
+                        second: OldImageURL + "/" + id + "/photo/" + others[1].hash + "-large" + "." + main.extension,
+                    })
+
+                }
+
+            }
+        } catch (error) {
+            console.error('Error saving images:', error);
+        }
+    }
+    useEffect(()=>{
+        ImageURL();
+    },[
+
+    ])
 
     React.useEffect(() => {
         setPathname(window.location.pathname.split("/"));
@@ -111,7 +184,7 @@ export default function Navbar({ style }) {
                     <div className={styles['indicator']}></div>
                 </li>
                 <li className={suffix === "account" ? styles["active"] : ""} onClick={() => navigate("/updateprofile")}>
-                    <img src={profile} alt="" width={30} height={30} />
+                    <img style={{borderRadius : "50%"}} src={images2.main ? images2.main : profile} alt="" width={30} height={30} />
                     <div className={styles['indicator']}></div>
                 </li>
                 {/* {

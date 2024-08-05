@@ -21,7 +21,7 @@ export default function Sidebar({ children }) {
     const cookies = useCookies();
     const RejectedorNot = cookies.getCookie('approval');
     const [showRejectedModal, setShowRejectedModal] = useState(false);
-
+     
     useEffect(() => {
         if (RejectedorNot === 'REJECTED') {
             setRejected(true);
@@ -260,7 +260,7 @@ export function MobileSidebar() {
     const navigate = useNavigate();
     const cookies = useCookies();
     const [showRejectedModal, setShowRejectedModal] = useState(false);
-
+   
     useEffect(() => {
         setPathname(window.location.pathname.split("/"));
     }, []);

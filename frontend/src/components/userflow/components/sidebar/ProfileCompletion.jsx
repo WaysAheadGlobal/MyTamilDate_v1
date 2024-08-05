@@ -9,7 +9,6 @@ function ProfileCompletion() {
     const [Profile, setProfileData] = useState({});
     const { getCookie } = useCookies();
     const Navigate = useNavigate();
-
     const id = getCookie('userId')
     const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
     const [images, setImages] = useState({

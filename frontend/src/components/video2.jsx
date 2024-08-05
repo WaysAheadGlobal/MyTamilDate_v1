@@ -98,7 +98,7 @@ function VerticallyCenteredModal(props) {
             <Button onClick={props.onHide} style={{
                 marginLeft: "auto",
                 position: "relative",
-                top: "1rem",
+              
                 right: "1rem",
                 cursor: "pointer"
             }}>

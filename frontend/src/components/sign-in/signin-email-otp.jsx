@@ -238,7 +238,12 @@ export const SignInEmailOTP = () => {
                     </Container>
 
                     <Container className='entercode-text'>
-                        <Image src={code} />
+                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="30" cy="30" r="30" fill="#4E1173"/>
+<path d="M24.7352 30.0019L16.4688 35.3842V24.6196L24.7352 30.0019ZM35.2622 30.0019L43.5287 35.3842V24.6196L35.2622 30.0019ZM34.0544 30.7906L30.3584 33.1963C30.2495 33.2656 30.1241 33.3019 29.9987 33.3019C29.8733 33.3019 29.7479 33.2656 29.639 33.1963L25.943 30.7906L17.0165 36.6019L16.4985 36.9385C16.6602 37.8691 17.4719 38.5819 18.4487 38.5819H41.5487C42.5255 38.5819 43.3373 37.8724 43.4991 36.9385L42.9776 36.6019L34.0544 30.7906ZM29.9987 31.8532L42.9776 23.4019L43.4991 23.0653C43.3373 22.1314 42.5255 21.4219 41.5487 21.4219H18.4487C17.4719 21.4219 16.6602 22.1347 16.4985 23.0653L17.0165 23.4019L29.9987 31.8532Z" fill="white"/>
+</svg>
+
+                        {/* <Image src={code} /> */}
                         {/* <p>Enter your verification code</p> */}
                         {/* <p>Please enter the 4-digit code sent to you at +1 (905)216-5247</p> */}
                     </Container>
@@ -250,7 +255,7 @@ export const SignInEmailOTP = () => {
                                     <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
                                         <Form.Control
                                             className={`entercode-input ${errorMessage ? 'error' : ''}`}
-                                            type="text"
+                                            type="tel"
                                             ref={code1ref}
                                             placeholder=""
                                             value={code1}
@@ -260,7 +265,7 @@ export const SignInEmailOTP = () => {
                                         />
                                         <Form.Control
                                             className={`entercode-input ${errorMessage ? 'error' : ''}`}
-                                            type="text"
+                                            type="tel"
                                             ref={code2ref}
                                             placeholder=""
                                             value={code2}
@@ -270,7 +275,7 @@ export const SignInEmailOTP = () => {
                                         />
                                         <Form.Control
                                             className={`entercode-input ${errorMessage ? 'error' : ''}`}
-                                            type="text"
+                                            type="tel"
                                             ref={code3ref}
                                             placeholder=""
                                             value={code3}
@@ -280,7 +285,7 @@ export const SignInEmailOTP = () => {
                                         />
                                         <Form.Control
                                             className={`entercode-input ${errorMessage ? 'error' : ''}`}
-                                            type="text"
+                                            type="tel"
                                             ref={code4ref}
                                             placeholder=""
                                             value={code4}

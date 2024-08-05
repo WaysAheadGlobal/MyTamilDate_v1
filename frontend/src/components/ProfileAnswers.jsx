@@ -176,18 +176,23 @@ const [refresh, setRefresh] = useState(false);
                                                         <div>
                                                             <div style={{
                                                                 color: "black",
-                                                                fontSize: "16px",
+                                                                fontSize: "18px",
                                                                 lineHeight: "24px",
                                                                 fontWeight: "600",
                                                             }}>
                                                                 {question.question}
                                                             </div>
-                                                            <div>
+                                                            <div style={{
+                                                                color: "#6C6C6C",
+                                                                fontSize: "16px",
+                                                                lineHeight: "20px",
+                                                                fontWeight: "400",
+                                                            }} >
                                                             {question.answer || answer[index].substring(0,30)+"..."}
                                                             </div>
                                                             <div style={{
                                                                 color: "#6C6C6C",
-                                                                fontSize: "14px",
+                                                                fontSize: "16px",
                                                                 lineHeight: "20px",
                                                                 fontWeight: "400",
                                                             }}>

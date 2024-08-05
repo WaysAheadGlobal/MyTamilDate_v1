@@ -276,7 +276,7 @@ export default function ProfileDetails({ userId, handleIconButtonClick, liked, s
 
 
                     <div className={styles.personalityContainer}>
-                        <span className={styles.heading}>Traits & Interest</span>
+                        <span className={styles.heading}>Traits & Interests</span>
                         <div className={styles.personalities} style={{ alignItems: "center", justifyContent: "center" }}>
                             {
                                 profile.personalities?.map((personality, index) => <p key={index}>{personality}</p>)
@@ -373,7 +373,7 @@ export default function ProfileDetails({ userId, handleIconButtonClick, liked, s
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    gap: "1rem",
+                    // gap: "1rem",
                     backgroundColor: "white",
                 }}>
                     {/* <IconButton type='undo' onClick={(e) => {
@@ -421,6 +421,9 @@ export default function ProfileDetails({ userId, handleIconButtonClick, liked, s
                             setLiked(!liked);
                             handleIconButtonClick("like");
                         }} />
+                        <div>
+                            
+                        </div>
                     </div>
 
                 </div>
