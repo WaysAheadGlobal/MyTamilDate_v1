@@ -271,7 +271,6 @@ export default function UpdateAnswers() {
                             }}>
                                 <Button  type="submit" className={ans.jobnxtbtn} onClick={() => {
                                     const answers = getCookie('answers');
-                                  
                                     if (count == 2 || updatecount == 2 || Totalcount === 2) {
                                         navigate('/updateprofile');
                                     } else {

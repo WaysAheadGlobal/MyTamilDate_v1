@@ -68,6 +68,9 @@ const AddPaymentMethod = () => {
         show: true,
         message: data.message,
         title: "Success",
+        onButtonClick: () => {
+          navigate('/selectplan');
+        }
       });
     }
   }

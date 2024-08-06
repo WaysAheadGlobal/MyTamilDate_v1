@@ -195,6 +195,7 @@ const EditPicture = () => {
     setMediaId(mediaId);
   };
 
+
   const handleNextClick = async () => {
     setLoading(true);
     const formData = new FormData();
@@ -295,6 +296,7 @@ const EditPicture = () => {
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
 
+
   const handleCropSave = () => {
     /* console.log('Attempting to save cropped image:', imageToCrop, croppedAreaPixels); */
 
@@ -322,6 +324,8 @@ const EditPicture = () => {
         // Handle errors if any during cropping
       });
   };
+
+
 
   const handleCropCancel = () => {
     setShowCropModal(false);

@@ -301,6 +301,7 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                         AND u_inner.deleted_at IS NULL
                         AND up_inner.gender = ?
                         AND up_inner.want_gender = ?
+                        AND u_inner.approval = ${UserApprovalEnum.APPROVED}
                         AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
                     ORDER BY 
                         up_inner.created_at DESC, 
@@ -363,6 +364,7 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                     AND up_inner.user_id != ?
                     AND up_inner.gender = ?
                     AND up_inner.want_gender = ?
+                     AND u_inner.approval = ${UserApprovalEnum.APPROVED}
                     AND DATEDIFF(NOW(), up_inner.birthday) BETWEEN (DATEDIFF(NOW(), ?) - (5 * 365)) AND (DATEDIFF(NOW(), ?) + (10 * 365))
                     AND l_inner.continent IN (?)
                     AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)

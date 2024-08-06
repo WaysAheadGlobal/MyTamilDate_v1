@@ -20,6 +20,25 @@ const PricingCard = ({ currency }) => {
   const [percentOff, setPercentOff] = useState(0);
   const [amountOff, setAmountOff] = useState(0);
   const [product, setProduct] = useState(process.env.REACT_APP_STRIPE_PRODUCT_ID_6_MONTHS);
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  
+
+  useEffect(() => {
+    (async () => {
+      const response = await fetch(`${API_URL}customer/payment/methods`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${cookies.getCookie('token')}`,
+        }
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setPaymentMethods(data);
+        console.log(paymentMethods);
+      }
+    })()
+  }, []);
 
   const [price, setPrice] = useState({
     m1: {
@@ -44,6 +63,17 @@ const PricingCard = ({ currency }) => {
 
 
   async function handlePayment() {
+    if(paymentMethods.length < 1){
+      alert.setModal({
+        show: true,
+        message: "Please  first add card details.",
+        title: 'Error',
+        onButtonClick: () => {
+          navigate('/addpaymentmethod');
+        }
+      });
+      return;
+    }
     setLoading(true);
     try {
       const path = coupon ? `/${coupon}` : '';

@@ -41,7 +41,8 @@ const Paymentfinal = () => {
     const stripe = useStripe();
     const elements = useElements();
     const searchParams = useSearchParams();
-    const[carderror, setCarderror] = useState("")
+    const[carderror, setCarderror] = useState("");
+   
     const[showpaymentsuccess, setShowshowpaymentsuccess] = useState(false);
     const rates = [
         "CAD",
@@ -250,6 +251,7 @@ const Paymentfinal = () => {
     }
 
     async function addPaymentMethod(e) {
+        setLoading(true);
         e.preventDefault();
 
         if (!stripe || !elements) {
@@ -588,7 +590,7 @@ const Paymentfinal = () => {
 
                                             <div className={pay.subscribeButtonContainer}>
                                                 {
-                                                    paymentMethods.length >= 1 ? <button className="global-next-btn" onClick={handlePayment}>Continue</button> : <button type="submit" className="global-next-btn">Submit</button>
+                                                    paymentMethods.length >= 1 ? <button className="global-next-btn" onClick={handlePayment}> {loading ? 'Processing...' : 'Continue'}</button> : <button type="submit" className="global-next-btn">  {loading ? 'Processing...' : 'Submit'}</button>
                                                 }
                                                 {/* <button type="submit" className="global-next-btn">Submit</button> */}
                                             </div>
