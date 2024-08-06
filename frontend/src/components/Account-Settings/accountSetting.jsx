@@ -70,9 +70,8 @@ export const AccountSetting = () => {
                     'Authorization': `Bearer ${getCookie('token')}`,
                 },
             });
-
             const result = await response.json();
-            if (result.approval === "REJECTED") {
+            if (result.approval === "REJECTED" || result.approval === "PENDING") {
                 setRejected(true);
             }
         })()

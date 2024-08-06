@@ -33,10 +33,7 @@ export const Selfie = () => {
     const [showDuplicateNameModal, setShowDuplicateNameModal] = useState(false);
     const [originalFileName, setOriginalFileName] = useState("");
     const alert = useAlert();
-
-
     console.log(selectedImages);
-
     const fileInputRefMain = useRef(null);
     const fileInputRefFirst = useRef(null);
     const fileInputRefSecond = useRef(null);

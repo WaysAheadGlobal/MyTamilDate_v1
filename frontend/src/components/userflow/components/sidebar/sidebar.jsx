@@ -104,8 +104,7 @@ export default function Sidebar({ children }) {
             }
 
             if (result.approval === "PENDING") {
-                window.location.replace("/pending");
-                return;
+                setRejected(true);
             }
 
             if (result.approval === "REJECTED") {
@@ -114,7 +113,6 @@ export default function Sidebar({ children }) {
                     window.location.replace("/not-approved");
                 }
             }
-
         })()
     }, [pathname]);
 

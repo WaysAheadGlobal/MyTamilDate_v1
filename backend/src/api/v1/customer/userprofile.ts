@@ -1212,6 +1212,72 @@ profile.post("/media",
   }
 )
 
+
+profile.post(
+  "/mediaupdate",
+  verifyUser,
+  upload.fields([
+    { name: 'main', maxCount: 1 },
+    { name: 'first', maxCount: 1 },
+    { name: 'second', maxCount: 1 },
+  ]),
+  async (req: UserRequest, res: express.Response) => {
+    const userId = req.userId;
+    const mediaId = req.body.media_id;
+    const type = req.body.type;
+
+    if (!req.files) {
+      return res.status(400).send('No files were uploaded.');
+    }
+
+    const fileKeys = Object.keys(req.files);
+    if (fileKeys.length === 0) {
+      return res.status(400).send('No files were uploaded.');
+    }
+
+    const fileKey = fileKeys[0];
+    const file = (req.files as any)[fileKey][0];
+
+    // Check if the media_id exists and is not pending approval
+    const checkQuery = 'SELECT * FROM media WHERE id = ?';
+    db.query(checkQuery, [mediaId], (err, results: any) => {
+      if (err) {
+        console.error('Error checking media_id:', err);
+        return res.status(500).send('Internal Server Error');
+      }
+
+      if (results.length === 0) {
+        return res.status(400).send('Invalid media ID.');
+      }
+
+      const query = `
+        UPDATE media 
+        SET user_id = ?, hash = ?, extension = ?, type = ?, meta = ?, updated_at = ?
+        WHERE id = ?`;
+
+      const values = [
+        userId,
+        file.filename.split(".")[0],
+        file.mimetype.split("/")[1],
+        type,
+        JSON.stringify(file),
+        new Date(),
+        mediaId,
+      ];
+
+      db.query(query, values, (err, results) => {
+        if (err) {
+          console.error('Error updating media:', err);
+          return res.status(500).send('Internal Server Error');
+        }
+        res.status(200).json({ message: 'Media updated successfully' });
+      });
+    });
+  }
+);
+
+
+
 profile.get('/media', verifyUser, (req: UserRequest, res: express.Response) => {
   const userId = req.userId;
 

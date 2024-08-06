@@ -37,6 +37,7 @@ export default function UpdateAnswers() {
     const navigate = useNavigate();
     const [alert, setAlert] = useState(false);
     const alertmodal = useAlert();
+    const approvalstatus = getCookie('approval')
     const Totalcount = count + updatecount;
     console.log(Totalcount);
 
@@ -192,9 +193,10 @@ export default function UpdateAnswers() {
                                                                 setShow(true);
                                                                 setModalData({
                                                                     heading: question.question,
-                                                                    apiURL: `${API_URL}/customer/update/answer/${question.question_id}`,
+                                                                   
                                                                     placeholder : answers[index],
                                                                     refreshpage : refreshpage,
+                                                                  apiURL: approvalstatus === 'APPROVED' ? `${API_URL}/customer/update/answer/${question.question_id}` : `${API_URL}/customer/users/answer/${question.question_id}`
                                                                 });
                                                             }
                                                         }}
@@ -311,13 +313,11 @@ export default function UpdateAnswers() {
 function Modal({ show, onHide, modalData, alert, alertmodal ,placeholder,refreshpage}) {
     const [text, setText] = useState("");
     const { getCookie, setCookie } = useCookies();
-
+    const approvalstatus = getCookie('approval')
     useEffect(() => {
         setText("");
-
         (async () => {
             if (!modalData.apiURL) return;
-
             const response = await fetch(modalData.apiURL, {
                 method: 'GET',
                 headers: {
@@ -350,12 +350,13 @@ function Modal({ show, onHide, modalData, alert, alertmodal ,placeholder,refresh
 
         if (response.ok) {
 
-            alertmodal.setModal({
-                show: true,
-                title: 'Update Profile Answer',
-                message: "Thanks for updating your profile answer! It's now under review by myTamilDate. You'll receive an update within 24 hours.",
-
-            });
+            if (approvalstatus === 'APPROVED') {
+                alertmodal.setModal({
+                  show: true,
+                  title: 'Update Profile Answer',
+                  message: "Thanks for updating your profile answer! It's now under review by myTamilDate. You'll receive an update within 24 hours.",
+                });
+              }
         
             onHide();
             modalData.refreshpage();

@@ -134,7 +134,7 @@ export default function Navbar({ style }) {
 
 
             if (result.approval === "PENDING") {
-                window.location.replace("/pending");
+                setRejected(true);
                 return;
             }
                 

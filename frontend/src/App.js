@@ -241,8 +241,6 @@ function App() {
               <Route path="/not-approved" element={<Protected><AccountNotApproved /></Protected>}></Route>
               <Route path="/approved" element={<Protected><AccountApproved /></Protected>}></Route>
               <Route path="/user/verify/:token" element={<Protected><Verify /></Protected>}></Route>
-
-
               <Route path="/accoutsetting" element={<Protected><AccountSetting /></Protected>}></Route>
               <Route path="/unsubscribe" element={<Protected><UnsubscribeComponent /></Protected>}></Route>
               <Route path="/PrivacyPolicyDetails" element={<Protected><PrivacyPolicySetting /></Protected>}></Route>

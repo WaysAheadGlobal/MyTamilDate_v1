@@ -97,6 +97,11 @@ export default function AccountPending() {
                         }}>
                             We're reviewing your account and will notify you via e-mail at {email}. In the meantime, you can update your profile information.
                         </p>
+                        <button className='global-next-btn' style={{
+                            marginTop : "30px"
+                        }} onClick={()=> navigate("/updateprofile")}>
+                            Update
+                        </button>
                     </div>
                     <div style={{
                         display: "flex",

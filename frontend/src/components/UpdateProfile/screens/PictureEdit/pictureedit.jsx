@@ -30,7 +30,7 @@ const EditPicture = () => {
   const [loading, setLoading] = useState(false);
   const [mediaid, setMediaId] = useState(null);
   const [type, setType] = useState(32);
-
+   const approvalstatus = getCookie('approval');
   const fileInputRefMain = useRef(null);
   const fileInputRefFirst = useRef(null);
   const fileInputRefSecond = useRef(null);
@@ -195,7 +195,6 @@ const EditPicture = () => {
     setMediaId(mediaId);
   };
 
-
   const handleNextClick = async () => {
     setLoading(true);
     const formData = new FormData();
@@ -238,10 +237,63 @@ const EditPicture = () => {
     }
   };
 
+  const handleNextClickRejectedPending = async () => {
+    if (!selectedImages.main && !selectedImages.first && !selectedImages.second) {
+      setShowModal(true);
+      return;
+    }
+  
+    setLoading(true);
+    const formData = new FormData();
+  
+    if (selectedImages.main) {
+      formData.append('main', selectedImages.main);
+    }
+    if (selectedImages.first) {
+      formData.append('first', selectedImages.first);
+    }
+    if (selectedImages.second) {
+      formData.append('second', selectedImages.second);
+    }
+  
+    if (mediaid) {
+      formData.append('media_id', mediaid);
+      
+    }
+  
+    if (type) {
+      formData.append('type', type);
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/customer/users/mediaupdate`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Authorization': `Bearer ${getCookie('token')}`,
+        }
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error saving images:', errorData.message || response.statusText);
+        return;
+      }
+  
+      const data = await response.json();
+      console.log(data);
+      setSelectedImages({ main: null, first: null, second: null })
+      ImageURL();
+    } catch (error) {
+      console.error('Error saving images:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
-
 
   const handleCropSave = () => {
     /* console.log('Attempting to save cropped image:', imageToCrop, croppedAreaPixels); */
@@ -270,8 +322,6 @@ const EditPicture = () => {
         // Handle errors if any during cropping
       });
   };
-
-
 
   const handleCropCancel = () => {
     setShowCropModal(false);
@@ -347,11 +397,15 @@ const EditPicture = () => {
   useEffect(() => {
     ImageURL();
     UpdatedMedia();
-    if (selectedImages) {
+    if (selectedImages  && approvalstatus == "APPROVED") {
       handleNextClick();
+     
     }
-  }, [selectedImages]);
+    if (selectedImages  && approvalstatus !== "APPROVED") {
+      handleNextClickRejectedPending();
+    }
 
+  }, [selectedImages]);
 
   return (
     <Sidebar>
