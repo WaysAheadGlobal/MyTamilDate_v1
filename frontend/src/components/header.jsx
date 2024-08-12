@@ -7,6 +7,8 @@ import bgr from '../assets/images/r-bg.png';
 import { useNavigate } from 'react-router-dom';
 import logo2 from "../assets/images/logo2.png";
 import mobilelogo from "../assets/images/mobilelogo.png";
+import mobilelogo2 from "../assets/images/mobilelogo2.png";
+import logo from "../assets/images/MTDlogo.png";
 import { useEffect, useState } from 'react';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -70,9 +72,9 @@ export const Headerlp = () => {
         </div>
         }
         
-        <img src={mobilelogo} className='mobile-logo' alt="Mobile Logo" />
+        <img src={mobilelogo2} className='mobile-logo' alt="Mobile Logo" />
         <div className='header-text'>
-          <img src={logo2} className='main-logo' alt="Main Logo" />
+          <img src={logo} className='main-logo' alt="Main Logo" />
    
           <span>Meet Tamil Singles</span>
           <Container className='header-btn'>

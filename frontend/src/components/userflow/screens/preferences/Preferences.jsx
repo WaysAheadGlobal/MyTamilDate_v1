@@ -53,6 +53,7 @@ const Forms = {
             </>
         )
     },
+    
     Location: ({ options, value, setValue, locationId }) => {
         const [selectedCountry, setSelectedCountry] = useState("");
         const [selectedCity, setSelectedCity] = useState("");

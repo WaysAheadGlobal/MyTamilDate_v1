@@ -2,8 +2,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import bgl from "../assets/images/l-bg.png";
+// import bgl from "../assets/images/l-bg.png";
 import bgr from "../assets/images/r-bg.png";
+import bgl from "../assets/images/mobilewelcomepic.png";
+
 import newdesktop from "../assets/images/successdesktop.png"
 import mobileBg from "../assets/images/responsive-bg.png";
 import getstart from "../assets/images/getstart.png";

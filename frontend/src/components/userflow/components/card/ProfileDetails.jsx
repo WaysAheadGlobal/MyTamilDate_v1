@@ -365,16 +365,16 @@ export default function ProfileDetails({ userId, handleIconButtonClick, liked, s
                 </div>
 
 
-                <div id="bottomOptions" style={{
-                    position: "sticky",
-                    zIndex: "50",
-                    bottom: "0",
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+                <div id="bottomOptions" className={styles.bottomoptions} style={{
+                    // position: "sticky",
+                    // zIndex: "50",
+                    // bottom: "0",
+                    // width: "100%",
+                    // display: "flex",
+                    // justifyContent: "space-between",
+                    // alignItems: "center",
                     // gap: "1rem",
-                    backgroundColor: "white",
+                    // backgroundColor: "white",
                 }}>
                     {/* <IconButton type='undo' onClick={(e) => {
                                 e.stopPropagation();
@@ -408,7 +408,6 @@ export default function ProfileDetails({ userId, handleIconButtonClick, liked, s
                             </div> */}
                     <div style={{
                         display: "flex",
-                        gap: "1rem",
                         alignItems: "center",
                         justifyContent: "center",
                     }}>

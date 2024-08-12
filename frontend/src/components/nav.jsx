@@ -7,10 +7,10 @@ import { Container, Image } from 'react-bootstrap';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
-import logo2 from "../assets/images/logo2.png";
+// import logo2 from "../assets/images/logo2.png";
+
+import logo2 from "../assets/images/heartlogo.png";
 import './nav.css';
-
-
 
 
 export const NavBar = () => {
@@ -34,7 +34,7 @@ export const NavBar = () => {
   return (
     <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary Navbar-container sticky">
       <Container>
-        <Navbar.Brand href="/" ><Image className='mobileresponsive' src={logo2} style={{ height: '50px', width: '144px' }}></Image></Navbar.Brand>
+        <Navbar.Brand href="/" ><Image className='mobileresponsive' src={logo2} style={{ height: '75px', width: '76px' }}></Image></Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <div className="me-auto">
@@ -42,7 +42,7 @@ export const NavBar = () => {
           <Nav style={{
             alignItems: mobile && "flex-start"
           }} className='nav-link-container'>
-            <Nav.Link as={Link} className={pathname === "/" ? "active-link" : ""} to="/">Home</Nav.Link>
+            {/* <Nav.Link as={Link} className={pathname === "/" ? "active-link" : ""} to="/">Home</Nav.Link> */}
             <Nav.Link as={Link} className={pathname === "/SuccessPage" ? "active-link" : ""} to="/SuccessPage">Success Stories</Nav.Link>
             <Nav.Link as={Link} className={pathname === "/aboutus" ? "active-link" : ""} to="/aboutus">About Us</Nav.Link>
             <Nav.Link href="https://tamilculture.com/user/mytamildatecom">Blogs</Nav.Link>

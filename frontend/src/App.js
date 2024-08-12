@@ -118,6 +118,7 @@ import ReportList from "./scenes/Reports/reports";
 import ReportDetails from "./scenes/Reports/reportsdetails";
 import Paymentfinal from "./components/Account-Settings/payment/newpayment/payment";
 import MobileCheck from "./components/PrivateRoute/paymentplanroute";
+import CropImage from "./components/cropimage/cropimage";
 
 
 function App() {
@@ -226,6 +227,7 @@ function App() {
               <Route path="/basicdetails" element={<Protected><BasicDetails /></Protected>}></Route>
               <Route path="/abtyourself" element={<Protected><AbtYourself /></Protected>}></Route>
               <Route path="/selfie" element={<Protected><Selfie /></Protected>}></Route>
+              <Route path="/imagecrop" element={<CropImage/>}>  </Route>
               <Route path="/located" element={<Protected><Located /></Protected>}></Route>
               <Route path="/religion" element={<Protected><Religion /></Protected>}></Route>
               <Route path="/edu" element={<Protected><Education /></Protected>}></Route>

@@ -15,11 +15,15 @@ import responsivebg from "../assets/images/responsive-bg.png";
 import { useCookies } from '../hooks/useCookies';
 import './take-selfie1.css';
 import { useAlert } from '../Context/AlertModalContext';
+import ImageCrop from './cropimage/ImageCrop';
 
 export const Selfie = () => {
 
     const navigate = useNavigate();
+    const imageCropRef = useRef(null);
+    const childRef = useRef(); 
     const [selectedImages, setSelectedImages] = useState({ main: null, first: null, second: null });
+    const [selectedImagesurl, setSelectedImagesurl] = useState({ main: null, first: null, second: null });
     const [showModal, setShowModal] = useState(false);
     const [showCropModal, setShowCropModal] = useState(false);
     const [imageToCrop, setImageToCrop] = useState(null);
@@ -164,36 +168,34 @@ export const Selfie = () => {
         }
     };
 
-    const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
+    const onCropComplete = (croppedAreaPixels) => {
+        console.log(croppedAreaPixels)
         setCroppedAreaPixels(croppedAreaPixels);
-    }, []);
+    }
 
-    const handleCropSave = () => {
+    const handleCropSave = (croppedAreaPixels) => {
         /* console.log('Attempting to save cropped image:', imageToCrop, croppedAreaPixels); */
-
+        console.log(croppedAreaPixels)
         // Ensure croppedAreaPixels is not null before proceeding
         if (!croppedAreaPixels) {
             throw new Error('No cropped area to save');
         }
 
-        getCroppedImg(imageToCrop, croppedAreaPixels)
-            /* croppedImage: Blob */
-            .then(croppedImage => {
-                console.log(new File([croppedImage], originalFileName, { type: 'image/jpeg' }));
+                console.log(new File([croppedAreaPixels], originalFileName, { type: 'image/jpeg' }));
 
                 setSelectedImages({
                     ...selectedImages,
-                    [currentImageKey]: new File([croppedImage], originalFileName, { type: 'image/jpeg' })
+                    [currentImageKey]: new File([croppedAreaPixels], originalFileName, { type: 'image/jpeg' })
+                })
+                setSelectedImagesurl({
+                    ...selectedImagesurl,
+                    [currentImageKey]: croppedAreaPixels
                 })
 
                 setShowCropModal(false);
 
                 console.log('Cropped image saved successfully');
-            })
-            .catch(error => {
-                console.error('Error cropping image:', error);
-                // Handle errors if any during cropping
-            });
+          
     };
 
     const handleCropCancel = () => {
@@ -204,40 +206,7 @@ export const Selfie = () => {
         setCroppedAreaPixels(null);
     };
 
-    const getCroppedImg = (imageSrc, crop) => {
-        const canvas = document.createElement('canvas');
-        const image = document.createElement('img');
-        const promise = new Promise((resolve, reject) => {
-            image.onload = () => {
-                const ctx = canvas.getContext('2d');
-                const scaleX = image.naturalWidth / image.width;
-                const scaleY = image.naturalHeight / image.height;
-                canvas.width = crop.width;
-                canvas.height = crop.height;
-                ctx.drawImage(
-                    image,
-                    crop.x * scaleX,
-                    crop.y * scaleY,
-                    crop.width * scaleX,
-                    crop.height * scaleY,
-                    0,
-                    0,
-                    crop.width,
-                    crop.height
-                );
-
-                canvas.toBlob(blob => {
-                    if (!blob) {
-                        reject(new Error('Canvas is empty'));
-                        return;
-                    }
-                    resolve(blob);
-                }, 'image/jpeg');
-            };
-            image.src = imageSrc;
-        });
-        return promise;
-    };
+  
 
     const handleDosDontsClick = () => {
         // Here you can set initial dos and don'ts if needed
@@ -343,7 +312,7 @@ export const Selfie = () => {
                                     <span>Add photo</span>
                                 </>
                             )}
-                            {(selectedImages.second || images.second) && <Image src={selectedImages.second ? URL.createObjectURL(selectedImages.second) : images.second} className="user-picture2" style={{
+                            {(selectedImages.second || images.second) && <Image src={selectedImages.second ? URL.createObjectURL(selectedImages.second): images.second} className="user-picture2" style={{
                                 height: '100%',
                                 width: '100%',
                                 objectFit: 'contain',
@@ -401,21 +370,13 @@ color : "#fff"
                 </Modal>
 
                 <Modal centered className="crop-modal" show={showCropModal} onHide={handleCropCancel}>
-                    <Modal.Header closeButton>
+                    <Modal.Header>
                         <Modal.Title>Crop your photo</Modal.Title>
+
                     </Modal.Header>
                     <Modal.Body className='crop-modal-body'>
-                        {imageToCrop && (
-                            <Cropper
-                                image={imageToCrop}
-                                crop={crop}
-                                zoom={zoom}
-                                aspect={4 / 3} // Change aspect ratio as needed
-                                onCropChange={setCrop}
-                                onZoomChange={setZoom}
-                                onCropComplete={onCropComplete}
-                            />
-                        )}
+                    
+                        <ImageCrop url = {imageToCrop} onCropComplete={onCropComplete} ref={childRef} handleCropSave={handleCropSave}/>
                     </Modal.Body>
                     <Modal.Footer className='crop-modal-footer'>
                         <div style={{
@@ -424,14 +385,16 @@ color : "#fff"
                             alignItems: "center",
                             gap: "20px"
                         }}>
-
-
                             <button variant="secondary" style={{ width: "160px" }} className='global-cancel-button' onClick={handleCropCancel}>
                                 Cancel
                             </button>
-                            <button variant="secondary" style={{ width: "160px" }} className='global-save-button' onClick={handleCropSave}>
-                                Add Photo
-                            </button>
+            <button variant="secondary" style={{ width: "160px" }} className='global-save-button' onClick={() => {
+            childRef.current.handleSubmit();
+            childRef.current.handleSubmit();
+            handleCropSave();
+        }}>
+            Add Photo
+        </button>
 
                         </div>
                     </Modal.Footer>
@@ -483,8 +446,6 @@ color : "#fff"
 
                     </Modal.Body>
                 </Modal>
-
-
 
             </Container>
         </div>

@@ -17,7 +17,7 @@ class MailService {
     private async sendMail(to: string, subject: string, template: string, data: Record<string, string | number | Profile[]>) {
         const html: string = await ejs.renderFile(__dirname + `/templates/${template}.ejs`, {
             ...data,
-            logo: `${process.env.IMAGES_URL}/logo.png`,
+            logo: `${process.env.IMAGES_URL}/logo1.png`,
             couple: `${process.env.IMAGES_URL}/couple.png`,
             mobile: `${process.env.IMAGES_URL}/mobile.png`,
         });

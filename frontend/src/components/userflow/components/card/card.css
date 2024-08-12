@@ -47,6 +47,8 @@ p {
 
     .card-and-details-container {
         width: 100%;
+        overflow: auto;
+        scrollbar-width: none;
     }
 
     .firstUndoBtn {

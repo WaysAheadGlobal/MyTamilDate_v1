@@ -2,9 +2,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { Image } from 'react-bootstrap';
 import arrow from '../assets/images/arrow.png';
-import c1 from '../assets/images/lp1.png';
-import c2 from '../assets/images/lp2.png';
-import c3 from '../assets/images/lp3.png';
+// import c1 from '../assets/images/lp1.png';
+// import c2 from '../assets/images/lp2.png';
+// import c3 from '../assets/images/lp3.png';
+
+import c1 from '../assets/images/lp11.png';
+import c2 from '../assets/images/lp22.png';
+import c3 from '../assets/images/lp33.png';
 import './pic-text.css';
 
 export const Pictext = () => {
