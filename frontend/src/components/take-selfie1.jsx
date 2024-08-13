@@ -139,9 +139,7 @@ export const Selfie = () => {
             setShowModal(true);
             return;
         }
-
         setLoading(true);
-
         const formData = new FormData();
         formData.append('main', selectedImages.main);
         formData.append('first', selectedImages.first);

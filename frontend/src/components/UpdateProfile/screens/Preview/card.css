@@ -82,7 +82,7 @@ p {
 .options {
     display: flex;
     gap: 1rem;
-    align-items: center;
+    align-items: end;
     justify-content: space-between;
 }
 

@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../../../../api';
 import './card.css';
+import brifcase2 from '../../../../assets/images/brifcase2.png';
 import IconButton from '../../../userflow/components/card/IconButton';
 import { useCookies } from '../../../../hooks/useCookies';
 import ladyIcon from '../../../../assets/images/ladyIcon.png';
@@ -238,7 +239,8 @@ export default function Card({ show, ...props }) {
                                 gap: "0.5rem",
                                 marginBottom : "-10px"
                             }}>
-                                <PiSuitcase size={25} />
+                                {/* <PiSuitcase size={25} /> */}
+                                <img  width="25px" height="25px" src={brifcase2} alt="" />
                                 <p style={{
                                     fontSize: "medium",
                                 }}>{props.job}</p>
@@ -280,7 +282,7 @@ export default function Card({ show, ...props }) {
                             <div style={{
                                 display: "flex",
                                 // gap: "1rem",
-                                alignItems: "center",
+                                alignItems: "end",
                                 justifyContent: "center",
                             }}>
                                 <IconButton type='chat' onClick={(e) => {

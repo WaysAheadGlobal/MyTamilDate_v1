@@ -29,7 +29,6 @@ import Sidebar from '../userflow/components/sidebar/sidebar';
 import { useAlert } from '../../Context/AlertModalContext';
 import PricingCard from './payment/SelectPlan/plandetails';
 
-
 export const AccountSetting = () => {
     const navigate = useNavigate();
     const { getCookie, setCookie, deleteCookie } = useCookies();

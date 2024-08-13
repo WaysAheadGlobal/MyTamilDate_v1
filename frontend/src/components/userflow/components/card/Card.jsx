@@ -7,7 +7,7 @@ import IconButton from './IconButton';
 import { useCookies } from '../../../../hooks/useCookies';
 import ladyIcon from '../../../../assets/images/ladyIcon.png';
 
-import Briefcase from '../../../../assets/images/Briefcase.png';
+import brifcase2 from '../../../../assets/images/brifcase2.png';
 import { FaLocationDot } from "react-icons/fa6";
 import { PiSuitcase } from "react-icons/pi";
 import { useUserProfile } from '../context/UserProfileContext';
@@ -228,7 +228,8 @@ export default function Card({ show, ...props }) {
                                 gap: "0.5rem",
                                 marginBottom : "-10px"
                             }}>
-                                <PiSuitcase size={25} />
+                                {/* <PiSuitcase size={25} /> */}
+                                <img width="25px" height="25px" src={brifcase2} alt="" />
                                 <p style={{
                                     fontSize: "medium",
                                 }}>{props.job}</p>
@@ -270,14 +271,14 @@ export default function Card({ show, ...props }) {
                             <div style={{
                                 display: "flex",
                                
-                                alignItems: "center",
+                                alignItems: "end",
                                 justifyContent: "center",
                             }}>
                                 <IconButton type='chat' onClick={(e) => {
                                     e.stopPropagation();
                                     handleIconButtonClick("chat");
                                 }} />
-                              <div style={{   boxShadow: "5px 4px 4px 0px #00000040",}}>
+                              <div >
                               <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
                                     e.stopPropagation();
                                     setLiked(!liked);

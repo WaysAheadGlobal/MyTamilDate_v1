@@ -70,7 +70,7 @@ export const Pictext = () => {
                                     fontSize: "18px",
                                     fontWeight : "bold"
                                 }}>myTamilDate</h4>
-                                <img src={arrow} alt="Arrow" width={200} height={200} style={{ position: "absolute", top: "-11px" }} />
+                                <img src={arrow} alt="Arrow" width={200} height={200} style={{ position: "absolute", top: "-20px" }} />
                             </div>
                         )
                     }
@@ -78,7 +78,7 @@ export const Pictext = () => {
                         width: '24rem',
                         height: '100%',
                         objectFit: 'cover',
-                        paddingInline: '1rem'
+                        // paddingInline: '1rem'
                     }} />
                 </div>
                 <div className='text1' style={{
