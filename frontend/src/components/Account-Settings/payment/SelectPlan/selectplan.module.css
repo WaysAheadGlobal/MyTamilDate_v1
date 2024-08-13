@@ -1,17 +1,18 @@
 .formSelectCurrency {
-    width: 134px;
-    height: 48px;
-    padding: 12px 16px;
-    border: none;
-    border-radius: 8px;
-    background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
-    color: white;
-    font-size: 16px;
-    text-align: center;
-    appearance: none; /* Remove default arrow */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    position: relative;
+  height: 48px;
+  border: none;
+  border-radius: 8px;
+  /* background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%); */
+  color: #F76A7B;
+  font-size: 16px;
+  text-align: center;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+  border: 1px solid #F76A7B;
+  box-shadow: 0px 2.09px 4.19px 0px #0000001A, 0px 6.98px 6.98px 0px #00000017, 0px 16.06px 9.77px 0px #0000000D, 0px 28.62px 11.17px 0px #00000003, 0px 44.68px 12.57px 0px #00000000;
+  margin-bottom: 20px;
   }
   
   .selectWrapper {

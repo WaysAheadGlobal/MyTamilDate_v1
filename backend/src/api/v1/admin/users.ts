@@ -692,9 +692,11 @@ users.put('/updatestatus', (req: AdminRequest, res: Response) => {
 
                 let html;
                 try {
-                    html = await ejs.renderFile("mail/templates/approve.ejs", {
+                    html = await ejs.renderFile("mail/templates/signup.ejs", {
                         link: `${process.env.URL}/user/home`,
-                        name: name
+                        name: name,
+                       mobile : "../"
+                       
                     });
                 } catch (renderError) {
                     console.error('Error rendering email template:', renderError);

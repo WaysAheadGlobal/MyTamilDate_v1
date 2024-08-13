@@ -33,32 +33,50 @@
 
 .cardTitle {
   font-family: Poppins;
-  font-size: 9.77px;
-  font-weight: 500;
-  line-height: 14.66px;
-  text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 24px;
+    text-align: center;
+    color: #FC8C66;
 }
 
 .cardPrice {
   font-family: Poppins;
-  font-size: 16.75px;
-  font-weight: 400;
+  font-size: 14px;
+  font-weight: 700;
   line-height: 25.13px;
   letter-spacing: 0.04em;
-  text-align: left;
+  color: #515151;
 }
 
+
 .cardPrice span {
-  font-size: 0.5em;
+  font-size: 10px;
+    color: rgb(108, 108, 108);
+    line-height: 24px;
+    font-weight: 500;
+}
+.cardsave{
+  background: linear-gradient(180deg, #FC8C66 0%, #F76A7B 100%);
+    color: #fff;
+    font-Size: 8px;
+    padding: 1px 0px 1px 0px;
+    border-Radius: 12px;
+    line-Height: 14px;
+    width: 50px;
+    margin-left: 20px;
 }
 
 .cardText {
-  font-size: 8px;
-  color: gray;
+  font-Size: 8px;
+  color: #6C6C6C;
+  line-Height: 24px;
+  font-Weight: 600;
+  margin-top: 5px;
 }
 
 .mostPopular {
-  background: linear-gradient(90deg, #9663BF 0%, #4B164C 100%);
+  background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
   color: white;
   padding: 5px 10px;
   border-radius: 10px 10px 0 0;

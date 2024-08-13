@@ -502,6 +502,7 @@ auth.post("/verify", verifyUser, async (req: UserRequest, res) => {
 auth.get("/verify/:token", async (req, res) => {
     const { token } = req.params;
     console.log(`${process.env.URL}/approve`); // Debugging line
+
     db.beginTransaction(err => {
         if (err) {
             console.error('Error starting transaction:', err);
@@ -511,38 +512,34 @@ auth.get("/verify/:token", async (req, res) => {
         db.query<RowDataPacket[]>('SELECT user_id FROM verification_token WHERE token = ?', [token], (err, results) => {
             if (err) {
                 console.error('Error fetching data:', err);
-                db.rollback(err => {
-                    if (err) {
-                        console.error('Error rolling back transaction:', err);
-                    }
+                db.rollback(() => {
+                    return res.status(500).send('Internal Server Error');
                 });
-                return res.status(500).send('Internal Server Error');
+                return;
             }
 
             if (results.length === 0) {
                 return res.status(401).json({ message: 'Invalid token' });
             }
 
-            db.query('UPDATE users SET approval = 10 WHERE id = ?', [results[0].user_id], (err) => {
+            const user_id = results[0].user_id;
+
+            db.query('UPDATE users SET approval = 10 WHERE id = ?', [user_id], (err) => {
                 if (err) {
                     console.error('Error updating data:', err);
-                    db.rollback(err => {
-                        if (err) {
-                            console.error('Error rolling back transaction:', err);
-                        }
+                    db.rollback(() => {
                         return res.status(500).send('Internal Server Error');
                     });
+                    return;
                 }
 
-                db.query('UPDATE user_profiles SET email_verified_at = NOW() WHERE user_id = ?', [results[0].user_id], (err) => {
+                db.query('UPDATE user_profiles SET email_verified_at = NOW() WHERE user_id = ?', [user_id], (err) => {
                     if (err) {
                         console.error('Error updating data:', err);
-                        db.rollback(err => {
-                            if (err) {
-                                console.error('Error rolling back transaction:', err);
-                            }
+                        db.rollback(() => {
                             return res.status(500).send('Internal Server Error');
                         });
+                        return;
                     }
 
                     db.commit(err => {
@@ -551,13 +548,47 @@ auth.get("/verify/:token", async (req, res) => {
                             return res.status(500).send('Internal Server Error');
                         }
 
-                        res.status(200).json({ message: 'Email verified successfully' });
+                        db.query('SELECT first_name FROM users WHERE id = ?', [user_id], async (err, result:any) => {
+                            if (err) {
+                                console.error('Error fetching user data:', err);
+                                return res.status(500).json({ message: 'Internal Server Error' });
+                            }
+
+                            const name = result[0].first_name;
+
+                            let html;
+                            try {
+                                html = await ejs.renderFile("mail/templates/newapproval.ejs", { name });
+                            } catch (renderError) {
+                                console.error('Error rendering email template:', renderError);
+                                return res.status(500).json({ message: 'Internal Server Error' });
+                            }
+
+                            const msg = {
+                                from: process.env.EMAIL_HOST!,
+                                to: 'mtdteam2024@gmail.com',
+                                subject: "New Approval Request on MTD",
+                                html: html
+                            };
+            
+                            sgMail.send(msg)
+                                .then(() => {
+                                    console.log("Approval request  email sent successfully");
+                                    return res.status(200).send('Status updated successfully and email sent');
+                                })
+                                .catch((error) => {
+                                    console.error('Error sending email:', JSON.stringify(error));
+                                    return res.status(500).send('Internal Server Error');
+                                });
+                        });
+                            res.status(200).json({ message: 'Email verified successfully' });
+                        });
                     });
                 });
             });
         });
     });
-});
+
 
 
 

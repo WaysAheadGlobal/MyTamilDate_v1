@@ -362,7 +362,7 @@ const Paymentfinal = () => {
                                 >
                                     <div className={pay.cardBody}>
                                         <h5 className={pay.cardTitle}>1 month</h5>
-                                        <h2 className={pay.cardPrice}>{/* getPrice(49.99, process.env.REACT_APP_STRIPE_PRODUCT_ID_1_MONTHS) */ price.m1.monthly}  </h2>
+                                        <h2 className={pay.cardPrice}>${/* getPrice(49.99, process.env.REACT_APP_STRIPE_PRODUCT_ID_1_MONTHS) */ price.m1.monthly}  </h2>
 
                                     </div>
                                 </div>
@@ -379,7 +379,7 @@ const Paymentfinal = () => {
                                             style={{
                                                 marginBottom: "-10px"
                                             }}
-                                        >{/* getPrice(33.99, process.env.REACT_APP_STRIPE_PRODUCT_ID_3_MONTHS) */ price.m3.monthly} <span
+                                        > ${/* getPrice(33.99, process.env.REACT_APP_STRIPE_PRODUCT_ID_3_MONTHS) */ price.m3.monthly} <span
                                             style={
                                                 {
                                                     fontSize: "16px",
@@ -417,7 +417,7 @@ const Paymentfinal = () => {
                                             </svg>
                                         </div>
                                         <h5 style={{ marginTop: "-1px" }} className={pay.cardTitle}>6 months</h5>
-                                        <h2 style={{ marginTop: "-6px" }} className={pay.cardPrice}>{/* getPrice(24.99) */ price.m6.monthly}
+                                        <h2 style={{ marginTop: "-6px" }} className={pay.cardPrice}>${/* getPrice(24.99) */ price.m6.monthly}
                                             <span style={{ fontSize: "16px", color: "#6C6C6C", lineHeight: "24px" }}>/month</span>
                                         </h2>
                                         <p className={pay.cardText}  >
