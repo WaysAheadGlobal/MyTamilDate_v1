@@ -7,10 +7,12 @@ import { Skeleton } from '@mui/material';
 import chatPlaceholder from '../../../../assets/images/chatPlaceholder.svg';
 import Button from '../button/Button';
 import { useSocket } from '../../../../Context/SockerContext';
+import { Modal } from 'react-bootstrap';
 
 export default function Likes() {
     const navigate = useNavigate();
     const searchParams = useSearchParams();
+    const[showmodal, setshowmodal] = useState(true);
     const cookies = useCookies();
     const [likes, setLikes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -19,6 +21,11 @@ export default function Likes() {
     const [currentLikes, setCurrentLikes] = useState([]);
     const [selected, setSelected] = useState(null);
     const { socket } = useSocket();
+    const handleClose = ()=> setshowmodal(false)
+const handleupgrade = ()=>{
+    setshowmodal(false);
+    navigate("/selectplan");
+}
 
     const getImageURL = (type, hash, extension, userId) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}` : `${API_URL}media/avatar/${hash}.${extension}`;
 
@@ -75,13 +82,14 @@ export default function Likes() {
 
     async function getRoom(userId, name, img) {
         if (cookies.getCookie("isPremium") !== "true") {
-            alert.setModal({
-                show: true,
-                title: "Upgrade to premium",
-                message: "You need to be a premium user to chat with other users. Would you like to upgrade now?",
-                onButtonClick: () => navigate("/selectplan"),
-                showCancelButton: true
-            });
+            setshowmodal(true);
+            // alert.setModal({
+            //     show: true,
+            //     title: "Upgrade to premium",
+            //     message: "You need to be a premium user to chat with other users. Would you like to upgrade now?",
+            //     onButtonClick: () => navigate("/selectplan"),
+            //     showCancelButton: true
+            // });
             return;
         }
 
@@ -177,7 +185,9 @@ export default function Likes() {
                                         <button className='global-next-btn' style={{
                                             background: "#fff",
                                             color: "#F76A7B",
-                                        }}>
+                                        }}
+                                        onClick={()=> navigate("/selectplan")}
+                                        >
                                             Upgrade Now
                                         </button>
                                     </div>
@@ -329,6 +339,30 @@ export default function Likes() {
                         </div>
                     ))
                 }
+
+                
+            <Modal show={showmodal} onHide={handleClose} centered>
+                        <Modal.Body className="pause-modal-content">
+
+                            <div className="pause-modal-title" style={{
+                                fontSize : "20px",
+                                fontWeight : "600"
+                            }}>Upgrade to premium</div>
+                            <div className="pause-modal-message">
+                            You need to be a premium user to chat with other users. Would you like to upgrade now?
+                            </div>
+                            <div className="d-flex justify-content-center" style={{
+                                gap : "30px"
+                            }}>
+                                <button  className="global-cancel-button" onClick={handleClose}>
+                                    Close
+                                </button>
+                                <button  className={styles.upgradebutton} onClick={handleupgrade}>
+                                Upgrade
+                                </button>
+                            </div>
+                        </Modal.Body>
+                    </Modal>
             </div>
         </>
     )

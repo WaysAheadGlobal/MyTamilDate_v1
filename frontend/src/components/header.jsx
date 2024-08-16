@@ -72,7 +72,7 @@ export const Headerlp = () => {
         </div>
         }
         
-        <img src={mobilelogo2} className='mobile-logo' alt="Mobile Logo" />
+        <img width="240px" src={mobilelogo2} className='mobile-logo' alt="Mobile Logo" />
         <div className='header-text'>
           <img src={logo} className='main-logo' alt="Main Logo" />
    

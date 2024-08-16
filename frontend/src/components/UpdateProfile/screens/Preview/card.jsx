@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../../../../api';
 import './card.css';
+import { FaSuitcase } from "react-icons/fa";
 import brifcase2 from '../../../../assets/images/brifcase2.png';
 import IconButton from '../../../userflow/components/card/IconButton';
 import { useCookies } from '../../../../hooks/useCookies';
@@ -239,8 +240,8 @@ export default function Card({ show, ...props }) {
                                 gap: "0.5rem",
                                 marginBottom : "-10px"
                             }}>
-                                {/* <PiSuitcase size={25} /> */}
-                                <img  width="25px" height="25px" src={brifcase2} alt="" />
+                                <FaSuitcase size={25} />
+                                {/* <img  width="25px" height="25px" src={brifcase2} alt="" /> */}
                                 <p style={{
                                     fontSize: "medium",
                                 }}>{props.job}</p>

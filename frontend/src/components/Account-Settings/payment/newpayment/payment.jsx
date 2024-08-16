@@ -35,6 +35,7 @@ const Paymentfinal = () => {
     const [product, setProduct] = useState(process.env.REACT_APP_STRIPE_PRODUCT_ID_6_MONTHS);
     const [cardNumberValid, setCardNumberValid] = useState(null);
     const [matchmodal, setMatchmodal] = useState(false);
+    const [showModal, setshowmodal] = useState(false);
     const handleShow = () => setMatchmodal(true);
     const handleClose = () => setMatchmodal(false);
     const [key, setKey] = useState(0);
@@ -44,6 +45,10 @@ const Paymentfinal = () => {
     const [carderror, setCarderror] = useState("");
 
     const [showpaymentsuccess, setShowshowpaymentsuccess] = useState(false);
+    const Gotohomepage = ()=>{
+        setshowmodal(false);
+        navigate("/user/home")
+    }
     const rates = [
         "CAD",
         "USD",
@@ -148,14 +153,16 @@ const Paymentfinal = () => {
                         }
                     });
                 } else {
-                    alert.setModal({
-                        show: true,
-                        message: data.message,
-                        title: 'Success',
-                        onButtonClick: () => {
-                            window.location.assign('/user/home');
-                        }
-                    });
+                    setshowmodal(true);
+
+                    // alert.setModal({
+                    //     show: true,
+                    //     message: data.message,
+                    //     title: 'Success',
+                    //     onButtonClick: () => {
+                    //         window.location.assign('/user/home');
+                    //     }
+                    // });
                 }
             }
         } catch (error) {
@@ -715,6 +722,15 @@ const Paymentfinal = () => {
                     </div>
                 </Modal.Body>
             </Modal>
+            <Modal centered className="selfie-modal" show={showModal} onHide={() => setshowmodal(false)}>
+                    <Modal.Body className='selfie-modal-body'>
+                    Payment successful! Your myTamilDate subscription is now active.
+                       
+                        <button  className='global-save-button'  onClick={ Gotohomepage}>
+                        Okay
+                            </button>
+                    </Modal.Body>
+                </Modal>
 
             {/* <button onClick={handleShow}>Show Modal</button> */}
             {/* <CustomModal matchmodal={matchmodal} handleClose={handleClose} /> */}

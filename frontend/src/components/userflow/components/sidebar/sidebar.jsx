@@ -272,7 +272,7 @@ export default function Sidebar({ children }) {
                         <span style={{ fontSize: "16px" }}>Help & Support</span>
                     </div>
                     <div style={{ cursor: "pointer" }} 
-                    onClick={handleShowLogout}
+                    onClick={()=> setShowLogoutModal(true)}
                     // onClick={() => {
                     //     cookies.deleteCookie("token");
                     //     cookies.deleteCookie("approval");

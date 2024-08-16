@@ -1062,13 +1062,16 @@ export const AccountSetting = () => {
                                 />
                             </Form>
                         </Modal.Body>
-                        <Modal.Footer>
-                            <button className="btn-cancel" onClick={handleCloseName}>
+                        <Modal.Footer style={{
+                            gap : "30px"
+                        }}>
+                            
+                            <button className="global-cancel-button" onClick={handleCloseName}>
                                 Cancel
                             </button>
-                            <Button variant="primary" className="btn-save" onClick={handleSaveFirstLastName}>
+                            <button  className="global-save-button" onClick={handleSaveFirstLastName}>
                                 Save
-                            </Button>
+                            </button>
                         </Modal.Footer>
                     </Modal>
 
@@ -1106,7 +1109,7 @@ export const AccountSetting = () => {
                         </Modal.Body>
                         <Modal.Footer>
                             <div className="d-flex justify-content-center" style={{ width: "100%", gap: "30px" }}>
-                                <button className='global-red-cencel-button'
+                                <button className='global-cancel-button'
                                     onClick={handleCloseEmail}>
                                     Cancel
                                 </button>
@@ -1188,7 +1191,7 @@ export const AccountSetting = () => {
                                     </div>
                                 </Container>
                                 <div className="d-flex justify-content-center" style={{ width: "100%", gap: "30px" }}>
-                                    <button className='global-red-cencel-button' onClick={handleCloseEmailotp}>
+                                    <button className='global-cancel-button' onClick={handleCloseEmailotp}>
                                         Cancel
                                     </button>
                                     <button className="global-save-button" onClick={handleSubmitEmailotp}>
@@ -1251,14 +1254,14 @@ export const AccountSetting = () => {
                                         {errorMessagephoneupdate && <Form.Text className="text-danger error-message">{errorMessagephoneupdate}</Form.Text>}
                                         </div>
                                     </Form.Group>
-                                    <Container style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                    <Container style={{ display: "flex", justifyContent: "center", alignItems: "center" , gap : "30px" }}>
 
-                                        <button className="btn-cancel" onClick={handleClosephone}>
+                                        <button className="global-cancel-button" onClick={handleClosephone}>
                                             Cancel
                                         </button>
-                                        <Button variant="primary" className="btn-save" onClick={handleSubmitphone}>
+                                        <button  className="global-save-button" onClick={handleSubmitphone}>
                                             Save
-                                        </Button>
+                                        </button>
                                     </Container>
                                 </Form>
 
@@ -1335,13 +1338,16 @@ export const AccountSetting = () => {
                             <div className="pause-modal-message">
                                 Your profile will be hidden and other members will not be able to see or message you. You can reactivate your account anytime.
                             </div>
-                            <div className="d-flex justify-content-center">
-                                <Button variant="outline-danger" className="btn-no" onClick={handleClosePause}>
+                            <div className="d-flex justify-content-center" 
+                            style={{
+                                gap : "30px"
+                            }}>
+                                <button  className="global-cancel-button" onClick={handleClosePause}>
                                     No
-                                </Button>
-                                <Button variant="primary" className="btn-yes" onClick={handlePauseAccount}>
+                                </button>
+                                <button  className="global-save-button" onClick={handlePauseAccount}>
                                     Yes
-                                </Button>
+                                </button>
                             </div>
                         </Modal.Body>
                     </Modal>
@@ -1413,13 +1419,18 @@ export const AccountSetting = () => {
                                         onChange={() => setSelectedOption('option7')}
                                     />
                                 </div>
-                                <div className="d-flex justify-content-center">
-                                    <Button variant="outline-danger" className="btn-cancel-pause" onClick={handleClosePauseOption}>
+                                <div className="d-flex justify-content-center" style={{
+                                   gap : "3px"
+                                }}>
+                                    <button  className="global-cancel-button" onClick={handleClosePauseOption}>
                                         Cancel
-                                    </Button>
-                                    <Button variant="primary" className="btn-pause" onClick={PauseMyAccount}>
+                                    </button>
+
+                                    <button  style={{
+                                    width : "200px"
+                                }} className="global-save-button" onClick={PauseMyAccount}>
                                         Pause account
-                                    </Button>
+                                    </button>
                                 </div>
                             </Form>
                         </Modal.Body>
@@ -1433,13 +1444,15 @@ export const AccountSetting = () => {
                             <div className="pause-modal-message">
                                 Your account will not auto-renew and your service will be interrupted on the expiry date. Keep auto-renew for a seamless experience.
                             </div>
-                            <div className="d-flex justify-content-center">
-                                <Button variant="outline-danger" className="btn-no" onClick={handleCloseUnsubscribeEmail}>
+                            <div className="d-flex justify-content-center" style={{
+                                gap : "30px"
+                            }}>
+                                <button variant="outline-danger" className="global-cancel-button" onClick={handleCloseUnsubscribeEmail}>
                                     Cancel
-                                </Button>
-                                <Button variant="primary" className="btn-yes" onClick={handleUnsubscribeEmail}>
+                                </button>
+                                <button className="global-save-button" onClick={handleUnsubscribeEmail}>
                                     Keep
-                                </Button>
+                                </button>
                             </div>
                         </Modal.Body>
                     </Modal>
@@ -1455,20 +1468,22 @@ export const AccountSetting = () => {
                                 <p>Just need a break?</p>
                                 <p style={{ marginTop: "-10px" }}> Pause your account and hide your profile, and come back anytime.</p>
                             </div>
-                            <div className="d-flex justify-content-center">
-                                <Button variant="outline-danger" className="btn-no" onClick={handleCloseDeleteAccount}>
+                            <div className="d-flex justify-content-center" style={{
+                                gap : "30px"
+                            }}>
+                                <button  className="global-cancel-button" onClick={handleCloseDeleteAccount}>
                                     Cancel
-                                </Button>
-                                <Button style={{
-                                    backgroundColor: "#F7ECFF", color: "black", width: "140px", border: "none", borderRadius: "24px", boxshadow: "0px 4px 10px 0px #00000029"
+                                </button>
+                                <button style={{
+                                  fontWeight : "500",  padding: "12px 32px 12px 32px", fontSize : "16px", backgroundColor: "#F7ECFF", color: "black", width: "122px", border: "none", borderRadius: "24px", boxshadow: "0px 4px 10px 0px #00000029"
                                 }} onClick={handleShowPauseModel}>
                                     Pause
-                                </Button>
+                                </button>
                             </div>
                             <div style={{ marginTop: "20px" }}>
-                                <Button variant="primary" width="300px" className="btn-yes" onClick={handleDeleteAccount}>
+                                <button variant="primary" width="300px" className="global-save-button" onClick={handleDeleteAccount}>
                                     Delete
-                                </Button>
+                                </button>
                             </div>
                         </Modal.Body>
                     </Modal>
@@ -1498,13 +1513,19 @@ export const AccountSetting = () => {
                                         />
                                     ))}
                                 </div>
-                                <div className="d-flex justify-content-center">
-                                    <Button variant="outline-danger" className="btn-cancel-pause" onClick={handleCloseDeleteOption}>
-                                        Cancel
-                                    </Button>
-                                    <Button variant="primary" className="btn-pause" onClick={handleDeleteAccountOption}>
-                                        Delete account
-                                    </Button>
+                                <div className="d-flex justify-content-center" style={{
+                                    gap : "3px"
+                                }}>
+                                <button className="global-cancel-button" onClick={handleCloseFinalDelete}>
+                                    Cancel
+                                </button>
+                                    
+                                    <button style={{
+                                        width : "250px"
+                                    }}  className="global-next-btn" onClick={handleDeleteAccountOption}>
+                                    Delete account
+                                </button>
+                                    
                                 </div>
                             </Form>
                         </Modal.Body>
@@ -1516,13 +1537,17 @@ export const AccountSetting = () => {
                             <div className="pause-modal-message">
                                 You cannot recover your account once deleted, are you sure you want to delete your account?
                             </div>
-                            <div className="d-flex justify-content-center">
-                                <Button variant="outline-danger" className="btn-no" onClick={handleCloseFinalDelete}>
+                            <div className="d-flex justify-content-center" style={{
+                                    gap : "30px"
+                                }}>
+                            <button className="global-cancel-button" onClick={handleCloseFinalDelete}>
                                     Cancel
-                                </Button>
-                                <Button variant="primary" className="btn-yes" onClick={handleFinalDelete}>
+                                </button>
+                                
+                                <button  className="global-save-button" onClick={handleFinalDelete}>
                                     Delete
-                                </Button>
+                                </button>
+                                
                             </div>
                         </Modal.Body>
                     </Modal>
@@ -1538,13 +1563,15 @@ export const AccountSetting = () => {
                             <div className="pause-modal-message">
                                 You cannot recover your account once deleted, are you sure you want to delete your account?
                             </div>
-                            <div className="d-flex justify-content-center">
-                                <Button variant="outline-danger" className="btn-no" onClick={handleCloseFinalDetele}>
+                            <div className="d-flex justify-content-center" style={{
+                                gap : "30px"
+                            }}>
+                                <button className="global-cancel-button" onClick={handleCloseFinalDetele}>
                                     Cancel
-                                </Button>
-                                <Button variant="primary" className="btn-yes" onClick={handleFinalDelete}>
+                                </button>
+                                <button  className="global-save-button" onClick={handleFinalDelete}>
                                     Delete
-                                </Button>
+                                </button>
                             </div>
                         </Modal.Body>
                     </Modal>

@@ -11,7 +11,7 @@ import Sidebar from '../../../userflow/components/sidebar/sidebar';
 import answer from '../../../../assets/images/answer.png';
 import { useAlert } from '../../../../Context/AlertModalContext';
 const answers = [
-    "I invented mutton rolls. I’ve visited 5 countries. I can speak 2 languages.",
+    "I invented mutton rolls. I've visited 5 countries. I can speak 2 languages.",
     "Drive 12 hours to New York just to eat some amazing pizza.",
     "I’d buy my amma her dream home.",
     "Laugh at my bad jokes.",
