@@ -178,7 +178,7 @@ export const SignInPhoneOTP = () => {
                              }
                              else if(!result.Result[0].email_verified_at)
                              {
-                                 navigate('/almost-there');
+                                 navigate('/approve');
                              }
                          }
                              else {

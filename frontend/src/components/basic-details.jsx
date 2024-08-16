@@ -99,7 +99,44 @@ export const BasicDetails = () => {
     }
     setAge(age);
   };
+  
+  const updatePreferences = (calculatedAge) => {
+    let age_from = calculatedAge - 5;
+    let age_to = calculatedAge + 5;
 
+    // Ensure age_from is at least 18 if the user's age is less than 23
+    if (calculatedAge < 23) {
+        age_from = Math.max(age_from, 18);
+    }
+
+    const preferencesPayload = {
+        age_from,
+        age_to,
+    };
+
+    fetch(`${API_URL}customer/user/preferences/save/age`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(preferencesPayload),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.errors) {
+            setErrorMessage(data.errors.map(error => error.msg).join(', '));
+        } else {
+            console.log("Preferences updated successfully:", data);
+            navigate("/abtyourself"); // Redirect to the next page if needed
+        }
+    })
+    .catch(error => {
+        console.error('Error updating preferences:', error);
+        setErrorMessage('An error occurred while updating your preferences.');
+    });
+};
+  
   const handleSubmit = (e) => {
     e.preventDefault();
   
@@ -126,6 +163,8 @@ export const BasicDetails = () => {
       return;
     }
 
+    const calculatedage = dayjs().diff(dayjs(userDetails.birthday), 'years');
+
     fetch(`${API_URL}/customer/users/namedetails`, {
       method: 'PUT',
       headers: {
@@ -142,6 +181,7 @@ export const BasicDetails = () => {
           setErrorMessage('');
           console.log(data);
           navigate("/abtyourself");
+          updatePreferences(calculatedage);
         }
       })
       .catch(error => {

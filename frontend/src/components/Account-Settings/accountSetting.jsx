@@ -173,6 +173,16 @@ export const AccountSetting = () => {
     }, []);
 
     // update first Name and Last Name
+    const handleFirstNameChange = (e) => {
+        const value = e.target.value.replace(/[^a-zA-Z ]/g, ''); // Allows only letters and spaces
+        setFirstName(value);
+    };
+
+    // Function to handle input change for last name and filter out special characters
+    const handleLastNameChange = (e) => {
+        const value = e.target.value.replace(/[^a-zA-Z ]/g, ''); // Allows only letters and spaces
+        setLastName(value);
+    };
     const UpdateNameAndLastName = async () => {
         try {
             const response = await fetch(`${API_URL}/customer/setting/namedetails`, {
@@ -189,6 +199,7 @@ export const AccountSetting = () => {
             }
 
             const data = await response.json();
+            setCookie('Userfullname',firstName, 30 )
             console.log('Profile updated successfully:', data);
             // Optionally, you can handle success actions here, such as showing a success message
 
@@ -196,6 +207,7 @@ export const AccountSetting = () => {
             console.error('Error updating name:', error);
         }
     };
+
     const handleSaveFirstLastName = () => {
         UpdateNameAndLastName();
         fetchData();
@@ -755,7 +767,7 @@ export const AccountSetting = () => {
                                 <Container className='logo-arrow3'>
                                     <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
                                     <h1 className='account-setting-heading'>
-                                        Account Setting
+                                        Account Settings
                                     </h1>
                                 </Container>
 
@@ -1038,14 +1050,14 @@ export const AccountSetting = () => {
                                     type="text"
                                     placeholder="First name"
                                     value={firstName}
-                                    onChange={(e) => setFirstName(e.target.value)}
+                                    onChange={handleFirstNameChange}
                                     className="form-control-name"
                                 />
                                 <Form.Control
                                     type="text"
                                     placeholder="Last name"
                                     value={lastName}
-                                    onChange={(e) => setLastName(e.target.value)}
+                                    onChange={handleLastNameChange}
                                     className="form-control-name"
                                 />
                             </Form>

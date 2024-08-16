@@ -16,7 +16,6 @@ async function getUserFilters(userId: string) {
                 reject(err);
                 return;
             }
-
             resolve(result[0]);
         });
     });
@@ -857,7 +856,6 @@ userFlowRouter.put("/preferences/save/:field", async (req: UserRequest, res) => 
                         });
                         return;
                     }
-
                     res.status(200).send({ message: "Preferences updated" });
                 });
             });

@@ -109,6 +109,30 @@ export default function Matches() {
         }
     }
 
+    // useEffect(() => {
+    //     console.log("this from the mathc coomponent");
+    //     const handleNewMatch = ({ withUserId }) => {
+    //         console.log(`You have a new match with user ID: ${withUserId}`)
+    //         alert.setModal({
+    //             show: true,
+    //             title: "New Match!",
+    //             message: `You have a new match`,
+    //             onButtonClick: () => {
+    //                 // Optional: Redirect to the new match's profile or chat
+    //             }
+    //         });
+    //     };
+    
+    //     // Listen for the 'new-match' event from the server
+    //     socket?.on("new-match", handleNewMatch);
+    
+    //     // Clean up the event listener on component unmount
+    //     return () => {
+    //         socket?.off("new-match", handleNewMatch);
+    //     };
+    // });
+    
+
     useEffect(() => {
         (async () => {
             const response = await fetch(`${API_URL}customer/chat/get-conversations`, {
@@ -271,7 +295,7 @@ export default function Matches() {
                                             }}
                                         />
                                         <div>
-                                            <p>{conversation.first_name} {conversation.last_name}</p>
+                                            <p>{conversation.first_name} </p>
                                             <p style={{
                                                 filter: cookies.getCookie("isPremium") === "true" ? "none" : "blur(5px)",
                                             }}>{conversation.message}</p>

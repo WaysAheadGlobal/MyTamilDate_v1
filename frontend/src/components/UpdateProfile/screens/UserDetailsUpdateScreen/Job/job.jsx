@@ -165,10 +165,10 @@ export const JobTitleUpdate = () => {
                     {/* <Button variant="primary" type="submit" onClick={saveJobTitle} className='job-nxt-btn'>
                         Next
                     </Button> */}
-                    <div className="d-flex justify-content-center" style={{ position: "fixed", bottom: "30px", width: "100%" }}>
-    <Button variant="outline-danger" className="btn-no" onClick={()=> navigate('/updateprofile')}>
+                    <div className="d-flex justify-content-center" style={{gap : "30px", position: "fixed", bottom: "30px", width: "100%" }}>
+    <button className="global-cancel-button" onClick={()=> navigate('/updateprofile')}>
         Cancel
-    </Button>
+    </button>
     <Button  type="submit" variant="primary" className="btn-yes" onClick={saveJobTitle}>
         Save
     </Button>

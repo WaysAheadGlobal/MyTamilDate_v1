@@ -139,7 +139,62 @@ export default function PersonalityProfile() {
                                     ) : null}
                                 </div>
                                 <div style={{ maxHeight: "50vh", overflow: "auto" }}>
-                                    <div className="job-columns">
+                                <div className="job-columns" 
+                                style={{
+                                    marginTop: "12px",
+                                    marginBottom : "10px",
+                                    marginRight : "10px"
+                                }}>
+                                    {selectedPersonalities.map((personality, index) => (
+                                        <div
+                                            key={index}
+                                            className="job-item"
+                                            // onClick={() => {
+                                            //     if (selectedPersonalities.find(p => p.name === personality.name)) {
+                                            //         setSelectedPersonalities(selectedPersonalities.filter(p => p !== personality));
+                                            //     } else {
+                                            //         setSelectedPersonalities([...selectedPersonalities, personality]);
+                                            //     }
+                                            // }}
+                                            style={{
+                                                backgroundColor: selectedPersonalities.find(p => p.name === personality.name) ? "rgb(179 73 245)" : "transparent",
+                                                color: "#fff",
+                                                padding: "10px",
+                                               
+                                               
+                                                marginRight : "3px",
+                                                borderRadius: "5px",
+                                                cursor: "pointer",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "space-between"
+                                            }}
+                                        >
+                                            <span>{personality.name}</span>
+                                            <span
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setSelectedPersonalities(selectedPersonalities.filter(p => p !== personality));
+                                                }}
+                                                style={{
+                                                    cursor: "pointer",
+                                                    color: "#fff",
+                                                    backgroundColor: "gray",
+                                                    borderRadius: "50%",
+                                                    padding: "0 5px",
+                                                    marginTop: "-50px",
+                                                    marginRight: "-15px"
+                                                }}
+                                            >
+                                                ✖
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                                    <div className="job-columns"
+                                    style={{
+                                        marginRight : "10px"
+                                    }}>
                                         {filteredPersonality.map((personality, index) => (
                                             <div
                                                 key={index}

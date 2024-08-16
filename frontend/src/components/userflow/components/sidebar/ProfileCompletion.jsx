@@ -7,10 +7,11 @@ import { API_URL } from '../../../../api';
 function ProfileCompletion() {
     const [profileCompletion, setProfileCompletion] = useState(0)
     const [Profile, setProfileData] = useState({});
-    const { getCookie } = useCookies();
+    const { getCookie ,setCookie} = useCookies();
     const Navigate = useNavigate();
     const id = getCookie('userId')
     const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
+
     const [images, setImages] = useState({
         main: null,
         first: null,
@@ -86,7 +87,6 @@ function ProfileCompletion() {
                 }
             );
             const data = await response.json();
-
             if (response.ok) {
                 setProfileCompletion(data.completionPercentage);
                 console.log(profileCompletion);
@@ -111,6 +111,7 @@ function ProfileCompletion() {
 
             if (response.ok) {
                 setProfileData(data)
+                setCookie('Userfullname',data.Name, 30 )
                 console.log(data)
             }
         }
@@ -125,6 +126,8 @@ function ProfileCompletion() {
         ProfileDetails();
     }, []);
 
+    const Username = getCookie('Userfullname')
+
     return (
         <div className={styles.profile}>
             <div className={styles.imgContainer} style={{
@@ -136,7 +139,7 @@ function ProfileCompletion() {
             </div>
             <p style={{
                 fontSize: "18px"
-            }}>{Profile.Name}</p>
+            }}>{Username}</p>
             <p style={{
                 marginTop: "-0.5rem",
                 fontSize: "16px"

@@ -6,7 +6,11 @@
     padding: 0;
     list-style: none;
 }
-
+.likebox{
+    padding: 1rem;
+    background: linear-gradient(180deg, rgba(227, 193, 255, 0) 0%, rgba(227, 193, 255, 0) 18.86%, #4B164C 94%);
+border-radius: 12px;
+}
 .nav>li {
     cursor: pointer;
     flex-grow: 1;

@@ -8,6 +8,7 @@ import { io } from "../../..";
 import { checkPremium, getUnsubscribedGroups } from "../../../utils/utils";
 import MailService from "../../../../mail";
 import { UnsubscribeGroup } from "../../../enums/UnsubscribeGroupEnum";
+import { Server } from "socket.io";
 
 
 const matches = Router();
@@ -15,6 +16,38 @@ const matches = Router();
 const mailService = new MailService();
 
 matches.use(verifyUser);
+
+const handleNewMatch = async (userId: string, personId: string, io: Server) => {
+    // Check if a mutual match exists
+    const [match] = await db.promise().query<RowDataPacket[]>(`
+        SELECT 
+            m1.person_id
+        FROM 
+            matches m1 
+        WHERE 
+            m1.user_id = ? 
+            AND m1.\`like\` = 1 
+            AND m1.person_id IN (
+                SELECT 
+                    m2.user_id 
+                FROM 
+                    matches m2 
+                WHERE
+                    m2.person_id = m1.user_id
+            ) AND m1.person_id = ?;
+    `, [userId, personId]);
+
+    if (match.length > 0) {
+        // **A mutual match has occurred**
+
+        // **Notify both users via socket**
+        io.to(userId).emit('new-match', { withUserId: personId });
+        io.to(personId).emit('new-match', { withUserId: userId });
+
+        // Optionally, add additional logic like sending emails here
+    }
+};
+
 
 matches.get(
     "/",
@@ -179,6 +212,8 @@ matches.get(
     }
 );
 
+
+
 matches.get("/skipped", (req: UserRequest, res) => {
     const userId = req.userId;
 
@@ -198,10 +233,16 @@ matches.get("/skipped", (req: UserRequest, res) => {
             INNER JOIN media m ON m.user_id = ds.person_id AND m.type IN (1, 31)
             INNER JOIN locations l ON l.id = up.location_id
             INNER JOIN jobs j on j.id = up.job_id
-        WHERE ds.user_id = ? ORDER BY ds.created_at DESC;
+        WHERE ds.user_id = ? 
+        AND ds.person_id NOT IN (
+            SELECT person_id 
+            FROM matches 
+            WHERE \`like\` = 1 AND user_id = ?
+        )
+        ORDER BY ds.created_at DESC;
     `;
 
-    db.query<RowDataPacket[]>(query, [userId], (err, result) => {
+    db.query<RowDataPacket[]>(query, [userId, userId], (err, result) => {
         if (err) {
             res.status(500).send("Failed to get skipped");
             return;
@@ -210,6 +251,7 @@ matches.get("/skipped", (req: UserRequest, res) => {
         res.status(200).send(result);
     });
 });
+
 
 matches.get("/blocked", (req: UserRequest, res) => {
     const userId = req.userId;
@@ -260,6 +302,29 @@ matches.post("/block", (req: UserRequest, res) => {
         res.status(200).json({ message: "Person blocked" });
     });
 });
+
+matches.post("/unblock", (req: UserRequest, res) => {
+    const userId = req.userId;
+    const personId = req.body.personId;
+
+    const query = "DELETE FROM blocks WHERE user_id = ? AND person_id = ?";
+
+    db.query<ResultSetHeader>(query, [userId, personId], (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("Failed to unblock person");
+            return;
+        }
+
+        if (result.affectedRows > 0) {
+            io.to(userId!).emit("unblock", { personId: personId });
+            res.status(200).json({ message: "Person unblocked" });
+        } else {
+            res.status(404).json({ message: "Block not found" });
+        }
+    });
+});
+
 
 matches.get("/unmatch-reasons", (req: UserRequest, res) => {
     const query = "SELECT id, name FROM unmatches";
@@ -440,6 +505,8 @@ matches.post("/like", (req: UserRequest, res) => {
                             `${req.user?.first_name} also likes you ${user[0].first_name}!`,
                             `Message ${req.user?.first_name}`
                         );
+                         // Call the handleNewMatch function to check for and notify mutual matches
+                   await handleNewMatch(userId!, personId, io);
                     } catch (err) {
                         console.log(err);
                     }

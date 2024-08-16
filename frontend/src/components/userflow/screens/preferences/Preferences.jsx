@@ -53,7 +53,7 @@ const Forms = {
             </>
         )
     },
-    
+
     Location: ({ options, value, setValue, locationId }) => {
         const [selectedCountry, setSelectedCountry] = useState("");
         const [selectedCity, setSelectedCity] = useState("");
@@ -263,7 +263,6 @@ export default function Preferences() {
             });
             const data = await response.json();
             if (!data) return;
-
             console.log(data);
             setPreferences(data);
         })()
@@ -411,15 +410,23 @@ export default function Preferences() {
                             gap: "1rem",
                             marginInline: "auto"
                         }}>
-                            <Button type="button" style={{
-                                backgroundClip: "text",
-                                color: "transparent",
-                                border: "2px solid #fa806d",
-                                borderRadius: "9999px"
-                            }} onClick={() => setShow(false)}>Cancel</Button>
-                            <Button style={{
-                                borderRadius: "9999px"
-                            }}>Save</Button>
+                            <button type="button"
+                                className='global-cancel-button'
+                                // style={{
+                                //     backgroundClip: "text",
+                                //     color: "transparent",
+                                //     border: "2px solid #fa806d",
+                                //     borderRadius: "9999px"
+                                // }} 
+
+                                onClick={() => setShow(false)}>Cancel</button>
+                            <button
+                                className='global-save-button'
+                            // style={{
+                            //     borderRadius: "9999px"
+                            // }}
+
+                            >Save</button>
                         </div>
                     </form>
                 </Modal.Body>
@@ -679,7 +686,7 @@ function UpgradeModal({ show, setShow }) {
     const navigate = useNavigate();
 
     return (
-        <Modal size='sm' centered show={show}>
+        <Modal size='lg' centered show={show}>
             <Modal.Body>
                 <p style={{
                     fontSize: "large",
@@ -697,7 +704,7 @@ function UpgradeModal({ show, setShow }) {
                     }}
                 >Premium members can see who liked them, Send unlimited messages & more!</p>
                 <div style={{
-                    marginTop: "1rem",
+                    marginTop: "4rem",
                     display: "flex",
                     gap: "1rem",
                     marginInline: "auto",
@@ -707,10 +714,11 @@ function UpgradeModal({ show, setShow }) {
                         style={{
                             borderRadius: "9999px",
                             padding: "0.75rem 1.5rem",
-                            border: "2px solid #6c6c6c",
-                            color: "#6c6c6c",
-                            backgroundColor: "transparent"
+                            // border: "2px solid #6c6c6c",
+                            // color: "#6c6c6c",
+                            // backgroundColor: "transparent"
                         }}
+                        className='global-cancel-button'
                         onClick={() => setShow(false)}
                     >
                         Close
@@ -720,6 +728,8 @@ function UpgradeModal({ show, setShow }) {
                         style={{
                             borderRadius: "9999px",
                             padding: "0.75rem 1.5rem",
+                            fontSize: "16px",
+                            fontWeight: "600"
                         }}
                     >
                         Upgrade Now

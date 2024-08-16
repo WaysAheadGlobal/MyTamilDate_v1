@@ -40,7 +40,7 @@ export default function Recommendations() {
                                 cursor: "pointer",
                             }} onClick={() => navigate(`/user/${profile.first_name}/${profile.user_id}`)}>
                                 <div>
-                                    <p style={{ fontWeight: "600", fontSize: "large" }}>{profile.first_name} {profile.last_name}, {dayjs().diff(profile.birthday, 'year')}</p>
+                                    <p style={{ fontWeight: "600", fontSize: "large" }}>{profile.first_name} , {dayjs().diff(profile.birthday, 'year')}</p>
                                     <p>{profile.job}</p>
                                 </div>
                             </div>

@@ -13,7 +13,29 @@ const Icons = {
             </clipPath>
         </defs>
     </svg>,
-    like: <img src={ heartIcon} alt="" />  ,
+    like: <svg width="89" height="89" viewBox="0 0 89 89" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g filter="url(#filter0_d_4837_11711)">
+    <circle cx="44.5" cy="40.5" r="40.5" fill="url(#paint0_linear_4837_11711)"/>
+    </g>
+    <path d="M23.1855 33.1887C23.1855 21.5705 39.4858 17.2646 44.5013 30.7143C49.5169 17.2646 65.8171 21.5705 65.8171 33.1887C65.8171 45.8118 44.5013 61.8164 44.5013 61.8164C44.5013 61.8164 23.1855 45.8118 23.1855 33.1887Z" fill="white"/>
+    <defs>
+    <filter id="filter0_d_4837_11711" x="0" y="0" width="89" height="89" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+    <feOffset dy="4"/>
+    <feGaussianBlur stdDeviation="2"/>
+    <feComposite in2="hardAlpha" operator="out"/>
+    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4837_11711"/>
+    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_4837_11711" result="shape"/>
+    </filter>
+    <linearGradient id="paint0_linear_4837_11711" x1="44.5" y1="0" x2="44.5" y2="81" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#FC8C66"/>
+    <stop offset="1" stop-color="#F76A7B"/>
+    </linearGradient>
+    </defs>
+    </svg>
+      ,
     // like :  <svg width="84" height="83" viewBox="0 0 84 83" fill="none" xmlns="http://www.w3.org/2000/svg">
     // <g filter="url(#filter0_d_4810_11613)">
     // <g filter="url(#filter1_d_4810_11613)">
@@ -60,32 +82,34 @@ const Icons = {
     // </defs>
     // </svg>
 // ,    
-    skip: <svg width="56" height="60" viewBox="0 0 56 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g filter="url(#filter0_d_4850_11575)">
+    skip:<svg width="56" height="60" viewBox="0 0 56 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g filter="url(#filter0_d_4837_11716)">
     <circle cx="26" cy="26" r="26" fill="#F7ECFF"/>
     </g>
-    <g clip-path="url(#clip0_4850_11575)">
+    <g clip-path="url(#clip0_4837_11716)">
     <path d="M33.7692 20.6133L19 35.3825M19 20.6133L33.7692 35.3825" stroke="#CCCCCC" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
     <path d="M33.7692 20.6133L19 35.3825M19 20.6133L33.7692 35.3825" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
     <path d="M33.7692 20.6133L19 35.3825M19 20.6133L33.7692 35.3825" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
     <path d="M33.7692 20.6133L19 35.3825M19 20.6133L33.7692 35.3825" stroke="#664778" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <defs>
-    <filter id="filter0_d_4850_11575" x="-4" y="0" width="60" height="60" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+    <filter id="filter0_d_4837_11716" x="-4" y="0" width="60" height="60" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
     <feFlood flood-opacity="0" result="BackgroundImageFix"/>
     <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
     <feOffset dy="4"/>
     <feGaussianBlur stdDeviation="2"/>
     <feComposite in2="hardAlpha" operator="out"/>
     <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
-    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4850_11575"/>
-    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_4850_11575" result="shape"/>
+    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4837_11716"/>
+    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_4837_11716" result="shape"/>
     </filter>
-    <clipPath id="clip0_4850_11575">
+    <clipPath id="clip0_4837_11716">
     <rect width="17.2308" height="17.2308" fill="white" transform="translate(17 19.3867)"/>
     </clipPath>
     </defs>
     </svg>
+    
+    
     
     ,
     chat: <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">

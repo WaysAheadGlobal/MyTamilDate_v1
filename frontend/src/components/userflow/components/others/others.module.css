@@ -69,3 +69,15 @@
         font-size: smaller;
     }
 }
+.chatPlaceholder {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 31.2px;
+    text-align: center;
+}

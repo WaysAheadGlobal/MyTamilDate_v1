@@ -131,51 +131,60 @@ export default function Likes() {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        zIndex: 1000
+                        zIndex: 1000,
+                     
                     }}>
                         <div style={{
                             backgroundColor: "white",
-                            padding: "1rem",
+                         
                             borderRadius: "1rem",
-                            maxWidth: "300px",
+                            maxWidth: "330px",
                         }}>
                             <p style={{
-                                fontSize: "large",
+                                fontSize: "20px",
                                 fontWeight: "600",
                                 margin: "0",
-                                marginBottom: "1rem",
-                                color: "#6c6c6c",
-                                textAlign: "center"
-                            }}>Upgrade and unlock this feature</p>
-                            <p
-                                style={{
-                                    fontSize: "14px",
-                                    margin: "0",
-                                    textAlign: "center",
-                                    color: "#6c6c6c"
-                                }}
-                            >
-                                Ready to unlock unlimited messages & ignite a connection? Upgrade now & see who sent you 3 exciting new requests!
-                            </p>
-                            <div style={{
-                                marginTop: "1rem",
-                                display: "flex",
-                                gap: "1rem",
-                                marginInline: "auto",
-                                width: "fit-content"
-                            }}>
-                                <Button
-                                    onClick={() => {
-                                        navigate("/selectplan");
-                                    }}
+                               
+                                color: "#424242",
+                                textAlign: "center",
+                                fontStyle: "Poppins",
+                                padding: "1rem",
+
+                            }}>Upgrade to Premium & 
+                                Unlock Exclusive Features</p>
+                            <div className={styles.likebox}>
+                                <p
                                     style={{
-                                        borderRadius: "9999px",
-                                        padding: "0.75rem 1.5rem",
+                                        fontSize: "16px",
+                                        margin: "0",
+                                        textAlign: "center",
+                                        color: "#515151",
+                                        fontStyle: "Poppins",
+                                       fontWeight : "400"
+
                                     }}
                                 >
-                                    Upgrade Now
-                                </Button>
+                                   As a Premium member, you can send unlimited messages, see who liked you, view all matches, access special events, and much more!
+                                </p>
+                                <div style={{
+                                    marginTop: "2rem",
+                                    display: "flex",
+                                    gap: "1rem",
+                                    marginInline: "auto",
+                                    width: "fit-content"
+                                }}>
+                                    <div>
+                                        <button className='global-next-btn' style={{
+                                            background: "#fff",
+                                            color: "#F76A7B",
+                                        }}>
+                                            Upgrade Now
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
+
+
                         </div>
                     </div>
                 )
@@ -235,7 +244,7 @@ export default function Likes() {
                     Array.isArray(likes) && likes.map((like, i) => (
                         <div
                             key={i}
-                            className={(selected === like.user_id ? styles.selected : "" ) + " like"}
+                            className={(selected === like.user_id ? styles.selected : "") + " like"}
                             style={{
                                 backgroundImage: `url(${getImageURL(like.type, like.hash, like.extension, like.user_id)})`,
                                 backgroundSize: 'cover',
@@ -314,7 +323,7 @@ export default function Likes() {
                                 )
                             }
                             <div>
-                                <p>{like.first_name} {like.last_name}</p>
+                                <p>{like.first_name}</p>
                                 <p>{like.job}, {like.country}</p>
                             </div>
                         </div>

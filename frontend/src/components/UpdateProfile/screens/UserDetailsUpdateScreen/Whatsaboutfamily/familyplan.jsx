@@ -214,7 +214,7 @@ export default function KidsAndFamilyUpdate() {
                             Next
                         </Button>
                     </div> */}
-                    <div className="d-flex justify-content-center" style={{ position: "fixed", bottom: "30px", width: "100%" }}>
+                    <div className="d-flex  justify-content-center" style={{gap : "40px", position: "fixed", bottom: "30px", width: "100%" }}>
     <button className="global-cancel-button" onClick={()=> navigate('/updateprofile')}>
         Cancel
     </button>

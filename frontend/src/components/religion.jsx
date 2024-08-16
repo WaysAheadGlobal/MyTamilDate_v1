@@ -88,21 +88,72 @@ export const Religion = () => {
         });
     };
 
-    const handleReligionClick = (e) => {
-        e.preventDefault();
-              if(!selectedReligion){
-                setErrorMessege("*Please make a selection.")
-                return;
-              }
-              if(selectedLanguages.length <1){
-                setLErrorMessege("*Please make a selection.")
-                return;
-              }
+    // const handleReligionClick = (e) => {
+    //     e.preventDefault();
+    //           if(!selectedReligion){
+    //             setErrorMessege("*Please make a selection.")
+    //             return;
+    //           }
+    //           if(selectedLanguages.length <1){
+    //             setLErrorMessege("*Please make a selection.")
+    //             return;
+    //           }
              
 
-        const religionId = allReligions.find(r => r.name === selectedReligion)?.id;
+    //     const religionId = allReligions.find(r => r.name === selectedReligion)?.id;
 
+    //     if (religionId) {
+    //         fetch(`${API_URL}/customer/users/religions`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${getCookie('token')}`
+    //             },
+    //             body: JSON.stringify({ religionId }),
+    //         })
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 console.log('Religion updated successfully:', data);
+    //                 navigate("/edu");
+    //             })
+    //             .catch(error => {
+    //                 console.error('Error updating religion:', error);
+    //             });
+    //     }
+    //     console.log(selectedLanguages)
+    //     fetch(`${API_URL}customer/users/language`, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${getCookie('token')}`
+    //         },
+            
+    //         body: JSON.stringify({ languages: selectedLanguages }),
+    //     })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             console.log('Languages updated successfully:', data);
+    //         })
+    //         .catch(error => {
+    //             console.error('Error updating languages:', error);
+    //         });
+    // };
+   
+    const handleReligionClick = (e) => {
+        e.preventDefault();
+        if (!selectedReligion) {
+            setErrorMessege("*Please make a selection.");
+            return;
+        }
+        if (selectedLanguages.length < 1) {
+            setLErrorMessege("*Please make a selection.");
+            return;
+        }
+    
+        const religionId = allReligions.find(r => r.name === selectedReligion)?.id;
+    
         if (religionId) {
+            // Update religion
             fetch(`${API_URL}/customer/users/religions`, {
                 method: 'POST',
                 headers: {
@@ -114,30 +165,42 @@ export const Religion = () => {
                 .then(response => response.json())
                 .then(data => {
                     console.log('Religion updated successfully:', data);
+    
+                    // Update preferences with the selected religion ID
+                    return fetch(`${API_URL}customer/user/preferences/save/religion_id`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${getCookie('token')}`
+                        },
+                        body: JSON.stringify({ value: religionId })
+                    });
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Preferences updated successfully:', data);
+    
+                    // Update languages
+                    return fetch(`${API_URL}/customer/users/language`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${getCookie('token')}`
+                        },
+                        body: JSON.stringify({ languages: selectedLanguages }),
+                    });
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Languages updated successfully:', data);
                     navigate("/edu");
                 })
                 .catch(error => {
-                    console.error('Error updating religion:', error);
+                    console.error('Error:', error);
                 });
         }
-        console.log(selectedLanguages)
-        fetch(`${API_URL}customer/users/language`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getCookie('token')}`
-            },
-            
-            body: JSON.stringify({ languages: selectedLanguages }),
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Languages updated successfully:', data);
-            })
-            .catch(error => {
-                console.error('Error updating languages:', error);
-            });
     };
+    
 
     return (
         <div className='religion-container'>

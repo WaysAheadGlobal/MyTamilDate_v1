@@ -41,9 +41,9 @@ const Paymentfinal = () => {
     const stripe = useStripe();
     const elements = useElements();
     const searchParams = useSearchParams();
-    const[carderror, setCarderror] = useState("");
-   
-    const[showpaymentsuccess, setShowshowpaymentsuccess] = useState(false);
+    const [carderror, setCarderror] = useState("");
+
+    const [showpaymentsuccess, setShowshowpaymentsuccess] = useState(false);
     const rates = [
         "CAD",
         "USD",
@@ -327,7 +327,7 @@ const Paymentfinal = () => {
                 flexDirection: "column",
                 gap: "1rem",
                 overflowY: "auto",
-               
+
                 width: "-webkit-fill-available",
             }}>
                 <div className={pay.maincontainer}>
@@ -458,9 +458,11 @@ const Paymentfinal = () => {
 
 
                                     <p>
-                                        Subtotal :${selectedCard === 0 ? `${price.m1.total}` : selectedCard === 2 ? `${price.m3.total}` : `${price.m6.total}`} {selectedCurrency}
+                                        Subtotal : ${selectedCard === 0 ? `${price.m1.total}` : selectedCard === 2 ? `${price.m3.total}` : `${price.m6.total}`} {selectedCurrency}
                                     </p>
-                                    <p>
+                                    <p style={{
+                                        marginLeft: "27px"
+                                    }}>
                                         Total : ${selectedCard === 0 ? `${price.m1.total}` : selectedCard === 2 ? `${price.m3.total}` : `${price.m6.total}`} {selectedCurrency}
                                     </p>
                                 </div>
@@ -522,8 +524,8 @@ const Paymentfinal = () => {
 
                                                 </div>
                                                 <div>
-                                                
-                                                {carderror && <p className="text-danger error-message">{carderror}</p>}
+
+                                                    {carderror && <p className="text-danger error-message">{carderror}</p>}
                                                 </div>
 
                                                 {
@@ -585,7 +587,16 @@ const Paymentfinal = () => {
                                             </p>
 
                                             <p className={pay.textmuted}>
-                                                Your subscription will automatically renew for the same package length at the same price until you cancel in settings in your MTD account. By subscribing, you agree to our <a className={pay.termandconditons} onClick={() => navigate("/termandconditions")} >terms of service</a>.
+                                                Your subscription will automatically renew for the same package length at the same price until you cancel in settings in your MTD account. By subscribing, you agree to our 
+                                                <a
+                                                    className={pay.termandconditons}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        window.open("/termandconditions", "_blank");
+                                                    }}
+                                                >
+                                                     {" "}terms of service
+                                                </a>.
                                             </p>
 
                                             <div className={pay.subscribeButtonContainer}>
@@ -626,7 +637,7 @@ const Paymentfinal = () => {
                                     <Carousel.Caption className={styles.carouselCaption}>
                                         <h5>Premium Membership Benefits</h5>
                                         <ul>
-                                        <li>Access all premium filters to help you zone in on the exact matches you’re looking for</li>
+                                            <li>Access all premium filters to help you zone in on the exact matches you’re looking for</li>
                                             {/* <li>Send & receive special requests to members you haven’t matched with and stand out</li>
                                             <li>Undo matches you’ve passed on if you change your mind</li> */}
                                         </ul>
@@ -637,8 +648,8 @@ const Paymentfinal = () => {
                                     <Carousel.Caption className={styles.carouselCaption}>
                                         <h5>Premium Membership Benefits</h5>
                                         <ul>
-                                        <li>Send & receive special requests to members you haven’t matched with and stand out</li>
-                                        <li>Undo matches you’ve passed on if you change your mind</li>
+                                            <li>Send & receive special requests to members you haven’t matched with and stand out</li>
+                                            <li>Undo matches you’ve passed on if you change your mind</li>
                                         </ul>
                                     </Carousel.Caption>
                                 </Carousel.Item>
@@ -692,7 +703,7 @@ const Paymentfinal = () => {
                                 setShow(false);
                             }}
                         >
-                            Cancal
+                            Cancel
                         </button>
 
                         <button

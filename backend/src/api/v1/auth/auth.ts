@@ -548,13 +548,13 @@ auth.get("/verify/:token", async (req, res) => {
                             return res.status(500).send('Internal Server Error');
                         }
 
-                        db.query('SELECT first_name FROM users WHERE id = ?', [user_id], async (err, result:any) => {
+                        db.query('SELECT first_name FROM user_profiles WHERE id = ?', [user_id], async (err, result:any) => {
                             if (err) {
                                 console.error('Error fetching user data:', err);
                                 return res.status(500).json({ message: 'Internal Server Error' });
                             }
 
-                            const name = result[0].first_name;
+                            const name = result.first_name;
 
                             let html;
                             try {

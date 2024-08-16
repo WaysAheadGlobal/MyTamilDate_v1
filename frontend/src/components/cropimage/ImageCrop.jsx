@@ -42,10 +42,11 @@ const ImageCrop = forwardRef(({ url, onCropComplete,handleCropSave }, ref) => {
     const canvas = document.createElement('canvas');
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
-    canvas.width = crop.width;
-    canvas.height = crop.height;
+    
+    canvas.width = crop.width * scaleX;
+    canvas.height = crop.height * scaleY;
     const ctx = canvas.getContext('2d');
-
+  
     ctx.drawImage(
       image,
       crop.x * scaleX,
@@ -54,20 +55,25 @@ const ImageCrop = forwardRef(({ url, onCropComplete,handleCropSave }, ref) => {
       crop.height * scaleY,
       0,
       0,
-      crop.width,
-      crop.height
+      canvas.width,
+      canvas.height
     );
-
+  
     return new Promise((resolve, reject) => {
-      canvas.toBlob((blob) => {
-        if (!blob) {
-          console.error('Canvas is empty');
-          return;
-        }
-        resolve(blob);
-      }, 'image/jpeg');
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            console.error('Canvas is empty');
+            return;
+          }
+          resolve(blob);
+        },
+        'image/jpeg',
+        1 // Setting the image quality to 1 (maximum quality)
+      );
     });
   };
+  
 
   const handleSubmit = async () => {
     if (imgRef.current) {

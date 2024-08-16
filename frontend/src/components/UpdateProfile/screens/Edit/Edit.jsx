@@ -259,18 +259,23 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
 <Link to="/updategender">
   <Carddetails icon={gender }title="Gender" detail={Profile.Gender ? Profile.Gender : "N/A"} />
 </Link>
+<Link to = "/wantgender">
+  <Carddetails icon={intersts }title="Interests" detail={Profile.PreferredGender ? Profile.PreferredGender : "N/A"} />
+</Link>
   <Link to="/updatelocations">
   <Carddetails icon={locationedit }title="Location" detail={Profile.Country ? Profile.Country : "N/A" }  />
   </Link>
   <Link to = "/updatereligion">
   <Carddetails icon={relisionedit } title="Religion" detail={Profile.Religion ? Profile.Religion : "N/A"} />
   </Link>
-  <Link to = "/updateeducations">
-  <Carddetails icon={educationedit }title="Education" detail={Profile.StudyField ? Profile.StudyField : "N/A"} />
-  </Link>
+  
+  
    </div>
 
    <div>
+    {
+      
+      !expandsall &&
    <button className={edit.upgradebutton} onClick={expandall}>Expand All <span style={{marginLeft : "10px"}}>
    {
     expandsall ?  <svg width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -281,17 +286,20 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
 
    }
   
-
+  
     </span> </button>
 
 
-
+}
    </div>
 {
  expandsall ? 
 
 
    <div>
+    <Link to = "/updateeducations">
+  <Carddetails icon={educationedit }title="Education" detail={Profile.StudyField ? Profile.StudyField : "N/A"} />
+  </Link>
     <Link to="/updatejob">
    <Carddetails icon={carear }title="Career" detail={Profile.JobTitle
  ? Profile.JobTitle

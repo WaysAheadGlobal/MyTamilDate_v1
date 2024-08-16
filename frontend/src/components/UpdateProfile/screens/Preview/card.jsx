@@ -321,11 +321,10 @@ export default function Card({ show, ...props }) {
                             <Dropdown.Toggle
                                 as="div"
                             >
-                                <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M16.8117 6.78086C16.8117 6.08425 16.247 5.51953 15.5504 5.51953C14.8538 5.51953 14.2891 6.08425 14.2891 6.78086C14.2891 7.47748 14.8538 8.0422 15.5504 8.0422C16.247 8.0422 16.8117 7.47748 16.8117 6.78086Z" stroke="white" stroke-width="1.892" stroke-linecap="round" stroke-linejoin="round" />
-                                    <path d="M16.8117 15.6102C16.8117 14.9136 16.247 14.3489 15.5504 14.3489C14.8538 14.3489 14.2891 14.9136 14.2891 15.6102C14.2891 16.3068 14.8538 16.8715 15.5504 16.8715C16.247 16.8715 16.8117 16.3068 16.8117 15.6102Z" stroke="white" stroke-width="1.892" stroke-linecap="round" stroke-linejoin="round" />
-                                    <path d="M16.8117 24.4395C16.8117 23.7429 16.247 23.1782 15.5504 23.1782C14.8538 23.1782 14.2891 23.7429 14.2891 24.4395C14.2891 25.1361 14.8538 25.7009 15.5504 25.7009C16.247 25.7009 16.8117 25.1361 16.8117 24.4395Z" stroke="white" stroke-width="1.892" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
+                               <svg width="21" height="23" viewBox="0 0 21 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1 3.33333L8 3.33333M8 3.33333C8 4.622 9.04467 5.66667 10.3333 5.66667C11.622 5.66667 12.6667 4.622 12.6667 3.33333M8 3.33333C8 2.04467 9.04467 1 10.3333 1C11.622 1 12.6667 2.04467 12.6667 3.33333M12.6667 3.33333L19.6667 3.33333M1 11.5H15M15 11.5C15 12.7887 16.0447 13.8333 17.3333 13.8333C18.622 13.8333 19.6667 12.7887 19.6667 11.5C19.6667 10.2113 18.622 9.16667 17.3333 9.16667C16.0447 9.16667 15 10.2113 15 11.5ZM5.66667 19.6667H19.6667M5.66667 19.6667C5.66667 18.378 4.622 17.3333 3.33333 17.3333C2.04467 17.3333 1 18.378 1 19.6667C1 20.9553 2.04467 22 3.33333 22C4.622 22 5.66667 20.9553 5.66667 19.6667Z" stroke="white" stroke-width="2" stroke-linecap="round"/>
+</svg>
+
                             </Dropdown.Toggle>
                             <Dropdown.Menu style={{
                                 backgroundColor: "rgba(255, 255, 255, 0.1)",
@@ -336,7 +335,7 @@ export default function Card({ show, ...props }) {
                                     as="button"
                                     className='dropdown-hover-button'
                                     style={{
-                                        borderBottom: "1px solid #8b807f",
+                                        // borderBottom: "1px solid #8b807f",
                                         marginBottom: "0.5rem",
                                         color: "white"
                                     }}
@@ -347,7 +346,7 @@ export default function Card({ show, ...props }) {
                                 >
                                     Preferences
                                 </Dropdown.Item>
-                                <Dropdown.Item
+                                {/* <Dropdown.Item
                                     as="button"
                                     className='dropdown-hover-button'
                                     style={{
@@ -376,7 +375,7 @@ export default function Card({ show, ...props }) {
                                     }}
                                 >
                                     Block
-                                </Dropdown.Item>
+                                </Dropdown.Item> */}
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>

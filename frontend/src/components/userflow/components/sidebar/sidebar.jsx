@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { API_URL } from '../../../../api';
+import { useSocket } from '../../../../Context/SockerContext';
 import logo from "../../../../assets/images/MTDlogo.png";
 import heartLogo from "../../../../assets/images/heart-logo.png";
 import { useCookies } from '../../../../hooks/useCookies';
+import { useAlert } from '../../../../Context/AlertModalContext';
+
 import Navbar from '../navbar/Navbar';
 import styles from './sidebar.module.css';
 import Suggestions from './suggestions';
 import ProfileCompletion from './ProfileCompletion';
 import { Modal } from 'react-bootstrap';
+import LogoutModal from '../../../Account-Settings/logout';
 
 export default function Sidebar({ children }) {
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [isTablet, setIsTablet] = useState(false);
     const [Rejected, setRejected] = useState(false);
@@ -19,14 +24,56 @@ export default function Sidebar({ children }) {
     const suffix = pathname.at(-1);
     const navigate = useNavigate();
     const cookies = useCookies();
+    const { socket } = useSocket();
+    const alert = useAlert();
     const RejectedorNot = cookies.getCookie('approval');
     const [showRejectedModal, setShowRejectedModal] = useState(false);
-     
+    const handleShowLogout = () => setShowLogoutModal(true);
+    const handleCloseLogout = () => setShowLogoutModal(false);
+    const handleLogout = () => {
+        cookies.deleteCookie("token");
+        cookies.deleteCookie("approval");
+        cookies.deleteCookie("isPremium");
+        navigate("/");
+        setShowLogoutModal(false);
+    };
     useEffect(() => {
         if (RejectedorNot === 'REJECTED') {
             setRejected(true);
         }
     }, []);
+
+    useEffect(() => {
+        if (!socket) {
+            console.log("Socket is not initialized.");
+            return;
+        }
+    
+        const handleNewMatch = ({ withUserId }) => {
+            console.log("New match event received:", withUserId);
+            alert.setModal({
+                show: true,
+                title: "New Match!",
+                message: `You have a new match`,
+                onButtonClick: () => {
+                    // Optional: Redirect to the new match's profile or chat
+                }
+            });
+        };
+    
+        console.log("Setting up 'new-match' listener.");
+    
+        // Listen for the 'new-match' event from the server
+        socket.on("new-match", handleNewMatch);
+    
+        // Clean up the event listener on component unmount
+        return () => {
+            console.log("Cleaning up 'new-match' listener.");
+            socket.off("new-match", handleNewMatch);
+        };
+    }, [socket]);
+    
+    
 
     const noNavbarRoutes = [
         '/updatelocations',
@@ -224,12 +271,15 @@ export default function Sidebar({ children }) {
                         </svg>
                         <span style={{ fontSize: "16px" }}>Help & Support</span>
                     </div>
-                    <div style={{ cursor: "pointer" }} onClick={() => {
-                        cookies.deleteCookie("token");
-                        cookies.deleteCookie("approval");
-                        cookies.deleteCookie("isPremium");
-                        window.location.replace("/");
-                    }}>
+                    <div style={{ cursor: "pointer" }} 
+                    onClick={handleShowLogout}
+                    // onClick={() => {
+                    //     cookies.deleteCookie("token");
+                    //     cookies.deleteCookie("approval");
+                    //     cookies.deleteCookie("isPremium");
+                    //     window.location.replace("/");
+                    // }}
+                    >
                         <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M17.4974 5.16797H20.9974C22.2861 5.16797 23.3307 6.21264 23.3307 7.5013V21.5013C23.3307 22.79 22.2861 23.8346 20.9974 23.8346H17.4974M9.33073 9.83464L4.66406 14.5013M4.66406 14.5013L9.33073 19.168M4.66406 14.5013L18.6641 14.5013" stroke="#515151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
@@ -247,6 +297,11 @@ export default function Sidebar({ children }) {
                 <Suggestions Rejected={Rejected} />
 
             </aside>
+            <LogoutModal
+                        showLogoutModal={showLogoutModal}
+                        handleCloseLogout={handleCloseLogout}
+                        handleLogout={handleLogout}
+                    />
         </section>
     )
 }

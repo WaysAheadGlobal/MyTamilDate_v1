@@ -46,7 +46,7 @@ export const AbtYourself = () => {
         setMaleSvgColor('#8457A8');
         setNonBinarySvgColor('#AAAAAA');
         setHavegender(1);
-    };
+    }; 
 
     const handleNonBinaryButtonClick = () => {
         setFemaleActive(false);
@@ -67,42 +67,66 @@ export const AbtYourself = () => {
     };
 
     const handleSubmit = async (event) => {
-        setHaveErrorMessage("")
-        setWantHaveErrorMessage("")
+        setHaveErrorMessage("");
+        setWantHaveErrorMessage("");
         event.preventDefault();
-        if(!havegender){
-            setHaveErrorMessage("*Please make a selection.")
+    
+        // Validate user input
+        if (!havegender) {
+            setHaveErrorMessage("*Please make a selection.");
             return;
         }
-        if(!wantGender ){
-            setWantHaveErrorMessage("*Please make a selection.")
+        if (!wantGender) {
+            setWantHaveErrorMessage("*Please make a selection.");
             return;
         }
+    
         try {
-            const response = await fetch(`${API_URL}/customer/users/gender`, {
+            // Update the preference with the want_gender_id
+            const preferenceResponse = await fetch(`${API_URL}customer/user/preferences/save/gender_id`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${getCookie('token')}`
                 },
-                body: JSON.stringify({
-                    gender: havegender,
-                    want_gender: wantGender
-                })
+                body: JSON.stringify({ value: wantGender })
             });
     
-            const result = await response.json();
-            console.log('Response status:', response.status);
-            console.log('Response body:', result);
+            const preferenceResult = await preferenceResponse.json();
     
-            if (response.ok) {
-                navigate("/selfie");
-            } 
+            if (preferenceResponse.ok) {
+                console.log('Preference updated successfully:', preferenceResult);
+    
+                // Update gender and want_gender
+                const response = await fetch(`${API_URL}/customer/users/gender`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getCookie('token')}`
+                    },
+                    body: JSON.stringify({
+                        gender: havegender,
+                        want_gender: wantGender
+                    })
+                });
+    
+                const result = await response.json();
+    
+                if (response.ok) {
+                    console.log('Gender and want_gender updated successfully:', result);
+                    navigate("/selfie");
+                } else {
+                    console.error('Error updating gender:', result.message);
+                }
+            } else {
+                console.error('Error updating preferences:', preferenceResult.message);
+            }
         } catch (error) {
             console.error('Error:', error);
-            // setErrorMessage('Error updating profile');
         }
     };
+    
+    
 
     useEffect(() => {
         const fetchData = async () => {

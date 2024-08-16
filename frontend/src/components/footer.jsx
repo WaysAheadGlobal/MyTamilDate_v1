@@ -55,7 +55,7 @@ export const Footer = () => {
                     </div>
 
                     <div className='flinks'>
-                        <span className="link-heading">Social Links</span>
+                        <span className="link-heading">Connect with us!</span>
 
                         <div className='social '>
                             <a href="http://www.youtube.com/@mytamildate1279" className='linkf'>

@@ -469,7 +469,7 @@ function ReportModal({ show, setShow }) {
         <Modal size='sm' centered show={show}>
             <Modal.Body>
                 <p style={{
-                    fontSize: "large",
+                    fontSize: "20px",
                     fontWeight: "600",
                     margin: "0",
                     marginBottom: "1rem",
@@ -477,7 +477,7 @@ function ReportModal({ show, setShow }) {
                 }}>Report user?</p>
                 <p
                     style={{
-                        fontSize: "14px",
+                        fontSize: "16px",
                         margin: "0",
                         textAlign: "center",
                         color: "#6c6c6c"
@@ -500,7 +500,7 @@ function ReportModal({ show, setShow }) {
                                 gap: "1rem",
                                 alignItems: "center",
                                 justifyContent: "flex-start",
-                                fontSize: "14px",
+                                fontSize: "16px",
                                 textAlign: "left",
                                 color: "#6c6c6c"
                             }}>
@@ -528,27 +528,29 @@ function ReportModal({ show, setShow }) {
                 }}>
                     <button
                         type='button'
-                        style={{
-                            borderRadius: "9999px",
-                            padding: "0.75rem 1.5rem",
-                            border: "2px solid #6c6c6c",
-                            color: "#6c6c6c",
-                            backgroundColor: "transparent"
-                        }}
+                               className='global-cancel-button'
+                        // style={{
+                        //     borderRadius: "9999px",
+                        //     padding: "0.75rem 1.5rem",
+                        //     border: "2px solid #6c6c6c",
+                        //     color: "#6c6c6c",
+                        //     backgroundColor: "transparent"
+                        // }}
                         onClick={() => setShow(false)}
                     >
                         Close
                     </button>
-                    <Button
+                    <button
                         type="submit"
-                        style={{
-                            borderRadius: "9999px",
-                            padding: "0.75rem 1.5rem",
-                        }}
+                           className='global-save-button'
+                        // style={{
+                        //     borderRadius: "9999px",
+                        //     padding: "0.75rem 1.5rem",
+                        // }}
                         onClick={() => formRef.current?.requestSubmit()}
                     >
                         Submit
-                    </Button>
+                    </button>
                 </div>
             </Modal.Body>
         </Modal>
@@ -586,7 +588,7 @@ function BlockModal({ show, setShow }) {
         <Modal size='sm' centered show={show}>
             <Modal.Body>
                 <p style={{
-                    fontSize: "large",
+                    fontSize: "20px",
                     fontWeight: "600",
                     margin: "0",
                     marginBottom: "1rem",
@@ -594,40 +596,42 @@ function BlockModal({ show, setShow }) {
                 }}>Block user</p>
                 <p
                     style={{
-                        fontSize: "14px",
+                        fontSize: "16px",
                         margin: "0",
                         textAlign: "center",
                         color: "#6c6c6c"
                     }}
                 >Blocked members will no longer be able to message you and won't show up when you're browsing</p>
                 <div style={{
-                    marginTop: "1rem",
+                    marginTop: "3rem",
                     display: "flex",
                     gap: "1rem",
                     marginInline: "auto",
                 }}>
                     <button
                         type='button'
-                        style={{
-                            borderRadius: "9999px",
-                            padding: "0.75rem 1.5rem",
-                            border: "2px solid #6c6c6c",
-                            color: "#6c6c6c",
-                            backgroundColor: "transparent"
-                        }}
+                        className='global-cancel-button'
+                        // style={{
+                        //     borderRadius: "9999px",
+                        //     padding: "0.75rem 1.5rem",
+                        //     border: "2px solid #6c6c6c",
+                        //     color: "#6c6c6c",
+                        //     backgroundColor: "transparent"
+                        // }}
                         onClick={() => setShow(false)}
                     >
                         Close
                     </button>
-                    <Button
+                    <button
                         onClick={block}
-                        style={{
-                            borderRadius: "9999px",
-                            padding: "0.75rem 1.5rem",
-                        }}
+                         className='global-save-button'
+                        // style={{
+                        //     borderRadius: "9999px",
+                        //     padding: "0.75rem 1.5rem",
+                        // }}
                     >
                         Submit
-                    </Button>
+                    </button>
                 </div>
             </Modal.Body>
         </Modal>
