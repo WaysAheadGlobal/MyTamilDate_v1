@@ -142,6 +142,7 @@
     align-Items: center;
 gap: 1rem;
     background-Color: white;
+    
   }
 
 .personalityContainer {
@@ -173,5 +174,6 @@ gap: 1rem;
 @media screen and (max-width: 768px) {
     .bottomoptions{
       bottom: -13px;
+
     }
 }

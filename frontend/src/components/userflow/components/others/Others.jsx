@@ -14,14 +14,18 @@ export default function Others() {
     const [profiles, setProfiles] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [selectedPersonId, setSelectedPersonId] = useState(null);
+    const [text, setText] = useState("");
+    
     const cookies = useCookies();
-
+    
     const getImageURL = (type, hash, extension, userId) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}` : `${API_URL}media/avatar/${hash}.${extension}`;
-
+   
     useEffect(() => {
         setProfiles([]);
         (async () => {
             const path = searchParams[0].get("t") === "b" ? "blocked" : "skipped";
+            const textshow = searchParams[0].get("t") === "b" ? "You haven’t blocked any members" : "You haven’t skipped any members";
+            setText(textshow);
             try {
                 setLoading(true);
                 const response = await fetch(`${API_URL}customer/matches/${path}`, {
@@ -73,7 +77,7 @@ export default function Others() {
                 Array.isArray(profiles) && !loading && profiles.length === 0 && (
                     <div className={styles.chatPlaceholder}>
                         <img src={chatPlaceholder} alt="chat placeholder" />
-                        <p>No members have been added yet.</p>
+                        <p>{text}</p>
                     </div>
                 )
             }

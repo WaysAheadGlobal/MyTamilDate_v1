@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Container, Image, Modal } from 'react-bootstrap';
 import { API_URL } from '../api';
 import logo from "../assets/images/MTDlogo.png";
@@ -58,6 +58,57 @@ export default function ApproveEmail() {
             console.error(err);
         }
     };
+    useEffect(() => {
+        const intervalId = setInterval(checkVerificationfivesec, 5000);
+
+        return () => clearInterval(intervalId);
+    }, []);
+    
+    const checkVerificationfivesec = async () => {
+        try {
+            const response = await fetch(`${API_URL}/user/check-email-verification`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie('token')}`
+                },
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log('Email verified successfully!');
+                if (data.emailVerified) {
+                    // alert.setModal({
+                    //     show: true,
+                    //     title: "Email Verified",
+                    //     message: "Your email has been verified successfully!",
+                    //     buttonText: "Okay",
+                    //     onButtonClick: () => {
+                    //         navigate("/pending");  
+                    //     }
+                    // })      
+                    setShowModalVerified(true);     
+
+                } else {
+                    // alert.setModal({
+                    //     show: true,
+                    //     title: "Email Verification",
+                    //     message: "Your email has not been verified yet. Please check your email and verify your email address.",
+                    //     buttonText: "Resend mail",
+                    //     showCancelButton: true,
+                    //     onButtonClick: () => {
+                    //         resendMail();
+                    //     }
+                    // }) 
+                    // setShowModal(true);      
+                }
+            }
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     const checkVerification = async () => {
         try {

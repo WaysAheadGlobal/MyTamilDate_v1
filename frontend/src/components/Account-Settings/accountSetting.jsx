@@ -1334,7 +1334,7 @@ export const AccountSetting = () => {
                     <Modal show={showPause} onHide={handleClosePause} centered>
                         <Modal.Body className="pause-modal-content">
 
-                            <div className="pause-modal-title">Pause my Account?</div>
+                            <div className="pause-modal-title">Pause my account?</div>
                             <div className="pause-modal-message">
                                 Your profile will be hidden and other members will not be able to see or message you. You can reactivate your account anytime.
                             </div>
@@ -1462,11 +1462,11 @@ export const AccountSetting = () => {
                         <Modal.Body className="pause-modal-content">
                             <div style={{ display: "flex" }}>
                                 <Image style={{ width: "24px", height: "24px", marginTop: "7px" }} className="fas fa-pause-circle" src={pauseicon} />
-                                <div className="pause-modal-title">Pause your Account instead</div>
+                                <div className="pause-modal-title">Pause your account instead</div>
                             </div>
                             <div className="pause-modal-message">
                                 <p>Just need a break?</p>
-                                <p style={{ marginTop: "-10px" }}> Pause your account and hide your profile, and come back anytime.</p>
+                                <p> Pause your account and hide your profile, and come back anytime.</p>
                             </div>
                             <div className="d-flex justify-content-center" style={{
                                 gap : "30px"

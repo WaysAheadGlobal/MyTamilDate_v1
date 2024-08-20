@@ -12,6 +12,7 @@ import { Footer } from './footer';
 import { Video2 } from './video2';
 import { NavBar } from './nav';
 import { TheirStories } from "./theirstories";
+import styles from './lb.module.css'
 
 
 export const LP = () => {
@@ -20,6 +21,7 @@ export const LP = () => {
     useEffect(() => {
       if (window.innerWidth <= 768) {
         setMobile(true);
+
       }
       window.addEventListener("resize", () => {
         if (window.innerWidth <= 768) {
@@ -31,7 +33,8 @@ export const LP = () => {
     }, [])
     
     return (
-        <>
+        
+        <div className={styles.mainbox}>
         {
             !mobile && <NavBar />
         }
@@ -42,7 +45,9 @@ export const LP = () => {
             <Video2 />
             <Join />
             <Footer />
-        </>
+            </div>
+           
+        
 
     );
 }

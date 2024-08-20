@@ -12,7 +12,7 @@ import { Modal } from 'react-bootstrap';
 export default function Likes() {
     const navigate = useNavigate();
     const searchParams = useSearchParams();
-    const[showmodal, setshowmodal] = useState(true);
+    const[showmodal, setshowmodal] = useState(false);
     const cookies = useCookies();
     const [likes, setLikes] = useState([]);
     const [loading, setLoading] = useState(true);

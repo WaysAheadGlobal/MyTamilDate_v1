@@ -157,7 +157,7 @@ const Navigate = useNavigate();
                             <img className={profile.profilepicimg} src={images2.main} alt="" />
                         </div>
                     </div>
-            <Image style={{ marginTop: "90px", width: "24px", height: "24px" }} onClick={()=> Navigate("/editpicture")} src={editicon} />
+            <Image style={{  cursor: "pointer", marginTop: "90px", width: "24px", height: "24px" }} onClick={()=> Navigate("/editpicture")} src={editicon} />
           </div>
           <div className=" row d-flex justify-content-center">
             <div className="d-flex flex-column align-items-center">

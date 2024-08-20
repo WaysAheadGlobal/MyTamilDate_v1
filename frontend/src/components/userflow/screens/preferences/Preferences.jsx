@@ -232,6 +232,70 @@ export default function Preferences() {
     const [value, setValue] = useState();
     const cookies = useCookies();
     const { setRefresh } = useUserProfile();
+    const [filteredOptions, setFilteredOptions] = useState([]);
+
+
+    useEffect(() => {
+        if (selectedPreference.element !== "location") {
+            console.log(selectedPreference.element)
+            if (selectedPreference.element === "gender") {
+                  let options = [...selectedPreferenceOptions];
+                  console.log(options);
+                    // Add the "Open to all" option
+                    options.push({ name: 'Everyone', id: null });
+                    console.log(options);
+                const filteroptions = options.filter(option => option.name !== 'Other');
+                     console.log(filteroptions);
+                setFilteredOptions(filteroptions);
+              
+            }
+            else {
+                if (selectedPreference.element === "children" || selectedPreference.element === "family") {
+                    console.log("donee");
+
+                    // Create a copy of the options array
+                    let options = [...selectedPreferenceOptions];
+
+                    // Add the "Open to all" option
+                    options.push({ name: 'Open to all', id: null });
+
+                    // Filter out the "Prefer not to say" option
+                    const filteredOptions = options.filter(option => option.name !== 'Prefer not to say');
+
+                    // Update the state with the filtered options
+                    setFilteredOptions(filteredOptions);
+
+                    console.log(filteredOptions);
+                }
+               
+                else {
+                    if(selectedPreference.element === "religion" ){
+                        let options = [...selectedPreferenceOptions];
+                        console.log(options);
+                          // Add the "Open to all" option
+                         
+                      const filteroptions = options.filter(option => 
+                        option.name !== 'Prefer not to say' &&   option.name !== 'Other');
+                           console.log(filteroptions);
+                      setFilteredOptions(filteroptions);
+                    }
+                    else{
+
+                        const options = selectedPreferenceOptions.filter(option => option.name !== 'Prefer not to say');
+                        setFilteredOptions(options);
+                        console.log(options);
+                    }
+
+                 
+                }
+            }
+
+
+
+
+        }
+
+    }, [selectedPreferenceOptions]);
 
     /**
      * @typedef {Object} Preferences
@@ -279,7 +343,7 @@ export default function Preferences() {
 
     useEffect(() => {
         if (!selectedPreference.optionsApiEndpoint || !show) return;
-
+        console.log(selectedPreference.optionsApiEndpoint);
         (async () => {
             const response = await fetch(`${API_URL}customer/user/preferences/options/${selectedPreference.optionsApiEndpoint}`, {
                 headers: {
@@ -379,8 +443,8 @@ export default function Preferences() {
                         }
                         {
                             (selectedPreference.element === "children" || selectedPreference.element === "family") && (
-                                <Forms.Select
-                                    options={selectedPreferenceOptions}
+                                <Forms.Radio
+                                    options={filteredOptions}
                                     value={value}
                                     setValue={setValue}
                                     selected={preferences[selectedPreference.element === "children" ? "want_kids" : "have_kids"]}
@@ -392,7 +456,7 @@ export default function Preferences() {
                                 <Forms.Radio
                                     value={value}
                                     setValue={setValue}
-                                    options={selectedPreferenceOptions}
+                                    options={filteredOptions}
                                     firstOption={
                                         selectedPreference.optionsApiEndpoint !== "genders" ? {
                                             value: "any",
@@ -403,6 +467,7 @@ export default function Preferences() {
                                 />
                             )
                         }
+
                         <div style={{ flexGrow: "1" }}></div>
                         <div style={{
                             marginTop: "1rem",
@@ -478,7 +543,7 @@ export default function Preferences() {
                                 saveApiEndpoint: "gender_id",
                                 element: "gender"
                             })}
-                        >{preferences?.gender ?? "Any"}</p>
+                        >{preferences?.gender ?? "Everyone"}</p>
                     </div>
                     <div className={styles.option}>
                         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -51,7 +51,7 @@ import ProfileDetailsPreview from './previewmain';
  */
 
 const capitalizeFirstLetter = (string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+    return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
 export default function Card({ show, ...props }) {
@@ -192,7 +192,7 @@ export default function Card({ show, ...props }) {
         const string = String(input); // Convert the input to a string
         return string.charAt(0).toUpperCase() + string.slice(1);
     };
-    
+
     return (
         <>
             <UpgradeModal show={showUpgradeModal} setShow={setShowUpgradeModal} />
@@ -201,11 +201,14 @@ export default function Card({ show, ...props }) {
             <div className='card-and-details-container'>
                 <div ref={cardRef} className={`card-container ${show ? 'show' : ''}`}
                     style={{
-                        backgroundImage: `url(${image})`,
+                        backgroundImage: `
+                            linear-gradient(0.05deg, #000000 -1.48%, rgba(0, 0, 0, 0.1) 29.79%, rgba(0, 0, 0, 0) 99.96%),
+                            url(${image})
+                        `,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat',
-                        borderRadius : "8px"
+                        borderRadius: '8px'
                     }}
                 >
                     {/* <span className="firstUndoBtn" style={{
@@ -223,22 +226,22 @@ export default function Card({ show, ...props }) {
                     }}>
                         <div className='details' style={{ marginLeft: "1rem", marginBottom: "1rem" }}>
                             <p style={{
-                                marginBottom : "-10px"
+                                marginBottom: "-10px"
                             }}> <span style={{
-                                fontSize : "32px",
-                                fontWeight : "600",
-                                lineHeight : "48px"
+                                fontSize: "32px",
+                                fontWeight: "600",
+                                lineHeight: "48px"
                             }}>{capitalizeFirstLetter(props.first_name)}</span>,  <span style={{
-                                fontSize : "32px",
-                                fontWeight : "300",
-                                lineHeight : "48px"
+                                fontSize: "32px",
+                                fontWeight: "300",
+                                lineHeight: "48px"
                             }}>{dayjs().diff(props.birthday, "y")}</span></p>
                             <div style={{
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "flex-start",
                                 gap: "0.5rem",
-                                marginBottom : "-10px"
+                                marginBottom: "-10px"
                             }}>
                                 <FaSuitcase size={25} />
                                 {/* <img  width="25px" height="25px" src={brifcase2} alt="" /> */}
@@ -318,7 +321,18 @@ export default function Card({ show, ...props }) {
                                 </div>
                             ) : (<div></div>)
                         }
-                        <Dropdown show={showDropdown} onToggle={() => setShowDropdown(!showDropdown)}>
+                        
+                        <Dropdown  show={showDropdown}
+            onToggle={() => setShowDropdown(!showDropdown)}
+            onMouseEnter={() => setShowDropdown(true)}
+            onMouseLeave={() => setShowDropdown(false)}
+            onClick={(e) => {
+                e.stopPropagation();
+                navigate("/user/preferences");
+            }}
+               style={{
+                             cursor: "pointer"
+                        }}>
                             <Dropdown.Toggle
                                 as="div"
                             >
@@ -337,12 +351,12 @@ export default function Card({ show, ...props }) {
                                     className='dropdown-hover-button'
                                     style={{
                                         // borderBottom: "1px solid #8b807f",
-                                        marginBottom: "0.5rem",
+                                        // marginBottom: "0.5rem",
                                         color: "white"
                                     }}
                                     onClick={(e) => {
-                                        // e.stopPropagation();
-                                        // navigate("/user/preferences");
+                                        e.stopPropagation();
+                                        navigate("/user/preferences");
                                     }}
                                 >
                                     Preferences
@@ -356,9 +370,9 @@ export default function Card({ show, ...props }) {
                                         color: "white"
                                     }}
                                     onClick={(e) => {
-                                        // e.stopPropagation();
-                                        // setShowReportModal(true);
-                                        // setShowDropdown(false);
+                                        e.stopPropagation();
+                                        setShowReportModal(true);
+                                        setShowDropdown(false);
                                     }}
                                 >
                                     Report
@@ -370,9 +384,9 @@ export default function Card({ show, ...props }) {
                                         color: "white"
                                     }}
                                     onClick={(e) => {
-                                        // e.stopPropagation();
-                                        // setShowBlockModal(true);
-                                        // setShowDropdown(false);
+                                        e.stopPropagation();
+                                        setShowBlockModal(true);
+                                        setShowDropdown(false);
                                     }}
                                 >
                                     Block

@@ -39,6 +39,7 @@
         width: 100%;
         padding: 0.5rem;
         max-width: 100%;
+        border-Top: 0.1px solid lightgray;
     }
 
     .nav>ul {

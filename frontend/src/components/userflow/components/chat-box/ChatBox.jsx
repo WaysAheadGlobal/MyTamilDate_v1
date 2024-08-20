@@ -334,7 +334,7 @@ function UnmatchModal({ show, setShow }) {
         <Modal size='sm' centered show={show}>
             <Modal.Body>
                 <p style={{
-                    fontSize: "large",
+                    fontSize: "24px",
                     fontWeight: "600",
                     margin: "0",
                     marginBottom: "1rem",
@@ -342,7 +342,7 @@ function UnmatchModal({ show, setShow }) {
                 }}>Unmatch user?</p>
                 <p
                     style={{
-                        fontSize: "14px",
+                        fontSize: "16px",
                         margin: "0",
                         textAlign: "center",
                         color: "#6c6c6c"
@@ -392,27 +392,29 @@ function UnmatchModal({ show, setShow }) {
                 }}>
                     <button
                         type='button'
-                        style={{
-                            borderRadius: "9999px",
-                            padding: "0.75rem 1.5rem",
-                            border: "2px solid #6c6c6c",
-                            color: "#6c6c6c",
-                            backgroundColor: "transparent"
-                        }}
+                        // style={{
+                        //     borderRadius: "9999px",
+                        //     padding: "0.75rem 1.5rem",
+                        //     border: "2px solid #6c6c6c",
+                        //     color: "#6c6c6c",
+                        //     backgroundColor: "transparent"
+                        // }}
+                         className='global-cancel-button'
                         onClick={() => setShow(false)}
                     >
                         Close
                     </button>
-                    <Button
+                    <button
                         type="submit"
-                        style={{
-                            borderRadius: "9999px",
-                            padding: "0.75rem 1.5rem",
-                        }}
+                        // style={{
+                        //     borderRadius: "9999px",
+                        //     padding: "0.75rem 1.5rem",
+                        // }}
+                         className='global-save-button'
                         onClick={() => formRef.current?.requestSubmit()}
                     >
                         Submit
-                    </Button>
+                    </button>
                 </div>
             </Modal.Body>
         </Modal>
@@ -469,11 +471,12 @@ function ReportModal({ show, setShow }) {
         <Modal size='sm' centered show={show}>
             <Modal.Body>
                 <p style={{
-                    fontSize: "20px",
+                    fontSize: "24px",
                     fontWeight: "600",
                     margin: "0",
                     marginBottom: "1rem",
-                    color: "#6c6c6c"
+                    color: "#6c6c6c",
+                
                 }}>Report user?</p>
                 <p
                     style={{

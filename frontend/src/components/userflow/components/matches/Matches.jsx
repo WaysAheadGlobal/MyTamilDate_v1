@@ -55,7 +55,8 @@ const handleupgrade = ()=>{
             }
         })()
     }, [page]);
-
+    
+    
     useEffect(() => {
         if (currentMatches.length < 10) return;
 

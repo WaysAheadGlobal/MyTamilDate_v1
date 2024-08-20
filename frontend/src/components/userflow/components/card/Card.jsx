@@ -190,13 +190,17 @@ export default function Card({ show, ...props }) {
             <BlockModal show={showBlockModal} setShow={setShowBlockModal} personId={props.user_id} />
             <div className='card-and-details-container'>
                 <div ref={cardRef} className={`card-container ${show ? 'show' : ''}`}
-                    style={{
-                        backgroundImage: `url(${image})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        backgroundRepeat: 'no-repeat',
-                        borderRadius : "8px"
-                    }}
+                   style={{
+                    backgroundImage: `
+                        linear-gradient(0.05deg, #000000 -1.48%, rgba(0, 0, 0, 0.1) 29.79%, rgba(0, 0, 0, 0) 99.96%),
+                        url(${image})
+                    `,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    borderRadius: '8px'
+                }}
+                
                 >
                     {/* <span className="firstUndoBtn" style={{
                         position: "absolute",
@@ -314,7 +318,20 @@ export default function Card({ show, ...props }) {
                                 </div>
                             ) : (<div></div>)
                         }
-                        <Dropdown show={showDropdown} onToggle={() => setShowDropdown(!showDropdown)}>
+                            
+              
+
+                        <Dropdown  show={showDropdown}
+            onToggle={() => setShowDropdown(!showDropdown)}
+            onMouseEnter={() => setShowDropdown(true)}
+            onMouseLeave={() => setShowDropdown(false)}
+            onClick={(e) => {
+                e.stopPropagation();
+                navigate("/user/preferences");
+            }}
+               style={{
+                             cursor: "pointer"
+                        }}>
                             <Dropdown.Toggle
                                 as="div"
                             >

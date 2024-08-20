@@ -16,7 +16,7 @@ export default function ChatNav() {
                 ) ? styles.active : ""} onClick={() => navigate("/user/chat")}>Matches</li>
                 <li className={pathname.includes("likes") ? styles.active : ""} onClick={() => navigate("/user/chat/likes")}>Likes</li>
                 <li className={pathname.includes("requests") ? styles.active : ""} onClick={() => navigate("/user/chat/requests")}>Requests</li>
-                <li className={pathname.includes("others") ? styles.active : ""} onClick={() => navigate("/user/chat/others")}>Others</li>
+                <li className={pathname.includes("others") ? styles.active : ""} onClick={() => navigate("/user/chat/others")}>Other</li>
             </ul>
         </div>
     )
