@@ -763,10 +763,10 @@ userFlowRouter.put("/preferences/save/:field", async (req: UserRequest, res) => 
         "drinks_id",
     ];
 
-    if (!field || !value) {
-        res.status(400).send({ message: "Bad request" });
-        return;
-    }
+    // if (!field || !value) {
+    //     res.status(400).send({ message: "Bad request" });
+    //     return;
+    // }
 
     if (!fields.includes(field)) {
         res.status(400).send({ message: "Bad request" });
