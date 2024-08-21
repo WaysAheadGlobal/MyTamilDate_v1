@@ -504,7 +504,8 @@ const handleCropSave = (croppedAreaPixels) => {
               maxWidth: "340px",
               marginInline: "auto",
               borderRadius: "16px",
-              marginTop : "20px"
+              marginTop : "20px",
+              height : "240px"
             }}>
               <Image   src={imagesupdate.main} />
               <div className={picture.icons}>

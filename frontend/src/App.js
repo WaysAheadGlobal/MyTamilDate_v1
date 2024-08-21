@@ -221,7 +221,6 @@ function App() {
               <Route path="/signinemail" element={<SignInEmail />} />
               <Route path="/signinemailotp" element={<SignInEmailOTP />} />
               <Route path="/entercode" element={<Entercode />} />
-
               <Route path="/emailverify" element={<Protected><EmailVerify /></Protected>}></Route>
               <Route path="/getstarted" element={<Protected><GetStarted /></Protected>}></Route>
               <Route path="/basicdetails" element={<Protected><BasicDetails /></Protected>}></Route>

@@ -124,6 +124,8 @@ export const SignInPhoneOTP = () => {
                     setCookie('token', result.token, 30);
                     setCookie('userId', result.Result[0].user_id, 30);
                     setCookie('Approval', result.Result[0].approval,30)
+                    console.log(result);
+                    console.log(result.Result[0].user_id);
                     if (result.Result && result.Result.length > 0) {
                         if (result.Result[0].approval === 10) {
                                 navigate('/pending');

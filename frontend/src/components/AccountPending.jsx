@@ -148,7 +148,7 @@ export default function AccountPending() {
                             Update
                         </button>
                         <button className='global-cancel-button' style={{ marginTop: "30px", width: "236px" }} onClick={() => setShowModal(true)}>
-                            Add Sortcut
+                            Add Shortcut
                         </button>
                     </div>
                     <div style={{
