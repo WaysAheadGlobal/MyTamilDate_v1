@@ -80,13 +80,14 @@ export default function Card({ show, ...props }) {
 
     async function getRoom() {
         if (cookies.getCookie("isPremium") !== "true") {
-            alert.setModal({
-                show: true,
-                title: "Upgrade to premium",
-                message: "You need to be a premium user to chat with other users. Would you like to upgrade now?",
-                onButtonClick: () => navigate("/selectplan"),
-                showCancelButton: true
-            });
+            setShowUpgradeModal(true);
+            // alert.setModal({
+            //     show: true,
+            //     title: "Upgrade to premium",
+            //     message: "You need to be a premium user to chat with other users. Would you like to upgrade now?",
+            //     onButtonClick: () => navigate("/selectplan"),
+            //     showCancelButton: true
+            // });
             return;
         }
 
@@ -190,17 +191,17 @@ export default function Card({ show, ...props }) {
             <BlockModal show={showBlockModal} setShow={setShowBlockModal} personId={props.user_id} />
             <div className='card-and-details-container'>
                 <div ref={cardRef} className={`card-container ${show ? 'show' : ''}`}
-                   style={{
-                    backgroundImage: `
+                    style={{
+                        backgroundImage: `
                         linear-gradient(0.05deg, #000000 -1.48%, rgba(0, 0, 0, 0.1) 29.79%, rgba(0, 0, 0, 0) 99.96%),
                         url(${image})
                     `,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                    borderRadius: '8px'
-                }}
-                
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                        borderRadius: '8px'
+                    }}
+
                 >
                     {/* <span className="firstUndoBtn" style={{
                         position: "absolute",
@@ -217,25 +218,25 @@ export default function Card({ show, ...props }) {
                     }}>
                         <div className='details' style={{ marginLeft: "1rem", marginBottom: "1rem" }}>
                             <p style={{
-                                marginBottom : "-10px"
+                                marginBottom: "-10px"
                             }} > <span style={{
-                                fontSize : "32px",
-                                fontWeight : "600",
-                                lineHeight : "48px"
+                                fontSize: "32px",
+                                fontWeight: "600",
+                                lineHeight: "48px"
                             }}>{`${props.first_name}`}</span>,  <span style={{
-                                fontSize : "32px",
-                                fontWeight : "300",
-                                lineHeight : "48px"
+                                fontSize: "32px",
+                                fontWeight: "300",
+                                lineHeight: "48px"
                             }}>{dayjs().diff(props.birthday, "y")}</span></p>
                             <div style={{
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "flex-start",
                                 gap: "0.5rem",
-                                marginBottom : "-10px"
+                                marginBottom: "-10px"
                             }}>
                                 <FaSuitcase size={25} />
-                                
+
                                 {/* <img width="25px" height="25px" src={brifcase2} alt="" /> */}
                                 <p style={{
                                     fontSize: "medium",
@@ -254,18 +255,18 @@ export default function Card({ show, ...props }) {
                             </div>
                         </div>
                         {pathname !== '/preview' && (
-                        <div className='options' style={{
-                            opacity: !topNavVisible ? "1" : "0",
-                        }}>
-                            {/* <IconButton type='undo' onClick={(e) => {
+                            <div className='options' style={{
+                                opacity: !topNavVisible ? "1" : "0",
+                            }}>
+                                {/* <IconButton type='undo' onClick={(e) => {
                                 e.stopPropagation();
                                 handleIconButtonClick("undo");
                             }} /> */}
-                            <IconButton type='skip' onClick={(e) => {
-                                e.stopPropagation();
-                                handleIconButtonClick("skip");
-                            }} />
-                            {/* <div style={{
+                                <IconButton type='skip' onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleIconButtonClick("skip");
+                                }} />
+                                {/* <div style={{
                                 position: "relative",
                                 top: "1.5rem"
                             }} className='scrollBtn'>
@@ -276,26 +277,26 @@ export default function Card({ show, ...props }) {
                                         document.querySelector("#scroll-anchor").scrollIntoView({ behavior: "smooth" });
                                     }} />
                             </div> */}
-                            <div style={{
-                                display: "flex",
-                               
-                                alignItems: "end",
-                                justifyContent: "center",
-                            }}>
-                                <IconButton type='chat' onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleIconButtonClick("chat");
-                                }} />
-                              <div >
-                              <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
-                                    e.stopPropagation();
-                                    setLiked(!liked);
-                                    handleIconButtonClick("like");
-                                }} />
-                              </div>
-                              
+                                <div style={{
+                                    display: "flex",
+
+                                    alignItems: "end",
+                                    justifyContent: "center",
+                                }}>
+                                    <IconButton type='chat' onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleIconButtonClick("chat");
+                                    }} />
+                                    <div >
+                                        <IconButton type={liked ? 'likeActive' : 'like'} onClick={(e) => {
+                                            e.stopPropagation();
+                                            setLiked(!liked);
+                                            handleIconButtonClick("like");
+                                        }} />
+                                    </div>
+
+                                </div>
                             </div>
-                        </div>
                         )}
                     </div>
                     <div className='menu' style={{
@@ -318,26 +319,27 @@ export default function Card({ show, ...props }) {
                                 </div>
                             ) : (<div></div>)
                         }
-                            
-              
 
-                        <Dropdown  show={showDropdown}
-            onToggle={() => setShowDropdown(!showDropdown)}
-            onMouseEnter={() => setShowDropdown(true)}
-            onMouseLeave={() => setShowDropdown(false)}
-            onClick={(e) => {
-                e.stopPropagation();
-                navigate("/user/preferences");
-            }}
-               style={{
-                             cursor: "pointer"
-                        }}>
+
+
+                        <Dropdown show={showDropdown}
+                            onToggle={() => setShowDropdown(!showDropdown)}
+                            onMouseEnter={() => setShowDropdown(true)}
+                            onMouseLeave={() => setShowDropdown(false)}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                navigate("/user/preferences");
+                            }}
+                            style={{
+                                cursor: "pointer"
+                            }}>
                             <Dropdown.Toggle
                                 as="div"
                             >
-                               <svg width="21" height="23" viewBox="0 0 21 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M1 3.33333L8 3.33333M8 3.33333C8 4.622 9.04467 5.66667 10.3333 5.66667C11.622 5.66667 12.6667 4.622 12.6667 3.33333M8 3.33333C8 2.04467 9.04467 1 10.3333 1C11.622 1 12.6667 2.04467 12.6667 3.33333M12.6667 3.33333L19.6667 3.33333M1 11.5H15M15 11.5C15 12.7887 16.0447 13.8333 17.3333 13.8333C18.622 13.8333 19.6667 12.7887 19.6667 11.5C19.6667 10.2113 18.622 9.16667 17.3333 9.16667C16.0447 9.16667 15 10.2113 15 11.5ZM5.66667 19.6667H19.6667M5.66667 19.6667C5.66667 18.378 4.622 17.3333 3.33333 17.3333C2.04467 17.3333 1 18.378 1 19.6667C1 20.9553 2.04467 22 3.33333 22C4.622 22 5.66667 20.9553 5.66667 19.6667Z" stroke="white" stroke-width="2" stroke-linecap="round"/>
-</svg>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 5L10 5M10 5C10 6.10457 10.8954 7 12 7C13.1046 7 14 6.10457 14 5M10 5C10 3.89543 10.8954 3 12 3C13.1046 3 14 3.89543 14 5M14 5L20 5M4 12H16M16 12C16 13.1046 16.8954 14 18 14C19.1046 14 20 13.1046 20 12C20 10.8954 19.1046 10 18 10C16.8954 10 16 10.8954 16 12ZM8 19H20M8 19C8 17.8954 7.10457 17 6 17C4.89543 17 4 17.8954 4 19C4 20.1046 4.89543 21 6 21C7.10457 21 8 20.1046 8 19Z" stroke="#4B164C" stroke-width="1.5" stroke-linecap="round" />
+                                </svg>
+
 
                             </Dropdown.Toggle>
                             <Dropdown.Menu style={{
@@ -610,53 +612,60 @@ function BlockModal({ show, setShow, personId }) {
     )
 }
 
+
+
 function UpgradeModal({ show, setShow }) {
+    const navigate = useNavigate();
+
     return (
-        <Modal size='sm' centered show={show}>
-            <Modal.Body style={{
-                position: "relative",
-                padding: "1rem"
-            }}>
-                <span
-                    style={{
-                        position: "absolute",
-                        top: "-7px",
-                        right: "-7px",
-                    }}
-                    onClick={() => {
-                        setShow(false);
-                    }}
-                >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="12" fill="white" />
-                        <path d="M16 8L8 16M8.00001 8L16 16" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M19 5L5 19M5.00001 5L19 19" stroke="#5E5E5E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </span>
+        <Modal size='lg' centered show={show}>
+            <Modal.Body>
                 <p style={{
-                    fontSize: "large",
-                    fontWeight: "500",
+                    fontSize: "20px",
+                    fontWeight: "600",
                     margin: "0",
                     marginBottom: "1rem",
                     color: "#6c6c6c"
-                }}>You can undo matches that you've passed on if you change your mind.</p>
+                }}>Upgrade to Premium & 
+                        Unlock Exclusive Features</p>
+                <p
+                    style={{
+                        fontSize: "16px",
+                        margin: "0",
+                        textAlign: "center",
+                        color: "#6c6c6c"
+                    }}
+                >Premium members can see who liked them, Send unlimited messages & more!</p>
                 <div style={{
-                    marginTop: "1rem",
+                    marginTop: "4rem",
                     display: "flex",
                     gap: "1rem",
                     marginInline: "auto",
                 }}>
-                    <Button
-                        onClick={() => window.location.assign("/selectplan")}
+                    <button
+                        type='button'
                         style={{
                             borderRadius: "9999px",
                             padding: "0.75rem 1.5rem",
-                         
-
-
+                            // border: "2px solid #6c6c6c",
+                            // color: "#6c6c6c",
+                            // backgroundColor: "transparent"
+                        }}
+                        className='global-cancel-button'
+                        onClick={() => setShow(false)}
+                    >
+                        Close
+                    </button>
+                    <Button
+                        onClick={() => navigate("/selectplan")}
+                        style={{
+                            borderRadius: "9999px",
+                            padding: "0.75rem 1.5rem",
+                            fontSize: "16px",
+                            fontWeight: "600"
                         }}
                     >
-                        Upgrade now
+                        Upgrade Now
                     </Button>
                 </div>
             </Modal.Body>

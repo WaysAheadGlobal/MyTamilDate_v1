@@ -321,24 +321,25 @@ export default function Card({ show, ...props }) {
                                 </div>
                             ) : (<div></div>)
                         }
-                        
-                        <Dropdown  show={showDropdown}
-            onToggle={() => setShowDropdown(!showDropdown)}
-            onMouseEnter={() => setShowDropdown(true)}
-            onMouseLeave={() => setShowDropdown(false)}
-            onClick={(e) => {
-                e.stopPropagation();
-                navigate("/user/preferences");
-            }}
-               style={{
-                             cursor: "pointer"
-                        }}>
+
+                        <Dropdown show={showDropdown}
+                            onToggle={() => setShowDropdown(!showDropdown)}
+                            onMouseEnter={() => setShowDropdown(true)}
+                            onMouseLeave={() => setShowDropdown(false)}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                navigate("/user/preferences");
+                            }}
+                            style={{
+                                cursor: "pointer"
+                            }}>
                             <Dropdown.Toggle
                                 as="div"
                             >
-                               <svg width="21" height="23" viewBox="0 0 21 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M1 3.33333L8 3.33333M8 3.33333C8 4.622 9.04467 5.66667 10.3333 5.66667C11.622 5.66667 12.6667 4.622 12.6667 3.33333M8 3.33333C8 2.04467 9.04467 1 10.3333 1C11.622 1 12.6667 2.04467 12.6667 3.33333M12.6667 3.33333L19.6667 3.33333M1 11.5H15M15 11.5C15 12.7887 16.0447 13.8333 17.3333 13.8333C18.622 13.8333 19.6667 12.7887 19.6667 11.5C19.6667 10.2113 18.622 9.16667 17.3333 9.16667C16.0447 9.16667 15 10.2113 15 11.5ZM5.66667 19.6667H19.6667M5.66667 19.6667C5.66667 18.378 4.622 17.3333 3.33333 17.3333C2.04467 17.3333 1 18.378 1 19.6667C1 20.9553 2.04467 22 3.33333 22C4.622 22 5.66667 20.9553 5.66667 19.6667Z" stroke="white" stroke-width="2" stroke-linecap="round"/>
-</svg>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 5L10 5M10 5C10 6.10457 10.8954 7 12 7C13.1046 7 14 6.10457 14 5M10 5C10 3.89543 10.8954 3 12 3C13.1046 3 14 3.89543 14 5M14 5L20 5M4 12H16M16 12C16 13.1046 16.8954 14 18 14C19.1046 14 20 13.1046 20 12C20 10.8954 19.1046 10 18 10C16.8954 10 16 10.8954 16 12ZM8 19H20M8 19C8 17.8954 7.10457 17 6 17C4.89543 17 4 17.8954 4 19C4 20.1046 4.89543 21 6 21C7.10457 21 8 20.1046 8 19Z" stroke="#4B164C" stroke-width="1.5" stroke-linecap="round" />
+                                </svg>
+
 
                             </Dropdown.Toggle>
                             <Dropdown.Menu style={{

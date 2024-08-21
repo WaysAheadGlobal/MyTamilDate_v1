@@ -13,6 +13,8 @@ import { useNavigate } from 'react-router-dom';
 import backarrow from "../../../../assets/images/backarrow.jpg";
 import editicon from '../../../../assets/images/editicon.png';
 import Cropper from 'react-easy-crop';
+import ImageCrop from '../../../cropimage/ImageCrop';
+
 
 const EditPicture = () => {
   const { getCookie } = useCookies();
@@ -20,16 +22,19 @@ const EditPicture = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [selectedImages, setSelectedImages] = useState({ main: null, first: null, second: null });
+  const [selectedImagesurl, setSelectedImagesurl] = useState({ main: null, first: null, second: null });
   const [showModal, setShowModal] = useState(false);
   const [showCropModal, setShowCropModal] = useState(false);
   const [imageToCrop, setImageToCrop] = useState(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+
   const [currentImageKey, setCurrentImageKey] = useState(null);
+  const [originalFileName, setOriginalFileName] = useState("");
   const [loading, setLoading] = useState(false);
   const [mediaid, setMediaId] = useState(null);
   const [type, setType] = useState(32);
+  const childRef = useRef(); 
    const approvalstatus = getCookie('approval');
   const fileInputRefMain = useRef(null);
   const fileInputRefFirst = useRef(null);
@@ -161,20 +166,21 @@ const EditPicture = () => {
     }
   };
   
-
   const handleFileChange = (event, imageKey) => {
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImageToCrop(reader.result);
-      };
-      reader.readAsDataURL(file);
+        setOriginalFileName(file.name);
 
-      setCurrentImageKey(imageKey);
-      setShowCropModal(true);
+        const reader = new FileReader();
+        reader.onload = () => {
+            setImageToCrop(reader.result);
+        };
+        reader.readAsDataURL(file);
+
+        setCurrentImageKey(imageKey);
+        setShowCropModal(true);
     }
-  };
+};
 
   const handleClick = (imageKey) => {
     let mediaId = null;
@@ -199,6 +205,7 @@ const EditPicture = () => {
   const handleNextClick = async () => {
     setLoading(true);
     const formData = new FormData();
+    console.log(selectedImages);
     if (selectedImages.main !== null) {
 
       formData.append('main', selectedImages.main);
@@ -239,6 +246,7 @@ const EditPicture = () => {
   };
 
   const handleNextClickRejectedPending = async () => {
+    console.log("called")
     if (!selectedImages.main && !selectedImages.first && !selectedImages.second) {
       setShowModal(true);
       return;
@@ -246,7 +254,7 @@ const EditPicture = () => {
   
     setLoading(true);
     const formData = new FormData();
-  
+   console.log(selectedImages);
     if (selectedImages.main) {
       formData.append('main', selectedImages.main);
     }
@@ -292,82 +300,40 @@ const EditPicture = () => {
     }
   };
   
-  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-  }, []);
+  const onCropComplete = (croppedAreaPixels) => {
+    console.log(croppedAreaPixels)
+   
+}
 
 
-  const handleCropSave = () => {
-    /* console.log('Attempting to save cropped image:', imageToCrop, croppedAreaPixels); */
-
-    // Ensure croppedAreaPixels is not null before proceeding
-    if (!croppedAreaPixels) {
+const handleCropSave = (croppedAreaPixels) => {
+  /* console.log('Attempting to save cropped image:', imageToCrop, croppedAreaPixels); */
+  console.log(croppedAreaPixels,"heelooo")
+  // Ensure croppedAreaPixels is not null before proceeding
+  if (!croppedAreaPixels) {
       throw new Error('No cropped area to save');
-    }
+  }
 
-    getCroppedImg(imageToCrop, croppedAreaPixels)
-      /* croppedImage: Blob */
-      .then(croppedImage => {
-        console.log(new File([croppedImage], window.crypto.randomUUID(), { type: 'image/jpeg' }));
+          console.log(new File([croppedAreaPixels], originalFileName, { type: 'image/jpeg' }));
 
-        setSelectedImages({
-          ...selectedImages,
-          [currentImageKey]: new File([croppedImage], window.crypto.randomUUID(), { type: 'image/jpeg' })
-        })
-        setShowCropModal(false);
+          setSelectedImages({
+              ...selectedImages,
+              [currentImageKey]: new File([croppedAreaPixels], originalFileName, { type: 'image/jpeg' })
+          })
+      
 
-        console.log(selectedImages);
-        console.log('Cropped image saved successfully');
-      })
-      .catch(error => {
-        console.error('Error cropping image:', error);
-        // Handle errors if any during cropping
-      });
-  };
-
-
+          setShowCropModal(false);
+          console.log(URL.createObjectURL(selectedImages.main))
+          console.log(URL.createObjectURL(selectedImages.first))
+          console.log(URL.createObjectURL(selectedImages.second))
+       
+          console.log('Cropped image saved successfully');
+    
+};
 
   const handleCropCancel = () => {
     setShowCropModal(false);
     setImageToCrop(null);
-    setCrop({ x: 0, y: 0 });
-    setZoom(1);
-    setCroppedAreaPixels(null);
-  };
-
-  const getCroppedImg = (imageSrc, crop) => {
-    const canvas = document.createElement('canvas');
-    const image = document.createElement('img');
-    const promise = new Promise((resolve, reject) => {
-      image.onload = () => {
-        const ctx = canvas.getContext('2d');
-        const scaleX = image.naturalWidth / image.width;
-        const scaleY = image.naturalHeight / image.height;
-        canvas.width = crop.width;
-        canvas.height = crop.height;
-        ctx.drawImage(
-          image,
-          crop.x * scaleX,
-          crop.y * scaleY,
-          crop.width * scaleX,
-          crop.height * scaleY,
-          0,
-          0,
-          crop.width,
-          crop.height
-        );
-
-        canvas.toBlob(blob => {
-          if (!blob) {
-            reject(new Error('Canvas is empty'));
-            return;
-          }
-          resolve(blob);
-        }, 'image/jpeg');
-      };
-      image.src = imageSrc;
-    });
-    return promise;
   };
 
   const handleDeleteImages = async () => {
@@ -445,7 +411,7 @@ const EditPicture = () => {
           marginInline: "auto",
           borderRadius: "16px"
         }}>
-          <Image src={images2.main} />
+          <Image  src={images2.main} />
           <div className={picture.icons}>
             <span className={picture.iconLeft}>
               <Image src="" />
@@ -471,9 +437,9 @@ const EditPicture = () => {
             borderRadius: "16px"
           }}>
             <Image src={images2.first} style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
+             maxWidth: "150px",
+             maxHeight: "150px",
+           objectFit: "contain",
               objectPosition: "center"
             }} />
             <div className={picture.icons}>
@@ -488,6 +454,8 @@ const EditPicture = () => {
                   onChange={(e) => handleFileChange(e, 'first')}
                   style={{ display: 'none' }}
                 />
+
+                
               </span>
             </div>
           </div>
@@ -497,9 +465,9 @@ const EditPicture = () => {
             borderRadius: "16px"
           }}>
             <Image src={images2.second} style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
+               maxWidth: "150px",
+               maxHeight: "150px",
+             objectFit: "contain",
               objectPosition: "center"
             }} />
             <div className={picture.icons}>
@@ -538,7 +506,7 @@ const EditPicture = () => {
               borderRadius: "16px",
               marginTop : "20px"
             }}>
-              <Image src={imagesupdate.main} />
+              <Image   src={imagesupdate.main} />
               <div className={picture.icons}>
                 <span className={picture.iconLeft}>
                   <Image src="" />
@@ -567,9 +535,9 @@ const EditPicture = () => {
                 borderRadius: "16px"
               }}>
                 <Image src={imagesupdate.first} style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
+              maxWidth: "150px",
+              maxHeight: "150px",
+            objectFit: "contain",
               objectPosition: "center"
             }} />
                 <div className={picture.icons}>
@@ -596,9 +564,9 @@ const EditPicture = () => {
                 borderRadius: "16px"
               }} >
                 <Image src={imagesupdate.second} style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
+                maxWidth: "150px",
+                maxHeight: "150px",
+              objectFit: "contain",
               objectPosition: "center"
             }} />
                 <div className={picture.icons}>
@@ -636,23 +604,19 @@ const EditPicture = () => {
             <Modal.Title>Crop your photo</Modal.Title>
           </Modal.Header>
           <Modal.Body className='crop-modal-body'>
-            {imageToCrop && (
-              <Cropper
-                image={imageToCrop}
-                crop={crop}
-                zoom={zoom}
-                aspect={4 / 3} // Change aspect ratio as needed
-                onCropChange={setCrop}
-                onZoomChange={setZoom}
-                onCropComplete={onCropComplete}
-              />
-            )}
+  
+             <ImageCrop url = {imageToCrop} onCropComplete={onCropComplete} ref={childRef} handleCropSave={handleCropSave}/>
+         
           </Modal.Body>
           <Modal.Footer className='crop-modal-footer'>
             <button variant="secondary" className='crop-cancel-btn' onClick={handleCropCancel}>
               Cancel
             </button>
-            <button variant="secondary" className='crop-save-btn' onClick={handleCropSave}>
+            <button variant="secondary" className='crop-save-btn' onClick={() => {
+            childRef.current.handleSubmit();
+            
+           
+        }}>
               Save
             </button>
           </Modal.Footer>

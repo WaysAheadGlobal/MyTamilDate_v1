@@ -78,6 +78,7 @@ export default function ApproveEmail() {
 
             if (response.ok) {
                 console.log('Email verified successfully!');
+                console.log(data)
                 if (data.emailVerified) {
                     // alert.setModal({
                     //     show: true,

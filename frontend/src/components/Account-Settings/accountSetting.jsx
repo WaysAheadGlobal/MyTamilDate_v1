@@ -1334,7 +1334,7 @@ export const AccountSetting = () => {
                     <Modal show={showPause} onHide={handleClosePause} centered>
                         <Modal.Body className="pause-modal-content">
 
-                            <div className="pause-modal-title">Pause my account?</div>
+                            <div className="pause-modal-title">Pause your account?</div>
                             <div className="pause-modal-message">
                                 Your profile will be hidden and other members will not be able to see or message you. You can reactivate your account anytime.
                             </div>

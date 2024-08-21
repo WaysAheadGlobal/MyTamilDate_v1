@@ -66,8 +66,8 @@ const PricingCard = ({ currency }) => {
     if(paymentMethods.length < 1){
       alert.setModal({
         show: true,
-        message: "Please  first add card details.",
-        title: 'Error',
+        message: "Please first add card details.",
+        title: '',
         onButtonClick: () => {
           navigate('/addpaymentmethod');
         }

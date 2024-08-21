@@ -131,8 +131,8 @@ export const Entercode = () => {
                     setResendTimer(120);
                     setErrorMessage("") 
                     setIsResendDisabled(true); 
-                    setCookie('token', result.token, 15);
-                    setCookie('userId',  result.user_id,15);
+                    setCookie('token', result.token, 30);
+                    setCookie('userId',  result.user_id,30);
                     goToEmailVerify();
                 } else {
                     setErrorMessage(result.message || '*Failed to send code');

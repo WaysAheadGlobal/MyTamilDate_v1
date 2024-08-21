@@ -754,15 +754,16 @@ function UpgradeModal({ show, setShow }) {
         <Modal size='lg' centered show={show}>
             <Modal.Body>
                 <p style={{
-                    fontSize: "large",
+                    fontSize: "20px",
                     fontWeight: "600",
                     margin: "0",
                     marginBottom: "1rem",
                     color: "#6c6c6c"
-                }}>Upgrade and unlock this features</p>
+                }}>Upgrade to Premium & 
+                        Unlock Exclusive Features</p>
                 <p
                     style={{
-                        fontSize: "14px",
+                        fontSize: "16px",
                         margin: "0",
                         textAlign: "center",
                         color: "#6c6c6c"

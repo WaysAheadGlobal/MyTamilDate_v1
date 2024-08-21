@@ -121,9 +121,9 @@ export const SignInPhoneOTP = () => {
                     setResendTimer(120);
                     setErrorMessage("")
                     setIsResendDisabled(true);
-                    setCookie('token', result.token, 15);
-                    setCookie('userId', result.Result[0].user_id, 15);
-                    setCookie('Approval', result.Result[0].approval,15)
+                    setCookie('token', result.token, 30);
+                    setCookie('userId', result.Result[0].user_id, 30);
+                    setCookie('Approval', result.Result[0].approval,30)
                     if (result.Result && result.Result.length > 0) {
                         if (result.Result[0].approval === 10) {
                                 navigate('/pending');

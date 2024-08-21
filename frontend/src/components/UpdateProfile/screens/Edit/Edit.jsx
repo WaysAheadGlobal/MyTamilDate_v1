@@ -257,10 +257,15 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
 />
 </Link>
 <Link to="/updategender">
-  <Carddetails icon={gender }title="Gender" detail={Profile.Gender ? Profile.Gender : "N/A"} />
+  <Carddetails 
+  icon={gender} 
+  title="Gender" 
+  detail={Profile.Gender === "Other" ? "Non-Binary" : (Profile.Gender || "N/A")} 
+/>
+
 </Link>
 <Link to = "/wantgender">
-  <Carddetails icon={intersts }title="Interests" detail={Profile.PreferredGender ? Profile.PreferredGender : "N/A"} />
+  <Carddetails icon={intersts }title="Interests" detail={Profile.Gender === "Other" ? "All" : (Profile.Gender || "N/A")}  />
 </Link>
   <Link to="/updatelocations">
   <Carddetails icon={locationedit }title="Location" detail={Profile.Country ? Profile.Country : "N/A" }  />

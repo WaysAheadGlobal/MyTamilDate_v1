@@ -48,16 +48,17 @@ export default function AlertModalProvider({ children }) {
             <Modal size='sm' centered show={modal.show}>
                 <Modal.Body >
                     <p style={{
-                        fontSize: "20px",
+                        width : "340px",
+                        fontSize: "24px",
                         fontFamily : "poppins",
                         fontWeight: "600",
                         margin: "0",
                         marginBottom: "1rem",
-                        color: "#6c6c6c"
+                        color: "#6C6C6C"
                     }}>{modal.title}</p>
                     <p
                         style={{
-                            fontSize: "20px",
+                            fontSize: "16px",
                             margin: "0",
                             textAlign: "center",
                             color: "#6c6c6c",
@@ -67,7 +68,7 @@ export default function AlertModalProvider({ children }) {
                         {modal.message}
                     </p>
                     <div style={{
-                        marginTop: "1rem",
+                        marginTop: "3rem",
                         display: "flex",
                         gap: "1rem",
                         marginInline: "auto",

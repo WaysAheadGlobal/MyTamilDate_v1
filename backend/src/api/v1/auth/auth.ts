@@ -54,7 +54,7 @@ auth.post('/login/otp',
             }
 
             if (results.length === 0) {
-                return res.status(401).json({ message: 'Invalid phone' });
+                return res.status(401).json({ message: 'We don’t recognize this phone number. Try signing up first' });
             }
 
             try {
@@ -450,7 +450,7 @@ auth.post('/signup', body('otp').notEmpty().withMessage('Please enter valid code
                                         res.status(500).send('Internal Server Error');
                                     });
                                 }
-                                const jwt = sign({ phone, userId }, process.env.JWT_SECRET as string, { expiresIn: '15 days' });
+                                const jwt = sign({ phone, userId }, process.env.JWT_SECRET as string, { expiresIn: '30 days' });
                                 res.status(201).json({ message: 'Sign up successful', token: jwt, userId });
                             });
                         });
@@ -574,7 +574,7 @@ auth.get("/verify/:token", async (req, res) => {
                             sgMail.send(msg)
                                 .then(() => {
                                     console.log("Approval request  email sent successfully");
-                                    return res.status(200).send('Status updated successfully and email sent');
+                                    // return res.status(200).send('Status updated successfully and email sent');
                                 })
                                 .catch((error) => {
                                     console.error('Error sending email:', JSON.stringify(error));
@@ -587,6 +587,7 @@ auth.get("/verify/:token", async (req, res) => {
                 });
             });
         });
+  
     });
 
 

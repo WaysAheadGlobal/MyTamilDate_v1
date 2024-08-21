@@ -6,8 +6,9 @@ import { Container, Image } from 'react-bootstrap';
 import bgr from '../assets/images/r-bg.png';
 import { useNavigate } from 'react-router-dom';
 import logo2 from "../assets/images/logo2.png";
-import mobilelogo from "../assets/images/mobilelogo.png";
+import whitelogo from "../assets/images/white-logo.png";
 import mobilelogo2 from "../assets/images/mobilelogo2.png";
+
 import logo from "../assets/images/MTDlogo.png";
 import { useEffect, useState } from 'react';
 import Nav from 'react-bootstrap/Nav';
@@ -72,7 +73,7 @@ export const Headerlp = () => {
         </div>
         }
         
-        <img width="240px" src={mobilelogo2} className='mobile-logo' alt="Mobile Logo" />
+        <img width="310px" src={whitelogo} className='mobile-logo' alt="Mobile Logo" />
         <div className='header-text'>
           <img src={logo} className='main-logo' alt="Main Logo" />
    

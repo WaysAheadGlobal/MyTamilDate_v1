@@ -15,6 +15,7 @@ export default function AccountPending() {
     const [deferredPrompt, setDeferredPrompt] = useState(null);
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
+    const [sortcutmodal, setSortcutmodal] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -56,7 +57,7 @@ export default function AccountPending() {
         })();
     }, [getCookie]);
 
-  
+
 
     const handleShowModal = () => {
         setShowModal(true);
@@ -69,7 +70,7 @@ export default function AccountPending() {
         };
 
         window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-console.log(deferredPrompt)
+        console.log(deferredPrompt)
         return () => {
             window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
             console.log(deferredPrompt)
@@ -77,20 +78,26 @@ console.log(deferredPrompt)
     }, []);
 
     const handleAddToHomeScreen = () => {
-        console.log('User dismissed the A2HS prompt');
+
         if (deferredPrompt) {
-            
+
             console.log('User dismissed the A2HS prompt');
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
                     console.log('User accepted the A2HS prompt');
                 } else {
+                    setShowModal(false);
+                    
                     console.log('User dismissed the A2HS prompt');
                 }
                 setDeferredPrompt(null);
                 setShowModal(false);
             });
+        }
+        else {
+            setShowModal(false);
+            setSortcutmodal(true)
         }
     };
 
@@ -140,7 +147,7 @@ console.log(deferredPrompt)
                         }} onClick={() => navigate("/updateprofile")}>
                             Update
                         </button>
-                        <button className='global-cancel-button' style={{ marginTop: "30px", width : "236px" }} onClick={()=> setShowModal(true)}>
+                        <button className='global-cancel-button' style={{ marginTop: "30px", width: "236px" }} onClick={() => setShowModal(true)}>
                             Add Sortcut
                         </button>
                     </div>
@@ -167,7 +174,7 @@ console.log(deferredPrompt)
             </Container>
             <Modal centered className="selfie-modal" show={showModal} onHide={() => setShowModal(false)}
             >
-                
+
                 <Modal.Body className='selfie-modal-body' style={{
                     height: "440px"
                 }}>
@@ -197,6 +204,33 @@ console.log(deferredPrompt)
                         </button>
                         <button style={{ width: "250px", marginTop: "20px" }} type="submit" className='global-cancel-button' onClick={() => setShowModal(false)}>
                             Maybe later
+                        </button>
+                    </div>
+
+                </Modal.Body>
+            </Modal>
+            <Modal centered className="selfie-modal" show={sortcutmodal} onHide={() => setSortcutmodal(false)}
+            >
+                <Modal.Body className='selfie-modal-body' style={{
+                    height: "340px"
+                }}>
+                    <div style={{
+                        marginTop: "-40px"
+                    }}>
+                        <Image src={logo2} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
+                    </div>
+
+                    <p
+                        style={{
+                            fontSize: "16px",
+                            marginTop: "30px",
+                            lineHeight : "24px"
+                        }}>
+                        To add the app to your home screen, please open the browser's menu and select 'Add to Home Screen'.
+                    </p>
+                    <div>
+                        <button type="submit" className='global-save-button' onClick={() => setSortcutmodal(false)}>
+                            Okay
                         </button>
                     </div>
 

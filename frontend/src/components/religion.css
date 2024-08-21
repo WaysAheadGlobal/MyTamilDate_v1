@@ -186,13 +186,12 @@ align-items: center; */
     text-align: center;
     color: #6C6C6C;
     height: 52px;
-
 }
 
-.religion-item:hover,
+/* .religion-item:hover,
 .lang-item:hover {
     background-color: #F7ECFF;
-}
+} */
 
 .religion-item.selected,
 .lang-item.selected {

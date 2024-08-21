@@ -18,6 +18,7 @@ import { CardCvcElement, CardExpiryElement, CardNumberElement, useElements, useS
 import { useSearchParams } from 'react-router-dom';
 import Button from '../../../userflow/components/button/Button';
 import CustomModal from './matchmodal';
+
 const Paymentfinal = () => {
     const cookies = useCookies();
     const [paymentMethods, setPaymentMethods] = useState([]);
@@ -47,7 +48,7 @@ const Paymentfinal = () => {
     const [showpaymentsuccess, setShowshowpaymentsuccess] = useState(false);
     const Gotohomepage = ()=>{
         setshowmodal(false);
-        navigate("/user/home")
+        window.location.assign('/user/home')
     }
     const rates = [
         "CAD",
@@ -147,7 +148,7 @@ const Paymentfinal = () => {
                     alert.setModal({
                         show: true,
                         message: data.message,
-                        title: 'Error',
+                        title: '',
                         onButtonClick: () => {
                             navigate(data.url);
                         }

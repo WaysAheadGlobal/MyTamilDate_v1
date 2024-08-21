@@ -21,6 +21,7 @@ export const SignupPhone = () => {
     const [showModal, setShowModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const[loading, setLoading] = useState(false);
     const { setCookie } = useCookies();
 
     const searchInputRef = useRef(null); // Reference for the search input
@@ -49,6 +50,7 @@ export const SignupPhone = () => {
     };
 
     const handleSubmit = async (e) => {
+        console.log("clicked")
         e.preventDefault();
         const completePhoneNumber = selectedCountryInfo.dial_code + phoneNumber;
         if (phoneNumber.length === 0) {
@@ -56,6 +58,7 @@ export const SignupPhone = () => {
         } 
         else {
             setErrorMessage('');
+            setLoading(true)
             try {
                 const response = await fetch(`${API_URL}/user/signup/otp`, {
                     method: 'POST',
@@ -72,11 +75,14 @@ export const SignupPhone = () => {
                     
                     setCookie('phoneNumber', completePhoneNumber, 7);
                     navigate("/entercode");
+                    setLoading(false)
                 } else {
                     setErrorMessage(result.message || 'Failed to send OTP');
+                    setLoading(false)
                 }
             } catch (error) {
                 console.error('Error:', error);
+                setLoading(false);
                 setErrorMessage('An error occurred. Please try again later.');
             }
         }
@@ -153,7 +159,7 @@ export const SignupPhone = () => {
                                 {errorMessage && <Form.Text style={{marginTop : "10px"}} className="text-danger error-message">{errorMessage}</Form.Text>}
                                 </div>
                             </Form.Group>
-                            <button  type="submit" className='global-next-btn'>
+                            <button  type="submit" disabled = {loading} className='global-next-btn'>
                                 Next
                             </button>
                         </Form>

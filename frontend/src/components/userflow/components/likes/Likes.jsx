@@ -345,11 +345,15 @@ const handleupgrade = ()=>{
                         <Modal.Body className="pause-modal-content">
 
                             <div className="pause-modal-title" style={{
-                                fontSize : "20px",
-                                fontWeight : "600"
-                            }}>Upgrade to premium</div>
+                              fontSize: "large",
+                              fontWeight: "600",
+                              margin: "0",
+                              marginBottom: "1rem",
+                              color: "#6c6c6c"
+                            }}> Upgrade to Premium & 
+                        Unlock Exclusive Features</div>
                             <div className="pause-modal-message">
-                            You need to be a premium user to chat with other users. Would you like to upgrade now?
+                            As a Premium member, you can send unlimited messages, see who liked you, view all matches, access special events, and much more!
                             </div>
                             <div className="d-flex justify-content-center" style={{
                                 gap : "30px"

@@ -117,7 +117,7 @@ export const SignInEmailOTP = () => {
         if (res.ok) {
             cookies.setCookie('token', result.token, 30);
             cookies.setCookie('userId', result.Result[0].user_id);
-            cookies.setCookie('Approval', result.Result[0].approval,15)
+            cookies.setCookie('Approval', result.Result[0].approval,30)
             if (result.Result && result.Result.length > 0) {
               
 
