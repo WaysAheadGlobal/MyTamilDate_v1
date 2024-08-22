@@ -52,11 +52,5 @@
 }
 
 @media screen and (max-width: 400px) {
-    .mastercard {
-        flex-wrap: wrap;
-
-        div:last-child {
-            margin-left: -10px !important;
-        }
-    }    
+    
 }

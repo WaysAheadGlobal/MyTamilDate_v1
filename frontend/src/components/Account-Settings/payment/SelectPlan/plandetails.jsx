@@ -345,4 +345,4 @@ const PricingCard = ({ currency }) => {
   );
 };
 
-export default PricingCard;
+export default PricingCard; 

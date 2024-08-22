@@ -77,11 +77,9 @@ export const AccountSetting = () => {
     }, [pathname])
       
     function navigateTo(path) {
-        if (Rejected) {
-            setShowRejectedModal(true);
-        } else {
+       
             navigate(path);
-        }
+        
     }
 
     const OldImageURL = 'https://data.mytamildate.com/storage/public/uploads/user';
@@ -894,7 +892,7 @@ export const AccountSetting = () => {
                                     </div>
                                     <div className='paymentforbox' style={{ marginBottom: "20px", borderBottom: "1px solid #e0e0e0", width: "100%" }} >
 
-                                        <div className="user-info-item-payment" onClick={() => navigateTo("/paymentmethod")("/billinghistory")}>
+                                        <div className="user-info-item-payment" onClick={() => navigateTo("/billinghistory")}>
                                             <div className='leftsideinfo' 
                                             style={{
                                                 display : "flex",

@@ -244,4 +244,88 @@ payment.get("/check-valid-coupon/:product/:coupon", async (req: UserRequest, res
     }
 });
 
+payment.get("/billing-history", async (req: UserRequest, res) => {
+    // Retrieve the user's Stripe customer ID from your database
+    db.query<RowDataPacket[]>("SELECT stripe_id FROM users WHERE id = ?", [req.userId], async (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send("Internal Server Error");
+        }
+
+        if (result.length === 0) {
+            return res.status(404).send("User not found");
+        }
+
+        const customerId = result[0].stripe_id;
+
+        try {
+            // Fetch the user's billing history (invoices) from Stripe
+            const invoices = await stripe.invoices.list({
+                customer: customerId,
+                limit: 10, // Adjust the limit as needed
+            });
+
+            // Extract the relevant details from each invoice
+            const formattedInvoices = await Promise.all(invoices.data.map(async (invoice) => {
+                const description = invoice.lines.data[0]?.description || "No description";
+                const amount = (invoice.amount_paid / 100).toFixed(2) + " " + invoice.currency.toUpperCase();
+                const date = new Date(invoice.created * 1000).toLocaleDateString();
+
+                // Fetch the charge details to get the last 4 digits of the card
+                let last4 = "N/A";
+                if (invoice.charge) {
+                    const charge = await stripe.charges.retrieve(invoice.charge as string);
+                    last4 = charge.payment_method_details?.card?.last4 || "N/A";
+                }
+
+                // Fetch the subscription details to check for auto-renewal, get start/end dates, and calculate duration in months
+                let autoRenewal = false;
+                let subscriptionStart = "N/A";
+                let subscriptionEnd = "N/A";
+                let subscriptionDurationInMonths = "N/A";
+
+                if (invoice.subscription) {
+                    const subscription = await stripe.subscriptions.retrieve(invoice.subscription as string);
+                    autoRenewal = subscription.cancel_at_period_end === false;
+
+                    // Convert the start and end dates from Unix timestamps to readable dates
+                    subscriptionStart = new Date(subscription.current_period_start * 1000).toLocaleDateString();
+                    subscriptionEnd = new Date(subscription.current_period_end * 1000).toLocaleDateString();
+
+                    // Calculate the subscription duration in months
+                    const startDate = new Date(subscription.current_period_start * 1000);
+                    const endDate = new Date(subscription.current_period_end * 1000);
+                    const durationInMonths = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth());
+                    subscriptionDurationInMonths = `${durationInMonths} months`;
+                }
+
+                return {
+                    description,
+                    amount,
+                    date,
+                    last4,
+                    autoRenewal: autoRenewal ? "Auto-renewal" : "Not auto-renewal",
+                    subscriptionStart,
+                    subscriptionEnd,
+                    subscriptionDurationInMonths
+                };
+            }));
+
+            // Send the formatted invoices data back in the response
+            res.status(200).json({
+                message: "Billing history retrieved successfully",
+                data: formattedInvoices,
+            });
+        } catch (error) {
+            console.error("Error fetching billing history:", error);
+            return res.status(500).send("Internal Server Error");
+        }
+    });
+});
+
+
+
+
+
+
 export default payment;

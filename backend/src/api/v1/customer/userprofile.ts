@@ -404,9 +404,10 @@ profile.get('/locations', verifyUser, (req: UserRequest, res: express.Response) 
 
   const query = `
     SELECT l.id, l.country, l.location_string, l.continent
-    FROM locations l
-    JOIN user_profiles up ON l.id = up.location_id
-    WHERE up.user_id = ?
+FROM locations l
+JOIN user_profiles up ON l.id = up.location_id
+WHERE up.user_id = ?
+ORDER BY l.location_string ASC;
   `;
 
   db.query<RowDataPacket[]>(query, [userId], (err, results) => {

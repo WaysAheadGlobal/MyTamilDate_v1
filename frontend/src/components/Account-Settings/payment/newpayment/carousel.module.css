@@ -38,9 +38,7 @@
     height: 100vh;
     max-height: 924px;
   padding-top: 10px;
-   
   }
-  
   
   .carouselItem:hover img {
     transform: translateY(-1%);
