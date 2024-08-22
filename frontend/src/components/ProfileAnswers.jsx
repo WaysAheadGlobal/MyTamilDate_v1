@@ -135,7 +135,7 @@ const [refresh, setRefresh] = useState(false);
                           Answer 2 prompts only
                             </p>
                             <div style={{
-                                maxHeight: "50vh",
+                                maxHeight: "45vh",
                                 overflow: "auto",
                                 scrollbarColor: "transparent transparent",
                                 scrollBehavior: "smooth",

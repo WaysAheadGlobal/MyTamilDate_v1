@@ -174,6 +174,7 @@ const UserDetails = () => {
       const response = await fetch(`${API_URL}/admin/users/approval/${id}`);
       const data = await response.json();
       setDetails(data);
+      console.log(data);
     } catch (err) {
       console.log(err);
     }
@@ -473,6 +474,14 @@ const UserDetails = () => {
     }
     return phoneNumber;
   };
+  const approvalStatuses = {
+    10: 'Pending User',
+    15: 'Disable',
+    20: 'Approved',
+    30: 'Rejected User',
+    40: 'Incomplete Registration',
+    25: 'Update Profile'
+  };
 
 
   const formatValue = (key, value) => {
@@ -483,23 +492,30 @@ const UserDetails = () => {
     if (value === null || value === undefined || value === '') {
       return 'N/A';
     }
+
     if (key.toLowerCase() === 'email') {
-
       return value;
-
     }
+
+    if (key.toLowerCase() === 'gender') {
+      if (value === 'Other') {
+          return 'Non-Binary';
+      }
+  }
+  
+
     if (key.toLowerCase() === 'phone') {
       return value;
     }
-
+  
     if (key.toLowerCase() === 'approval') {
-      return 'Pending'
+      return approvalStatuses[value] || 'Unknown Status';
     }
-
+  
     if (Array.isArray(value)) {
       return value.join(', ');
     }
-
+  
     return value;
   };
 
@@ -544,7 +560,7 @@ const UserDetails = () => {
 
             </Box>
             <Typography variant="h5" align="center">{`${formatValue('name', details.Name)} ${formatValue('surname', details.Surname)}`}</Typography>
-            <Typography variant="subtitle1" color="textSecondary" align="center">{formatValue('status', details.status === 15 ? "Reject" : "pending")}</Typography>
+            <Typography variant="subtitle1" color="textSecondary" align="center">{formatValue('status', approvalStatuses[details.Approval] || "Unknown Status")}</Typography>
           </Box>
         </Grid>
         <Grid item xs={12} md={8}>
@@ -618,7 +634,8 @@ const UserDetails = () => {
                       Update
                     </Button>
                   </Grid>
-                </Grid>) : (<Grid
+                </Grid>) : (  (details.Approval === 10 || details.Approval === 30) && ( 
+                  <Grid
                   container
                   direction={isLgUp ? 'row' : 'column'}
                   justifyContent="center"
@@ -648,7 +665,7 @@ const UserDetails = () => {
                       Approve
                     </Button>
                   </Grid>
-                </Grid>)
+                </Grid>)   )
               }
 
 

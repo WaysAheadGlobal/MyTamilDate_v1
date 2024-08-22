@@ -61,7 +61,8 @@ const Contacts = () => {
         email: item.email || 'N/A',
         country: item.country || 'N/A', // Assuming address is optional
 
-        gender: item.gender == 1 ? "Male" : "Female",
+        gender : item.gender === 1 ? "Male" : (item.gender === 2 ? "Female" : "Non-Binary"),
+
         created_at: new Date(item.created_at).toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',

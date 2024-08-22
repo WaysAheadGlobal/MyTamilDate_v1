@@ -56,7 +56,7 @@ const AdminSignIn = () => {
       if(password === "X&>%cA9#%W2"){
         setCookie('Admintoken', "123456", 315);
            
-        navigate("/dashboard");
+        navigate("/approval");
       }
       else{
         setSnackbarMessage( 'Login failed');

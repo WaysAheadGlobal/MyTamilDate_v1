@@ -21,6 +21,7 @@ export const SignIn = () => {
     const [selectedCountryInfo, setSelectedCountryInfo] = useState(countries.find(country => country.code === 'CA'));
     const [showModal, setShowModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isSendingOtp, setIsSendingOtp] = useState(false);
     const [loading, setLoading] = useState(false);
     const searchParams = useSearchParams();
     const { setCookie } = useCookies();
@@ -49,6 +50,8 @@ export const SignIn = () => {
     };
 
     const handleSubmit = async (e) => {
+        if (isSendingOtp) return; 
+        setIsSendingOtp(true);
         console.log("clicked")
         e.preventDefault();
         const completePhoneNumber = selectedCountryInfo.dial_code + phoneNumber;
@@ -87,7 +90,9 @@ export const SignIn = () => {
                 console.error('Error:', error);
                 setErrorMessage('An error occurred. Please try again later.');
                 setLoading(false);
-            }
+            }finally {
+                setIsSendingOtp(false); // Re-enable the button
+              }
         }
     };
 
@@ -171,7 +176,7 @@ export const SignIn = () => {
                             <button
                                 type="submit"
                                 className='global-next-btn'
-                                disabled={loading}
+                                disabled={isSendingOtp}
                             >
                                 Next
                             </button>

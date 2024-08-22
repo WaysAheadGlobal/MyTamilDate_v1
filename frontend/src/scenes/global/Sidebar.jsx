@@ -43,7 +43,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 const Category = ({ title, icon, children, isCollapsed }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -86,7 +86,7 @@ const Sidebar = () => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { deleteCookie } = useCookies();
-  const [selected, setSelected] = useState("Dashboard");
+  const [selected, setSelected] = useState("Approval");
   const navigate = useNavigate();
   const { loginAsAdmin, logout } = useAppContext();
 

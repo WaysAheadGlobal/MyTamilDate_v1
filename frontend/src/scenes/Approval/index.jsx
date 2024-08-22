@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography,CircularProgress, } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
 import Header from '../../components/Header1';
@@ -12,7 +12,7 @@ const Contacts = () => {
   const [page, setPage] = useState(0); // Updated to use 0-based index for the page
   const [pageSize, setPageSize] = useState(25); // Default page size
   const [rowCount, setRowCount] = useState(0); // Total number of rows, to be set from API response
-
+  const [loading, setLoading] = useState(true);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const { showFullPhoneNumberemail, togglePhoneNumber } = useAppContext();
@@ -64,9 +64,26 @@ const Contacts = () => {
     }
   };
 
+  // useEffect(() => {
+  //   fetchData(page, pageSize);
+  // }, [page, pageSize]);
+  
   useEffect(() => {
-    fetchData(page, pageSize);
+    const fetchDataloading = async () => {
+      try {
+        await Promise.all([
+          fetchData(page, pageSize)
+        ])
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchDataloading();
   }, [page, pageSize]);
+
 
   const formatPhoneNumber = (phoneNumber) => {
     if (phoneNumber && phoneNumber.length >= 6) {
@@ -184,7 +201,12 @@ const Contacts = () => {
           {showFullPhoneNumberemail ? 'Hide Phone Number And Email' : 'Show Phone Number And Email'}
         </Button> */}
       </Box>
-
+  {loading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" height="100dvh">
+          <Typography variant="body1" mr={2}>Hang tight, we're getting things ready for you!</Typography>
+          <CircularProgress />
+        </Box>
+      ) : (
       <Box
         m="40px 0 0 0"
         height="75vh"
@@ -260,6 +282,7 @@ const Contacts = () => {
           }}
         />
       </Box>
+      )}
     </Box>
   );
 };

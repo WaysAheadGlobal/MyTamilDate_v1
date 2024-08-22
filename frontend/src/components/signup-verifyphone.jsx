@@ -21,6 +21,8 @@ export const SignupPhone = () => {
     const [showModal, setShowModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [isSendingOtp, setIsSendingOtp] = useState(false);
+    
     const[loading, setLoading] = useState(false);
     const { setCookie } = useCookies();
 
@@ -50,6 +52,7 @@ export const SignupPhone = () => {
     };
 
     const handleSubmit = async (e) => {
+        if (isSendingOtp) return;
         console.log("clicked")
         e.preventDefault();
         const completePhoneNumber = selectedCountryInfo.dial_code + phoneNumber;
@@ -84,7 +87,9 @@ export const SignupPhone = () => {
                 console.error('Error:', error);
                 setLoading(false);
                 setErrorMessage('An error occurred. Please try again later.');
-            }
+            } finally {
+                setIsSendingOtp(false); // Re-enable the button
+              }
         }
     };
 
@@ -159,7 +164,7 @@ export const SignupPhone = () => {
                                 {errorMessage && <Form.Text style={{marginTop : "10px"}} className="text-danger error-message">{errorMessage}</Form.Text>}
                                 </div>
                             </Form.Group>
-                            <button  type="submit" disabled = {loading} className='global-next-btn'>
+                            <button  type="submit" disabled={isSendingOtp} className='global-next-btn'>
                                 Next
                             </button>
                         </Form>

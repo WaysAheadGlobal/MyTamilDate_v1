@@ -97,7 +97,7 @@ export const Education = () => {
     <div className='your-education'>
         <Container className='education-text'>
             <Image className='about-yourself-icon' src={edu} alt="Education Icon" />
-            <p>What’s the highest level you’ve attained?</p>
+            <p>What’s the highest level of education you’ve attained?</p>
         </Container>
        
         <Container className='all-education'>
