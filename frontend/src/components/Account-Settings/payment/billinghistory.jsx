@@ -110,7 +110,6 @@ const BillingHistory = () => {
                 if (subscription.status !== "active") {
                   return;
                 }
-
                 if (subscription.cancelAtPeriodEnd) {
                   setShowResumeModal(true);
                 } else {
@@ -158,13 +157,15 @@ const BillingHistory = () => {
               <div className="pause-modal-message">
                 Your account will not auto-renew and your service will be interrupted on the expiry date. Keep auto-renew for a seamless experience.
               </div>
-              <div className="d-flex justify-content-center">
-                <Button variant="outline-danger" className="btn-no" onClick={handleCancelAutoRenew}>
+              <div className="d-flex justify-content-center" style={{
+                gap: "30px"
+              }}>
+                <button variant="outline-danger" className='global-cancel-button' onClick={handleCancelAutoRenew}>
                   Cancel
-                </Button>
-                <Button variant="primary" className="btn-yes" onClick={handlecCloseModal}>
+                </button>
+                <button variant="primary" className='global-save-button' onClick={handlecCloseModal}>
                   Keep
-                </Button>
+                </button>
               </div>
             </Modal.Body>
           </Modal>

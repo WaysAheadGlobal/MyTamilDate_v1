@@ -107,6 +107,7 @@ const Navigate = useNavigate();
                         alignItems: "center",
                         justifyContent: "center",
                         textAlign: "center",
+                        marginTop: "-18px"
                     }}>
                         <p
                             style={{

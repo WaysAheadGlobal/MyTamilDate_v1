@@ -910,18 +910,14 @@ export const AccountSetting = () => {
                                         </div>
                                     </div>
                                     <div onClick={() => {
-                                        if (Rejected ) {
-                                            setShowRejectedModal(true)
-                                         
-                                        }
-                                        else{
+                                      
                                             alert.setModal({
                                                 title: "Subscription Cancel",
                                                 message: "Are you sure you want to cancel your subscription?",
                                                 show: true,
                                                 onButtonClick: cancelSubscription,
                                             });
-                                        }
+                                        
                                     }} style={{ marginBottom: "20px", border : "none", width: "100%" }} >
 
                                         <div className="user-info-item-payment" style={{border : "none"}} >

@@ -30,7 +30,6 @@ class MailService {
             subject,
             html
         };
-
         await sgMail.send(msg);
     }
 

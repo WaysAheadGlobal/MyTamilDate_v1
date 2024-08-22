@@ -6,16 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <style>
-    body {
+    * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+    }
+
+    body {
       font-family: Arial, sans-serif;
       background-color: #f7e9ff;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      overflow-x: hidden; /* Prevent horizontal scrolling */
     }
 
     .container {
@@ -24,6 +28,7 @@
       justify-content: center;
       align-items: center;
       width: 100%;
+      padding: 1rem;
     }
 
     .card {
@@ -41,13 +46,10 @@
       display: flex;
       gap: 1rem;
       align-items: center;
-      
-
     }
 
     .logo {
-      width: 50px;
-      height: 50px;
+      
       aspect-ratio: 1 / 1;
       object-fit: cover;
     }
@@ -98,11 +100,28 @@
       color: #c8b0d0;
       text-decoration: none;
     }
-    .maincontainer{
+
+    .maincontainer {
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
+      height: 100vh;
+      width: 100%;
+    }
+
+    @media only screen and (max-width: 768px) {
+      .card {
+        max-width: 32rem;
+        padding: 1.5rem;
+      }
+
+     
+
+
+
+      .footer {
+        gap: 10px;
+      }
     }
   </style>
 </head>
@@ -110,21 +129,17 @@
 <body>
   <div class="container">
     <div class="maincontainer">
-
-   
-    <div class="card">
-      <div class="logo-container">
-        <img height="57px" width="174x" src="https://mytamildate.waysdatalabs.com/static/media/MTDlogo.815a9c5d487a964edc76.png" alt="myTamilDate Logo" />
-      </div>
-      <h2 class="subtitle">
-        Verify your email to access your myTamilDate account
-      </h2>
-      <p class="text">Hello,</p>
-      <p class="text">
-        Follow this link to <a href="<%= link %>" class="link">verify your email address</a>
-      </p>
-      <p class="text">Thanks!</p>
-      <p class="text">Your myTamilDate team</p>
+      <div class="card">
+        <div class="logo-container">
+          <img height="57px" width="174px"
+            src="https://mytamildate.waysdatalabs.com/static/media/MTDlogo.815a9c5d487a964edc76.png" alt="myTamilDate Logo"
+            class="logo" />
+        </div>
+        <h2 class="subtitle">Verify your email to access your myTamilDate account</h2>
+        <p class="text">Hello,</p>
+        <p class="text">Follow this link to <a href="<%= link %>" class="link">verify your email address</a></p>
+        <p class="text">Thanks!</p>
+        <p class="text">Your myTamilDate team</p>
       <div class="footer">
         <p><a href="https://mytamildate.waysdatalabs.com/unsubscribe">Unsubscribe</a></p>
         <p>

@@ -34,10 +34,8 @@ align-items: center; */
 
 .education-content {
     background: #FFFFFF;
-
     display: flex;
     flex-direction: column;
-    /* justify-content: space-evenly; */
     gap: 24px;
     align-items: center;
     height: 100dvh;
