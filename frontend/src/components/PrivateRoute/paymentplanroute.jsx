@@ -5,10 +5,14 @@ import { Navigate } from 'react-router-dom';
 const MobileCheck = ({ children }) => {
   const [mobile, setMobile] = useState(window.innerWidth <= 1024);
 
+
+
   useEffect(() => {
     const handleResize = () => {
       setMobile(window.innerWidth <= 1024);
+      console.log(window.innerWidth)
     };
+    
 
     window.addEventListener('resize', handleResize);
     

@@ -128,9 +128,9 @@ export const SignInPhoneOTP = () => {
                     console.log(result.Result[0].user_id);
                     if (result.Result && result.Result.length > 0) {
                         if (result.Result[0].approval === 10) {
-                                navigate('/pending');
+                                navigate('/user/home');
                             } else if (result.Result[0].approval === 30) {
-                                navigate('/not-approved');
+                                navigate('/user/home');
                             } else if (result.Result[0].approval === 20) {
                             setCookie('Name', result.Result[0].first_name, 20);
                                 goToSignsuccessful();

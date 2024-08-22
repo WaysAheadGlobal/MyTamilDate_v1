@@ -122,9 +122,9 @@ export const SignInEmailOTP = () => {
               
 
            if (result.Result[0].approval === 10) {
-                   navigate('/pending');
+                   navigate('/user/home');
                } else if (result.Result[0].approval === 30) {
-                   navigate('/not-approved');
+                   navigate('/user/home');
                } else if (result.Result[0].approval === 20) {
                 cookies.setCookie('Name', result.Result[0].first_name, 20);
                    goToSignsuccessful();
