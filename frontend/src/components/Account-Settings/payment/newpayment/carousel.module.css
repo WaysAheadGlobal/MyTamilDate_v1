@@ -34,7 +34,7 @@
     max-height: 285px; /* Maximum height for the images */
   }
   .carouselImage{
-    width: 100%; 
+    width: 330px; 
     height: 100vh;
     max-height: 924px;
   padding-top: 10px;

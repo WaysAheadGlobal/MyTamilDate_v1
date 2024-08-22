@@ -133,15 +133,15 @@ export default function Navbar({ style }) {
             }
 
 
-            if (result.approval === "PENDING") {
-                setRejected(true);
-                return;
-            }
+            // if (result.approval === "PENDING") {
+            //     setRejected(true);
+            //     return;
+            // }
                 
-            if (result.approval === "REJECTED") {
-                setRejected(true);
-                // window.location.replace("/updateprofile")
-            }
+            // if (result.approval === "REJECTED") {
+            //     setRejected(true);
+            //     // window.location.replace("/updateprofile")
+            // }
 
         })()
     }, [pathname])

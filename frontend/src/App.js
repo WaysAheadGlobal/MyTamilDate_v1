@@ -201,8 +201,7 @@ function App() {
               <Route path="/adminlogin" element={<AdminSignIn />} />
               <Route path="/addpromotionalcode" element={<ProtectedRoute><AddPromotioncode /></ProtectedRoute>} />
               <Route path="/img" element={<ImageGallery />}></Route>
-
-              <Route path="/" element={<LP />} />
+              <Route path="/" element={<LP />} /> 
               <Route path="/SuccessPage" element={<SuccessPage />} />
               <Route path="/FaqPage" element={<FaqPage />} />
               <Route path="/GetInTouch" element={<GetInTouch />} />

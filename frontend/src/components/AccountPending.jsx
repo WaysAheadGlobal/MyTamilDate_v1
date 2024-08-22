@@ -103,11 +103,13 @@ export default function AccountPending() {
 
     return (
         <div className='job-container'>
-            <div className='job-bg'>
+            {/* <div className='job-bg'>
                 <Image className='responsive-bg' src={responsivebg} alt="Background"></Image>
-            </div>
+            </div> */}
             <Container className='job-main'>
-                <Container className='job-content'>
+                <Container className='job-content' style={{
+                    height : "94dvh"
+                }}>
                     <Container className='logo-progressbar10'>
                         <Container className='logo-arrow10'>
                             <Image src={logo2} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
@@ -136,17 +138,17 @@ export default function AccountPending() {
                         <p style={{
                             fontSize: "16px",
                             fontWeight: "400",
-                            lineHeight: "20px",
+                            lineHeight: "24px",
                             textAlign: "center",
                             fontFamily: "Inter, sans-serif",
                         }}>
                             We're reviewing your account and will notify you via e-mail at {email}. In the meantime, you can update your profile information.
                         </p>
-                        <button className='global-next-btn' style={{
+                        {/* <button className='global-next-btn' style={{
                             marginTop: "30px"
                         }} onClick={() => navigate("/updateprofile")}>
                             Update
-                        </button>
+                        </button> */}
                         <button className='global-cancel-button' style={{ marginTop: "30px", width: "236px" }} onClick={() => setShowModal(true)}>
                             Add Shortcut
                         </button>

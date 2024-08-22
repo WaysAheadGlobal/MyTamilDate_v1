@@ -543,7 +543,8 @@ export default function Preferences() {
                                 saveApiEndpoint: "gender_id",
                                 element: "gender"
                             })}
-                        >{preferences?.gender ?? "Everyone"}</p>
+                        ><p>{preferences?.gender === "Other" ? "Everyone" : preferences?.gender ?? "Everyone"}</p>
+</p>
                     </div>
                     <div className={styles.option}>
                         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">

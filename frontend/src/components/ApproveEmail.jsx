@@ -159,7 +159,7 @@ export default function ApproveEmail() {
 
     const EmailVerifiedSuccess = ()=>{
         setShowModalVerified(false);
-        navigate("/pending");  
+        navigate("/user/home");  
 
     }
 
@@ -210,6 +210,7 @@ export default function ApproveEmail() {
                         gap: "5rem",
                         marginTop: "auto",
                         marginBottom: "2rem",
+                        
                     }}>
                         {/* <Button variant="primary" onClick={checkVerification} style={{
                             width: "100%",

@@ -31,11 +31,14 @@ const Navigate = useNavigate();
 
     return (
         <div className='job-container'>
-            <div className='job-bg'>
+            {/* <div className='job-bg'>
                 <Image className='responsive-bg' src={responsivebg} alt="Background"></Image>
-            </div>
+            </div> */}
             <Container className='job-main'>
-                <Container className='job-content'>
+                <Container className='job-content' style={{
+                    gap : "0px",
+                    height : "95dvh"
+                }}>
                     <Container className='logo-progressbar10'>
                         <Container className='logo-arrow10'>
                             <Image src={logo2} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
@@ -49,6 +52,7 @@ const Navigate = useNavigate();
                         alignItems: "center",
                         textAlign: "center",
                         justifyContent: "center",
+                        marginTop: "-34px"
                     }}>
                         <img src={notApproved} alt="not-approved" />
                         <div>
@@ -91,15 +95,15 @@ const Navigate = useNavigate();
                             </p>
                         )}
 
-                        <button className='global-next-btn' onClick={()=> Navigate("/updateprofile")}>
+                        {/* <button className='global-next-btn' onClick={()=> Navigate("/updateprofile")}>
                             Update
-                        </button>
+                        </button> */}
                     <div style={{
                         display: "flex",
                         flexDirection: "column",
                         width: "100%",
                         marginTop: "auto",
-                        marginBottom: "2rem",
+                        marginBottom: "3rem",
                         alignItems: "center",
                         justifyContent: "center",
                         textAlign: "center",

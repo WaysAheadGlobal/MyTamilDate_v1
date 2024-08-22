@@ -68,6 +68,26 @@ profile.get('/', verifyUser, (req, res) => {
   });
 });
 
+// Get the approval status of a specific user by ID
+profile.get('/approval/:id', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.params.id;
+  
+  const query = 'SELECT approval FROM users WHERE id = ?';
+
+  db.query<RowDataPacket[]>(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching approval status:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json({ message: 'Approval status retrieved successfully!', approval: results[0].approval });
+  });
+});
+
 //Update Email add to user Profile
 profile.post('/updateemail', verifyUser, [
   body('email').isEmail().withMessage('Invalid email address')

@@ -19,6 +19,7 @@ export default function Sidebar({ children }) {
     const [isMobile, setIsMobile] = useState(false);
     const [isTablet, setIsTablet] = useState(false);
     const [Rejected, setRejected] = useState(false);
+    const[view, setView] = useState(false);
     const [pathname, setPathname] = useState([]);
     const location = useLocation();
     const suffix = pathname.at(-1);
@@ -151,24 +152,22 @@ export default function Sidebar({ children }) {
             }
 
             if (result.approval === "PENDING") {
-                setRejected(true);
+                setView(true);
             }
 
             if (result.approval === "REJECTED") {
-                setRejected(true);
-                if (window.location.pathname.includes("user")) {
-                    window.location.replace("/not-approved");
-                }
+                setView(true);
+                // if (window.location.pathname.includes("user")) {
+                //     window.location.replace("/not-approved");
+                // }
             }
         })()
     }, [pathname]);
 
     function navigateTo(path) {
-        if (Rejected) {
-            setShowRejectedModal(true);
-        } else {
+       
             navigate(path);
-        }
+        
     }
 
     return (
@@ -294,7 +293,7 @@ export default function Sidebar({ children }) {
             </div>
             <aside className={`${styles['upcoming']} ${location.pathname === "/paymentplan" ? styles['paymentplanupcoming'] : ''}`}>
                 <ProfileCompletion />
-                <Suggestions Rejected={Rejected} />
+                <Suggestions Rejected={view} />
 
             </aside>
             <LogoutModal
@@ -337,18 +336,18 @@ export function MobileSidebar() {
                 return;
             }
 
-            if (result.approval === "PENDING") {
-                window.location.replace("/pending");
-                return;
-            }
+            // if (result.approval === "PENDING") {
+            //     window.location.replace("/pending");
+            //     return;
+            // }
 
-            if (result.approval === "REJECTED") {
-                setRejected(true);
-                if (window.location.pathname.includes("user")) {
-                    window.location.replace("/not-approved");
-                }
-                // window.location.replace("/updateprofile");
-            }
+            // if (result.approval === "REJECTED") {
+            //     setRejected(true);
+            //     if (window.location.pathname.includes("user")) {
+            //         window.location.replace("/not-approved");
+            //     }
+               
+            // }
         }
         if (window.location.pathname !== "/user/pause") {
             checkApproval();
@@ -356,10 +355,7 @@ export function MobileSidebar() {
     }, [pathname]);
 
     function navigateTo(path) {
-        if (Rejected) {
-            setShowRejectedModal(true);
-            return;
-        }
+      
         navigate(path);
     }
 

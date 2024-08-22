@@ -1,10 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Card from '../components/card/Card';
 import { useUserProfile } from '../components/context/UserProfileContext';
 import Sidebar from '../components/sidebar/sidebar';
 import styles from './home.module.css';
+import { useCookies } from '../../../hooks/useCookies';
+import { API_URL } from '../../../api';
+import AccountPending from '../../AccountPending';
+import AccountNotApproved from '../../AccountNotApproved';
 
-export default function Home() {   
+export default function Home() {
+    const [approval, setapproval] = useState("")
+    const [approvalloading, setApprovalloading] = useState(false)
+    const { getCookie } = useCookies();
+    const userId = getCookie("userId")
+
     const {
         profiles,
         setProfiles,
@@ -42,6 +51,58 @@ export default function Home() {
         };
     }, [profiles]);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            setApprovalloading(true)
+            try {
+                const response = await fetch(`${API_URL}/customer/users/approval/${userId}`, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${getCookie('token')}`
+                    }
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    setapproval(result.approval)
+                    console.log(approval)
+                    setApprovalloading(false)
+                } else {
+                    console.error('Error fetching user data:', result.message);
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    
+    if (approvalloading) {
+        return (
+            <Sidebar>
+              <div style={{
+                flex: "1",
+                marginInline: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+                overflowY: "auto",
+                marginTop: "-30px",
+                width: "100%",
+                paddingInline: "1rem",
+            }}>
+                
+            <p style={
+                {
+                    marginTop : "40px"
+                }
+            }>Loading...</p>
+                </div>
+                </Sidebar>  
+      )}
+
     /* useEffect(() => {
         if (profiles.length === 0) return;
 
@@ -60,18 +121,35 @@ export default function Home() {
  */
     return (
         <Sidebar>
-            <div
-                className={styles.container}
-            >
-                {
-                    profiles.slice(0, 1).map((profile) => (
-                        <Card key={profile.user_id} {...profile} setPage={setPage} />
-                    ))
-                }
-                {
-                    loading && <p style={{ textAlign: "center" }}>Loading...</p>
-                }
-            </div>
+
+            {approval === 10 && (
+                <div>
+                  
+                    <AccountPending/>
+                </div>
+            )}
+
+            {approval === 30 && (
+                <div>
+                    <AccountNotApproved/>
+                </div>
+            )}
+            
+            {(approval === 20) && (
+        <div
+        className={styles.container}
+    >
+        {
+            profiles.slice(0, 1).map((profile) => (
+                <Card key={profile.user_id} {...profile} setPage={setPage} />
+            ))
+        }
+        {
+            loading && <p style={{ textAlign: "center" }}>Loading...</p>
+        }
+    </div>
+      )}
+            
         </Sidebar>
     )
 }
