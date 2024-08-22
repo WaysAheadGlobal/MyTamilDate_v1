@@ -171,6 +171,7 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                     WHERE 
                         up_inner.user_id != ? 
                         AND l_inner.continent IS NOT NULL
+                        AND up_inner.want_gender = ${req.user.gender}
                         AND u_inner.approval = ${UserApprovalEnum.APPROVED}
                         AND u_inner.active = 1
                         AND u_inner.deleted_at IS NULL

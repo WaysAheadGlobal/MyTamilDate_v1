@@ -353,7 +353,7 @@ auth.post('/signup/otp', body('phone').notEmpty().withMessage('Phone number is r
             return;
         }
         if (results.length > 0) {
-            res.status(409).json({ message: 'This phone number is already in use. Try with a different number.' });
+            res.status(409).json({ message: 'This number is already in use. Try logging in as a returning user or sign up with another number.' });
             return;
         }
 

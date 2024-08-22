@@ -192,7 +192,7 @@ export default function Sidebar({ children }) {
                     )
                 }
                 <ul>
-                    <li className={suffix === "home" ? styles["active"] : ""} onClick={() => navigateTo("/user/home")}>
+                    <li className={suffix === "home" ? styles["active"] : ""} onClick={() =>  window.location.href = '/user/home'}>
                         <div className={styles['indicator']}></div>
                         <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M4.66406 12.1667L13.9974 4L23.3307 12.1667L23.3307 23.8333H17.4974V19.1667C17.4974 18.2384 17.1287 17.3482 16.4723 16.6918C15.8159 16.0354 14.9257 15.6667 13.9974 15.6667C13.0691 15.6667 12.1789 16.0354 11.5225 16.6918C10.8661 17.3482 10.4974 18.2384 10.4974 19.1667V23.8333H4.66407L4.66406 12.1667Z" stroke="#515151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />

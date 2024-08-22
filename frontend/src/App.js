@@ -247,6 +247,7 @@ function App() {
               <Route path="/termandconditions" element={<Protected><TermsConditions /></Protected>}></Route>
               <Route path="/paymentmethod" element={<Protected><PaymentMethod /></Protected>}></Route>
               <Route path="/billinghistory" element={<Protected><BillingHistory /></Protected>}></Route>
+              
               <Route path="/selectplan" element={<Protected>
                 <MobileCheck>
                   <Selectplan />
@@ -254,7 +255,7 @@ function App() {
               </Protected>}></Route>
               <Route path="/addpaymentmethod" element={<Protected><AddPaymentMethod /></Protected>}></Route>
               <Route path="/paymentdetails" element={<Protected><Fillpaymentdetails /></Protected>}></Route>
-              <Route path="/paymentplan" element={<Paymentfinal />}></Route>
+              <Route path="/paymentplan" element={<MobileCheck> <Paymentfinal /></MobileCheck> }></Route>
               <Route path="/updateprofile" element={<Protected><UpdateProfile /></Protected>}></Route>
               <Route path="/preview" element={<Protected><Preview /></Protected>}></Route>
               <Route path="/editpicture" element={<Protected><EditPicture /></Protected>}></Route>

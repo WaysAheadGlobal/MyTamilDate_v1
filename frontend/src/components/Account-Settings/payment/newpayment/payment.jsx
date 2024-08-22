@@ -48,8 +48,9 @@ const Paymentfinal = () => {
     const [showpaymentsuccess, setShowshowpaymentsuccess] = useState(false);
     const Gotohomepage = ()=>{
         setshowmodal(false);
-        window.location.assign('/user/home')
+        window.location.href = '/user/home';
     }
+
     const rates = [
         "CAD",
         "USD",
