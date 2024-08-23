@@ -38,6 +38,11 @@ class MailService {
             link: token
         });
     }
+    async sendNewApprovaRequestToadmin(to: string, name: string) {
+        await this.sendMail(to, 'Verify your email to access your myTamilDate account', 'newapproval', {
+           name
+        });
+    }
 
     async sendSignUpMail(to: string) {
         await this.sendMail(to, 'You have successfully signed up for myTamilDate', 'signup', {});

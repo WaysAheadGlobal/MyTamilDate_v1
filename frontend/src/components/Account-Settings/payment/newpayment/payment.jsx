@@ -145,6 +145,7 @@ const Paymentfinal = () => {
             const data = await response.json();
 
             if (response.ok) {
+                setLoading(false)
                 if (data.url) {
                     alert.setModal({
                         show: true,
@@ -155,6 +156,7 @@ const Paymentfinal = () => {
                         }
                     });
                 } else {
+                    setLoading(false)
                     setshowmodal(true);
 
                     // alert.setModal({
@@ -171,7 +173,7 @@ const Paymentfinal = () => {
             alert.setModal({
                 show: true,
                 message: "Something went wrong. Please try again later.",
-                title: 'Error',
+                title: '',
             });
         } finally {
             setLoading(false);

@@ -1,43 +1,63 @@
-import React from 'react'
-import styles from "./upgrade.module.css"
+import React, { useState } from 'react'
 
-const upgradenow = ({Show, setshow}) => {
-    const [ShowUpgrade, setShowUpgrade] = useState(Show);
-  return (
-    <div>
-      <Modal centered className="selfie-modal" show={ShowUpgrade} onHide={() => setShowUpgrade(false)}>
-                    <Modal.Body className='selfie-modal-body'>
+import styles from "./upgrade.module.css";
+import { Modal } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+
+const UpgradeModal = ({ show, setShow }) => {
+    const navigate = useNavigate();
+const [showmodal, setShowmodal] = useState(true)
+    return (
+        <div>
+            <Modal centered className="selfie-modal" show={show} onHide={() => setShow(false)} style={{
+                marginLeft : "-3px"
+            }}>
+                <Modal.Body className='selfie-modal-body'  >
                     <div style={{
-                        position: "absolute",
-                        backgroundColor: "#606060A3",
-                        backdropFilter: "blur(1rem)",
-                        inset: 0,
-                        top: "5.5rem",
+                       
+                        
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        zIndex: 1000,
-                     
+                        
                     }}>
                         <div style={{
                             backgroundColor: "white",
-                         
                             borderRadius: "1rem",
-                            maxWidth: "330px",
+                            width: "372px",
+                        
+
                         }}>
+                            <button 
+                    onClick={() => setShow(false)} 
+                    style={{
+                        position: "absolute",
+                        top: "-45px",
+                        right: "-15px",
+                        background: "none",
+                        border: "none",
+                        fontSize: "40px",
+                        color: "black",
+                        cursor: "pointer",
+                        fontWeight : "300"
+                    }}
+                >
+                    &times;
+                </button>
                             <p style={{
                                 fontSize: "20px",
                                 fontWeight: "600",
-                                margin: "0",
-                               
                                 color: "#424242",
                                 textAlign: "center",
                                 fontStyle: "Poppins",
-                                padding: "1rem",
-
-                            }}>Upgrade to Premium & 
+                                padding: "3rem",
+                                marginTop  :"-20px"
+                            }}>Upgrade to Premium &
                                 Unlock Exclusive Features</p>
-                            <div className={styles.likebox}>
+                            <div className={styles.likebox}
+                                style={{
+                                    borderRadius: "1rem",
+                                }}>
                                 <p
                                     style={{
                                         fontSize: "16px",
@@ -45,40 +65,56 @@ const upgradenow = ({Show, setshow}) => {
                                         textAlign: "center",
                                         color: "#515151",
                                         fontStyle: "Poppins",
-                                       fontWeight : "400"
-
+                                        fontWeight: "400",
+                                        borderRadius: "1rem",
+                                        padding: "9px",
+                                        marginTop :"-30px"
                                     }}
                                 >
-                                   As a Premium member, you can send unlimited messages, see who liked you, view all matches, access special events, and much more!
+                                    As a Premium member, you can send unlimited messages, see who liked you, view all matches, access special events, and much more!
                                 </p>
                                 <div style={{
                                     marginTop: "2rem",
                                     display: "flex",
                                     gap: "1rem",
                                     marginInline: "auto",
-                                    width: "fit-content"
+                                    width: "fit-content",
+                                    borderRadius: "1rem",
                                 }}>
-                                    <div>
+                                    <div style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        gap: "25px"
+                                    }}>
+                                        {/* <button className='global-cancel-button' style={{
+                                            background: "#fff",
+                                        }}
+                                        onClick={() => setShow(false)}
+                                        >
+                                            Close
+                                        </button> */}
                                         <button className='global-next-btn' style={{
                                             background: "#fff",
                                             color: "#F76A7B",
+                                        //    paddingRight : "-3px",
+                                        //    padding: "12px 14px 12px 14px",
+                                           width :"236px"
                                         }}
-                                        onClick={()=> navigate("/selectplan")}
+                                            onClick={() => navigate("/selectplan")}
                                         >
                                             Upgrade Now
                                         </button>
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
-                    </Modal.Body>
-                </Modal>
+                </Modal.Body>
+            </Modal>
 
-    </div>
-  )
+        </div>
+    )
 }
 
-export default upgradenow
+export default UpgradeModal

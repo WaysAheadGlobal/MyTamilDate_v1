@@ -174,11 +174,10 @@ export const SignInOptions = () => {
                                 <Image src={google} alt="Google" />Login using Google
                             </button>
                             {errorMessage && <p className="text-danger error-message">{errorMessage}</p>}
-                            <p>New here? Create an account? <a href='./signup' className='signup-signin'> Sign Up</a></p>
+                            <p>New here? Create an account. <a href='./signup' className='signup-signin'> Sign Up</a></p>
                             {/* <p>By continuing you accept our <br /><a className="signup-links" href="/PrivacyPolicy">Privacy Policy</a> and <a className="signup-links" target="_blank" href='/Tnc'>Terms of Use</a></p> */}
                         </Container>
                     </Container>
-
                 </Container>
             </Container>
 

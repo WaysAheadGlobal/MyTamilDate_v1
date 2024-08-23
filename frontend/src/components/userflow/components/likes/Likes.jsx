@@ -8,11 +8,12 @@ import chatPlaceholder from '../../../../assets/images/chatPlaceholder.svg';
 import Button from '../button/Button';
 import { useSocket } from '../../../../Context/SockerContext';
 import { Modal } from 'react-bootstrap';
+import UpgradeModal from '../upgradenow/upgradenow';
 
 export default function Likes() {
     const navigate = useNavigate();
     const searchParams = useSearchParams();
-    const[showmodal, setshowmodal] = useState(false);
+    const [showmodal, setshowmodal] = useState(false);
     const cookies = useCookies();
     const [likes, setLikes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -21,11 +22,16 @@ export default function Likes() {
     const [currentLikes, setCurrentLikes] = useState([]);
     const [selected, setSelected] = useState(null);
     const { socket } = useSocket();
-    const handleClose = ()=> setshowmodal(false)
-const handleupgrade = ()=>{
-    setshowmodal(false);
-    navigate("/selectplan");
-}
+
+    const handleupgrade = () => {
+        setshowmodal(false);
+        navigate("/selectplan");
+    }
+
+    const handleClose = () => {
+        console.log("handleClose called");
+        setshowmodal(false);
+    };
 
     const getImageURL = (type, hash, extension, userId) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}` : `${API_URL}media/avatar/${hash}.${extension}`;
 
@@ -126,9 +132,17 @@ const handleupgrade = ()=>{
         }
     }
 
+    useEffect(() => {
+        const isPremium = cookies.getCookie("isPremium") === "true";
+        const isReferral = searchParams[0].get("t") === "s";
+        if (!isPremium && !isReferral) {
+            setshowmodal(true);
+        }
+    }, []);
+
     return (
         <>
-            {
+            {/* {
                 cookies.getCookie("isPremium") !== "true" && (
                     <div style={{
                         position: "absolute",
@@ -198,7 +212,9 @@ const handleupgrade = ()=>{
                         </div>
                     </div>
                 )
-            }
+            } */}
+
+
             <ul className={styles.nav}>
                 <li
                     onClick={() => {
@@ -235,7 +251,26 @@ const handleupgrade = ()=>{
                     </div>
                 )
             }
+             {
+                    <div className={styles.upgradesections}>
+                        <p className={styles.heading} style={{
+
+                        }}>Upgrade and Unlock this feature</p>
+                        <p className={styles.discriptions} style={{
+
+                        }}>premium member can see who liked them sent unlimited massages & more</p>
+                        <button className="global-next-btn" style={{
+                              padding: "0px 0px 0px 0px",
+                              width : "150px",
+                              marginTop : "10px"
+                        }} 
+                        onClick={()=> navigate("/paymentplan")}
+                        >Upgrade Now</button>
+                    </div>
+                   }
             <div className={styles.profiles}>
+                  
+
                 {
                     loading && Array(6).fill(0).map((_, i) => (
                         <Skeleton
@@ -260,6 +295,7 @@ const handleupgrade = ()=>{
                                 backgroundSize: 'cover',
                                 backgroundPosition: 'center',
                                 position: 'relative',
+                                filter: cookies.getCookie("isPremium") === "true" ? 'none' : 'blur(3px)',
                             }}
                             onClick={() => {
                                 if (selected === like.user_id) {
@@ -267,6 +303,7 @@ const handleupgrade = ()=>{
                                     return;
                                 }
                                 setSelected(like.user_id);
+
                             }}
                         >
                             {
@@ -310,7 +347,11 @@ const handleupgrade = ()=>{
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 e.stopPropagation();
-                                                navigate(`/user/${like.first_name}/${like.user_id}`)
+                                                if (cookies.getCookie("isPremium") !== "true") {
+                                                    setshowmodal(true);
+                                                } else {
+                                                    navigate(`/user/${like.first_name}/${like.user_id}`);
+                                                }
                                             }}
                                         >
                                             <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -339,9 +380,9 @@ const handleupgrade = ()=>{
                         </div>
                     ))
                 }
+                <UpgradeModal show={showmodal} setShow={setshowmodal} />
 
-                
-            <Modal show={showmodal} onHide={handleClose} centered>
+                {/* <Modal show={showmodal} onHide={handleClose} centered>
                         <Modal.Body className="pause-modal-content">
 
                             <div className="pause-modal-title" style={{
@@ -366,7 +407,7 @@ const handleupgrade = ()=>{
                                 </button>
                             </div>
                         </Modal.Body>
-                    </Modal>
+                    </Modal> */}
             </div>
         </>
     )

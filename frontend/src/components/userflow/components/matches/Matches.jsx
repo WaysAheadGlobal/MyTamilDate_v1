@@ -11,6 +11,7 @@ import { useAlert } from '../../../../Context/AlertModalContext';
 import { MdClose } from "react-icons/md";
 import { Modal } from 'react-bootstrap';
 import Button from '../button/Button';
+import UpgradeModal from '../upgradenow/upgradenow';
 
 export default function Matches() {
     const [matches, setMatches] = useState([]);
@@ -367,61 +368,61 @@ const handleupgrade = ()=>{
     )
 }
 
-function UpgradeModal({ show, setShow }) {
-    const navigate = useNavigate();
+// function UpgradeModal({ show, setShow }) {
+//     const navigate = useNavigate();
 
-    return (
-        <Modal size='lg' centered show={show}>
-            <Modal.Body>
-                <p style={{
-                    fontSize: "20px",
-                    fontWeight: "600",
-                    margin: "0",
-                    marginBottom: "1rem",
-                    color: "#6c6c6c"
-                }}>Upgrade to Premium & 
-                        Unlock Exclusive Features</p>
-                <p
-                    style={{
-                        fontSize: "16px",
-                        margin: "0",
-                        textAlign: "center",
-                        color: "#6c6c6c"
-                    }}
-                >Premium members can see who liked them, Send unlimited messages & more!</p>
-                <div style={{
-                    marginTop: "4rem",
-                    display: "flex",
-                    gap: "1rem",
-                    marginInline: "auto",
-                }}>
-                    <button
-                        type='button'
-                        style={{
-                            borderRadius: "9999px",
-                            padding: "0.75rem 1.5rem",
-                            // border: "2px solid #6c6c6c",
-                            // color: "#6c6c6c",
-                            // backgroundColor: "transparent"
-                        }}
-                        className='global-cancel-button'
-                        onClick={() => setShow(false)}
-                    >
-                        Close
-                    </button>
-                    <Button
-                        onClick={() => navigate("/selectplan")}
-                        style={{
-                            borderRadius: "9999px",
-                            padding: "0.75rem 1.5rem",
-                            fontSize: "16px",
-                            fontWeight: "600"
-                        }}
-                    >
-                        Upgrade Now
-                    </Button>
-                </div>
-            </Modal.Body>
-        </Modal>
-    )
-}
+//     return (
+//         <Modal size='lg' centered show={show}>
+//             <Modal.Body>
+//                 <p style={{
+//                     fontSize: "20px",
+//                     fontWeight: "600",
+//                     margin: "0",
+//                     marginBottom: "1rem",
+//                     color: "#6c6c6c"
+//                 }}>Upgrade to Premium & 
+//                         Unlock Exclusive Features</p>
+//                 <p
+//                     style={{
+//                         fontSize: "16px",
+//                         margin: "0",
+//                         textAlign: "center",
+//                         color: "#6c6c6c"
+//                     }}
+//                 >Premium members can see who liked them, Send unlimited messages & more!</p>
+//                 <div style={{
+//                     marginTop: "4rem",
+//                     display: "flex",
+//                     gap: "1rem",
+//                     marginInline: "auto",
+//                 }}>
+//                     <button
+//                         type='button'
+//                         style={{
+//                             borderRadius: "9999px",
+//                             padding: "0.75rem 1.5rem",
+//                             // border: "2px solid #6c6c6c",
+//                             // color: "#6c6c6c",
+//                             // backgroundColor: "transparent"
+//                         }}
+//                         className='global-cancel-button'
+//                         onClick={() => setShow(false)}
+//                     >
+//                         Close
+//                     </button>
+//                     <Button
+//                         onClick={() => navigate("/selectplan")}
+//                         style={{
+//                             borderRadius: "9999px",
+//                             padding: "0.75rem 1.5rem",
+//                             fontSize: "16px",
+//                             fontWeight: "600"
+//                         }}
+//                     >
+//                         Upgrade Now
+//                     </Button>
+//                 </div>
+//             </Modal.Body>
+//         </Modal>
+//     )
+// }

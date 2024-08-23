@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { API_URL } from '../api';
+import { API_URL, WEB_URL } from '../api';
 import logo from '../assets/images/logo2.png';
 
 export default function Verify() {
@@ -12,8 +12,8 @@ export default function Verify() {
         const fetchData = async () => {
             try {
                 const response = await fetch(`${API_URL}user/verify/${token}`);
-
                 const result = await response.json();
+
                 if (response.ok) {
                     setVerified(true);
                 } else {
@@ -29,13 +29,13 @@ export default function Verify() {
         };
 
         fetchData();
-    }, []);
+    }, [token]);
 
     useEffect(() => {
         if (verified) {
             setTimeout(() => {
-                window.close();
-            }, 5000);
+                window.location.href = `${WEB_URL}user/home`;
+            }, 1000);
         }
     }, [verified]);
 
@@ -61,7 +61,7 @@ export default function Verify() {
                 width: "150px",
             }} />
 
-            {verified && <p>Your email has been verified. You can close this window now.</p>}
+            {verified && <p>Your email has been verified.</p>}
 
             {!verified && error && <p>{error}</p>}
 
@@ -78,5 +78,5 @@ export default function Verify() {
                 </>
             )}
         </div>
-    )
+    );
 }

@@ -112,3 +112,26 @@ border-radius: 12px;
     inset: 0;
     background: linear-gradient(180deg, rgba(252, 140, 102, 0.6) -4.17%, rgba(247, 106, 123, 0.6) 110.42%);
 }
+.heading{
+    font-family: Poppins;
+font-size: 16px;
+font-weight: 700;
+line-height: 15.84px;
+text-align: center;
+color: #6C6C6C;
+}
+
+.discriptions{
+font-size: 16px;
+font-weight: 500;
+line-height: 15.84px;
+text-align: center;
+color: #6C6C6C;
+margin-top: 10px;
+}
+.upgradesections{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}

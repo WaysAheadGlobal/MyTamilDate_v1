@@ -555,31 +555,15 @@ auth.get("/verify/:token", async (req, res) => {
                             }
 
                             const name = result.first_name;
-
-                            let html;
+                            const email = "mtdteam2024@gmail.com"
                             try {
-                                html = await ejs.renderFile("mail/templates/newapproval.ejs", { name });
-                            } catch (renderError) {
-                                console.error('Error rendering email template:', renderError);
-                                return res.status(500).json({ message: 'Internal Server Error' });
+                                await mailService.sendVerificationMail(email, name);
+                            } catch (error) {
+                                console.error('Error sending email:', error);
+                                return res.status(500).send('Internal Server Error');
                             }
 
-                            const msg = {
-                                from: process.env.EMAIL_HOST!,
-                                to: 'mtdteam2024@gmail.com',
-                                subject: "New Approval Request on MTD",
-                                html: html
-                            };
-            
-                            sgMail.send(msg)
-                                .then(() => {
-                                    console.log("Approval request  email sent successfully");
-                                    // return res.status(200).send('Status updated successfully and email sent');
-                                })
-                                .catch((error) => {
-                                    console.error('Error sending email:', JSON.stringify(error));
-                                    return res.status(500).send('Internal Server Error');
-                                });
+                           
                         });
                             res.status(200).json({ message: 'Email verified successfully' });
                         });

@@ -1,20 +1,34 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './sidebar.module.css'
 import { useUserProfile } from '../context/UserProfileContext'
 import { API_URL } from '../../../../api';
 import { useNavigate } from 'react-router-dom';
+import { useCookies } from '../../../../hooks/useCookies';
+import UpgradeModal from '../upgradenow/upgradenow';
 
 export default function Suggestions({ Rejected }) {
     const { profiles } = useUserProfile()
+    const[show, setShow] = useState(false);
     const navigate = useNavigate();
-
+    const cookies = useCookies();
     const getImageURL = (type, hash, extension, userId) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}` : `${API_URL}media/avatar/${hash}.${extension}`;
+    const ShowfullList = ()=>{
+        if(!Rejected){
+            if(cookies.getCookie('isPremium') !== "true"){
+                setShow(true)
+            }
+            else {
+                navigate("/user/recommendations")
+            }
+        }
+      }
 
     return (
         <div className={styles.suggestions} style={{ borderTop: "2px solid #e0e0e0" }}>
+          
             <div>
                 <p style={{ fontSize: "16px" }}>Suggested for you</p>
-                <p style={{ cursor: "pointer", fontSize: "16px" }} onClick={() => !Rejected && navigate("/user/recommendations")}>See All</p>
+                <p style={{ cursor: "pointer", fontSize: "16px" }} onClick={ShowfullList}>See All</p>
             </div>
 
 
@@ -60,6 +74,7 @@ export default function Suggestions({ Rejected }) {
                     </div>
                 ))
             }
+              <UpgradeModal show = {show} setShow={setShow}/>
         </div>
     )
 }

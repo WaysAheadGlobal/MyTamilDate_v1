@@ -120,12 +120,12 @@ matches.get(
             return;
         }
 
-        const isPremium = await checkPremium(req.userId!);
+        // const isPremium = await checkPremium(req.userId!);
 
-        if (!isPremium) {
-            res.status(200).json([]);
-            return;
-        }
+        // if (!isPremium) {
+        //     res.status(200).json([]);
+        //     return;
+        // }
 
         const userId = req.userId;
         const limit = 20;
@@ -171,12 +171,12 @@ matches.get(
             return;
         }
 
-        const isPremium = await checkPremium(req.userId!);
+        // const isPremium = await checkPremium(req.userId!);
 
-        if (!isPremium) {
-            res.status(200).json([]);
-            return;
-        }
+        // if (!isPremium) {
+        //     res.status(200).json([]);
+        //     return;
+        // }
 
         const userId = req.userId;
         const limit = 20;

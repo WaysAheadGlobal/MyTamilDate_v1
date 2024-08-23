@@ -10,6 +10,7 @@ import styles from './preferences.module.css';
 import './slider.css';
 import { useNavigate } from 'react-router-dom';
 import { useUserProfile } from '../../components/context/UserProfileContext';
+import UpgradeModal from '../../components/upgradenow/upgradenow';
 
 const Forms = {
     Radio: ({ options, value, setValue, firstOption, selected }) => (
@@ -528,6 +529,14 @@ export default function Preferences() {
                     </svg>
                 </div>
                 <div className={styles.preferences}>
+                <Button
+                        style={{
+                            borderRadius: "9999px",
+                            width: "15rem",
+                            
+                        }}
+                        onClick={() => window.location.assign("/user/home")}
+                    >Apply</Button>
                     <div className={styles.option}>
                         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="18" cy="18" r="18" fill="#F7ECFF" />
@@ -741,68 +750,68 @@ export default function Preferences() {
                             marginBottom: "2rem",
                         }}
                         onClick={() => window.location.assign("/user/home")}
-                    >Save</Button>
+                    >Apply</Button>
                 </div>
             </div>
         </Sidebar>
     )
 }
 
-function UpgradeModal({ show, setShow }) {
-    const navigate = useNavigate();
+// function UpgradeModal({ show, setShow }) {
+//     const navigate = useNavigate();
 
-    return (
-        <Modal size='lg' centered show={show}>
-            <Modal.Body>
-                <p style={{
-                    fontSize: "20px",
-                    fontWeight: "600",
-                    margin: "0",
-                    marginBottom: "1rem",
-                    color: "#6c6c6c"
-                }}>Upgrade to Premium & 
-                        Unlock Exclusive Features</p>
-                <p
-                    style={{
-                        fontSize: "16px",
-                        margin: "0",
-                        textAlign: "center",
-                        color: "#6c6c6c"
-                    }}
-                >Premium members can see who liked them, Send unlimited messages & more!</p>
-                <div style={{
-                    marginTop: "4rem",
-                    display: "flex",
-                    gap: "1rem",
-                    marginInline: "auto",
-                }}>
-                    <button
-                        type='button'
-                        style={{
-                            borderRadius: "9999px",
-                            padding: "0.75rem 1.5rem",
-                            // border: "2px solid #6c6c6c",
-                            // color: "#6c6c6c",
-                            // backgroundColor: "transparent"
-                        }}
-                        className='global-cancel-button'
-                        onClick={() => setShow(false)}
-                    >
-                        Close
-                    </button>
-                    <Button
-                        onClick={() => navigate("/selectplan")}
-                        style={{
-                            borderRadius: "9999px",
-                            padding: "0.75rem 1.5rem",
-                            fontSize: "16px",
-                            fontWeight: "600"
-                        }}
-                    >
-                        Upgrade Now
-                    </Button>
-                </div>
-            </Modal.Body>
-        </Modal>
-    )
-}
+//     return (
+//         <Modal size='lg' centered show={show}>
+//             <Modal.Body>
+//                 <p style={{
+//                     fontSize: "20px",
+//                     fontWeight: "600",
+//                     margin: "0",
+//                     marginBottom: "1rem",
+//                     color: "#6c6c6c"
+//                 }}>Upgrade to Premium & 
+//                         Unlock Exclusive Features</p>
+//                 <p
+//                     style={{
+//                         fontSize: "16px",
+//                         margin: "0",
+//                         textAlign: "center",
+//                         color: "#6c6c6c"
+//                     }}
+//                 >Premium members can see who liked them, Send unlimited messages & more!</p>
+//                 <div style={{
+//                     marginTop: "4rem",
+//                     display: "flex",
+//                     gap: "1rem",
+//                     marginInline: "auto",
+//                 }}>
+//                     <button
+//                         type='button'
+//                         style={{
+//                             borderRadius: "9999px",
+//                             padding: "0.75rem 1.5rem",
+//                             // border: "2px solid #6c6c6c",
+//                             // color: "#6c6c6c",
+//                             // backgroundColor: "transparent"
+//                         }}
+//                         className='global-cancel-button'
+//                         onClick={() => setShow(false)}
+//                     >
+//                         Close
+//                     </button>
+//                     <Button
+//                         onClick={() => navigate("/selectplan")}
+//                         style={{
+//                             borderRadius: "9999px",
+//                             padding: "0.75rem 1.5rem",
+//                             fontSize: "16px",
+//                             fontWeight: "600"
+//                         }}
+//                     >
+//                         Upgrade Now
+//                     </Button>
+//                 </div>
+//             </Modal.Body>
+//         </Modal>
+//     )
+// }
