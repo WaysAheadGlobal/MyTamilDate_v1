@@ -19,7 +19,7 @@ export default function Sidebar({ children }) {
     const [isMobile, setIsMobile] = useState(false);
     const [isTablet, setIsTablet] = useState(false);
     const [Rejected, setRejected] = useState(false);
-    const[view, setView] = useState(false);
+    const [view, setView] = useState(false);
     const [pathname, setPathname] = useState([]);
     const location = useLocation();
     const suffix = pathname.at(-1);
@@ -49,7 +49,7 @@ export default function Sidebar({ children }) {
             console.log("Socket is not initialized.");
             return;
         }
-    
+
         const handleNewMatch = ({ withUserId }) => {
             console.log("New match event received:", withUserId);
             alert.setModal({
@@ -61,20 +61,20 @@ export default function Sidebar({ children }) {
                 }
             });
         };
-    
+
         console.log("Setting up 'new-match' listener.");
-    
+
         // Listen for the 'new-match' event from the server
         socket.on("new-match", handleNewMatch);
-    
+
         // Clean up the event listener on component unmount
         return () => {
             console.log("Cleaning up 'new-match' listener.");
             socket.off("new-match", handleNewMatch);
         };
     }, [socket]);
-    
-    
+
+
 
     const noNavbarRoutes = [
         '/updatelocations',
@@ -165,9 +165,9 @@ export default function Sidebar({ children }) {
     }, [pathname]);
 
     function navigateTo(path) {
-       
-            navigate(path);
-        
+
+        navigate(path);
+
     }
 
     return (
@@ -192,7 +192,7 @@ export default function Sidebar({ children }) {
                     )
                 }
                 <ul>
-                    <li className={suffix === "home" ? styles["active"] : ""} onClick={() =>  window.location.href = '/user/home'}>
+                    <li className={suffix === "home" ? styles["active"] : ""} onClick={() => window.location.href = '/user/home'}>
                         <div className={styles['indicator']}></div>
                         <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M4.66406 12.1667L13.9974 4L23.3307 12.1667L23.3307 23.8333H17.4974V19.1667C17.4974 18.2384 17.1287 17.3482 16.4723 16.6918C15.8159 16.0354 14.9257 15.6667 13.9974 15.6667C13.0691 15.6667 12.1789 16.0354 11.5225 16.6918C10.8661 17.3482 10.4974 18.2384 10.4974 19.1667V23.8333H4.66407L4.66406 12.1667Z" stroke="#515151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -270,8 +270,8 @@ export default function Sidebar({ children }) {
                         </svg>
                         <span style={{ fontSize: "16px" }}>Help & Support</span>
                     </div>
-                    <div style={{ cursor: "pointer" }} 
-                    onClick={()=> setShowLogoutModal(true)}
+                    <div style={{ cursor: "pointer" }}
+                        onClick={() => setShowLogoutModal(true)}
                     // onClick={() => {
                     //     cookies.deleteCookie("token");
                     //     cookies.deleteCookie("approval");
@@ -297,10 +297,10 @@ export default function Sidebar({ children }) {
 
             </aside>
             <LogoutModal
-                        showLogoutModal={showLogoutModal}
-                        handleCloseLogout={handleCloseLogout}
-                        handleLogout={handleLogout}
-                    />
+                showLogoutModal={showLogoutModal}
+                handleCloseLogout={handleCloseLogout}
+                handleLogout={handleLogout}
+            />
         </section>
     )
 }
@@ -312,7 +312,7 @@ export function MobileSidebar() {
     const navigate = useNavigate();
     const cookies = useCookies();
     const [showRejectedModal, setShowRejectedModal] = useState(false);
-   
+
     useEffect(() => {
         setPathname(window.location.pathname.split("/"));
     }, []);
@@ -346,7 +346,7 @@ export function MobileSidebar() {
             //     if (window.location.pathname.includes("user")) {
             //         window.location.replace("/not-approved");
             //     }
-               
+
             // }
         }
         if (window.location.pathname !== "/user/pause") {
@@ -355,7 +355,7 @@ export function MobileSidebar() {
     }, [pathname]);
 
     function navigateTo(path) {
-      
+
         navigate(path);
     }
 
@@ -368,7 +368,7 @@ export function MobileSidebar() {
                 objectFit: 'contain',
             }} />
             <ul>
-                <li className={suffix === "home" ? styles["active"] : ""} onClick={() => navigateTo("/user/home")}>
+                <li className={suffix === "home" ? styles["active"] : ""} onClick={() => window.location.href = '/user/home'}>
                     <div className={styles['indicator']}></div>
                     <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M4.66406 12.1667L13.9974 4L23.3307 12.1667L23.3307 23.8333H17.4974V19.1667C17.4974 18.2384 17.1287 17.3482 16.4723 16.6918C15.8159 16.0354 14.9257 15.6667 13.9974 15.6667C13.0691 15.6667 12.1789 16.0354 11.5225 16.6918C10.8661 17.3482 10.4974 18.2384 10.4974 19.1667V23.8333H4.66407L4.66406 12.1667Z" stroke="#515151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />

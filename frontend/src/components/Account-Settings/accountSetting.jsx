@@ -609,6 +609,7 @@ export const AccountSetting = () => {
 
     // phone number update code
     const [showModalcountry, setshowModalcountry] = useState(false);
+    const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCountry, setSelectedCountry] = useState('CA');
     const [selectedCountryInfo, setSelectedCountryInfo] = useState(countries.find(country => country.code === 'CA'));
@@ -637,9 +638,27 @@ export const AccountSetting = () => {
         setshowModalcountry(!showModalcountry);
     };
 
+    // const handlePhoneNumberChange = (e) => {
+    //     const value = e.target.value.replace(/\D/g, '');
+    //     setPhoneNumberupdate(value);
+    // };
+
     const handlePhoneNumberChange = (e) => {
-        const value = e.target.value.replace(/\D/g, '');
-        setPhoneNumberupdate(value);
+        let rawValue = e.target.value.replace(/\D/g, ''); // Store the raw value without formatting
+
+        // Format the value for display
+        let formattedValue = rawValue;
+        if (rawValue.length > 6) {
+            formattedValue = `(${rawValue.substring(0, 3)}) ${rawValue.substring(3, 6)}-${rawValue.substring(6, 10)}`;
+        } else if (rawValue.length > 3) {
+            formattedValue = `(${rawValue.substring(0, 3)}) ${rawValue.substring(3, 6)}`;
+        } else if (rawValue.length > 0) {
+            formattedValue = `(${rawValue}`;
+        }
+
+        setFormattedPhoneNumber(formattedValue); // Update the formatted value for display
+        console.log(rawValue)
+        setPhoneNumberupdate(rawValue); // Store the raw value in the state
     };
 
     const handleSubmitphone = async (e) => {
@@ -1234,7 +1253,7 @@ export const AccountSetting = () => {
                                                 className={`num-verify-input ${errorMessagephoneupdate ? 'error' : ''}`}
                                                 type="text"
                                                 placeholder="(xxx)xxx-xxx"
-                                                value={phoneNumberupdate}
+                                                value={formattedPhoneNumber}
                                                 onChange={handlePhoneNumberChange}
                                                 style={{ flex: 1, marginLeft: '10px' }}
                                             />

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './located.css';
 import { useNavigate } from 'react-router-dom';
-import { Container, Image, Button, Form } from 'react-bootstrap';
+import { Container, Image, Button, Form, Spinner } from 'react-bootstrap';
 import backarrow from "../assets/images/backarrow.jpg";
 import logo from "../assets/images/MTDlogo.png";
 import responsivebg from "../assets/images/responsive-bg.png";
@@ -25,7 +25,9 @@ export const Located = () => {
   const citySelectRef = useRef(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [errorMessageCity, setErrorMessageCity] = useState('');
-  
+  const [loadingCountries, setLoadingCountries] = useState(true); // Loading state for countries
+  const [loadingCities, setLoadingCities] = useState(true);
+
   useEffect(() => {
     (async () => {
       const response = await fetch(`${API_URL}/customer/users/location-options`, {
@@ -39,6 +41,7 @@ export const Located = () => {
       console.log(data);
       setOptions(data);
       setCountryOptions(Object.keys(data));
+      setLoadingCountries(false);
     })()
   }, []);
 
@@ -137,52 +140,60 @@ export const Located = () => {
               </div>
               <div className='scroll-container-vertical'>
                 {
-                  !countrySearch && (
-                    <>
-                      <div
-                        className={`scroll-item ${selectedCountry === "Canada" ? 'selected' : ''}`}
-                        onClick={() => {
-                          handleCountrySelect("Canada")
-                          setCountrySearch("Canada")
-                          countrySelectRef.current.classList.add("collasped");
-                        }}
-                      >
-                        {"Canada"}
-                      </div>
-                      <div
-                        className={`scroll-item ${selectedCountry === "United States" ? 'selected' : ''}`}
-                        onClick={() => {
-                          handleCountrySelect("United States")
-                          setCountrySearch("United States")
-                          countrySelectRef.current.classList.add("collasped");
-                        }}
-                      >
-                        {"United States"}
-                      </div>
-                      <div
-                        className={`scroll-item ${selectedCountry === "United Kingdom" ? 'selected' : ''}`}
-                        onClick={() => {
-                          handleCountrySelect("United Kingdom")
-                          setCountrySearch("United Kingdom")
-                          countrySelectRef.current.classList.add("collasped");
-                        }}
-                      >
-                        {"United Kingdom"}
-                      </div>
-                      {countryOptions.filter(c => !["Canada", "United States", "United Kingdom"].includes(c)).sort((a, b) => a.localeCompare(b)).map((country) => (
+                  loadingCountries ? (
+                    <Spinner animation="border" size="sm" style={{
+                      marginTop: "17px",
+                      marginLeft : "10px"
+                    }} /> // Loading spinner for countries
+                  ) : (
+                    !countrySearch && (
+                      <>
                         <div
-                          key={country}
-                          className={`scroll-item ${selectedCountry === country ? 'selected' : ''}`}
+                          className={`scroll-item ${selectedCountry === "Canada" ? 'selected' : ''}`}
                           onClick={() => {
-                            handleCountrySelect(country)
-                            setCountrySearch(country)
+                            handleCountrySelect("Canada")
+                            setCountrySearch("Canada")
                             countrySelectRef.current.classList.add("collasped");
                           }}
                         >
-                          {country}
+                          {"Canada"}
                         </div>
-                      ))}
-                    </>
+                        <div
+                          className={`scroll-item ${selectedCountry === "United States" ? 'selected' : ''}`}
+                          onClick={() => {
+                            handleCountrySelect("United States")
+                            setCountrySearch("United States")
+                            countrySelectRef.current.classList.add("collasped");
+                          }}
+                        >
+                          {"United States"}
+                        </div>
+                        <div
+                          className={`scroll-item ${selectedCountry === "United Kingdom" ? 'selected' : ''}`}
+                          onClick={() => {
+                            handleCountrySelect("United Kingdom")
+                            setCountrySearch("United Kingdom")
+                            countrySelectRef.current.classList.add("collasped");
+                          }}
+                        >
+                          {"United Kingdom"}
+                        </div>
+                        {
+                          countryOptions.filter(c => !["Canada", "United States", "United Kingdom"].includes(c)).sort((a, b) => a.localeCompare(b)).map((country) => (
+                            <div
+                              key={country}
+                              className={`scroll-item ${selectedCountry === country ? 'selected' : ''}`}
+                              onClick={() => {
+                                handleCountrySelect(country)
+                                setCountrySearch(country)
+                                countrySelectRef.current.classList.add("collasped");
+                              }}
+                            >
+                              {country}
+                            </div>
+                          ))}
+                      </>
+                    )
                   )
                 }
                 {
@@ -207,75 +218,75 @@ export const Located = () => {
               {errorMessage && <Form.Text className="text-danger error-message">{errorMessage}</Form.Text>}
             </div>
             {selectedCountry && (
-  <Container ref={citySelectRef} className="located-city collapsed">
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        position: 'relative',
-      }}
-    >
-      <input
-        type="text"
-        placeholder="Select a city"
-        value={citySearch}
-        onChange={(e) => setCitySearch(e.currentTarget.value)}
-        style={{ flexGrow: 1, paddingRight: '2rem' }} // Ensure space for the icon
-      />
-      <FaAngleDown
-        size={16}
-        style={{
-          position: 'absolute',
-          right: '1rem',
-          cursor: 'pointer',
-        }}
-        onClick={() => {
-          citySelectRef.current.classList.toggle('collapsed');
-        }}
-      />
-    </div>
-    <div className="scroll-container-vertical">
-      {!citySearch &&
-        options[selectedCountry]
-          ?.filter((city) => city.location_string?.trim() !== '')
-          ?.sort((a, b) => a.location_string?.localeCompare(b.location_string))
-          ?.map((city) => (
-            <div
-              key={city.id}
-              className={`scroll-item ${selectedCity === city.id ? 'selected' : ''}`}
-              onClick={() => {
-                handleCitySelect(city.id);
-                setCitySearch(city.location_string);
-                citySelectRef.current.classList.add('collapsed');
-              }}
-            >
-              {city.location_string}
-            </div>
-          ))}
+              <Container ref={citySelectRef} className="located-city collapsed">
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    position: 'relative',
+                  }}
+                >
+                  <input
+                    type="text"
+                    placeholder="Select a city"
+                    value={citySearch}
+                    onChange={(e) => setCitySearch(e.currentTarget.value)}
+                    style={{ flexGrow: 1, paddingRight: '2rem' }} // Ensure space for the icon
+                  />
+                  <FaAngleDown
+                    size={16}
+                    style={{
+                      position: 'absolute',
+                      right: '1rem',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      citySelectRef.current.classList.toggle('collapsed');
+                    }}
+                  />
+                </div>
+                <div className="scroll-container-vertical">
+                  {!citySearch &&
+                    options[selectedCountry]
+                      ?.filter((city) => city.location_string?.trim() !== '')
+                      ?.sort((a, b) => a.location_string?.localeCompare(b.location_string))
+                      ?.map((city) => (
+                        <div
+                          key={city.id}
+                          className={`scroll-item ${selectedCity === city.id ? 'selected' : ''}`}
+                          onClick={() => {
+                            handleCitySelect(city.id);
+                            setCitySearch(city.location_string);
+                            citySelectRef.current.classList.add("collasped");
+                          }}
+                        >
+                          {city.location_string}
+                        </div>
+                      ))}
 
-      {citySearch &&
-        options[selectedCountry]
-          .filter((city) =>
-            city.location_string?.toLowerCase().includes(citySearch.toLowerCase())
-          )
-          ?.sort((a, b) => a.location_string?.localeCompare(b.location_string))
-          ?.map((city) => (
-            <div
-              key={city.id}
-              className={`scroll-item ${selectedCity === city.id ? 'selected' : ''}`}
-              onClick={() => {
-                handleCitySelect(city.id);
-                setCitySearch(city.location_string);
-                citySelectRef.current.classList.add('collapsed');
-              }}
-            >
-              {city.location_string}
-            </div>
-          ))}
-    </div>
-  </Container>
-)}
+                  {citySearch &&
+                    options[selectedCountry]
+                      .filter((city) =>
+                        city.location_string?.toLowerCase().includes(citySearch.toLowerCase())
+                      )
+                      ?.sort((a, b) => a.location_string?.localeCompare(b.location_string))
+                      ?.map((city) => (
+                        <div
+                          key={city.id}
+                          className={`scroll-item ${selectedCity === city.id ? 'selected' : ''}`}
+                          onClick={() => {
+                            handleCitySelect(city.id);
+                            setCitySearch(city.location_string);
+                            citySelectRef.current.classList.add('collapsed');
+                          }}
+                        >
+                          {city.location_string}
+                        </div>
+                      ))}
+                </div>
+              </Container>
+            )}
 
             <div style={{ marginTop: "-7px" }}>
 

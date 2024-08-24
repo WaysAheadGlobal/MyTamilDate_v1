@@ -444,6 +444,7 @@ const Paymentfinal = () => {
                             </div>
                         </div>
                     </div>
+                    
                     <div className={pay.carddetails}>
                         <div style={{
                             flex: "1",

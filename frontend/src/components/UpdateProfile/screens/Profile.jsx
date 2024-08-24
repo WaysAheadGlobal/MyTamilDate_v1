@@ -143,7 +143,7 @@ const Navigate = useNavigate();
         gap: "1rem",
         overflowY: "auto",
         // padding : "2rem",
-        padding : "8px",
+        padding : "16px",
         height: "calc(100vh - 64px)"
       }}>
         <div className={profile.profilemaincontainer} >

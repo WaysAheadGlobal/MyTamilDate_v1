@@ -45,7 +45,7 @@ export const NavBar = () => {
             {/* <Nav.Link as={Link} className={pathname === "/" ? "active-link" : ""} to="/">Home</Nav.Link> */}
             <Nav.Link as={Link} className={pathname === "/SuccessPage" ? "active-link" : ""} to="/SuccessPage">Success Stories</Nav.Link>
             <Nav.Link as={Link} className={pathname === "/aboutus" ? "active-link" : ""} to="/aboutus">About Us</Nav.Link>
-            <Nav.Link href="https://tamilculture.com/user/mytamildatecom">Blogs</Nav.Link>
+            <Nav.Link href="https://tamilculture.com/user/mytamildatecom" target="_blank">Blogs</Nav.Link>
             <Nav.Link as={Link} className={pathname === "/GetInTouch" ? "active-link" : ""} to="/GetInTouch" data-target="ContactUs">Contact Us</Nav.Link>
           </Nav>
         </Navbar.Collapse>

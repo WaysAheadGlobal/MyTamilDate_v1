@@ -411,8 +411,7 @@ export default function ProfileDetails({ userId, handleIconButtonClick, liked, s
                             borderRadius: "9999px",
                             // backgroundColor: "#fdf7ff",
                             cursor: "pointer",
-                            marginTop: "10px",
-                          
+                            marginTop: "22px",
                         }}>
                             {/* <AiOutlineClose size={30} color="#4e1173"  onClick={(e) => {
                             e.stopPropagation();

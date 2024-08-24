@@ -1,7 +1,7 @@
 .maincontainer {
     display: flex;
     justify-content: center;
-    height: 100vh; /* Make the parent container take the full height of the viewport */
+    height: 100vh;
 }
 
 .plandetails {
@@ -19,8 +19,10 @@
     justify-content: center;
     flex-direction: column;
     margin-right: 25px;
-    overflow: auto; /* Enable scrolling */
-    height: 100%; /* Ensure it takes the full height available */
+    overflow: auto;
+    /* Enable scrolling */
+    height: 100%;
+    /* Ensure it takes the full height available */
 }
 
 .sideimage {
@@ -37,12 +39,11 @@
     height: 48px;
     border: none;
     border-radius: 8px;
-    /* background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%); */
     color: #F76A7B;
     font-size: 16px;
     text-align: center;
     appearance: none;
-    /* Remove default arrow */
+
     -webkit-appearance: none;
     -moz-appearance: none;
     position: relative;
@@ -60,7 +61,7 @@
 .selectWrapper {
     position: relative;
     width: 84px;
-    /* Match the select element's width */
+
 }
 
 .dropdownIcon {
@@ -91,7 +92,7 @@
 
 .formSelectCurrency select::-ms-expand {
     display: none;
-    /* Hide default arrow in IE */
+
 }
 
 .formSelectCurrency option {
@@ -337,7 +338,8 @@
     font-weight: 500;
     color: #000000;
 }
-.fillcarddetails{
+
+.fillcarddetails {
 
     border: 0.4px solid #60605F;
     border-radius: 8px;
@@ -346,60 +348,65 @@
 .formContainer {
     width: 90%;
     margin: auto;
-    
- 
+
+
 }
-.form-control
-{
+
+.form-control {
     border: 1px solid #6C6C6C
 }
-a{
+
+a {
     text-decoration: none;
-  
+
 }
-.termandconditons{
+
+.termandconditons {
     /* color: linear-gradient(90deg, #9663BF 0%, #4B164C 100%); */
     color: rgb(84, 15, 84);
-    font-weight :500;
+    font-weight: 500;
 }
+
 .formGroup {
     margin-bottom: 15px;
 }
-.detailandclear{
+
+.detailandclear {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.clearformdata{
+.clearformdata {
     padding: 6px 16px 6px 16px;
     gap: 5px;
     border-radius: 20px;
     border: 1px solid #6C6C6C
-  
-    
 }
+
 .formGroup label {
 
-font-size: 18px;
-font-weight: 500;
-line-height: 22px;
-text-align: left;
-color: #515151;
-margin-bottom: 5px;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 22px;
+    text-align: left;
+    color: #515151;
+    margin-bottom: 5px;
 }
 
 
 .subscribeButtonContainer {
     display: flex;
-    justify-content: center; /* Center horizontally */
-    margin-top: 20px; /* Add some top margin for spacing */
+    justify-content: center;
+    /* Center horizontally */
+    margin-top: 20px;
+    /* Add some top margin for spacing */
     margin-bottom: 20px;
 }
 
 
 .subscribeButtonn {
-    width:236px;
+    width: 236px;
     padding: 12px 32px 12px 32px;
     gap: 10px;
     border-radius: 36px;
@@ -415,20 +422,23 @@ margin-bottom: 5px;
 .inputField {
     border: 1px solid #F97E0D
 }
-.Recurringbilling{
-font-size: 18px;
-font-weight: 500;
-line-height: 22px;
-text-align: center;
-color: #515151;
-margin-top: 15px;
+
+.Recurringbilling {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 22px;
+    text-align: center;
+    color: #515151;
+    margin-top: 15px;
 }
-.textmuted{
+
+.textmuted {
     margin-top: 20px;
     margin-bottom: 20px;
     color: #6C6C6C;
     text-align: center;
 }
+
 .text-muted {
     font-size: 0.9rem;
 }
@@ -445,3 +455,54 @@ p.small {
     font-size: 0.8rem;
 }
 
+@media only screen and (max-width: 1024px) and (min-width: 768px) {
+
+
+    .maincontainer {
+        justify-content: space-around;
+    }
+
+    .plandetails {
+        width: 100%;
+        /* margin-top: 20px; */
+    }
+
+    .carddetails {
+        width: 100%;
+        overflow: visible;
+    }
+
+    .sideimage {
+        display: none;
+    }
+
+}
+
+@media only screen and (max-width: 1366px) and (min-width: 1024px) {
+    .sideimage {
+        display: none;
+    }
+}
+
+
+@media only screen and (max-width:767px) {
+    .maincontainer {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .plandetails {
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .carddetails {
+        width: 100%;
+        overflow: visible;
+    }
+
+    .sideimage {
+        width: 100%;
+    }
+
+}

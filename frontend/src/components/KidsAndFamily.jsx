@@ -222,7 +222,7 @@ export default function KidsAndFamily() {
                         display: "flex",
                         justifyContent : "space-around",
                         width: "100%",
-                        gap: "5rem",
+                        gap: "2rem",
                         marginTop: "auto",
                         marginBottom: "2rem",
                     }}>
@@ -242,13 +242,14 @@ export default function KidsAndFamily() {
                         <Button variant="primary" style={{
                             width: "148px",
                             marginTop: "1rem",
-                            background: "linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%)",
+                            // background: "linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%)",
+                            background : (!selectedHaveKids || !selectedWantKids) ? "Lightgray" : "linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%)",
                             border: "none",
                             borderRadius: "9999px",
                             padding: "0.75rem",
                             fontSize: "16px",
                             fontWeight: "600",
-                            
+                            //   color: (!selectedHaveKids || !selectedWantKids) ? "Lightgray" : "white"
                         }} onClick={saveAll}>
                             Next
                         </Button>

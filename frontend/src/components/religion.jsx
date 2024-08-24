@@ -211,7 +211,7 @@ export const Religion = () => {
                 <Container className='religion-content'>
                     <Container className='logo-progressbar8'>
                         <Container className='logo-arrow8'>
-                            <Image src={backarrow} className='backarrow' onClick={() => window.history.back()} />
+                            <Image src={backarrow} className='backarrow' onClick={() => window.location.href = '/located'} />
                             <Image src={logo} alt="Logo" className='logo' style={{ backgroundColor: 'transparent' }} />
                         </Container>
                         <div className='track-btn8'>
