@@ -20,6 +20,8 @@ class MailService {
             logo: `${process.env.IMAGES_URL}/logo.png`,
             couple: `${process.env.IMAGES_URL}/couple.png`,
             mobile: `${process.env.IMAGES_URL}/mobile.png`,
+            instagram: `${process.env.IMAGES_URL}/insta.png`,
+            facebook: `${process.env.IMAGES_URL}/fbicon.png`,
         });
 
         sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
