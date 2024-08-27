@@ -13,6 +13,7 @@ import Suggestions from './suggestions';
 import ProfileCompletion from './ProfileCompletion';
 import { Modal } from 'react-bootstrap';
 import LogoutModal from '../../../Account-Settings/logout';
+import MatchCustomModal from './matchmodal';
 
 export default function Sidebar({ children }) {
     const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -20,6 +21,7 @@ export default function Sidebar({ children }) {
     const [isTablet, setIsTablet] = useState(false);
     const [Rejected, setRejected] = useState(false);
     const [view, setView] = useState(false);
+    const [userMedia, setUserMedia] = useState(null); // To store media data
     const [pathname, setPathname] = useState([]);
     const location = useLocation();
     const suffix = pathname.at(-1);
@@ -29,6 +31,7 @@ export default function Sidebar({ children }) {
     const alert = useAlert();
     const RejectedorNot = cookies.getCookie('approval');
     const [showRejectedModal, setShowRejectedModal] = useState(false);
+    const [matchmodal, setMatchmodal] = useState(false);
     const handleShowLogout = () => setShowLogoutModal(true);
     const handleCloseLogout = () => setShowLogoutModal(false);
     const handleLogout = () => {
@@ -49,32 +52,31 @@ export default function Sidebar({ children }) {
             console.log("Socket is not initialized.");
             return;
         }
-
-        const handleNewMatch = ({ withUserId }) => {
-            console.log("New match event received:", withUserId);
-            alert.setModal({
-                show: true,
-                title: "New Match!",
-                message: `You have a new match`,
-                onButtonClick: () => {
-                    // Optional: Redirect to the new match's profile or chat
-                }
-            });
+        const handleNewMatch = ({ withUserId,userDetails, media  }) => {
+            console.log("New match event received:", withUserId,);
+            cookies.setCookie("NewMatch", withUserId, 1);
+            setUserMedia({ userDetails, media }); // Store the media and user details
+            console.log(userMedia);
+            console.log(userDetails, media);
+            setMatchmodal(true);
+            // alert.setModal({
+            //     show: true,
+            //     title: "New Match!",
+            //     message: `You have a new match`,
+            //     onButtonClick: () => {
+            //         // Optional: Redirect to the new match's profile or chat
+            //     }
+            // });
         };
-
         console.log("Setting up 'new-match' listener.");
-
         // Listen for the 'new-match' event from the server
         socket.on("new-match", handleNewMatch);
-
         // Clean up the event listener on component unmount
         return () => {
             console.log("Cleaning up 'new-match' listener.");
             socket.off("new-match", handleNewMatch);
         };
     }, [socket]);
-
-
 
     const noNavbarRoutes = [
         '/updatelocations',
@@ -170,8 +172,15 @@ export default function Sidebar({ children }) {
 
     }
 
+
+
     return (
         <section className={styles['section-container']}>
+          <MatchCustomModal
+                matchmodal={matchmodal}
+                handleClose={() => setMatchmodal(false)}
+                userMedia={userMedia} // Pass the user media data
+            />
             <RejectModal show={showRejectedModal} setShow={setShowRejectedModal} />
             <aside className={`${styles['sidebar']} ${location.pathname === "/paymentplan" ? styles['paymentplanSidebar'] : ''}`}>
                 {
@@ -471,3 +480,6 @@ function RejectModal({ show, setShow }) {
         </Modal>
     )
 }
+
+
+

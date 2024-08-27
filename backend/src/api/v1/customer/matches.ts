@@ -9,7 +9,7 @@ import { checkPremium, getUnsubscribedGroups } from "../../../utils/utils";
 import MailService from "../../../../mail";
 import { UnsubscribeGroup } from "../../../enums/UnsubscribeGroupEnum";
 import { Server } from "socket.io";
-
+import { Request, Response } from 'express';
 
 const matches = Router();
 
@@ -17,34 +17,103 @@ const mailService = new MailService();
 
 matches.use(verifyUser);
 
-const handleNewMatch = async (userId: string, personId: string, io: Server) => {
-    // Check if a mutual match exists
-    const [match] = await db.promise().query<RowDataPacket[]>(`
-        SELECT 
-            m1.person_id
-        FROM 
-            matches m1 
-        WHERE 
-            m1.user_id = ? 
-            AND m1.\`like\` = 1 
-            AND m1.person_id IN (
-                SELECT 
-                    m2.user_id 
-                FROM 
-                    matches m2 
-                WHERE
-                    m2.person_id = m1.user_id
-            ) AND m1.person_id = ?;
-    `, [userId, personId]);
+// const handleNewMatch = async (userId: string, personId: string, io: Server) => {
+//     // Check if a mutual match exists
+//     const [match] = await db.promise().query<RowDataPacket[]>(`
+//         SELECT 
+//             m1.person_id
+//         FROM 
+//             matches m1 
+//         WHERE 
+//             m1.user_id = ? 
+//             AND m1.\`like\` = 1 
+//             AND m1.person_id IN (
+//                 SELECT 
+//                     m2.user_id 
+//                 FROM 
+//                     matches m2 
+//                 WHERE
+//                     m2.person_id = m1.user_id
+//             ) AND m1.person_id = ?;
+//     `, [userId, personId]);
 
-    if (match.length > 0) {
-        // **A mutual match has occurred**
+//     if (match.length > 0) {
+//         // **A mutual match has occurred**
 
-        // **Notify both users via socket**
-        io.to(userId).emit('new-match', { withUserId: personId });
-        io.to(personId).emit('new-match', { withUserId: userId });
+//         // **Notify both users via socket**
+//         io.to(userId).emit('new-match', { withUserId: personId });
+//         io.to(personId).emit('new-match', { withUserId: userId });
 
-        // Optionally, add additional logic like sending emails here
+//         // Optionally, add additional logic like sending emails here
+//     }
+// };
+
+const handleNewMatch = async (userId: string, personId: string, io: Server, req: Request, res: Response) => {
+    try {
+        // Check if a mutual match exists
+        const [matches] = await db.promise().query<RowDataPacket[]>(`
+            SELECT m1.person_id
+            FROM matches m1 
+            WHERE m1.user_id = ? 
+              AND m1.\`like\` = 1 
+              AND m1.person_id IN (
+                  SELECT m2.user_id 
+                  FROM matches m2 
+                  WHERE m2.person_id = m1.user_id
+              ) AND m1.person_id = ?;
+        `, [userId, personId]);
+
+        if (Array.isArray(matches) && matches.length > 0) {
+            // **A mutual match has occurred**
+
+            // Fetch user details for both users
+            const [userDetails1] = await db.promise().query<RowDataPacket[]>(`
+               SELECT first_name, user_id
+               FROM user_profiles
+               WHERE user_id = ?
+            `, [userId]);
+
+            const [userDetails2] = await db.promise().query<RowDataPacket[]>(`
+               SELECT first_name, user_id
+               FROM user_profiles
+               WHERE user_id = ?
+            `, [personId]);
+
+            // Fetch media details for both users
+            const [mediaResult1] = await db.promise().query<RowDataPacket[]>(`
+                SELECT id, hash, extension, type
+                FROM media
+                WHERE user_id = ?
+            `, [userId]);
+
+            const [mediaResult2] = await db.promise().query<RowDataPacket[]>(`
+                SELECT id, hash, extension, type
+                FROM media
+                WHERE user_id = ?
+            `, [personId]);
+
+            // Notify both users via socket with media details
+            io.to(userId).emit('new-match', { withUserId: personId, userDetails: userDetails2[0], media: mediaResult2 });
+            io.to(personId).emit('new-match', { withUserId: userId, userDetails: userDetails1[0], media: mediaResult1 });
+
+            // Send response with media details for the user who triggered the match
+            return res.status(200).send({
+                message: "New Match found",
+                matchDetails: {
+                    userDetails: userDetails1[0],
+                    media: mediaResult1
+                }
+            });
+        } else {
+            // If no mutual match is found
+            return res.status(404).send({ message: "No mutual match found" });
+        }
+    } catch (err) {
+        console.error(err);
+        // Ensure that any error response is sent only once
+        if (!res.headersSent) {
+            return res.status(500).send({ message: "Internal server error" });
+        }
     }
 };
 
@@ -500,16 +569,19 @@ matches.post("/like", (req: UserRequest, res) => {
 
                 if (match.length > 0) {
                     try {
+                         // Call the handleNewMatch function to check for and notify mutual matches
+                         await handleNewMatch(userId!, personId, io, req, res);
+                         console.log("new Match");
                         await mailService.sendMatchesMail(
                             user[0].email,
                             `${req.user?.first_name} also likes you ${user[0].first_name}!`,
                             `Message ${req.user?.first_name}`
                         );
-                         // Call the handleNewMatch function to check for and notify mutual matches
-                   await handleNewMatch(userId!, personId, io);
+                        return;
                     } catch (err) {
                         console.log(err);
                     }
+
                 }
             }
         } catch (err) {

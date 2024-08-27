@@ -252,7 +252,7 @@ export default function Likes() {
                 )
             }
              {
-                    <div className={styles.upgradesections}>
+                 cookies.getCookie("isPremium") !== "true" &&   <div className={styles.upgradesections}>
                         <p className={styles.heading} style={{
 
                         }}>Upgrade and Unlock this feature</p>
