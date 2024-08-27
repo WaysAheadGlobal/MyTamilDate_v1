@@ -1313,4 +1313,30 @@ profile.get('/media', verifyUser, (req: UserRequest, res: express.Response) => {
   });
 });
 
+profile.put('/updatestatusagain', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  // Check if userId is available
+  if (!userId) {
+    return res.status(400).send('User ID is missing.');
+  }
+
+  const updateStatusSql = `
+    UPDATE users
+    SET approval = 10 
+    WHERE id = ?
+  `;
+
+  // Execute the query to update the user's approval status
+  db.query(updateStatusSql, [userId], (err, result) => {
+    if (err) {
+      console.error('Error updating approval status:', err);
+      return res.status(500).send('Internal Server Error');
+    }
+    // Success response
+    res.status(200).json({ message: 'Your request for approval has been submitted.' });
+  });
+});
+
+
 export default profile;
