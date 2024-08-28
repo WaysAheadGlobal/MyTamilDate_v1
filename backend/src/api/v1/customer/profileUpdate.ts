@@ -754,6 +754,80 @@ updateprofile.put('/wantgender', [
   });
 });
 
+// updateprofile.put('/wantgender', [
+//   verifyUser,
+//   body('want_gender').isInt().notEmpty().withMessage('Gender is required'),
+// ], (req: UserRequest, res: any) => {
+//   const errors = validationResult(req);
+//   if (!errors.isEmpty()) {
+//     return res.status(400).json({ errors: errors.array() });
+//   }
+//   const { want_gender } = req.body;
+//   const userId = req.userId;
+//   console.log(userId);
+
+//   db.beginTransaction((err) => {
+//     if (err) {
+//       console.error('Transaction Error:', err);
+//       return res.status(500).send('Internal Server Error');
+//     }
+
+//     // Update want_gender in user_profiles
+//     const updateProfileQuery = `
+//       UPDATE user_profiles
+//       SET want_gender = ?, updated_at = NOW()
+//       WHERE user_id = ?
+//     `;
+
+//     db.query<ResultSetHeader>(updateProfileQuery, [want_gender, userId], (err, results) => {
+//       if (err) {
+//         console.error('Error updating user profile:', err);
+//         db.rollback(() => {
+//           return res.status(500).send('Internal Server Error');
+//         });
+//         return;
+//       }
+
+//       if (results.affectedRows === 0) {
+//         db.rollback(() => {
+//           return res.status(404).json({ message: 'User profile not found' });
+//         });
+//         return;
+//       }
+
+//       // Update gender_id in filters table
+//       const updateGenderPreferenceQuery = `
+//         UPDATE filters
+//         SET gender_id = ?
+//         WHERE user_id = ?
+//       `;
+
+//       db.query<ResultSetHeader>(updateGenderPreferenceQuery, [want_gender, userId], (err, result) => {
+//         if (err) {
+//           console.error('Error updating gender preference:', err);
+//           db.rollback(() => {
+//             return res.status(500).send('Internal Server Error');
+//           });
+//           return;
+//         }
+
+//         db.commit((err) => {
+//           if (err) {
+//             console.error('Commit Error:', err);
+//             db.rollback(() => {
+//               return res.status(500).send('Internal Server Error');
+//             });
+//             return;
+//           }
+
+//           res.status(200).json({ message: 'Profile and preferences updated successfully' });
+//         });
+//       });
+//     });
+//   });
+// });
+
+
 
 export default updateprofile;
 

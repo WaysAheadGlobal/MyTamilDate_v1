@@ -825,6 +825,32 @@ userFlowRouter.put("/preferences/save/:field", async (req: UserRequest, res) => 
                     return;
                 }
 
+                 // Additional step: Update gender in user_profiles if field is gender_id
+                 if (field === "gender_id") {
+                    const updateGenderQuery = `
+                        UPDATE user_profiles
+                        SET want_gender = ?, updated_at = NOW()
+                        WHERE user_id = ?
+                    `;
+
+                    db.query<ResultSetHeader>(updateGenderQuery, [value, req.userId], (err, result) => {
+                        if (err) {
+                            console.log(err);
+                            db.rollback(() => {
+                                res.status(500).send({ message: "Internal server error" });
+                            });
+                            return;
+                        }
+
+                        if (result.affectedRows === 0) {
+                            db.rollback(() => {
+                                res.status(404).json({ message: 'User profile not found' });
+                            });
+                            return;
+                        }
+                    });
+                }
+
                 if (!userFilters) {
                     const addFilterIdInUserFiltersQuery = `INSERT INTO user_filters (user_id, filter_id) VALUES (?, ?);`;
                     try {

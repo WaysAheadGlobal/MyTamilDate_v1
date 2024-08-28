@@ -67,6 +67,7 @@ export const WantGenderUpdate = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
+            // Update the want_gender
             const response = await fetch(`${API_URL}/customer/update/wantgender`, {
                 method: 'PUT',
                 headers: {
@@ -83,13 +84,30 @@ export const WantGenderUpdate = () => {
             console.log('Response body:', result);
     
             if (response.ok) {
-                navigate("/updateprofile");
+                // If the want_gender update is successful, update the preference
+                const preferenceResponse = await fetch(`${API_URL}/customer/user/preferences/save/gender_id`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getCookie('token')}`
+                    },
+                    body: JSON.stringify({ value: wantGender })
+                });
+    
+                const preferenceResult = await preferenceResponse.json();
+    
+                if (preferenceResponse.ok) {
+                    console.log('Preference updated successfully:', preferenceResult);
+                    navigate("/updateprofile");
+                } else {
+                    setErrorMessage(preferenceResult.errors ? preferenceResult.errors.map(error => error.msg).join(', ') : 'Error updating preference');
+                }
             } else {
                 setErrorMessage(result.errors ? result.errors.map(error => error.msg).join(', ') : 'Error updating profile');
             }
         } catch (error) {
             console.error('Error:', error);
-            // setErrorMessage('Error updating profile');
+            setErrorMessage('Error updating profile');
         }
     };
 

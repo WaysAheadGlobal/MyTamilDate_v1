@@ -106,10 +106,22 @@ class MailService {
     }
 
     async sendWeeklyMail(to: string, profiles: Profile[]) {
-        await this.sendMail(to, 'Your weekly matches are here!', 'week', {
+        await this.sendMail(to, 'New members have joined & one might be a perfect match! Check them out', 'week', {
             profiles: profiles
         });
     }
+    async sendWeeklyLikesMail(to: string, profiles: Profile[]) {
+        await this.sendMail(to, 'You have new likes! Check them out.', 'weeklike', {
+            profiles: profiles
+        });
+    }
+
+    async sendWeeklyMessagesMail(to: string, profiles: Profile[]) {
+        await this.sendMail(to, 'You have new messages! Check them out.', 'weekmassage', {
+            profiles: profiles
+        });
+    }
+    
 }
 
 export default MailService;

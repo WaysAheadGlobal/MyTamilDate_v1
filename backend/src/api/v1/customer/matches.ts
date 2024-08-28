@@ -117,7 +117,6 @@ const handleNewMatch = async (userId: string, personId: string, io: Server, req:
     }
 };
 
-
 matches.get(
     "/",
     query("page").optional().isInt({ min: 1 }),
