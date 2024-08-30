@@ -1612,7 +1612,7 @@ export const AccountSetting = () => {
                         <Modal.Body className="pause-modal-content" style={{
                             padding : "0px"
                         }}>
-                            <div className="pause-modal-title">Subscription Cancel</div>
+                            {/* <div className="pause-modal-title">Subscription Cancel</div> */}
                             <div className="pause-modal-message">
                             Are you sure you want to cancel your premium access?
                             </div>

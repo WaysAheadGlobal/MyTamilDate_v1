@@ -25,7 +25,7 @@ const answers = [
 export default function UpdateAnswers() {
     const [show, setShow] = useState(false);
     const [count, setCount] = useState(0)
-    const[updatecount, setUpdatecount] = useState(0)
+    const [updatecount, setUpdatecount] = useState(0)
     const [modalData, setModalData] = useState({
         heading: "",
         apiURL: "",
@@ -85,7 +85,7 @@ export default function UpdateAnswers() {
                 },
             });
             const data = await response.json();
-      
+
             setUpdatecount(data.count);
             console.log(updatecount);
             console.log(count);
@@ -101,20 +101,20 @@ export default function UpdateAnswers() {
                     'Authorization': `Bearer ${getCookie('token')}`
                 },
             });
-        //   const response = await axios.delete(`${API_URL}/answer/${questionId}`);
-          if (response.status === 200) {
-            // Update the state or refetch the data to reflect the deletion
-            refreshpage();
-           
-          
-          }
+            //   const response = await axios.delete(`${API_URL}/answer/${questionId}`);
+            if (response.status === 200) {
+                // Update the state or refetch the data to reflect the deletion
+                refreshpage();
+
+
+            }
         } catch (error) {
-          console.error('Error deleting answer:', error);
+            console.error('Error deleting answer:', error);
 
         }
-      };
+    };
 
-      const refreshpage = ()=>{
+    const refreshpage = () => {
         setRefresh(!refresh)
     }
 
@@ -174,29 +174,30 @@ export default function UpdateAnswers() {
                                                             padding: "1rem",
                                                             borderRadius: "10px",
                                                             display: "flex",
+                                                            flexDirection: "column",
                                                             justifyContent: "space-between",
-                                                            alignItems: "center",
+                                                            
                                                             cursor: "pointer",
                                                         }}
                                                         onClick={() => {
                                                             if (count === 2 && question.answer == null) {
                                                                 setAlert(true);
                                                             }
-                                                            
-                                                            else if(updatecount===2){
+
+                                                            else if (updatecount === 2) {
                                                                 setAlert(true);
                                                             }
-                                                            else if(updatecount === 1 && count === 1 && question.answer == null){
+                                                            else if (updatecount === 1 && count === 1 && question.answer == null) {
                                                                 setAlert(true);
                                                             }
                                                             else {
                                                                 setShow(true);
                                                                 setModalData({
                                                                     heading: question.question,
-                                                                   
-                                                                    placeholder : answers[index],
-                                                                    refreshpage : refreshpage,
-                                                                  apiURL: approvalstatus === 'APPROVED' ? `${API_URL}/customer/update/answer/${question.question_id}` : `${API_URL}/customer/users/answer/${question.question_id}`
+
+                                                                    placeholder: answers[index],
+                                                                    refreshpage: refreshpage,
+                                                                    apiURL: approvalstatus === 'APPROVED' ? `${API_URL}/customer/update/answer/${question.question_id}` : `${API_URL}/customer/users/answer/${question.question_id}`
                                                                 });
                                                             }
                                                         }}
@@ -216,7 +217,7 @@ export default function UpdateAnswers() {
                                                                 lineHeight: "20px",
                                                                 fontWeight: "400",
                                                             }}>
-                                                                {question.answer || answers[index].substring(0,30)+"..."}
+                                                                {question.answer || answers[index].substring(0, 30) + "..."}
                                                             </div>
                                                             <div style={{
                                                                 color: "#6C6C6C",
@@ -227,21 +228,26 @@ export default function UpdateAnswers() {
                                                                 {question.description}
                                                             </div>
                                                         </div>
+
                                                         <div style={{
+                                                            marginTop :"3px",
                                                             display: "flex",
-                                                            alignItems: "center"
+                                                            alignItems: "center",
+                                                            justifyContent : question.answer ?  "space-between" : "flex-end",
+                                                            
                                                         }}>
-
-
                                                             {question.answer ? (
-                                                                <Image
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        handleDeleteAnswer(question.question_id);
-                                                                    }}
-                                                                    className='userinfoicon'
-                                                                    src={deleteicon}
-                                                                />
+
+                                                                <div onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleDeleteAnswer(question.question_id);
+                                                                }} >
+                                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <path d="M15 1L1 15M1.00001 1L15 15" stroke="#424242" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                                    </svg>
+
+                                                                </div>
+
                                                             ) : ""}
 
                                                             <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -269,7 +275,7 @@ export default function UpdateAnswers() {
                                 gap: "30px",
                                 bottom: "38px"
                             }}>
-                                <Button  type="submit" className={ans.jobnxtbtn} onClick={() => {
+                                <Button type="submit" className={ans.jobnxtbtn} onClick={() => {
                                     const answers = getCookie('answers');
                                     if (count == 2 || updatecount == 2 || Totalcount === 2) {
                                         navigate('/updateprofile');
@@ -286,7 +292,7 @@ export default function UpdateAnswers() {
                                 </Button>
                                 <Button variant="primary" type="submit" className={ans.jobnxtbtn2} onClick={() => {
                                     const answers = getCookie('answers');
-                                   
+
                                     if (count == 2 || updatecount == 2 || Totalcount === 2) {
                                         navigate('/updateprofile');
                                     } else {
@@ -309,7 +315,7 @@ export default function UpdateAnswers() {
     );
 };
 
-function Modal({ show, onHide, modalData, alert, alertmodal ,placeholder,refreshpage}) {
+function Modal({ show, onHide, modalData, alert, alertmodal, placeholder, refreshpage }) {
     const [text, setText] = useState("");
     const { getCookie, setCookie } = useCookies();
     const approvalstatus = getCookie('approval')
@@ -334,7 +340,7 @@ function Modal({ show, onHide, modalData, alert, alertmodal ,placeholder,refresh
     }, [modalData.apiURL]);
 
     async function saveAnswer() {
-          const finalanswer = text ? text : modalData.placeholder
+        const finalanswer = text ? text : modalData.placeholder
         onHide();
         const response = await fetch(modalData.apiURL, {
             method: 'POST',
@@ -351,12 +357,12 @@ function Modal({ show, onHide, modalData, alert, alertmodal ,placeholder,refresh
 
             if (approvalstatus === 'APPROVED') {
                 alertmodal.setModal({
-                  show: true,
-                  title: 'Update Profile Answer',
-                  message: "Thanks for updating your profile answer! It's now under review by myTamilDate. You'll receive an update within 24 hours.",
+                    show: true,
+                    title: 'Update Profile Answer',
+                    message: "Thanks for updating your profile answer! It's now under review by myTamilDate. You'll receive an update within 24 hours.",
                 });
-              }
-        
+            }
+
             onHide();
             modalData.refreshpage();
             const answers = getCookie('answers');
@@ -427,7 +433,7 @@ function Modal({ show, onHide, modalData, alert, alertmodal ,placeholder,refresh
     )
 }
 
-function AlertModal({ show, onHide, count,updatecount }) {
+function AlertModal({ show, onHide, count, updatecount }) {
     return (
         <BModal centered show={show} onHide={onHide}>
             <div>
@@ -440,15 +446,15 @@ function AlertModal({ show, onHide, count,updatecount }) {
                 }}>
 
                     {
-                      updatecount === 2 ? "You can Update Only 2 prompts"  : (
+                        updatecount === 2 ? "You can Update Only 2 prompts" : (
 
-                        count === 2 ? "You can answer only 2 prompts" : (updatecount === 1 && count ===1 ? "Since only two prompts can be answered, and one has already been submitted for review. You'll receive an update within 24 hours." :"Answer at least 2 prompts." ) 
-                      ) 
+                            count === 2 ? "You can answer only 2 prompts" : (updatecount === 1 && count === 1 ? "Since only two prompts can be answered, and one has already been submitted for review. You'll receive an update within 24 hours." : "Answer at least 2 prompts.")
+                        )
                     }
-              {
-}
+                    {
+                    }
 
-                    
+
                 </p>
             </div>
             <Button style={{

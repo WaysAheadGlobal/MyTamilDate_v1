@@ -160,7 +160,7 @@ const PricingCard = ({ currency }) => {
 
 
                </div>
-              <h5 style={{ marginTop: "-4px" }} className={styles.cardTitle}>6 month</h5>
+              <h5 style={{ marginTop: "-4px" }} className={styles.cardTitle}>6 months</h5>
               <h2 style={{ marginTop: "-10px" }} className={styles.cardPrice}>${/* getPrice(24.99) */ price.m6.monthly} <span>/month</span></h2>
               <p  className={styles.cardsave} style={{marginTop : "-10px"}} >Save 50%</p>
               <p style={{ marginTop: "-1px" }} className={styles.cardText}>({/* getPrice(149.99, process.env.REACT_APP_STRIPE_PRODUCT_ID_6_MONTHS) */ price.m6.total} total)</p>
@@ -174,7 +174,7 @@ const PricingCard = ({ currency }) => {
             }}
           >
             <div className={styles.cardBody}>
-              <h5 className={styles.cardTitle}>3 month</h5>
+              <h5 className={styles.cardTitle}>3 months</h5>
               <h2 className={styles.cardPrice}>${/* getPrice(33.99, process.env.REACT_APP_STRIPE_PRODUCT_ID_3_MONTHS) */ price.m3.monthly} <span>/month</span></h2>
               <p  className={styles.cardsave}>Save 33%</p>
               <p className={styles.cardText}>({/* getPrice(99.99) */price.m3.total} total)</p>
