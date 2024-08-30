@@ -97,6 +97,7 @@ class MailService {
             invoice,
             nextPaymentDate
         });
+        console.log( "next payment date" ,  nextPaymentDate)
     }
 
     async sendPauseAccountMail(to: string, name: string) {
@@ -110,6 +111,7 @@ class MailService {
             profiles: profiles
         });
     }
+    
     async sendWeeklyLikesMail(to: string, profiles: Profile[]) {
         await this.sendMail(to, 'You have new likes! Check them out.', 'weeklike', {
             profiles: profiles

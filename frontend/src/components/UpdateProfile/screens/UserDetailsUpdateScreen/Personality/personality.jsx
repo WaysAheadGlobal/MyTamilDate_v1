@@ -66,7 +66,8 @@ export default function PersonalityProfile() {
     }, [hasAddedPersonality]);
 
     async function savePersonalities() {
-        if (selectedPersonalities.length < 2 || selectedPersonalities.length > 8) {
+        console.log(selectedPersonalities.length)
+        if (selectedPersonalities.length < 3 || selectedPersonalities.length > 8) {
             // Handle the case where there are fewer than 2 personalities selected
             alert.setModal({
                 show: true,

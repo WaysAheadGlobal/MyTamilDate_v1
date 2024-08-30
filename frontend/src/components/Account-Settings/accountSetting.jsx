@@ -47,6 +47,7 @@ export const AccountSetting = () => {
     const [lastName, setLastName] = useState('');
     const [showFinalDetele, setFinalDetele] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const[showsubscription, setShowsubcription] = useState(false);
     const [timer, setTimer] = useState(120);
     const [canResend, setCanResend] = useState(false);
     const [pathname, setPathname] = useState([]);
@@ -728,6 +729,9 @@ export const AccountSetting = () => {
         }
     }
 
+    const showsubscriptionModal = ()=> setShowsubcription(true);
+    const HidesubcriptionsModal = ()=> setShowsubcription(false);
+
     async function cancelSubscription() {
         try {
             try {
@@ -739,6 +743,7 @@ export const AccountSetting = () => {
                 });
                 const data = await response.json();
                 if (response.ok) {
+                    HidesubcriptionsModal();
                     alert.setModal({
                         title: "Subscription Cancelled",
                         message: "Your subscription has been successfully cancelled.",
@@ -928,14 +933,16 @@ export const AccountSetting = () => {
                                             </div>
                                         </div>
                                     </div>
+                                    {
+                                getCookie('isPremium') === 'true' && (
                                     <div onClick={() => {
-                                      
-                                            alert.setModal({
-                                                title: "Subscription Cancel",
-                                                message: "Are you sure you want to cancel your subscription?",
-                                                show: true,
-                                                onButtonClick: cancelSubscription,
-                                            });
+                                            // alert.setModal({
+                                            //     title: "Subscription Cancel",
+                                            //     message: "Are you sure you want to cancel your subscription?",
+                                            //     show: true,
+                                            //     onButtonClick: cancelSubscription,
+                                            // });
+                                            showsubscriptionModal();
                                         
                                     }} style={{ marginBottom: "20px", border : "none", width: "100%" }} >
 
@@ -959,6 +966,7 @@ export const AccountSetting = () => {
                                             </div>
                                         </div>
                                     </div>
+                                )}
                                     <div className="legal-button">
                                         Legal
                                     </div>
@@ -1593,6 +1601,37 @@ export const AccountSetting = () => {
                         handleCloseLogout={handleCloseLogout}
                         handleLogout={handleLogout}
                     />
+
+                        {/* Unsubscribe subscriptions */}
+
+                        <Modal show={showsubscription} onHide={HidesubcriptionsModal} centered>
+                        <Modal.Body className="pause-modal-content" style={{
+                            padding : "0px"
+                        }}>
+                            <div className="pause-modal-title">Subscription Cancel</div>
+                            <div className="pause-modal-message">
+                            Are you sure you want to cancel your premium access?
+                            </div>
+                            <div className="pause-modal-message" style={{
+                                marginTop : "-20px",
+                                marginBottom : "40px"
+                            }}>
+                            You'll lose all the extra perks!
+                            </div>
+                            <div className="d-flex justify-content-center" style={{
+                                gap : "5px"
+                            }}>
+                                <button variant="outline-danger" className="global-cancel-button" onClick={cancelSubscription}>
+                                    Cancel
+                                </button>
+                                <button className="global-save-button" style={{
+                                    width : "197px"
+                                }} onClick={HidesubcriptionsModal}>
+                                Keep Premium
+                                </button>
+                            </div>
+                        </Modal.Body>
+                    </Modal>
                 </div>
             </div>
         </Sidebar>

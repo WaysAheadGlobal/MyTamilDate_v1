@@ -125,9 +125,14 @@ webhookRouter.post('/', async (request, response) => {
                         const [profiles] = await db.promise().query<RowDataPacket[]>("SELECT email FROM user_profiles WHERE user_id = ?", [result[0].id]);
 
                         const invoice = await stripe.invoices.retrieve(object.latest_invoice as string);
-
+                         console.log(invoice);
                         if (invoice) {
                             try {
+                                const interval = invoice.lines.data[0].price?.recurring?.interval; // e.g., "month"
+                                const intervalCount = invoice.lines.data[0].price?.recurring?.interval_count || 1; // e.g., 1, 3, 6
+                                const nextBillingDate = moment().add(intervalCount, interval).format('MMM DD, YYYY');
+                                
+                                console.log(nextBillingDate);
                                 await mailService.sendPremiumMail(
                                     profiles[0].email,
                                     `${invoice.lines.data[0].price?.recurring?.interval_count} ${invoice.lines.data[0].price?.recurring?.interval}`,
@@ -136,8 +141,10 @@ webhookRouter.post('/', async (request, response) => {
                                     invoice.amount_paid! / 100, // Convert to dollars
                                     moment().format('MMM DD, YYYY'),
                                     invoice.hosted_invoice_url!,
-                                    moment().add(1, 'month').format('MMM DD, YYYY')
+                                    nextBillingDate
+                                    // moment().add(3, 'month').format('MMM DD, YYYY')
                                 );
+                                console.log( "next billling data",nextBillingDate);
                             } catch (err) {
                                 console.log(err);
                             }

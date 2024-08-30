@@ -35,10 +35,7 @@ const upload = multer({
 const setting = express.Router();
 
 // name update
-
 const mailService = new MailService();
-
-
 setting.get('/namedetails', verifyUser, (req: UserRequest, res: any) => {
     const userId = req.userId;
     const query = `
@@ -354,7 +351,7 @@ setting.post('/request-email-update', verifyUser, async (req: UserRequest, res: 
                 const msg = {
                     to: email,
                     from: "mtdteam2024@gmail.com",
-                    subject: "Approval Notification",
+                    subject: "MTD code",
                     html: html
                 };
 

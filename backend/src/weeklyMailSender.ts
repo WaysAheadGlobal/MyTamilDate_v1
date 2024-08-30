@@ -319,7 +319,7 @@ export const fetchNonPremiumActiveUsers = async () => {
 // }
 
 // Send weekly mail first Monday at 12:00 AM of every Month
-cron.schedule('15 16 * * 3', async () => {
+cron.schedule('0 0 * * 3', async () => {
     /* const users = await fetchNonPremiumActiveUsers(); */
     const today = new Date();
     const dayOfMonth = today.getDate();
@@ -345,7 +345,7 @@ cron.schedule('15 16 * * 3', async () => {
 });
 
 // Cron expression for every Wednesday at midnight new like recived
-cron.schedule('15 16 * * 3', async () => { 
+cron.schedule('0 0 * * 3', async () => { 
     // const users = await fetchPremiumActiveUsers();
     const users = [
         {
@@ -366,7 +366,7 @@ cron.schedule('15 16 * * 3', async () => {
 });
 
 
-cron.schedule('15 16 * * 3', async () => { 
+cron.schedule('0 0 * * 0', async () => { 
     // const users = await fetchPremiumActiveUsers();
     const users = [
         {

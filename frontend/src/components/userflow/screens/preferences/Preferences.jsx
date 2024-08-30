@@ -75,7 +75,7 @@ const Forms = {
 
         useEffect(() => {
             if (!countrySelectCollasped) {
-                setValue("any");
+                setValue(null);
             }
         }, [countrySelectCollasped])
 
@@ -377,6 +377,7 @@ export default function Preferences() {
             bodyContent = {
                 location_id: value
             }
+            console.log(bodyContent);
         }
 
         try {
