@@ -233,7 +233,8 @@ export default function UpdateAnswers() {
                                                             marginTop :"3px",
                                                             display: "flex",
                                                             alignItems: "center",
-                                                            justifyContent : question.answer ?  "space-between" : "flex-end",
+                                                            justifyContent : "flex-end",
+                                                            gap : "30px"
                                                             
                                                         }}>
                                                             {question.answer ? (
