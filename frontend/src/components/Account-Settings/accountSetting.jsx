@@ -48,6 +48,7 @@ export const AccountSetting = () => {
     const [showFinalDetele, setFinalDetele] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
     const[showsubscription, setShowsubcription] = useState(false);
+    const[SubscriptSuccess, setSubscriptionsSuccess] = useState(false);
     const [timer, setTimer] = useState(120);
     const [canResend, setCanResend] = useState(false);
     const [pathname, setPathname] = useState([]);
@@ -732,6 +733,9 @@ export const AccountSetting = () => {
     const showsubscriptionModal = ()=> setShowsubcription(true);
     const HidesubcriptionsModal = ()=> setShowsubcription(false);
 
+    const ShowSubscriptionSuccess = ()=>  setSubscriptionsSuccess(true);
+    const HideSubscriptionSuccess = ()=> setSubscriptionsSuccess(false);
+
     async function cancelSubscription() {
         try {
             try {
@@ -744,14 +748,15 @@ export const AccountSetting = () => {
                 const data = await response.json();
                 if (response.ok) {
                     HidesubcriptionsModal();
-                    alert.setModal({
-                        title: "Subscription Cancelled",
-                        message: "Your subscription has been successfully cancelled.",
-                        show: true,
-                        onButtonClick: () => {
-                            window.location.reload();
-                        }
-                    });
+                    ShowSubscriptionSuccess();
+                    // alert.setModal({
+                    //     title: "Subscription Cancelled",
+                    //     message: "Your subscription has been successfully cancelled.",
+                    //     show: true,
+                    //     onButtonClick: () => {
+                    //         window.location.reload();
+                    //     }
+                    // });
                 }
             } catch (err) {
                 console.error(err);
@@ -759,6 +764,11 @@ export const AccountSetting = () => {
         } catch (error) {
             console.error('Error cancelling subscription:', error);
         }
+    }
+
+    const GoTOAccountsetting = ()=>{
+        HideSubscriptionSuccess();
+        window.location.reload();
     }
 
     return (
@@ -936,12 +946,6 @@ export const AccountSetting = () => {
                                     {
                                 getCookie('isPremium') === 'true' && (
                                     <div onClick={() => {
-                                            // alert.setModal({
-                                            //     title: "Subscription Cancel",
-                                            //     message: "Are you sure you want to cancel your subscription?",
-                                            //     show: true,
-                                            //     onButtonClick: cancelSubscription,
-                                            // });
                                             showsubscriptionModal();
                                         
                                     }} style={{ marginBottom: "20px", border : "none", width: "100%" }} >
@@ -1628,6 +1632,29 @@ export const AccountSetting = () => {
                                     width : "197px"
                                 }} onClick={HidesubcriptionsModal}>
                                 Keep Premium
+                                </button>
+                            </div>
+                        </Modal.Body>
+                    </Modal>
+
+                    <Modal show={SubscriptSuccess} onHide={HideSubscriptionSuccess} centered>
+                        <Modal.Body className="pause-modal-content" style={{
+                            padding : "0px"
+                        }}>
+                            <div className="pause-modal-title">Subscription Cancelled</div>
+                          
+                            <div className="pause-modal-message">
+
+                          Your subscription has been successfully cancelled.
+                            </div>
+                            <div className="d-flex justify-content-center" style={{
+                                gap : "5px"
+                            }}>
+                             
+                                <button className="global-save-button" style={{
+                                    width : "197px"
+                                }} onClick={GoTOAccountsetting}>
+                               Okay
                                 </button>
                             </div>
                         </Modal.Body>

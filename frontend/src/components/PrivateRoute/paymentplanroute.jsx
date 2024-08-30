@@ -10,8 +10,8 @@ const MobileCheck = ({ children }) => {
     const handleResize = () => {
         if (window.innerWidth < 1000 && window.location.pathname === "/paymentplan") {
           setMobile(true);
-          // navigate("/selectplan");
-          navigate("/paymentplan")
+          navigate("/selectplan");
+          // navigate("/paymentplan")
             console.log("payments");
         } else if(window.innerWidth >= 1000 && window.location.pathname === "/selectplan"){
             navigate("/paymentplan")

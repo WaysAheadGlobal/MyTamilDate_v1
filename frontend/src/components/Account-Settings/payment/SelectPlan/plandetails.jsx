@@ -22,7 +22,7 @@ const PricingCard = ({ currency }) => {
   const [product, setProduct] = useState(process.env.REACT_APP_STRIPE_PRODUCT_ID_6_MONTHS);
   const [paymentMethods, setPaymentMethods] = useState([]);
   
-
+ 
   useEffect(() => {
     (async () => {
       const response = await fetch(`${API_URL}customer/payment/methods`, {
@@ -62,62 +62,16 @@ const PricingCard = ({ currency }) => {
   }, [priceId]);
 
 
-  async function handlePayment() {
-    if(paymentMethods.length < 1){
-      alert.setModal({
-        show: true,
-        message: "Please first add card details.",
-        title: '',
-        onButtonClick: () => {
-          navigate('/addpaymentmethod');
-        }
-      });
-      return;
-    }
-    setLoading(true);
-    try {
-      const path = coupon ? `/${coupon}` : '';
-      const response = await fetch(`${API_URL}customer/payment/create-subscription${path}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${cookies.getCookie('token')}`,
-        },
-        body: JSON.stringify({ priceId, product }),
-      });
-      const data = await response.json();
-
-      if (response.ok) {
-        if (data.url) {
-          alert.setModal({
-            show: true,
-            message: data.message,
-            title: 'Error',
-            onButtonClick: () => {
-              navigate(data.url);
-            }
-          });
-        } else {
-          alert.setModal({
-            show: true,
-            message: data.message,
-            title: 'Success',
-            onButtonClick: () => {
-              window.location.assign('/user/home');
-            }
-          });
-        }
+  const handlePayment = () => {
+    navigate(`/cardandpayment`, {
+      state: {
+        priceId,
+        product,
+        currency,
+        selectedCard
       }
-    } catch (error) {
-      alert.setModal({
-        show: true,
-        message: "Something went wrong. Please try again later.",
-        title: 'Error',
-      });
-    } finally {
-      setLoading(false);
-    }
-  }
+    });
+  };
 
   const handleCardClick = (priceId, index) => {
     setPriceId(priceId);
@@ -166,35 +120,7 @@ const PricingCard = ({ currency }) => {
     });
   }, [currency, percentOff, amountOff]);
 
-  async function checkCouponValidity() {
-    if (!coupon) {
-      setError('Please enter a promo code');
-      return;
-    }
-    try {
-      const response = await fetch(`${API_URL}customer/payment/check-valid-coupon/${product}/${coupon}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${cookies.getCookie('token')}`,
-        },
-      });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        if (data.valid) {
-          setPercentOff(data.percentOff);
-          setAmountOff(data.amountOff);
-          setError('');
-          setShow(false);
-        } else {
-          setError(data.message ?? 'Invalid promo code');
-        }
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
 
 
   return (
@@ -266,81 +192,14 @@ const PricingCard = ({ currency }) => {
               onClick={() => setSelectedCard(index)} />
           ))}
         </div>
-        <Button style={{
-          marginInline: "auto",
-          display: "block",
-          marginBlock: "1rem"
-        }} onClick={() => {
-          setShow(true);
-        }}>
-          Redeem your promo code
-        </Button>
+      
         <div className={styles.buttonContainer}>
           <button className={styles.continuebutton} onClick={handlePayment} disabled={loading}>
             {loading ? 'Processing...' : 'Continue'}
           </button>
         </div>
       </div>
-      <Modal size='sm' centered show={show}>
-        <Modal.Body>
-          <p style={{
-            fontSize: "large",
-            fontWeight: "600",
-            margin: "0",
-            marginBottom: "1rem",
-            color: "#6c6c6c"
-          }}>Enter your promo code</p>
-          <input
-            type="text"
-            placeholder="Enter your promo code"
-            value={coupon}
-            style={{
-              width: "100%",
-              padding: "1rem",
-              borderRadius: "10px",
-              border: error ? "2px solid #ff0101" : "2px solid #6c6c6c",
-              outline: "none",
-              color: error ? "#ff0101" : "black",
-            }}
-            onChange={(e) => {
-              setCoupon(e.target.value);
-              setError('');
-            }} />
-          {error && <p style={{ color: "#ff0101", fontSize: "14px", margin: "0", marginTop: "0.5rem", textAlign: "left" }}>{error}</p>}
-          <div style={{
-            marginTop: "1rem",
-            display: "flex",
-            gap: "1rem",
-            marginInline: "auto",
-          }}>
-            <button
-              type='button'
-              style={{
-                borderRadius: "9999px",
-                padding: "0.75rem 1.5rem",
-                border: "2px solid #6c6c6c",
-                color: "#6c6c6c",
-                backgroundColor: "transparent"
-              }}
-              onClick={() => {
-                setShow(false);
-              }}
-            >
-              Close
-            </button>
-
-            <Button
-              onClick={checkCouponValidity}
-              style={{
-                borderRadius: "9999px",
-                padding: "0.75rem 1.5rem",
-              }}
-            >
-              Redeem
-            </Button>
-          </div>
-        </Modal.Body>
-      </Modal>
+     
     </>
   );
 };

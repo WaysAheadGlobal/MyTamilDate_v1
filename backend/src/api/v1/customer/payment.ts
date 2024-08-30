@@ -187,26 +187,92 @@ payment.get("/methods", async (req: UserRequest, res) => {
         const customerId = result[0].stripe_id;
         
         try {
+            // Fetch the customer's payment methods
             const paymentMethods = await stripe.paymentMethods.list({
                 customer: customerId,
                 type: "card",
             });
 
-            let data: {
-                id: string,
-                brand?: string,
-                last4?: string,
-            }[] = [];
+            // Fetch the customer's details and assert the type
+            const customer = await stripe.customers.retrieve(customerId) as Stripe.Customer & { invoice_settings: { default_payment_method: string | null } };
 
-            paymentMethods.data.forEach((method) => {
-                data.push({
-                    id: method.id,
-                    brand: method.card?.brand,
-                    last4: method.card?.last4,
-                });
-            });
+            const defaultPaymentMethodId = customer.invoice_settings.default_payment_method;
+
+            // Prepare the response data including default status
+            let data = paymentMethods.data.map((method) => ({
+                id: method.id,
+                brand: method.card?.brand,
+                last4: method.card?.last4,
+                isDefault: method.id === defaultPaymentMethodId, // Check if this method is the default one
+            }));
 
             res.status(200).json(data);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send("Internal Server Error");
+        }
+    });
+});
+
+payment.delete("/methods/:id", async (req: UserRequest, res) => {
+    const paymentMethodId = req.params.id;
+
+    // Retrieve the Stripe customer ID from the database
+    db.query<RowDataPacket[]>("SELECT stripe_id FROM users WHERE id = ?", [req.userId], async (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send("Internal Server Error");
+        }
+
+        if (result.length === 0) {
+            return res.status(404).send("User not found");
+        }
+
+        const customerId = result[0].stripe_id;
+
+        try {
+            // Detach the payment method from the customer
+            const paymentMethod = await stripe.paymentMethods.detach(paymentMethodId);
+
+            if (paymentMethod.customer === null) {
+                res.status(200).send("Payment method deleted successfully");
+            } else {
+                res.status(400).send("Failed to delete payment method");
+            }
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send("Internal Server Error");
+        }
+    });
+});
+
+payment.post("/methods/default", async (req: UserRequest, res) => {
+    const { paymentMethodId } = req.body; // Get the payment method ID from the request body
+
+    db.query<RowDataPacket[]>("SELECT stripe_id FROM users WHERE id = ?", [req.userId], async (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send("Internal Server Error");
+        }
+
+        if (result.length === 0) {
+            return res.status(404).send("User not found");
+        }
+
+        const customerId = result[0].stripe_id;
+
+        try {
+            // Attach the payment method to the customer if it's not already attached
+            await stripe.paymentMethods.attach(paymentMethodId, { customer: customerId });
+
+            // Set the payment method as the default for the invoice and the customer
+            await stripe.customers.update(customerId, {
+                invoice_settings: {
+                    default_payment_method: paymentMethodId,
+                }
+            });
+
+            res.status(200).send("Default payment method updated successfully");
         } catch (error) {
             console.log(error);
             return res.status(500).send("Internal Server Error");

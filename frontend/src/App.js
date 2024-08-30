@@ -119,6 +119,7 @@ import ReportDetails from "./scenes/Reports/reportsdetails";
 import Paymentfinal from "./components/Account-Settings/payment/newpayment/payment";
 import MobileCheck from "./components/PrivateRoute/paymentplanroute";
 import CropImage from "./components/cropimage/cropimage";
+import CardandPayment from "./components/Account-Settings/payment/CardAndCoupon";
 
 
 function App() {
@@ -253,6 +254,10 @@ function App() {
                   <Selectplan />
                 </MobileCheck>
               </Protected>}></Route>
+
+              <Route path="/cardandpayment" element = {<Protected><CardandPayment/> </Protected>}>
+                                       
+              </Route>
               <Route path="/addpaymentmethod" element={<Protected><AddPaymentMethod /></Protected>}></Route>
               <Route path="/paymentdetails" element={<Protected><Fillpaymentdetails /></Protected>}></Route>
               <Route path="/paymentplan" element={<MobileCheck> <Paymentfinal /></MobileCheck> }></Route>
