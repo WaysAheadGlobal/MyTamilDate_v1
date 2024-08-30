@@ -135,6 +135,14 @@ const PaymentMethod = () => {
                 <div className={styles.cardNumber}>
                   <p>***{paymentMethod.last4}</p>
                 </div>
+                {
+                  paymentMethod.isDefault && (
+                    <div className={styles.cardNumber}>
+                    <p>(Default)</p>
+                  </div>
+                  )
+                }
+              
               </Container>
               <Image
                 width="24px"

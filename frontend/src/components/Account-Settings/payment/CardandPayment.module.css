@@ -288,31 +288,31 @@
 
 .selectedplandetails {
     width: 100%;
-    border: 2px solid #F06C0D;
-    padding: 20px;
+    padding: 10px;
     border-radius: 8px;
     margin-top: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    box-shadow:
-        0px 2.09px 4.19px 0px #0000001A,
-        0px 6.98px 6.98px 0px #00000017,
-        0px 16.06px 9.77px 0px #0000000D,
-        0px 28.62px 11.17px 0px #00000003,
-        0px 44.68px 12.57px 0px #00000000;
+
+    background: linear-gradient(180deg, #FC8C66 -4.17%, #F76A7B 110.42%);
+
     /* Combined all box-shadows into a single declaration */
 }
 
 .selectedplandetails p {
     font-size: 16px;
-    font-weight: 500;
-    color: #000000;
+    font-weight: 400;
+    color : #fff;
+    line-height: 22px;
 }
 
 .finalsubtotal {
     margin-top: 20px;
+     color : #fff;
+     font-size: 16px;
+     font-weight: 400;
 
 }
 
@@ -324,12 +324,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow:
+    border: 1px solid #FC8C66;
+    /* box-shadow:
         0px 2.09px 4.19px 0px #0000001A,
         0px 6.98px 6.98px 0px #00000017,
         0px 16.06px 9.77px 0px #0000000D,
         0px 28.62px 11.17px 0px #00000003,
-        0px 44.68px 12.57px 0px #00000000;
+        0px 44.68px 12.57px 0px #00000000; */
     /* Combined all box-shadows into a single declaration */
 }
 
@@ -420,7 +421,7 @@ a {
 
 
 .inputField {
-    border: 1px solid #F97E0D
+    border: 1px solid #6C6C6C;
 }
 
 .Recurringbilling {

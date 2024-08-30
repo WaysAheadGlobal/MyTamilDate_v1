@@ -20,11 +20,11 @@ import { useSearchParams } from 'react-router-dom';
 const CardandPayment = () => {
 
     const location = useLocation();
-  const { priceId, product, currency,selectedCard } = location.state || {};
-  console.log(priceId, product, currency,selectedCard);
+    const { priceId, product, currency, selectedCard } = location.state || {};
+    console.log(priceId, product, currency, selectedCard);
     const cookies = useCookies();
     const [paymentMethods, setPaymentMethods] = useState([]);
-   
+
     // const [selectedCard, setSelectedCard] = useState(2); 
     const alert = useAlert();
     const [loading, setLoading] = useState(false);
@@ -34,8 +34,8 @@ const CardandPayment = () => {
     const [coupon, setCoupon] = useState('');
     const [percentOff, setPercentOff] = useState(0);
     const [amountOff, setAmountOff] = useState(0);
-    const [selectedCurrency, setSelectedCurrency] = useState('CAD'); 
-   
+    const [selectedCurrency, setSelectedCurrency] = useState('CAD');
+
     const [cardNumberValid, setCardNumberValid] = useState(null);
     const [matchmodal, setMatchmodal] = useState(false);
     const [showModal, setshowmodal] = useState(false);
@@ -48,7 +48,7 @@ const CardandPayment = () => {
     const [carderror, setCarderror] = useState("");
 
     const [showpaymentsuccess, setShowshowpaymentsuccess] = useState(false);
-    const Gotohomepage = ()=>{
+    const Gotohomepage = () => {
         setshowmodal(false);
         window.location.href = '/user/home';
     }
@@ -135,8 +135,8 @@ const CardandPayment = () => {
 
     async function handlePayment() {
         setLoading(true);
-        console.log( "priceId", priceId)
-        console.log( "product", product)
+        console.log("priceId", priceId)
+        console.log("product", product)
         console.log("tokken", cookies.getCookie('token'))
         try {
             const path = coupon ? `/${coupon}` : '';
@@ -258,7 +258,7 @@ const CardandPayment = () => {
         e.preventDefault();
 
         if (!stripe || !elements) {
-           
+
             return;
         }
 
@@ -289,10 +289,10 @@ const CardandPayment = () => {
 
         if (response.ok) {
             if (searchParams[0].get('type') === 'subscribe') {
-    
+
             }
             handlePayment();
-        
+
         }
     }
 
@@ -314,7 +314,7 @@ const CardandPayment = () => {
             }}>
                 <div className={pay.maincontainer}>
 
-                  
+
                     <div className={pay.carddetails}>
                         <div style={{
                             flex: "1",
@@ -331,16 +331,30 @@ const CardandPayment = () => {
 
                             <div className={pay.selectedplandetails}>
                                 <p style={{
-                                    display : "flex",
-                                    justifyContent : "center",
-                                    flexDirection :"column",
-                                    alignItems : "center"
-                                }} > <span style={{ marginRight: "20px" }}>
-                                    <svg width="24" height="18" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M1.84167 0.0624499C2.53827 0.0624499 3.10527 0.629449 3.10527 1.32605C3.10527 1.77785 2.86767 2.18465 2.46987 2.41505C2.28267 2.52305 2.21967 2.76245 2.32767 2.94965L6.58287 10.3189C6.65307 10.4395 6.78087 10.5151 6.92127 10.5151C7.06167 10.5151 7.18947 10.4413 7.25967 10.3189L11.5149 2.94785C11.6229 2.76065 11.5599 2.52305 11.3727 2.41505C10.9749 2.18465 10.7391 1.77785 10.7391 1.32785C10.7391 0.63125 11.3061 0.06425 12.0027 0.06425C12.6993 0.06425 13.2663 0.63125 13.2663 1.32785C13.2663 1.77965 13.0287 2.18645 12.6291 2.41685C12.5391 2.46905 12.4743 2.55365 12.4473 2.65445C12.4203 2.75525 12.4347 2.86145 12.4869 2.95145L16.7457 10.3207C16.8159 10.4412 16.9437 10.5169 17.0841 10.5169C17.2245 10.5169 17.3523 10.4431 17.4225 10.3207L21.6777 2.95145C21.7857 2.76425 21.7209 2.52485 21.5355 2.41685C21.1377 2.18645 20.9001 1.77965 20.9001 1.32785C20.9001 0.63125 21.4671 0.06425 22.1637 0.06425C22.8603 0.06425 23.4273 0.63125 23.4273 1.32785C23.4273 2.02445 22.8603 2.59145 22.1637 2.59145C21.9477 2.59145 21.7731 2.76605 21.7731 2.98205V14.1493H13.0107C12.7947 14.1493 12.6201 14.3239 12.6201 14.5399C12.6201 14.7559 12.7947 14.9304 13.0107 14.9304H21.7731V17.9328H2.23407V2.98025C2.23407 2.76425 2.05947 2.58965 1.84348 2.58965C1.14688 2.58965 0.579875 2.02265 0.579875 1.32605C0.579875 0.629449 1.14507 0.0624499 1.84167 0.0624499Z" fill="#F97972" />
-                                    </svg>
-                                </span>  Premium Account Upgrade ({selectedCard === 0 ? '1 month' : selectedCard === 2 ? '3 months' : '6 months'})</p>
+                                    display: "flex",
+                                    justifyContent: "center",
 
+                                    alignItems: "center",
+                                    color: "#fff",
+                                    fontSize: "20px",
+                                    fontWeight: "500",
+                                    lineHeight: "30px"
+                                }} > <span style={{ marginRight: "20px" }}>
+                                        <svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M1.53212 0.549437C2.11262 0.549437 2.58512 1.02194 2.58512 1.60244C2.58512 1.97894 2.38712 2.31794 2.05562 2.50994C1.89962 2.59994 1.84713 2.79944 1.93712 2.95544L5.48312 9.09644C5.54162 9.19694 5.64812 9.25994 5.76512 9.25994C5.88212 9.25994 5.98862 9.19844 6.04712 9.09644L9.59312 2.95394C9.68312 2.79794 9.63062 2.59994 9.47462 2.50994C9.14312 2.31794 8.94662 1.97894 8.94662 1.60394C8.94662 1.02344 9.41912 0.550937 9.99962 0.550937C10.5801 0.550937 11.0526 1.02344 11.0526 1.60394C11.0526 1.98044 10.8546 2.31944 10.5216 2.51144C10.4466 2.55494 10.3926 2.62544 10.3701 2.70944C10.3476 2.79344 10.3596 2.88194 10.4031 2.95694L13.9521 9.09794C14.0106 9.19844 14.1171 9.26144 14.2341 9.26144C14.3511 9.26144 14.4576 9.19994 14.5161 9.09794L18.0621 2.95694C18.1521 2.80094 18.0981 2.60144 17.9436 2.51144C17.6121 2.31944 17.4141 1.98044 17.4141 1.60394C17.4141 1.02344 17.8866 0.550937 18.4671 0.550937C19.0476 0.550937 19.5201 1.02344 19.5201 1.60394C19.5201 2.18444 19.0476 2.65694 18.4671 2.65694C18.2871 2.65694 18.1416 2.80244 18.1416 2.98244V12.2884H10.8396C10.6596 12.2884 10.5141 12.4339 10.5141 12.6139C10.5141 12.7939 10.6596 12.9394 10.8396 12.9394H18.1416V15.4414H1.85912V2.98094C1.85912 2.80094 1.71363 2.65544 1.53363 2.65544C0.953125 2.65544 0.480625 2.18294 0.480625 1.60244C0.480625 1.02194 0.951625 0.549437 1.53212 0.549437Z" fill="white" />
+                                        </svg>
+
+                                    </span>  Premium Account Upgrade  </p>
+                                <div style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    fontSize: "20px",
+                                    fontWeight: "500",
+                                    alignItems: "center",
+                                    color: "#fff"
+                                }}>
+                                    ({selectedCard === 0 ? '1 month' : selectedCard === 2 ? '3 months' : '6 months'})
+                                </div>
                                 <div className={pay.finalsubtotal} >
 
 
@@ -359,7 +373,11 @@ const CardandPayment = () => {
                             }} className={pay.redeempromocode}>
                                 <p>
                                     <span style={{ marginRight: "20px" }}>
-                                     
+                                        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M26.25 22.5V7.5H10L2.5 15L10 22.5H26.25Z" stroke="#515151" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M15 15C15 16.3807 13.8807 17.5 12.5 17.5C11.1193 17.5 10 16.3807 10 15C10 13.6193 11.1193 12.5 12.5 12.5C13.8807 12.5 15 13.6193 15 15Z" stroke="#515151" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+
                                     </span>
                                     Redeem your promo code
                                 </p>
@@ -378,7 +396,7 @@ const CardandPayment = () => {
                                                             color: "#000000",
 
                                                         }} htmlFor="cardNumber">Details</label>
-                                                   
+
                                                 </div>
                                                 <div className={pay.formGroup}>
                                                     {/* <div className={`form-control ${pay.inputField}`} style={{
@@ -470,7 +488,7 @@ const CardandPayment = () => {
                                             </p>
 
                                             <p className={pay.textmuted}>
-                                                Your subscription will automatically renew for the same package length at the same price until you cancel in settings in your MTD account. By subscribing, you agree to our 
+                                                Your subscription will automatically renew for the same package length at the same price until you cancel in settings in your MTD account. By subscribing, you agree to our
                                                 <a
                                                     className={pay.termandconditons}
                                                     onClick={(e) => {
@@ -478,7 +496,7 @@ const CardandPayment = () => {
                                                         window.open("/termandconditions", "_blank");
                                                     }}
                                                 >
-                                                     {" "}terms of service
+                                                    {" "}terms of service
                                                 </a>.
                                             </p>
 
@@ -500,7 +518,7 @@ const CardandPayment = () => {
                         </div>
                     </div>
 
-                    
+
 
                 </div>
 
@@ -561,16 +579,16 @@ const CardandPayment = () => {
                 </Modal.Body>
             </Modal>
             <Modal centered className="selfie-modal" show={showModal} onHide={() => setshowmodal(false)}>
-                    <Modal.Body className='selfie-modal-body'>
+                <Modal.Body className='selfie-modal-body'>
                     Payment successful! Your myTamilDate subscription is now active.
-                       
-                        <button  className='global-save-button'  onClick={ Gotohomepage}>
-                        Okay
-                            </button>
-                    </Modal.Body>
-                </Modal>
 
-           
+                    <button className='global-save-button' onClick={Gotohomepage}>
+                        Okay
+                    </button>
+                </Modal.Body>
+            </Modal>
+
+
         </Sidebar>
     )
 }
