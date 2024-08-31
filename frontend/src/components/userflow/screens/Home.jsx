@@ -7,12 +7,62 @@ import { useCookies } from '../../../hooks/useCookies';
 import { API_URL } from '../../../api';
 import AccountPending from '../../AccountPending';
 import AccountNotApproved from '../../AccountNotApproved';
+import { Modal } from 'react-bootstrap';
 
 export default function Home() {
     const [approval, setapproval] = useState("")
     const [approvalloading, setApprovalloading] = useState(false)
+    const[showUpdateReject, setShowUpdateReject]= useState(false);
+    const[rejectreason, setRejectReason] = useState("");
     const { getCookie } = useCookies();
     const userId = getCookie("userId")
+    const HideshowUpdateReject = ()=> setShowUpdateReject(false);
+
+
+     // Function to handle fetching the latest rejection reason
+     const fetchRejectionReason = async () => {
+        try {
+            const response = await fetch(`${API_URL}/customer/users/UpdateRejectReason`, {
+                method: "GET",
+                headers: {
+                    'Authorization': `Bearer ${getCookie('token')}`
+                }
+            });
+
+            const result = await response.json();
+            if (response.ok && result.reason) {  // Check 
+                setRejectReason(result.reason);
+                setShowUpdateReject(true); // Show the modal when reason is fetched
+            } else {
+                console.error('Error fetching rejection reason:', result.message);
+            }
+        } catch (error) {
+            console.error('Error fetching rejection reason:', error);
+        }
+    };
+    // Function to handle deleting the rejection reason
+const handleFinalDelete = async () => {
+    try {
+        const response = await fetch(`${API_URL}/customer/users/deleteLatestRejectReason`, {
+            method: "PUT",
+            headers: {
+                'Authorization': `Bearer ${getCookie('token')}`,
+                'Content-Type': 'application/json' // Adding content type for completeness
+            }
+        });
+
+        if (response.ok) {
+            setShowUpdateReject(false); // Close the modal after deletion
+            setRejectReason(""); // Clear the rejection reason from state
+        } else {
+            const result = await response.json();
+            console.error('Error deleting rejection reason:', result.message || 'An unknown error occurred');
+        }
+    } catch (error) {
+        console.error('Error deleting rejection reason:', error);
+    }
+};
+
 
     const {
         profiles,
@@ -51,6 +101,8 @@ export default function Home() {
         };
     }, [profiles]);
 
+
+
     useEffect(() => {
         const fetchData = async () => {
             setApprovalloading(true)
@@ -66,6 +118,10 @@ export default function Home() {
                 if (response.ok) {
                     setapproval(result.approval)
                     console.log(approval)
+                    
+                    if (result.approval === 20) {
+                        fetchRejectionReason(); // Fetch rejection reason if approval is 20
+                    }
                     setApprovalloading(false)
                 } else {
                     console.error('Error fetching user data:', result.message);
@@ -149,6 +205,24 @@ export default function Home() {
         }
     </div>
       )}
+
+<Modal show={showUpdateReject} onHide={handleFinalDelete} centered>
+
+<Modal.Body className="pause-modal-content">
+
+    <div className="pause-modal-title">Update rejected</div>
+    <div className="pause-modal-message">
+        {rejectreason}
+    </div>
+    <div className="d-flex justify-content-center" style={{
+        gap : "30px"
+    }}>
+        <button  className="global-save-button" onClick={handleFinalDelete}>
+            Okay
+        </button>
+    </div>
+</Modal.Body>
+</Modal>
             
         </Sidebar>
     )

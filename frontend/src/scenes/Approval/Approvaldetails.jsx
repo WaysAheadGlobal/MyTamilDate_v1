@@ -26,6 +26,7 @@ const UserDetails = () => {
   const colors = tokens(theme.palette.mode);
   const { id } = useParams();
   const [openModal, setOpenModal] = useState(false);
+  const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [reason, setReason] = useState('');
   const [customReason, setCustomReason] = useState('');
   const [selectedReason, setSelectedReason] = useState('');
@@ -282,6 +283,31 @@ const UserDetails = () => {
     }
   };
 
+  const UpdateRejectReasonSave = async () => {
+    try {
+      const response = await fetch(`${API_URL}/admin/rejected/updateRejected`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: id, message: reason }),
+      });
+
+      if (!response.ok) {
+        const errorDetails = await response.text(); // Get error details for debugging
+        throw new Error(`Failed to update status: ${errorDetails}`);
+      }
+
+      // Fetch updated details after updating the status
+      await detailsfetchData();
+      handleCloseModalUpdate();
+      navigate('/approval')
+      console.log("Status updated successfully");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const Updateanddeletemedia = async () => {
     try {
       const response = await fetch(`${API_URL}/admin/users/replaceMediaData/${id}`, {
@@ -439,18 +465,37 @@ const UserDetails = () => {
     setReason('');
   };
 
+  const handleCloseModalUpdate = () => {
+    setOpenModalUpdate(false);
+    setReason('');
+  };
+
+
+
   const handleSaveReason = () => {
     updateStatusReject(30);
   };
+
+
 
   const handleAcceptUpdate = () => {
     Updateanddeletemedia();
   }
 
-  const handleRejectUpdate = () => {
+  // const handleRejectUpdate = () => {
+  //   RejectedMediaUpdate();
+  //   RejectedAnswerUpdate();
+  // UpdateRejectReasonSave();
+  // }
+
+  const handleRejectUpdate = ()=>{
+    setOpenModalUpdate(true);
+  }
+
+  const handleSaveReasonUpdate=()=>{
     RejectedMediaUpdate();
     RejectedAnswerUpdate();
-
+  UpdateRejectReasonSave();
   }
 
   const formatKey = (key) => {
@@ -755,6 +800,80 @@ const UserDetails = () => {
         </Button>
         <Button
           onClick={() => handleSaveReason(reason)}
+          sx={{
+            background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+            color: '#fff',
+            '&:hover': {
+              background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
+            },
+          }}
+        >
+          Save
+        </Button>
+      </DialogActions>
+    </Dialog>
+
+    <Dialog
+      open={openModalUpdate}
+      onClose={handleCloseModalUpdate}
+      fullWidth
+      sx={{
+        '& .MuiDialog-paper': {
+          width: '360px',
+          height: '400px',
+        }
+      }}
+    >
+      <DialogTitle>What's the reason?</DialogTitle>
+      <DialogContent>
+        <FormControl fullWidth margin="dense" variant="outlined">
+          <InputLabel>Select a reason</InputLabel>
+          <Select
+            value={selectedReason}
+            onChange={handleSelectChange}
+            label="Select a reason"
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  maxHeight: 200,
+                  width: 'calc(360px - 32px)',
+                  whiteSpace: 'normal',
+                },
+              },
+            }}
+          >
+            {reasons.map((reason, index) => (
+              <MenuItem key={index} value={reason} sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                {reason}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <TextField
+          autoFocus
+          margin="dense"
+          label="Reason"
+          type="text"
+          fullWidth
+          variant="outlined"
+          value={customReason}
+          onChange={handleCustomReasonChange}
+          multiline
+          rows={5}
+          sx={{
+            marginTop: '16px',
+            '& .MuiInputBase-root': {
+              height: '150px',
+            }
+          }}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseModalUpdate} variant="contained" color="error">
+          Cancel
+        </Button>
+        <Button
+          onClick={() => handleSaveReasonUpdate(reason)}
           sx={{
             background: 'linear-gradient(90deg, #FC8C66, #F76A7B)',
             color: '#fff',

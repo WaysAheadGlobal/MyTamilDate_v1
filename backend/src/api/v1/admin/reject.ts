@@ -262,6 +262,69 @@ reject.get('/latestrejection/:user_id',  (req: AdminRequest, res:Response) => {
       });
     });
   });
+
+  reject.post('/updateRejected', (req: AdminRequest, res: Response) => {
+    const { id, message } = req.body; // Removed `type` from request body
+  
+    if (!id || !message) {
+      return res.status(400).send('Bad Request: Missing required fields');
+    }
+  
+    console.log(`Message: ${message}`);
+  
+    const getUserEmailSql = `
+      SELECT up.email, up.first_name
+      FROM users u
+      JOIN user_profiles up ON u.id = up.user_id
+      WHERE u.id = ?
+    `;
+  
+    db.query(getUserEmailSql, [id], (err: Error | null, results: any) => {
+      if (err) {
+        console.error('Error fetching email:', err);
+        return res.status(500).send('Internal Server Error');
+      }
+  
+      if (results.length === 0) {
+        return res.status(404).send('User not found');
+      }
+  
+      const { first_name: name, email } = results[0];
+  
+      // Insert reject reason into reject_reasons table
+      const insertRejectReasonSql = `
+        INSERT INTO reject_reasons (reason, created_at, updated_at)
+        VALUES (?, NOW(), NOW())
+      `;
+  
+      db.query(insertRejectReasonSql, [message], (err: Error | null, result: any) => {
+        if (err) {
+          console.error('Error inserting reject reason:', err);
+          return res.status(500).send('Internal Server Error');
+        }
+  
+        const reasonId = result.insertId;
+  
+        // Insert into notifications_popup table with `type` always set to 1
+        const insertRejectSql = `
+          INSERT INTO notifications_popup (user_id, reason_id, created_at, updated_at, type)
+          VALUES (?, ?, NOW(), NOW(), 1)
+        `;
+  
+        db.query(insertRejectSql, [id, reasonId], (err: Error | null) => {
+          if (err) {
+            console.error('Error inserting into notifications_popup:', err);
+            return res.status(500).send('Internal Server Error');
+          }
+  
+          console.log(`Inserted rejection for user ID: ${id} with reason ID: ${reasonId}`);
+          return res.status(200).send('Rejection reason added and notification created successfully');
+        });
+      });
+    });
+  });
+  
+  
   
 
 

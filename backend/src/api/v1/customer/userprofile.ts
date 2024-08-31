@@ -1194,6 +1194,87 @@ profile.get('/latestrejection', verifyUser, (req: UserRequest, res: express.Resp
 });
 
 
+profile.get('/UpdateRejectReason', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  const query = `
+    SELECT rr.reason, r.created_at
+    FROM notifications_popup r
+    JOIN reject_reasons rr ON r.reason_id = rr.id
+    WHERE r.user_id = ? 
+    AND r.deleted_at IS NULL 
+    AND r.type = 1
+    ORDER BY r.created_at DESC
+    LIMIT 1
+  `;
+
+  db.query(query, [userId], (err: Error | null, results: any) => {
+    if (err) {
+      console.error('Error fetching latest rejection reason:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No rejection reason found for the user' });
+    }
+
+    const latestRejection = results[0];
+    res.status(200).json({
+      reason: latestRejection.reason,
+      created_at: latestRejection.created_at
+    });
+  });
+});
+
+profile.put('/deleteLatestRejectReason', verifyUser, (req: UserRequest, res: express.Response) => {
+  const userId = req.userId;
+
+  // Find the latest rejection reason for the user
+  const findLatestReasonQuery = `
+    SELECT id
+    FROM notifications_popup
+    WHERE user_id = ? AND deleted_at IS NULL
+    ORDER BY created_at DESC
+    LIMIT 1
+  `;
+
+  db.query(findLatestReasonQuery, [userId], (err: Error | null, results: any) => {
+    if (err) {
+      console.error('Error fetching latest rejection reason:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No active rejection reason found for the user' });
+    }
+
+    const notificationId = results[0].id;
+
+    // Perform a soft delete by setting deleted_at to the current timestamp
+    const softDeleteReasonQuery = `
+      UPDATE notifications_popup
+      SET deleted_at = NOW()
+      WHERE id = ?
+    `;
+
+    db.query(softDeleteReasonQuery, [notificationId], (err: Error | null, result: any) => {
+      if (err) {
+        console.error('Error soft deleting rejection reason:', err);
+        return res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Rejection reason not found or already deleted' });
+      }
+
+      return res.status(200).json({ message: 'Rejection reason deleted successfully' });
+    });
+  });
+});
+
+
+
+
 profile.post("/media",
   verifyUser,
   upload.fields([
