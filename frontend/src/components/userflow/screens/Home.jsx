@@ -14,6 +14,7 @@ export default function Home() {
     const [approvalloading, setApprovalloading] = useState(false)
     const[showUpdateReject, setShowUpdateReject]= useState(false);
     const[rejectreason, setRejectReason] = useState("");
+
     const { getCookie } = useCookies();
     const userId = getCookie("userId")
     const HideshowUpdateReject = ()=> setShowUpdateReject(false);
@@ -54,6 +55,7 @@ const handleFinalDelete = async () => {
         if (response.ok) {
             setShowUpdateReject(false); // Close the modal after deletion
             setRejectReason(""); // Clear the rejection reason from state
+            window.location.reload();
         } else {
             const result = await response.json();
             console.error('Error deleting rejection reason:', result.message || 'An unknown error occurred');
