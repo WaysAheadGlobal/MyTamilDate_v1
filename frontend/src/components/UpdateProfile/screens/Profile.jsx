@@ -5,6 +5,7 @@ import profile from './updateprofile.module.css';
 import ProgressCircle from '../../ProgressCircle';
 import ProfileProgress from './ProfileCompletations/ProgressProfile';
 import editicon from '../../../assets/images/editicon.png';
+import questionmark from '../../../assets/images/questionmark.png';
 import Edit from './Edit/Edit';
 import Preview from './Preview/Preview';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +15,11 @@ const UpdateProfile = () => {
   const [activeTab, setActiveTab] = useState('edit');
   const[profileCompletion, setProfileCompletion] = useState(10)
   const[Profile, setProfileData] = useState({});
+  const [showInfo, setShowInfo] = useState(false);
+  const toggleInfoVisibility = () => {
+    setShowInfo(!showInfo);
+  };
+
   const{getCookie} = useCookies();
 const Navigate = useNavigate();
   const completion = 40;
@@ -144,26 +150,39 @@ const Navigate = useNavigate();
         overflowY: "auto",
         // padding : "2rem",
         padding : "16px",
-        height: "calc(100vh - 64px)"
+        height: "calc(100vh - 64px)",
+        width : "100%"
       }}>
-        <div className={profile.profilemaincontainer} >
+        <div >
           
-          <div className={profile.maincontainer}>
-            {/* <ProfileProgress completion={completion} profilepic={images2.main} /> */}
-            <div className={profile.imgContainer} style={{
-                        "--profile-completed": `${profileCompletion}%`
-                    }}>
-                        <div className={profile.innerCircle}>
-                            <img className={profile.profilepicimg} src={images2.main} alt="" />
-                        </div>
-                    </div>
-            <Image style={{  cursor: "pointer", marginTop: "90px", width: "24px", height: "24px" }} onClick={()=> Navigate("/editpicture")} src={editicon} />
-          </div>
+        <div style={{
+          display : "flex",
+          alignItems : "center",
+          justifyContent : "center",
+          gap : "10px"
+        }} >
+        <div>
+
+          <p className={profile.componentname}>My Profile</p>
+        </div>
+        <Image
+          onClick={toggleInfoVisibility}
+          style={{ cursor: 'pointer' }}
+          width="24px"
+          height="24px"
+          src={questionmark}
+        />
+        <Container className={`${profile.whyInfo} ${showInfo ? profile.show : profile.hide}`} >
+          <p>
+            Please note that changes to your photos and written prompts will be reviewed by our admin team before going live. This process may take up to 48 hours, but you can continue using your account without any interruptions while we review & approve your updates.
+          </p>
+        </Container>
+      </div>
           <div className=" row d-flex justify-content-center">
-            <div className="d-flex flex-column align-items-center">
+            {/* <div className="d-flex flex-column align-items-center">
               <p style={{ fontSize: '18px', color: "#515151" }}>{Profile.Name}</p>
               <p style={{ fontSize: '16px', color: "#6C6C6C" }}>  {profileCompletion}% complete</p>
-            </div>
+            </div> */}
 
             <div className={profile.editpreview}>
               <div

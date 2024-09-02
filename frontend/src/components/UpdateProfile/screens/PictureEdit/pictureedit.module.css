@@ -114,12 +114,13 @@ color: #515151;
   
   .icons {
     position: absolute;
-    top: 8px;
+    bottom: 5px; /* Position at the bottom */
     width: 100%;
     display: flex;
     justify-content: space-between;
-    padding: 0 8px;
+    padding: 0 8px; /* Horizontal padding */
   }
+  
   
   .iconLeft {
     cursor: pointer;
@@ -161,4 +162,35 @@ color: #515151;
       margin-top: 10px;
     
     
+  }
+
+  .gridContainer {
+    display: grid;
+    grid-auto-flow: column; /* Arrange items in a single row */
+    width: 100%;
+    grid-gap: 10px; /* Space between grid items */
+  }
+  
+  .gridItem {
+    background-size: cover; /* Cover the entire div */
+    background-position: center; /* Center the background image */
+    border-radius: 16px; /* Rounded corners */
+    position: relative; /* To position icons inside */
+    overflow: hidden; /* Hide overflowing content */
+  }
+  
+  .primary {
+    grid-template-rows: 160px; /* Grid row height for primary type */
+  
+    @media (min-width: 426px) {
+      grid-template-rows: 260px; /* Grid row height for primary type on larger screens */
+    }
+  }
+  
+  .secondary {
+    grid-template-rows: 120px; /* Grid row height for secondary type */
+  
+    @media (min-width: 426px) {
+      grid-template-rows: 220px; /* Grid row height for secondary type on larger screens */
+    }
   }

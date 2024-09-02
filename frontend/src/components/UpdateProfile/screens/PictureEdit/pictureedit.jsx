@@ -17,6 +17,7 @@ import ImageCrop from '../../../cropimage/ImageCrop';
 
 
 const EditPicture = () => {
+
   const { getCookie } = useCookies();
   const [showInfo, setShowInfo] = useState(false);
   const navigate = useNavigate();
@@ -34,14 +35,16 @@ const EditPicture = () => {
   const [loading, setLoading] = useState(false);
   const [mediaid, setMediaId] = useState(null);
   const [type, setType] = useState(32);
-  const childRef = useRef(); 
-   const approvalstatus = getCookie('approval');
+  const childRef = useRef();
+  const approvalstatus = getCookie('approval');
   const fileInputRefMain = useRef(null);
   const fileInputRefFirst = useRef(null);
   const fileInputRefSecond = useRef(null);
   const toggleInfoVisibility = () => {
     setShowInfo(!showInfo);
   };
+
+  const gridType = 'primary'
 
   const id = getCookie('userId')
   console.log(id);
@@ -120,14 +123,14 @@ const EditPicture = () => {
           'Authorization': `Bearer ${getCookie('token')}`
         }
       });
-  
+
       const data = await response.json();
       setData(data);
       console.log("datadaa", data);
-  
+
       if (response.ok) {
         const validImages = data.filter(image => image.hash && image.extension && (image.type === 31 || image.type === 32 || image.type === 1 || image.type === 2));
-  
+
         if (validImages.length > 0) {
           const mainType31 = validImages.find(image => image.type === 31);
           const mainType32 = validImages.find(image => image.type === 32);
@@ -135,7 +138,7 @@ const EditPicture = () => {
           const mainType1 = validImages.find(image => image.type === 1);
           const mainType2 = validImages.find(image => image.type === 2);
           const othersType2 = validImages.filter(image => image.type === 2);
-  
+
           if (mainType31 || mainType32) {
             setimagesupdate({
               main: mainType31 ? API_URL + "media/avatar/" + mainType31.hash + "." + mainType31.extension : null,
@@ -165,22 +168,22 @@ const EditPicture = () => {
       console.error('Error saving images:', error);
     }
   };
-  
+
   const handleFileChange = (event, imageKey) => {
     const file = event.target.files[0];
     if (file) {
-        setOriginalFileName(file.name);
+      setOriginalFileName(file.name);
 
-        const reader = new FileReader();
-        reader.onload = () => {
-            setImageToCrop(reader.result);
-        };
-        reader.readAsDataURL(file);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImageToCrop(reader.result);
+      };
+      reader.readAsDataURL(file);
 
-        setCurrentImageKey(imageKey);
-        setShowCropModal(true);
+      setCurrentImageKey(imageKey);
+      setShowCropModal(true);
     }
-};
+  };
 
   const handleClick = (imageKey) => {
     let mediaId = null;
@@ -251,10 +254,10 @@ const EditPicture = () => {
       setShowModal(true);
       return;
     }
-  
+
     setLoading(true);
     const formData = new FormData();
-   console.log(selectedImages);
+    console.log(selectedImages);
     if (selectedImages.main) {
       formData.append('main', selectedImages.main);
     }
@@ -264,12 +267,12 @@ const EditPicture = () => {
     if (selectedImages.second) {
       formData.append('second', selectedImages.second);
     }
-  
+
     if (mediaid) {
       formData.append('media_id', mediaid);
-      
+
     }
-  
+
     if (type) {
       formData.append('type', type);
     }
@@ -282,13 +285,13 @@ const EditPicture = () => {
           'Authorization': `Bearer ${getCookie('token')}`,
         }
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Error saving images:', errorData.message || response.statusText);
         return;
       }
-  
+
       const data = await response.json();
       console.log(data);
       setSelectedImages({ main: null, first: null, second: null })
@@ -299,37 +302,37 @@ const EditPicture = () => {
       setLoading(false);
     }
   };
-  
+
   const onCropComplete = (croppedAreaPixels) => {
     console.log(croppedAreaPixels)
-   
-}
 
-
-const handleCropSave = (croppedAreaPixels) => {
-  /* console.log('Attempting to save cropped image:', imageToCrop, croppedAreaPixels); */
-  console.log(croppedAreaPixels,"heelooo")
-  // Ensure croppedAreaPixels is not null before proceeding
-  if (!croppedAreaPixels) {
-      throw new Error('No cropped area to save');
   }
 
-          console.log(new File([croppedAreaPixels], originalFileName, { type: 'image/jpeg' }));
 
-          setSelectedImages({
-              ...selectedImages,
-              [currentImageKey]: new File([croppedAreaPixels], originalFileName, { type: 'image/jpeg' })
-          })
-      
+  const handleCropSave = (croppedAreaPixels) => {
+    /* console.log('Attempting to save cropped image:', imageToCrop, croppedAreaPixels); */
+    console.log(croppedAreaPixels, "heelooo")
+    // Ensure croppedAreaPixels is not null before proceeding
+    if (!croppedAreaPixels) {
+      throw new Error('No cropped area to save');
+    }
 
-          setShowCropModal(false);
-          console.log(URL.createObjectURL(selectedImages.main))
-          console.log(URL.createObjectURL(selectedImages.first))
-          console.log(URL.createObjectURL(selectedImages.second))
-       
-          console.log('Cropped image saved successfully');
-    
-};
+    console.log(new File([croppedAreaPixels], originalFileName, { type: 'image/jpeg' }));
+
+    setSelectedImages({
+      ...selectedImages,
+      [currentImageKey]: new File([croppedAreaPixels], originalFileName, { type: 'image/jpeg' })
+    })
+
+
+    setShowCropModal(false);
+    console.log(URL.createObjectURL(selectedImages.main))
+    console.log(URL.createObjectURL(selectedImages.first))
+    console.log(URL.createObjectURL(selectedImages.second))
+
+    console.log('Cropped image saved successfully');
+
+  };
 
   const handleCropCancel = () => {
     setShowCropModal(false);
@@ -337,7 +340,7 @@ const handleCropSave = (croppedAreaPixels) => {
   };
 
   const handleDeleteImages = async () => {
-    if(imagesupdate.main || imagesupdate.first || imagesupdate.second){
+    if (imagesupdate.main || imagesupdate.first || imagesupdate.second) {
       try {
         const response = await fetch(`${API_URL}customer/update/delete-media`, {
           method: 'DELETE',
@@ -345,10 +348,10 @@ const handleCropSave = (croppedAreaPixels) => {
             'Authorization': `Bearer ${getCookie('token')}`
           }
         });
-  
+
         if (response.ok) {
           console.log('Images deleted successfully');
-        
+
           setimagesupdate({ main: null, first: null, second: null });
           navigate("/updateprofile")
         } else {
@@ -358,60 +361,129 @@ const handleCropSave = (croppedAreaPixels) => {
         console.error('Error deleting images:', error);
       }
     }
-    else{
+    else {
       navigate("/updateprofile")
     }
-   
+
   };
+
+  const getGridItemStyle = (imagesupdate) => {
+    const { main, first, second } = imagesupdate;
+  
+    // Determine window width
+    const isMobile = window.innerWidth < 768;
+  
+    // Initialize style object
+    const style = {
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      display: 'flex',         // Ensure the container itself uses flexbox
+      alignItems: 'center',    // Vertically center content
+      justifyContent: 'center',// Horizontally center content
+    };
+  
+    // If there is only one image available, center it and add a left margin of 30px
+    if ((main && !first && !second) || (!main && first && !second) || (!main && !first && second)) {
+      return {
+        ...style,
+        width: isMobile ? '53%' : '40%', // Adjust width based on screen size
+        height: isMobile ? '138%' : '140%',                  // Make sure the container takes the full height
+        marginLeft: '30px',  
+        left : isMobile ? '17%' : '26%',             // Add a left margin of 30px
+      };
+    }
+  
+    // If there are two images available, set width and height appropriately
+    if ((main && first && !second) || (main && !first && second) || (!main && first && second)) {
+      return {
+        ...style,
+        width: '90%',
+        height: '130%',
+        left : isMobile ? '10%' : '6%',
+      };
+    }
+  
+    // If all three images are available, set the container to auto width
+    if (main && first && second) {
+      return {
+        
+      };
+    }
+  
+    // Default styling
+    return style;
+  };
+  
+  
+
+  const DeleteButtonHeight = (imagesupdate)=>{
+    const { main, first, second } = imagesupdate;
+  
+    // If there is only one image available, set height to 270px
+    if ((main && !first && !second) || (!main && first && !second) || (!main && !first && second)) {
+      return '120px';
+    }
+  
+    // If there are two images available, set height to 220px
+    if ((main && first && !second) || (main && !first && second) || (!main && first && second)) {
+      return '90px';
+    }
+  
+    // If all three images are available, set height to 200px
+    if (main && first && second) {
+      return '30px';
+    }
+  
+    // Default height
+    return 'auto';
+  
+  }
 
   useEffect(() => {
     ImageURL();
     UpdatedMedia();
-    if (selectedImages  && approvalstatus == "APPROVED") {
+    if (selectedImages && approvalstatus == "APPROVED") {
       handleNextClick();
-     
+
     }
-    if (selectedImages  && approvalstatus !== "APPROVED") {
+    if (selectedImages && approvalstatus !== "APPROVED") {
       handleNextClickRejectedPending();
     }
 
   }, [selectedImages]);
 
   return (
-    <Sidebar>
-      <div style={{
-        flex: "1",
-        marginInline: "auto",
-        display: "flex",
-        flexDirection: "column",
-        gap: "1rem",
-        overflowY: "auto",
-        padding: "2rem"
-      }}>
-        <div className={picture.container}>
-          <div>
+
+
+
+    <div>
+
+
+      {/* <div className={picture.container}>
+        <div>
 
           <p className={picture.componentname}>Your Profile</p>
-          </div>
-          <Image
-            onClick={toggleInfoVisibility}
-            style={{ cursor: 'pointer' }}
-            width="24px"
-            height="24px"
-            src={questionmark}
-          />
-          <Container className={`${picture.whyInfo} ${showInfo ? picture.show : picture.hide}`}>
-            <p>
-            Please note that changes to your photos and written prompts will be reviewed by our admin team before going live. This process may take up to 48 hours, but you can continue using your account without any interruptions while we review & approve your updates.
-            </p>
-          </Container>
         </div>
-        <div className={picture.mainpic} style={{
-          maxWidth: "340px",
-          marginInline: "auto",
-          borderRadius: "16px"
-        }}>
-          <Image  src={images2.main} />
+        <Image
+          onClick={toggleInfoVisibility}
+          style={{ cursor: 'pointer' }}
+          width="24px"
+          height="24px"
+          src={questionmark}
+        />
+        <Container className={`${picture.whyInfo} ${showInfo ? picture.show : picture.hide}`}>
+          <p>
+            Please note that changes to your photos and written prompts will be reviewed by our admin team before going live. This process may take up to 48 hours, but you can continue using your account without any interruptions while we review & approve your updates.
+          </p>
+        </Container>
+      </div> */}
+
+
+    
+
+      <div className={`${picture.gridContainer} ${picture[gridType]}`} >  {/* Dynamically apply gridType */}
+        {/* Main Image */}
+        <div className={picture.gridItem} style={{ backgroundImage: `url(${images2.main})` }}>
           <div className={picture.icons}>
             <span className={picture.iconLeft}>
               <Image src="" />
@@ -427,87 +499,74 @@ const handleCropSave = (croppedAreaPixels) => {
             </span>
           </div>
           <div>
-            <p className={picture.pictype}>Main</p>
-          </div>
-        </div>
-        <div className={picture.twopiccontainer}>
-          <div className={picture.restpicture} style={{
-            maxWidth: "150px",
-            maxHeight: "150px",
-            borderRadius: "16px"
-          }}>
-            <Image src={images2.first} style={{
-             maxWidth: "150px",
-             maxHeight: "150px",
-           objectFit: "contain",
-              objectPosition: "center"
-            }} />
-            <div className={picture.icons}>
-              <span className={picture.iconLeft}>
-                <Image src="" />
-              </span>
-              <span className={picture.iconRight}>
-                <Image src={editicon} onClick={() => handleClick('first')} />
-                <input
-                  type="file"
-                  ref={fileInputRefFirst}
-                  onChange={(e) => handleFileChange(e, 'first')}
-                  style={{ display: 'none' }}
-                />
-
-                
-              </span>
-            </div>
-          </div>
-          <div className={picture.restpicture} style={{
-            maxWidth: "150px",
-            maxHeight: "150px",
-            borderRadius: "16px"
-          }}>
-            <Image src={images2.second} style={{
-               maxWidth: "150px",
-               maxHeight: "150px",
-             objectFit: "contain",
-              objectPosition: "center"
-            }} />
-            <div className={picture.icons}>
-              <span className={picture.iconLeft}>
-                <Image src="" />
-              </span>
-              <span className={picture.iconRight}>
-                <Image src={editicon} onClick={() => handleClick('second')} />
-                <input
-                  type="file"
-                  ref={fileInputRefSecond}
-                  onChange={(e) => handleFileChange(e, 'second')}
-                  style={{ display: 'none' }}
-                />
-              </span>
-            </div>
+            {/* <p className={picture.pictype}>Main</p> */}
           </div>
         </div>
 
+        {/* First Additional Image */}
+        <div className={picture.gridItem} style={{ backgroundImage: `url(${images2.first})` }}>
+          <div className={picture.icons}>
+            <span className={picture.iconLeft}>
+              <Image src="" />
+            </span>
+            <span className={picture.iconRight}>
+              <Image src={editicon} onClick={() => handleClick('first')} />
+              <input
+                type="file"
+                ref={fileInputRefFirst}
+                onChange={(e) => handleFileChange(e, 'first')}
+                style={{ display: 'none' }}
+              />
+            </span>
+          </div>
+        </div>
+
+        {/* Second Additional Image */}
+        <div className={picture.gridItem} style={{ backgroundImage: `url(${images2.second})` }}>
+          <div className={picture.icons}>
+            <span className={picture.iconLeft}>
+              <Image src="" />
+            </span>
+            <span className={picture.iconRight}>
+              <Image src={editicon} onClick={() => handleClick('second')} />
+              <input
+                type="file"
+                ref={fileInputRefSecond}
+                onChange={(e) => handleFileChange(e, 'second')}
+                style={{ display: 'none' }}
+              />
+            </span>
+          </div>
+        </div>
+      </div>
 
 
-        <div >
-          {
-            imagesupdate.main || imagesupdate.first || imagesupdate.second ? (
-              <div className={picture.underreview} style={{ marginTop: "40px", color: "#4E1173", fontSize: "16px", fontWeight: "600", textalign: "justify", marginBottom: "20px", padding : "25px", textAlign : "center" }}>
-                <p>
-                  Thanks for updating your image! It's now under review by myTamilDate. You'll receive an update within 24 hours. We appreciate your patience!
-                </p>
-              </div>
-            ) : ""
-          }
+
+      <div >
+        {
+          imagesupdate.main || imagesupdate.first || imagesupdate.second ? (
+            <div className={picture.underreview} style={{ marginTop: "40px", color: "#4E1173", fontSize: "16px", fontWeight: "600", textalign: "justify", marginBottom: "20px", padding: "25px", textAlign: "center" }}>
+              <p>
+                Thanks for updating your image! It's now under review by myTamilDate. You'll receive an update within 24 hours. We appreciate your patience!
+              </p>
+            </div>
+          ) : ""
+        }
+
+        <div>
+
+        </div>
+        {imagesupdate.main || imagesupdate.first || imagesupdate.second ? (
+        <div className={`${picture.gridContainer} ${picture[gridType]}`} >
+
           {imagesupdate.main && (
-            <div className={picture.mainpic} style={{
-              maxWidth: "340px",
-              marginInline: "auto",
-              borderRadius: "16px",
-              marginTop : "20px",
-              height : "240px"
-            }}>
-              <Image   src={imagesupdate.main} />
+            <div className={picture.gridItem} style={{
+               backgroundImage: `url(${imagesupdate.main})`,
+               ...getGridItemStyle(imagesupdate),
+               }}
+            
+            >
+              {/* <Image   src={imagesupdate.main} /> */}
               <div className={picture.icons}>
                 <span className={picture.iconLeft}>
                   <Image src="" />
@@ -522,110 +581,125 @@ const handleCropSave = (croppedAreaPixels) => {
                   />
                 </span>
               </div>
-              <div>
+              {/* <div>
                 <p className={picture.pictype}>Main</p>
+              </div> */}
+            </div>
+          )}
+
+
+
+          {imagesupdate.first && (
+            <div className={picture.gridItem} style={{ 
+              backgroundImage: `url(${imagesupdate.first})`,
+              ...getGridItemStyle(imagesupdate),
+
+              }}>
+
+              <div className={picture.icons}>
+                <span className={picture.iconLeft}>
+                  <Image src="" />
+                </span>
+                <span className={picture.iconRight}>
+                  <Image src="" />
+                  <input
+                    type="file"
+                    ref={fileInputRefFirst}
+                    onChange={(e) => handleFileChange(e, 'first')}
+                    style={{ display: 'none' }}
+                  />
+                </span>
               </div>
             </div>
           )}
 
-          <div className={picture.twopiccontainerupdate}>
-            {imagesupdate.first && (
-              <div className={picture.restpicture} style={{
-                maxWidth: "150px",
-                maxHeight: "150px",
-                borderRadius: "16px"
-              }}>
-                <Image src={imagesupdate.first} style={{
-              maxWidth: "150px",
-              maxHeight: "150px",
-            objectFit: "contain",
-              objectPosition: "center"
-            }} />
-                <div className={picture.icons}>
-                  <span className={picture.iconLeft}>
-                    <Image src="" />
-                  </span>
-                  <span className={picture.iconRight}>
-                    <Image src="" />
-                    <input
-                      type="file"
-                      ref={fileInputRefFirst}
-                      onChange={(e) => handleFileChange(e, 'first')}
-                      style={{ display: 'none' }}
-                    />
-                  </span>
-                </div>
-              </div>
-            )}
+          {imagesupdate.second && (
+            <div className={picture.gridItem} style={{
+              ...getGridItemStyle(imagesupdate),
+               backgroundImage: `url(${imagesupdate.second})`,
+               }}>
 
-            {imagesupdate.second && ( 
-              <div className={picture.restpicture} style={{
-                maxWidth: "150px",
-                maxHeight: "150px",
-                borderRadius: "16px"
-              }} >
-                <Image src={imagesupdate.second} style={{
-                maxWidth: "150px",
-                maxHeight: "150px",
-              objectFit: "contain",
-              objectPosition: "center"
-            }} />
-                <div className={picture.icons}>
-                  <span className={picture.iconLeft}>
-                    <Image src="" />
-                  </span>
-                  <span className={picture.iconRight}>
-                    <Image src="" />
-                    <input
-                      type="file"
-                      ref={fileInputRefSecond}
-                      onChange={(e) => handleFileChange(e, 'second')}
-                      style={{ display: 'none' }}
-                    />
-                  </span>
-                </div>
+              <div className={picture.icons}>
+                <span className={picture.iconLeft}>
+                  <Image src="" />
+                </span>
+                <span className={picture.iconRight}>
+                  <Image src="" />
+                  <input
+                    type="file"
+                    ref={fileInputRefSecond}
+                    onChange={(e) => handleFileChange(e, 'second')}
+                    style={{ display: 'none' }}
+                  />
+                </span>
               </div>
-            )}
-          </div>
+            </div>
+          )}
+
         </div>
-
-        <div className="d-flex justify-content-center" style={{  marginTop: "40px", width: "100%", gap : "30px" }}>
-    <button className="global-cancel-button" onClick={handleDeleteImages}>
-        Cancel
-    </button>
-    <button  type="submit" className="global-save-button" onClick={()=> navigate('/updateprofile')}>
-        Save
-    </button>
-    </div>
-           
-
-
-        <Modal centered className="crop-modal" show={showCropModal} onHide={handleCropCancel}>
-          <Modal.Header closeButton>
-            <Modal.Title>Crop your photo</Modal.Title>
-          </Modal.Header>
-          <Modal.Body className='crop-modal-body'>
-  
-             <ImageCrop url = {imageToCrop} onCropComplete={onCropComplete} ref={childRef} handleCropSave={handleCropSave}/>
-         
-          </Modal.Body>
-          <Modal.Footer className='crop-modal-footer'>
-            <button variant="secondary" className='crop-cancel-btn' onClick={handleCropCancel}>
-              Cancel
-            </button>
-            <button variant="secondary" className='crop-save-btn' onClick={() => {
-            childRef.current.handleSubmit();
-            
-           
-        }}>
-              Save
-            </button>
-          </Modal.Footer>
-        </Modal>
-     
+          ) : null}
       </div>
-      
-    </Sidebar>
+      <div>
+  {imagesupdate.main || imagesupdate.first || imagesupdate.second ? (
+    <div
+      className="d-flex justify-content-center align-items-center"
+      style={{
+        marginTop: DeleteButtonHeight(imagesupdate), 
+        width: "100%",
+        gap: "30px",
+      }}
+    >
+      <button
+        className="global-cancel-button"
+        onClick={handleDeleteImages}
+      >
+        Delete
+      </button>
+
+      {/* Uncomment this button if needed */}
+      {/* 
+      <button 
+        type="submit" 
+        className="global-save-button" 
+        onClick={() => navigate('/updateprofile')}
+      >
+        Save
+      </button> 
+      */}
+    </div>
+  ) : null}
+</div>
+
+
+
+
+
+      <Modal centered className="crop-modal" show={showCropModal} onHide={handleCropCancel}>
+        <Modal.Header closeButton>
+          <Modal.Title>Crop your photo</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className='crop-modal-body'>
+
+          <ImageCrop url={imageToCrop} onCropComplete={onCropComplete} ref={childRef} handleCropSave={handleCropSave} />
+
+        </Modal.Body>
+        <Modal.Footer className='crop-modal-footer'>
+          <button variant="secondary" className='crop-cancel-btn' onClick={handleCropCancel}>
+            Cancel
+          </button>
+          <button variant="secondary" className='crop-save-btn' onClick={() => {
+            childRef.current.handleSubmit();
+
+
+          }}>
+            Save
+          </button>
+        </Modal.Footer>
+      </Modal>
+
+    </div>
+
+
   );
 };
 

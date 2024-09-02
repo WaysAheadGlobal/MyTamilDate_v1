@@ -27,6 +27,7 @@ import Carddetails from '../../Components/card/editcard';
 import { Link, useNavigate } from 'react-router-dom';
 import { API_URL } from '../../../../api';
 import { useCookies } from '../../../../hooks/useCookies';
+import EditPicture from '../PictureEdit/pictureedit';
 
 const personalityArray = [
     'Activist', 'Affectionate', 'Foodie',
@@ -181,7 +182,11 @@ const PersonalitiesArray = Profile.Personalities ? Profile.Personalities.split('
   }, []);
 
   return (
-    <div>
+    <div style={{
+      marginTop : "10px"
+    }}>
+
+      <EditPicture/>
       <div className={edit.aboutme}>
       <RejectModal show={showRejectedModal} setShow={setShowRejectedModal} />
         <div className='d-flex align-items-center'>
