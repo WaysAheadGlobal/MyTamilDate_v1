@@ -14,9 +14,11 @@ import Sidebar from '../../userflow/components/sidebar/sidebar';
 const AddPaymentMethod = () => {
   const navigate = useNavigate();
   const [key, setKey] = useState(0);
+  const[carderror, setError] = useState("");
   const cookies = useCookies();
   const stripe = useStripe();
   const elements = useElements();
+
   const alert = useAlert();
   const searchParams = useSearchParams();
 
@@ -24,7 +26,7 @@ const AddPaymentMethod = () => {
     e.preventDefault();
 
     if (!stripe || !elements) {
-      // Stripe.js has not loaded yet
+      setError("Stripe has not loaded yet.");
       return;
     }
 
@@ -32,46 +34,63 @@ const AddPaymentMethod = () => {
     const cardExpiryElement = elements.getElement(CardExpiryElement);
     const cardCvcElement = elements.getElement(CardCvcElement);
 
-
-
+    // Create a payment token using Stripe.js
     const { error, token } = await stripe.createToken(cardNumberElement);
 
     if (error) {
       console.log('[error]', error);
+      setError(error.message);  // Set error message
       return;
     }
 
-    const response = await fetch(`${API_URL}customer/payment/create-payment-method`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${cookies.getCookie('token')}`,
-      },
-      body: JSON.stringify({ token: token.id }),
-    });
-    const data = await response.json();
+    try {
+      const response = await fetch(`${API_URL}customer/payment/create-payment-method`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${cookies.getCookie('token')}`,
+        },
+        body: JSON.stringify({ token: token.id }),
+      });
 
-    if (response.ok) {
-      if (searchParams[0].get('type') === 'subscribe') {
+      const data = await response.json();
+
+      if (response.ok) {
+        if (searchParams[0].get('type') === 'subscribe') {
+          alert.setModal({
+            show: true,
+            message: data.message,
+            title: "Success",
+            onButtonClick: () => {
+              if (cookies.getCookie("isPremium") !== "true") {
+                navigate('/selectplan');
+              } else {
+                navigate('/paymentmethod');
+              }
+            }
+          });
+          return;
+        }
+
         alert.setModal({
           show: true,
           message: data.message,
           title: "Success",
           onButtonClick: () => {
-            navigate('/selectplan');
+            if (cookies.getCookie("isPremium") !== "true") {
+              navigate('/selectplan');
+            } else {
+              navigate('/paymentmethod');
+            }
           }
         });
-        return;
+      } else {
+        // Set error message from response
+        setError(data.message || "An error occurred while creating the payment method.");
       }
-
-      alert.setModal({
-        show: true,
-        message: data.message,
-        title: "Success",
-        onButtonClick: () => {
-          navigate('/selectplan');
-        }
-      });
+    } catch (fetchError) {
+      console.error("Failed to add payment method:", fetchError);
+      setError("An error occurred while processing the payment.");
     }
   }
 
@@ -113,6 +132,10 @@ const AddPaymentMethod = () => {
                     <CardNumberElement />
                   </div>
                 </div>
+                {carderror && <p className="text-danger error-message" style={{
+                                                        marginTop: "-10px",
+                                                        marginBottom: "10px"
+                                                    }}>{carderror}</p>}
                 <div style={{
                   display: "flex",
                   width: "100%",
@@ -133,8 +156,10 @@ const AddPaymentMethod = () => {
                     <div className={`form-control ${pay.inputField}`} style={{
                       padding: "10px",
                     }}>
+
                       <CardCvcElement />
                     </div>
+                   
                   </div>
                 </div>
               </div>

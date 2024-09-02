@@ -17,7 +17,7 @@ payment.post("/create-payment-method", async (req: UserRequest, res) => {
 
     db.query<RowDataPacket[]>("SELECT stripe_id FROM users WHERE id = ?", [req.userId], async (err, result) => {
         if (err) {
-            console.log(err);
+            console.error(err);
             return res.status(500).send("Internal Server Error");
         }
 
@@ -28,33 +28,31 @@ payment.post("/create-payment-method", async (req: UserRequest, res) => {
         const customerId = result[0].stripe_id;
 
         try {
+            // Create a new payment method with the provided token
             const paymentMethod = await stripe.paymentMethods.create({
                 type: "card",
                 card: {
-                    token: token
+                    token: token,
                 },
             });
 
+            // Attach the newly created payment method to the customer
             await stripe.paymentMethods.attach(paymentMethod.id, {
                 customer: customerId,
             });
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send("Internal Server Error");
-        }
 
-        try {
+            // Update the customer's default payment method to the newly attached payment method
             await stripe.customers.update(customerId, {
                 invoice_settings: {
-                    default_payment_method: paymentMethodId,
+                    default_payment_method: paymentMethod.id, // Set the newly added payment method as the default
                 },
             });
+
+            res.status(200).send({ message: "Payment method added and set as default successfully" });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return res.status(500).send("Internal Server Error");
         }
-
-        res.status(200).send({ message: "Payment method attached successfully" });
     });
 });
 

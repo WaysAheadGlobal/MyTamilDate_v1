@@ -9,6 +9,7 @@ import Button from '../button/Button';
 import { useSocket } from '../../../../Context/SockerContext';
 import { Modal } from 'react-bootstrap';
 import UpgradeModal from '../upgradenow/upgradenow';
+import { ChatReqeustRejected } from '../card/Card';
 
 export default function Likes() {
     const navigate = useNavigate();
@@ -16,6 +17,7 @@ export default function Likes() {
     const [showmodal, setshowmodal] = useState(false);
     const cookies = useCookies();
     const [likes, setLikes] = useState([]);
+    const[chatshow, setChatshow] = useState(false);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const observerRef = useRef(null);
@@ -100,6 +102,24 @@ export default function Likes() {
         }
 
         try {
+                // Check if the user is in the matches list
+                const checkMatchResponse = await fetch(`${API_URL}customer/matches/check-match/${userId}`, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${cookies.getCookie("token")}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const checkMatchData = await checkMatchResponse.json();
+        
+                if (!checkMatchData.isMatch) {
+                    // Show an alert if the user is not in the matches
+                    console.log("This user is not in your matches. You cannot create a chat room.");
+                    setChatshow(true);
+                    console.log("chat show", chatshow)
+                    return;
+                }
+
             const response = await fetch(`${API_URL}customer/chat/create-room`, {
                 method: "POST",
                 headers: {
@@ -142,6 +162,8 @@ export default function Likes() {
 
     return (
         <>
+
+        <ChatReqeustRejected chatshow={chatshow} setChatshow={setChatshow} />
             {/* {
                 cookies.getCookie("isPremium") !== "true" && (
                     <div style={{

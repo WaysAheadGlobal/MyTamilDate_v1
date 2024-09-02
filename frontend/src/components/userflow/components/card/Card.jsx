@@ -60,6 +60,7 @@ export default function Card({ show, ...props }) {
     const [showDropdown, setShowDropdown] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
     const [showBlockModal, setShowBlockModal] = useState(false);
+    const[chatshow, setChatshow] = useState(false);
     const alert = useAlert();
     const { socket } = useSocket();
     const [topNavVisible, setTopNavVisible] = useState(true);
@@ -114,8 +115,28 @@ export default function Card({ show, ...props }) {
             // });
             return;
         }
+        
 
         try {
+
+                // Check if the user is in the matches list
+                const checkMatchResponse = await fetch(`${API_URL}customer/matches/check-match/${props.user_id}`, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${cookies.getCookie("token")}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const checkMatchData = await checkMatchResponse.json();
+        
+                if (!checkMatchData.isMatch) {
+                    // Show an alert if the user is not in the matches
+                    console.log("This user is not in your matches. You cannot create a chat room.");
+                    setChatshow(true);
+                    console.log("chat show", chatshow)
+                    return;
+                }
+
             const response = await fetch(`${API_URL}customer/chat/create-room`, {
                 method: "POST",
                 headers: {
@@ -232,6 +253,7 @@ export default function Card({ show, ...props }) {
             <UpgradeModal show={showUpgradeModal} setShow={setShowUpgradeModal} />
             <ReportModal show={showReportModal} setShow={setShowReportModal} personId={props.user_id} />
             <BlockModal show={showBlockModal} setShow={setShowBlockModal} personId={props.user_id} />
+            <ChatReqeustRejected chatshow={chatshow} setChatshow={setChatshow}/>
             <div className='card-and-details-container'>
                 <div ref={cardRef} className={`card-container ${show ? 'show' : ''}`}
                     style={{
@@ -715,3 +737,30 @@ function BlockModal({ show, setShow, personId }) {
 //         </Modal>
 //     )
 // }
+
+export function ChatReqeustRejected({ chatshow, setChatshow }) {
+    return (
+        <Modal
+            centered
+            className="selfie-modal"
+            show={chatshow}
+            onHide={() => setChatshow(false)}
+        >
+            <Modal.Body className="selfie-modal-body" 
+            style={{
+                gap : "0px"
+            }}>
+            You can only chat with person who have matched with you.
+                <div style={{ marginTop: "65px" }}>
+                    <button
+                        type="submit"
+                        className="global-save-button"
+                        onClick={() => setChatshow(false)}
+                    >
+                        Okay
+                    </button>
+                </div>
+            </Modal.Body>
+        </Modal>
+    );
+}

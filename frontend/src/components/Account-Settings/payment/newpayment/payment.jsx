@@ -158,18 +158,10 @@ const Paymentfinal = () => {
                 } else {
                     setLoading(false)
                     setshowmodal(true);
-
-                    // alert.setModal({
-                    //     show: true,
-                    //     message: data.message,
-                    //     title: 'Success',
-                    //     onButtonClick: () => {
-                    //         window.location.assign('/user/home');
-                    //     }
-                    // });
                 }
             }
         } catch (error) {
+            setLoading(false)
             alert.setModal({
                 show: true,
                 message: "Something went wrong. Please try again later.",
@@ -261,30 +253,98 @@ const Paymentfinal = () => {
         }
     }
 
+    // async function addPaymentMethod(e) {
+    //     setLoading(true);
+    //     e.preventDefault();
+
+    //     if (!stripe || !elements) {
+    //         // Stripe.js has not loaded yet
+    //         return;
+    //     }
+
+    //     const cardNumberElement = elements.getElement(CardNumberElement);
+    //     const cardExpiryElement = elements.getElement(CardExpiryElement);
+    //     const cardCvcElement = elements.getElement(CardCvcElement);
+
+
+
+    //     const { error, token } = await stripe.createToken(cardNumberElement);
+
+    //     if (error) {
+    //         console.log('[error]', error);
+    //         console.log(token);
+    //         setCarderror(error.message)
+    //         return;
+    //     }
+
+    //     const response = await fetch(`${API_URL}customer/payment/create-payment-method`, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${cookies.getCookie('token')}`,
+    //         },
+    //         body: JSON.stringify({ token: token.id }),
+    //     });
+    //     const data = await response.json();
+
+    //     if (response.ok) {
+    //         if (searchParams[0].get('type') === 'subscribe') {
+    //             // alert.setModal({
+    //             //   show: true,
+    //             //   message: data.message,
+    //             //   title: "Success",
+    //             //   onButtonClick: () => {
+    //             //     navigate('/selectplan');
+    //             //   }
+    //             // });
+    //             // return;
+    //         }
+    //         handlePayment();
+    //         //   alert.setModal({
+    //         //     show: true,
+    //         //     message: data.message,
+    //         //     title: "Success",
+    //         //   });
+    //     }
+    //     else{
+    //         setLoading(false);
+    //     }
+    // }
+
+    const handleCardNumberChange = (event) => {
+        const { complete, error } = event;
+        if (complete && !error) {
+            setCardNumberValid(true);
+        } else if (error) {
+            setCardNumberValid(false);
+        } else {
+            setCardNumberValid(null); 
+        }
+    };
+
+
     async function addPaymentMethod(e) {
-        setLoading(true);
-        e.preventDefault();
+    setLoading(true); // Start loading
+    e.preventDefault();
 
-        if (!stripe || !elements) {
-            // Stripe.js has not loaded yet
-            return;
-        }
+    if (!stripe || !elements) {
+        // Stripe.js has not loaded yet
+        setLoading(false); // Stop loading since Stripe isn't ready
+        return;
+    }
 
-        const cardNumberElement = elements.getElement(CardNumberElement);
-        const cardExpiryElement = elements.getElement(CardExpiryElement);
-        const cardCvcElement = elements.getElement(CardCvcElement);
+    const cardNumberElement = elements.getElement(CardNumberElement);
 
+    const { error, token } = await stripe.createToken(cardNumberElement);
 
+    if (error) {
+        console.log('[error]', error);
+        setCarderror(error.message);
+        setLoading(false); // Stop loading on error
+        return;
+    }
 
-        const { error, token } = await stripe.createToken(cardNumberElement);
-
-        if (error) {
-            console.log('[error]', error);
-            console.log(token);
-            setCarderror(error.message)
-            return;
-        }
-
+    try {
         const response = await fetch(`${API_URL}customer/payment/create-payment-method`, {
             method: 'POST',
             headers: {
@@ -293,39 +353,33 @@ const Paymentfinal = () => {
             },
             body: JSON.stringify({ token: token.id }),
         });
+
         const data = await response.json();
 
         if (response.ok) {
             if (searchParams[0].get('type') === 'subscribe') {
-                // alert.setModal({
-                //   show: true,
-                //   message: data.message,
-                //   title: "Success",
-                //   onButtonClick: () => {
-                //     navigate('/selectplan');
-                //   }
-                // });
-                // return;
+              alert.setModal({
+                  show: true,
+                  message: data.message,
+                  title: "Success",
+                  onButtonClick: () => {
+                    navigate('/selectplan');
+                  }
+                });
+             return;
             }
             handlePayment();
-            //   alert.setModal({
-            //     show: true,
-            //     message: data.message,
-            //     title: "Success",
-            //   });
+        } else {
+            console.error('Error:', data.message); // Log server-side errors
+            setCarderror(data.message); // Show error to the user
         }
+    } catch (fetchError) {
+        console.error('Fetch error:', fetchError); // Log network or other fetch-related errors
+        setCarderror('An error occurred while processing your payment. Please try again.'); // Show a generic error message
+    } finally {
+        setLoading(false); // Ensure loading is stopped in both success and failure cases
     }
-
-    // const handleCardNumberChange = (event) => {
-    //     const { complete, error } = event;
-    //     if (complete && !error) {
-    //         setCardNumberValid(true);
-    //     } else if (error) {
-    //         setCardNumberValid(false);
-    //     } else {
-    //         setCardNumberValid(null); 
-    //     }
-    // };
+}
 
 
 
@@ -537,7 +591,10 @@ const Paymentfinal = () => {
                                                 </div>
                                                 <div>
 
-                                                    {carderror && <p className="text-danger error-message">{carderror}</p>}
+                                                    {carderror && <p className="text-danger error-message" style={{
+                                                        marginTop: "-10px",
+                                                        marginBottom: "10px"
+                                                    }}>{carderror}</p>}
                                                 </div>
 
                                                 {

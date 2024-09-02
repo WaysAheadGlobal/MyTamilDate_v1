@@ -279,6 +279,41 @@ matches.get(
         });
     }
 );
+matches.get("/check-match/:participantId", (req: UserRequest, res) => {
+    const userId = req.userId;
+    const participantId = req.params.participantId;
+
+    const query = `
+    SELECT 1
+    FROM matches m1
+    WHERE m1.user_id = ? 
+      AND m1.person_id = ?
+      AND m1.\`like\` = 1
+      AND m1.skip = 0
+      AND m1.person_id IN (
+        SELECT m2.user_id
+        FROM matches m2
+        WHERE m2.person_id = m1.user_id
+          AND m2.\`like\` = 1
+          AND m2.skip = 0
+      )
+    LIMIT 1;
+    `;
+
+    db.query<RowDataPacket[]>(query, [userId, participantId], (err, result) => {
+        if (err) {
+            res.status(500).send("Failed to check match");
+            return;
+        }
+
+        if (result.length > 0) {
+            res.status(200).send({ isMatch: true });
+        } else {
+            res.status(200).send({ isMatch: false });
+        }
+    });
+});
+
 
 
 

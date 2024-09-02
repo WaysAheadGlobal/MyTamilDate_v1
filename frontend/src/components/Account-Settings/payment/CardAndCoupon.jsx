@@ -253,46 +253,104 @@ const CardandPayment = () => {
         }
     }
 
+    // async function addPaymentMethod(e) {
+    //     setLoading(true);
+    //     e.preventDefault();
+
+    //     if (!stripe || !elements) {
+
+    //         return;
+    //     }
+
+    //     const cardNumberElement = elements.getElement(CardNumberElement);
+    //     const cardExpiryElement = elements.getElement(CardExpiryElement);
+    //     const cardCvcElement = elements.getElement(CardCvcElement);
+
+
+
+    //     const { error, token } = await stripe.createToken(cardNumberElement);
+
+    //     if (error) {
+    //         console.log('[error]', error);
+    //         console.log(token);
+    //         setCarderror(error.message)
+    //         return;
+    //     }
+
+    //     const response = await fetch(`${API_URL}customer/payment/create-payment-method`, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${cookies.getCookie('token')}`,
+    //         },
+    //         body: JSON.stringify({ token: token.id }),
+    //     });
+    //     const data = await response.json();
+
+    //     if (response.ok) {
+    //         if (searchParams[0].get('type') === 'subscribe') {
+
+    //         }
+    //         handlePayment();
+
+    //     }
+    // }
+
     async function addPaymentMethod(e) {
-        setLoading(true);
+        setLoading(true); // Start loading
         e.preventDefault();
-
+    
         if (!stripe || !elements) {
-
+            // Stripe.js has not loaded yet
+            setLoading(false); // Stop loading since Stripe isn't ready
             return;
         }
-
+    
         const cardNumberElement = elements.getElement(CardNumberElement);
-        const cardExpiryElement = elements.getElement(CardExpiryElement);
-        const cardCvcElement = elements.getElement(CardCvcElement);
-
-
-
+    
         const { error, token } = await stripe.createToken(cardNumberElement);
-
+    
         if (error) {
             console.log('[error]', error);
-            console.log(token);
-            setCarderror(error.message)
+            setCarderror(error.message);
+            setLoading(false); // Stop loading on error
             return;
         }
-
-        const response = await fetch(`${API_URL}customer/payment/create-payment-method`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${cookies.getCookie('token')}`,
-            },
-            body: JSON.stringify({ token: token.id }),
-        });
-        const data = await response.json();
-
-        if (response.ok) {
-            if (searchParams[0].get('type') === 'subscribe') {
-
+    
+        try {
+            const response = await fetch(`${API_URL}customer/payment/create-payment-method`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.getCookie('token')}`,
+                },
+                body: JSON.stringify({ token: token.id }),
+            });
+    
+            const data = await response.json();
+    
+            if (response.ok) {
+                if (searchParams[0].get('type') === 'subscribe') {
+                  alert.setModal({
+                      show: true,
+                      message: data.message,
+                      title: "Success",
+                      onButtonClick: () => {
+                        navigate('/selectplan');
+                      }
+                    });
+                 return;
+                }
+                handlePayment();
+            } else {
+                console.error('Error:', data.message); // Log server-side errors
+                setCarderror(data.message); // Show error to the user
             }
-            handlePayment();
-
+        } catch (fetchError) {
+            console.error('Fetch error:', fetchError); // Log network or other fetch-related errors
+            setCarderror('An error occurred while processing your payment. Please try again.'); // Show a generic error message
+        } finally {
+            setLoading(false); // Ensure loading is stopped in both success and failure cases
         }
     }
 
@@ -426,7 +484,10 @@ const CardandPayment = () => {
                                                 </div>
                                                 <div>
 
-                                                    {carderror && <p className="text-danger error-message">{carderror}</p>}
+                                                    {carderror && <p className="text-danger error-message" style={{
+                                                        marginTop: "-10px",
+                                                        marginBottom: "10px"
+                                                    }}>{carderror}</p>}
                                                 </div>
 
                                                 {
