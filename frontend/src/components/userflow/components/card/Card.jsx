@@ -65,6 +65,29 @@ export default function Card({ show, ...props }) {
     const [topNavVisible, setTopNavVisible] = useState(true);
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
+    const Countswipe = () => {
+        // Get the current swipe count from the cookie, or default to 0 if not set
+        const currentCount = parseInt(cookies.getCookie("swipeCount")) || 0;
+      
+        // Check if the current count is 10
+        if (currentCount >= 10) {  // Use >= to be more robust in handling any unexpected cases
+          // Reset the cookie value to 0 if it is 10 or more
+          cookies.setCookie("swipeCount", 0, 1);
+          
+          // Show the upgrade modal after resetting the count
+          setShowUpgradeModal(true);
+        } else {
+          // Increment the current count by 1
+          const newCount = currentCount + 1;
+          console.log(newCount);
+          
+          // Update the cookie with the new count value
+          cookies.setCookie("swipeCount", newCount, 1);
+        }
+      };
+      
+      
+
     useEffect(() => {
         const bottomNav = document.querySelector("#bottomOptions");
 
@@ -136,6 +159,7 @@ export default function Card({ show, ...props }) {
             await getRoom();
             return;
         }
+        
         const response = await fetch(`${API_URL}customer/matches/${type}`, {
             method: "POST",
             body: JSON.stringify({
@@ -164,19 +188,37 @@ export default function Card({ show, ...props }) {
 
             if (type === "skip" || type === "like") {
 
+
+                if (cookies.getCookie("isPremium") !== "true" ) {
+                    Countswipe();
+                    console.log("10 se kam");
+                }
+
+                if(cookies.getCookie("isPremium") !== "true" && parseInt(cookies.getCookie("swipeCount")) >= 10 ){
+                    Countswipe();
+                    console.log("10 swipe completed");
+                    return;
+                }
+
                 cardRef.current.scrollIntoView({ behavior: "smooth" });
 
                 if (profiles.length === 1) {
                     setPage(prev => prev + 1);
+                   
                 }
 
                 if (!window.location.pathname.endsWith(props.user_id)) {
                     cardRef.current.style.transform = "translateX(-100%)";
                     cardRef.current.style.transition = "transform 0.25s ease-in-out";
                     setProfiles(profiles.filter(profile => profile.user_id !== props.user_id));
+                    
                 }
 
                 if (window.location.pathname.endsWith(props.user_id) && type === "skip") {
+                    if(cookies.getCookie("isPremium") !== "true" && parseInt(cookies.getCookie("swipeCount")) >= 10 ){
+                        Countswipe();
+                        return;
+                    }
                     window.location.assign("/user/home");
                 }
 
