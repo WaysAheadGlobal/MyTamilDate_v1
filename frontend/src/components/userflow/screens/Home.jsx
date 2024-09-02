@@ -212,7 +212,7 @@ const handleFinalDelete = async () => {
 
 <Modal.Body className="pause-modal-content">
 
-    <div className="pause-modal-title">Update rejected</div>
+    <div className="pause-modal-title">Your Update Needs Attention</div>
     <div className="pause-modal-message">
         {rejectreason}
     </div>
