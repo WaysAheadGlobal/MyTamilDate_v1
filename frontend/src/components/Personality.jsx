@@ -79,7 +79,7 @@ export default function Personality() {
             setShowModal(true);
             return;
         }
-
+        console.log(selectedPersonalities);
         const response = await fetch(`${API_URL}/customer/users/personality`, {
             method: 'POST',
             headers: {

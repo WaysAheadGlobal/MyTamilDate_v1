@@ -555,7 +555,7 @@ auth.get("/verify/:token", async (req, res) => {
                             }
 
                             const name = result.first_name;
-                            const email = "mtdteam2024@gmail.com"
+                            const email = "hello@mytamildate.com"
                             try {
                                 await mailService.sendVerificationMail(email, name);
                             } catch (error) {

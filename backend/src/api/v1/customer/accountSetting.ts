@@ -350,7 +350,7 @@ setting.post('/request-email-update', verifyUser, async (req: UserRequest, res: 
 
                 const msg = {
                     to: email,
-                    from: "mtdteam2024@gmail.com",
+                    from: "hello@mytamildate.com",
                     subject: "MTD code",
                     html: html
                 };
@@ -358,6 +358,7 @@ setting.post('/request-email-update', verifyUser, async (req: UserRequest, res: 
                 sgMail.send(msg)
                     .then(() => {
                         console.log("Approval email sent successfully");
+                        console.log(msg)
                         return res.status(200).json({ message: 'Status updated successfully and email sent' });  // Ensure this line returns JSON
                     })
                     .catch((error) => {

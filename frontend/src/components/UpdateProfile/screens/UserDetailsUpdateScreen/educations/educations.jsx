@@ -11,7 +11,7 @@ import { useCookies } from '../../../../../hooks/useCookies';
 import Sidebar from '../../../../userflow/components/sidebar/sidebar';
 
 const educationLevels = [
-    'Associates', 'Bachelors', 'Doctorate', 'High school', 'Masters', 'Trade school', 'Prefer not to say'
+    'Associate', 'Bachelors', 'Doctorate', 'High school', 'Masters', 'Trade school', 'Prefer not to say'
 ];
 
 
@@ -117,7 +117,7 @@ export const EducationUpdate = () => {
                             style={{
                                 backgroundColor: selectedOption === "Associates" ? '#F7ECFF' : 'transparent',
                             }}
-                        >Associates</div>
+                        >Associate</div>
                         <div
                             onClick={() => setSelectedOption("Bachelors")}
                             className="sub-inner-div"

@@ -3,7 +3,6 @@ import Stripe from "stripe";
 import { verifyUser } from "../../../middleware/verifyUser";
 
 const products = Router();
-
 products.use(verifyUser);
 
 products.get("/", async (req, res) => {

@@ -16,7 +16,7 @@ const kidsOptions = [
 ]
 
 const familyOptions = [
-    "Don't have family",
+    "Don't have children",
     "Want children",
     "Open to children",
     "Prefer not to say"

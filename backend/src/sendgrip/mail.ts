@@ -17,7 +17,7 @@ Sendmail.post('/', (req: UserRequest, res: express.Response) => {
 
   const msg: sgMail.MailDataRequired = {
     to :"vedican.v44@gmail.com",
-    from  : "mtdteam2024@gmail.com",
+    from  : "hello@mytamildate.com",
     subject:  "Test Email from Postman",
     text:  "This is a test email sent from Postman using SendGrid",
     html:  "<strong>This is a test email sent from Postman using SendGrid</strong>"

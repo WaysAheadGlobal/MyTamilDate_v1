@@ -53,7 +53,9 @@ export const LocatedUpdate = () => {
       const data = await response.json();
       console.log(data);
       setSelectedCountry(data.country);
+      setCountrySearch(data.country);
       setSelectedCity(data.id);
+      setCitySearch(data.location_string);
     })()
   }, [])
 

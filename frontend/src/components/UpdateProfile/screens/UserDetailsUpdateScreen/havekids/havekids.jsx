@@ -10,7 +10,7 @@ import { useCookies } from '../../../../../hooks/useCookies';
 import Sidebar from '../../../../userflow/components/sidebar/sidebar';
 
 const kidsOptions = [
-    "Don't have kids",
+    "Don't have children",
     "Have children",
     "Prefer not to say"
 ]

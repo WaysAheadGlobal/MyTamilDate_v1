@@ -1099,7 +1099,7 @@ users.delete('/deleteAnswerquestions/:user_id', (req: AdminRequest, res: Respons
             // Send verification email
             const msg = {
                 to: email,
-                from: "mtdteam2024@gmail.com",
+                from: "hello@mytamildate.com",
                 subject: "Update Request Notification",
                 html: html
             };

@@ -12,7 +12,7 @@ import { API_URL } from '../api';
 import { useCookies } from '../hooks/useCookies';
 
 const educationLevels = [
-    'Associates', 'Bachelors', 'Doctorate', 'High school', 'Masters', 'Trade school', 'Prefer not to say'
+    'Associate', 'Bachelors', 'Doctorate', 'High school', 'Masters', 'Trade school', 'Prefer not to say'
 ];
 
 /* studies */
@@ -126,7 +126,7 @@ export const Education = () => {
                             style={{
                                 backgroundColor: selectedOption === "Associates" ? '#F7ECFF' : 'transparent',
                             }}
-                        >Associates</div>
+                        >Associate</div>
                         <div
                             onClick={() => setSelectedOption("Bachelors")}
                             className="sub-inner-div"

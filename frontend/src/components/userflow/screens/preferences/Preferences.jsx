@@ -355,6 +355,7 @@ export default function Preferences() {
             if (!data) return;
 
             setSelectedPreferenceOptions(data)
+            console.log("prefrance called")
         })()
     }, [show]);
 
@@ -486,7 +487,10 @@ export default function Preferences() {
                                 //     borderRadius: "9999px"
                                 // }} 
 
-                                onClick={() => setShow(false)}>Cancel</button>
+                                onClick={() => {
+                                    setShow(false);
+                                   setValue("")
+                                  }}>Cancel</button>
                             <button
                                 className='global-save-button'
                             // style={{
@@ -536,7 +540,7 @@ export default function Preferences() {
                             width: "15rem",
                             
                         }}
-                        onClick={() => window.location.assign("/user/home")}
+                        onClick={() => (window.location.href = "/user/home")}
                     >Apply</Button>
                     <div className={styles.option}>
                         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -751,7 +755,7 @@ export default function Preferences() {
                             width: "15rem",
                             marginBottom: "2rem",
                         }}
-                        onClick={() => window.location.assign("/user/home")}
+                        onClick={() => (window.location.href = "/user/home")}
                     >Apply</Button>
                 </div>
             </div>
