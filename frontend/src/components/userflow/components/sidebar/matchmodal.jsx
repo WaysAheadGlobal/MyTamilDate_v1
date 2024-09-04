@@ -19,12 +19,15 @@ const MatchCustomModal = ({ matchmodal, handleClose, userMedia }) => {
 
     // Function to get image URL
     const getImageURL = (type, hash, extension, userId) => {
+        console.log(type, hash, extension, userId)
         if (type === 1) {
             return `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}`;
         } else {
             return `${API_URL}media/avatar/${hash}.${extension}`;
         }
     };
+
+    
 
     const { media, userDetails } = userMedia || {};
 
@@ -34,7 +37,7 @@ const MatchCustomModal = ({ matchmodal, handleClose, userMedia }) => {
         : profilepic;
 
     const user2Image = media && media[1]
-        ? getImageURL(media[1].type, media[1].hash, media[1].extension, media[1].user_id)
+        ? getImageURL(media[1].type, media[1].hash, media[1].extension, userDetails.user_id)
         : profilepic;
 
     async function getRoom() {
