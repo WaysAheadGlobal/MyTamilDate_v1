@@ -60,7 +60,7 @@ export const BasicDetails = () => {
 
   const handleNameChange = (e) => {
     setErrorMessage("");
-    const value = e.target.value.replace(/\s/g, '');
+    const value = e.target.value.replace(/[^a-zA-Z]/g, '');
     setUserDetails(prevDetails => ({
       ...prevDetails,
       first_name: value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
@@ -68,7 +68,7 @@ export const BasicDetails = () => {
   };
 
   const handleLastNameChange = (e) => {
-    const value = e.target.value.replace(/\s/g, '');
+    const value = e.target.value.replace(/[^a-zA-Z]/g, '');
     setUserDetails(prevDetails => ({
       ...prevDetails,
       last_name: value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
