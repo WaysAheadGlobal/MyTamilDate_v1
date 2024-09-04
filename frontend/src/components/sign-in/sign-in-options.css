@@ -1,7 +1,5 @@
 .signin-options-container {
     display: flex;
-
-
     justify-content: space-between;
     position: relative;
 
@@ -37,14 +35,11 @@
 
 .signin-options-main {
     background: #FFFFFF;
-
     display: flex;
-
     justify-content: center;
-    height: 100dvh;
+    height: 53dvh;
     width: 100%;
     align-items: center;
-
 }
 
 .logo-progressbar1 {

@@ -22,6 +22,7 @@ const EditPicture = () => {
   const [showInfo, setShowInfo] = useState(false);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
+  
   const [selectedImages, setSelectedImages] = useState({ main: null, first: null, second: null });
   const [selectedImagesurl, setSelectedImagesurl] = useState({ main: null, first: null, second: null });
   const [showModal, setShowModal] = useState(false);
@@ -72,7 +73,7 @@ const EditPicture = () => {
       });
       const data = await response.json();
       setData(data);
-      console.log("datadaa", data);
+      console.log(" Old imgdata data", data);
       if (response.ok) {
         if (data[0].type === 31 || data[1].type === 31 || data[2].type === 31) {
           const others = data.filter(image => image.type === 32);
@@ -125,8 +126,8 @@ const EditPicture = () => {
       });
 
       const data = await response.json();
-      setData(data);
-      console.log("datadaa", data);
+      // setData(data);
+      console.log("update medaidata", data);
 
       if (response.ok) {
         const validImages = data.filter(image => image.hash && image.extension && (image.type === 31 || image.type === 32 || image.type === 1 || image.type === 2));
@@ -191,14 +192,20 @@ const EditPicture = () => {
       mediaId = data.find(image => image.type === 31)?.id;
       fileInputRefMain.current.click();
       setType(31)
+      console.log("31 id",mediaId);
     } else if (imageKey === 'first') {
       mediaId = data.find(image => image.type === 32)?.id;
       fileInputRefFirst.current.click();
       setType(32)
+      console.log("32 id",mediaId);
+      console.log(mediaId);
     } else if (imageKey === 'second') {
+      console.log(data);
       mediaId = data.filter(image => image.type === 32)[1]?.id;
       fileInputRefSecond.current.click();
       setType(32)
+      console.log("322 id",mediaId);
+      console.log(mediaId);
     }
     console.log(mediaId);
     setMediaId(mediaId);
@@ -225,6 +232,8 @@ const EditPicture = () => {
     if (mediaid) {
       formData.append('media_id', mediaid);
     }
+
+    console.log("mediaid",mediaid);
 
     if (type) {
       formData.append('type', type);
