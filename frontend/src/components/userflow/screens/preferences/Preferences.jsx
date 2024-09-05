@@ -13,28 +13,59 @@ import { useUserProfile } from '../../components/context/UserProfileContext';
 import UpgradeModal from '../../components/upgradenow/upgradenow';
 
 const Forms = {
-    Radio: ({ options, value, setValue, firstOption, selected }) => (
-        <div style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "0.5rem"
-        }}>
-            {
-                firstOption && (
-                    <label htmlFor={firstOption.label} className={styles.inputRadio}>
-                        <input id={firstOption.label} name="radio-input" value={firstOption.value} checked={(!selected && !value) || value === "any"} onChange={() => setValue("any")} type="radio" />
-                        <p>{firstOption.label}</p>
-                    </label>
-                )
+     Radio : ({ options, value, setValue, firstOption, selected }) => {
+        const [currentValue, setCurrentValue] = useState(value || selected || '');
+    
+        useEffect(() => {
+            // Set initial value from 'selected' when the modal opens
+            if (selected) {
+                setCurrentValue(selected);
             }
-            {Array.isArray(options) && options?.map((option, index) => (
-                <label key={index} htmlFor={option.name} className={styles.inputRadio}>
-                    <input id={option.name} value={option.id} name="radio-input" checked={option.name === selected || option.id === value} onChange={() => setValue(option.id)} type="radio" />
-                    <p>{option.name}</p>
-                </label>
-            ))}
-        </div>
-    ),
+        }, [selected]);
+    
+        const handleChange = (optionValue) => {
+            setCurrentValue(optionValue); // Update the local state
+            setValue(optionValue); // Update the parent state
+        };
+    
+        return (
+            <div style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "0.5rem"
+            }}>
+                {
+                    firstOption && (
+                        <label htmlFor={firstOption.label} className={styles.inputRadio}>
+                            <input
+                                id={firstOption.label}
+                                name="radio-input"
+                                value={firstOption.value}
+                                checked={currentValue === firstOption.value || currentValue === "any"}
+                                onChange={() => handleChange(firstOption.value)}
+                                type="radio"
+                            />
+                            <p>{firstOption.label}</p>
+                        </label>
+                    )
+                }
+                {Array.isArray(options) && options.map((option, index) => (
+                    <label key={index} htmlFor={option.name} className={styles.inputRadio}>
+                        <input
+                            id={option.name}
+                            name="radio-input"
+                            value={option.id !== null ? option.id : 'null'}
+                            checked={option.id === null ? currentValue === null : currentValue === option.id || currentValue === option.name}
+                            onChange={() => handleChange(option.id)}
+                            type="radio"
+                        />
+                        <p>{option.name}</p>
+                    </label>
+                ))}
+            </div>
+        );
+    }
+    ,
     Range: ({ value, setValue, age_from, age_to }) => {
         console.log(value)
         return (
@@ -54,7 +85,6 @@ const Forms = {
             </>
         )
     },
-
     Location: ({ options, value, setValue, locationId }) => {
         const [selectedCountry, setSelectedCountry] = useState("");
         const [selectedCity, setSelectedCity] = useState("");
@@ -62,22 +92,29 @@ const Forms = {
 
         useEffect(() => {
             if (!locationId) return;
-
+            console.log(locationId);
             const val = Object.keys(options).map(option => options[option]).flat().find(option => option.id === locationId);
             setSelectedCountry(val?.country);
             setSelectedCity(val?.id);
             setCountrySelectCollasped(false);
-        }, [options])
+        }, [options]);
 
         useEffect(() => {
             setValue(selectedCity);
         }, [selectedCity]);
 
+        // Automatically select the first city when a country is selected
+        useEffect(() => {
+            if (selectedCountry && options[selectedCountry] && options[selectedCountry].length > 0 && !selectedCity) {
+                setSelectedCity(options[selectedCountry][0].id);  // Automatically set the first city
+            }
+        }, [selectedCountry]);
+
         useEffect(() => {
             if (!countrySelectCollasped) {
                 setValue(null);
             }
-        }, [countrySelectCollasped])
+        }, [countrySelectCollasped]);
 
         return (
             <>
@@ -161,6 +198,7 @@ const Forms = {
             </>
         )
     },
+
     Select: ({ options, value, setValue, firstOption, selected }) => {
         const [selectedOption, setSelectedOption] = useState("Select a option");
         const [open, setOpen] = useState(false);
@@ -390,7 +428,6 @@ export default function Preferences() {
                 },
                 body: JSON.stringify(bodyContent)
             });
-
             if (response.ok) {
                 setShow(false);
                 setRefresh_(!refresh_);
@@ -508,7 +545,7 @@ export default function Preferences() {
                 width: '100%',
                 flex: '1',
                 overflowY: 'auto',
-                padding: "2rem"
+                padding: "1rem"
             }}>
                 <p style={{
                     fontSize: "large",
@@ -680,7 +717,7 @@ export default function Preferences() {
                             <div style={{ flexGrow: "1" }}></div>
                             <p
                                 onClick={() => handlePreferenceClick({
-                                    title: "Family",
+                                    title: "Kids",
                                     type: "select",
                                     optionsApiEndpoint: "have_kids",
                                     saveApiEndpoint: "have_kids_id",
@@ -705,7 +742,7 @@ export default function Preferences() {
                             <div style={{ flexGrow: "1" }}></div>
                             <p
                                 onClick={() => handlePreferenceClick({
-                                    title: "Kids",
+                                    title: "Family",
                                     type: "select",
                                     optionsApiEndpoint: "want_kids",
                                     saveApiEndpoint: "want_kids_id",
@@ -821,3 +858,4 @@ export default function Preferences() {
 //         </Modal>
 //     )
 // }
+
