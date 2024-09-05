@@ -80,33 +80,29 @@ const handleNewMatch = async (userId: string, personId: string, io: Server, req:
             `, [personId]);
 
             // Fetch media details for both users
+            // Fetch media details for the first user
             const [mediaResult1] = await db.promise().query<RowDataPacket[]>(`
-                SELECT id, hash, extension, type
-                FROM media
-                WHERE user_id = ?
-            `, [userId]);
+    SELECT id, hash, extension, type
+    FROM media
+    WHERE user_id = ? AND type IN (1, 31)
+`, [userId]);
 
+            // Fetch media details for the second user
             const [mediaResult2] = await db.promise().query<RowDataPacket[]>(`
-                SELECT id, hash, extension, type
-                FROM media
-                WHERE user_id = ?
-            `, [personId]);
+    SELECT id, hash, extension, type
+    FROM media
+    WHERE user_id = ? AND type IN (1, 31)
+`, [personId]);
+
+
 
             // Notify both users via socket with media details
-            io.to(userId).emit('new-match', { withUserId: personId, userDetails: userDetails2[0], media: mediaResult2 });
-            io.to(personId).emit('new-match', { withUserId: userId, userDetails: userDetails1[0], media: mediaResult1 });
+            io.to(userId).emit('new-match', { withUserIdP: personId, userDetailsP: userDetails2[0], mediaP: mediaResult2, withUserIdU: userId, userDetailsU: userDetails1[0], mediaU: mediaResult1 });
+            io.to(personId).emit('new-match', { withUserIdU: personId, userDetailsU: userDetails2[0], mediaU: mediaResult2, withUserIdP: userId, userDetailsP: userDetails1[0], mediaP: mediaResult1 });
 
-            // Send response with media details for the user who triggered the match
-            return res.status(200).send({
-                message: "New Match found",
-                matchDetails: {
-                    userDetails: userDetails1[0],
-                    media: mediaResult1
-                }
-            });
-        } else {
-            // If no mutual match is found
-            return res.status(404).send({ message: "No mutual match found" });
+
+            console.log(userDetails1[0], userDetails2[0], mediaResult1, mediaResult2)
+
         }
     } catch (err) {
         console.error(err);
@@ -116,6 +112,7 @@ const handleNewMatch = async (userId: string, personId: string, io: Server, req:
         }
     }
 };
+
 
 matches.get(
     "/",
@@ -247,7 +244,7 @@ matches.get(
         // }
 
         const userId = req.userId;
-        const limit = 20;
+        const limit = 160;
         const page = req.query.page ? parseInt(req.query.page as string) : 1;
 
         const query = `
@@ -603,9 +600,9 @@ matches.post("/like", (req: UserRequest, res) => {
 
                 if (match.length > 0) {
                     try {
-                         // Call the handleNewMatch function to check for and notify mutual matches
-                         await handleNewMatch(userId!, personId, io, req, res);
-                         console.log("new Match");
+                        // Call the handleNewMatch function to check for and notify mutual matches
+                        await handleNewMatch(userId!, personId, io, req, res);
+                        console.log("new Match");
                         await mailService.sendMatchesMail(
                             user[0].email,
                             `${req.user?.first_name} also likes you ${user[0].first_name}!`,

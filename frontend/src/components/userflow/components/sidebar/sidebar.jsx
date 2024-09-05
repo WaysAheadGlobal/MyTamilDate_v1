@@ -21,7 +21,7 @@ export default function Sidebar({ children }) {
     const [isTablet, setIsTablet] = useState(false);
     const [Rejected, setRejected] = useState(false);
     const [view, setView] = useState(false);
-    const [userMedia, setUserMedia] = useState(null); // To store media data
+    const [userDetails, setUserDetails] = useState({}); // To store media data
     const [pathname, setPathname] = useState([]);
     const location = useLocation();
     const suffix = pathname.at(-1);
@@ -52,12 +52,22 @@ export default function Sidebar({ children }) {
             console.log("Socket is not initialized.");
             return;
         }
-        const handleNewMatch = ({ withUserId,userDetails, media  }) => {
-            console.log("New match event received:", withUserId,);
-            cookies.setCookie("NewMatch", withUserId, 1);
-            setUserMedia({ userDetails, media }); // Store the media and user details
-            console.log(userMedia);
-            console.log(userDetails, media);
+        const handleNewMatch = ({ withUserIdP, userDetailsP, mediaP,withUserIdU, userDetailsU, mediaU }) => {
+            console.log("New match event received:", withUserIdU,);
+            cookies.setCookie("NewMatch", withUserIdU, 1);
+            const newUserDetails = {
+                withUserIdP,
+                userDetailsP,
+                mediaP,
+                withUserIdU,
+                userDetailsU,
+                mediaU
+            };
+        
+            // Update state with the new details object
+            setUserDetails(newUserDetails); // Store the media and user details
+        
+            console.log(userDetails); // This should log the updated details object
             setMatchmodal(true);
             // alert.setModal({
             //     show: true,
@@ -77,6 +87,11 @@ export default function Sidebar({ children }) {
             socket.off("new-match", handleNewMatch);
         };
     }, [socket]);
+
+    useEffect(() => {
+        console.log("Updated userDetails:", userDetails);
+        // setMatchmodal(true);
+    }, [userDetails]);
 
     const noNavbarRoutes = [
         '/updatelocations',
@@ -172,14 +187,12 @@ export default function Sidebar({ children }) {
 
     }
 
-
-
     return (
         <section className={styles['section-container']}>
           <MatchCustomModal
                 matchmodal={matchmodal}
                 handleClose={() => setMatchmodal(false)}
-                userMedia={userMedia} // Pass the user media data
+                MatchuserDetails={userDetails} // Pass the user media data
             />
             <RejectModal show={showRejectedModal} setShow={setShowRejectedModal} />
             <aside className={`${styles['sidebar']} ${location.pathname === "/paymentplan" ? styles['paymentplanSidebar'] : ''}`}>

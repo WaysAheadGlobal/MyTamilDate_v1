@@ -8,14 +8,21 @@ import UpgradeModal from '../upgradenow/upgradenow';
 import { useSocket } from '../../../../Context/SockerContext';
 import { useNavigate } from 'react-router-dom';
 
-const MatchCustomModal = ({ matchmodal, handleClose, userMedia }) => {
+const MatchCustomModal = ({ matchmodal, handleClose, MatchuserDetails }) => {
     const cookies = useCookies();
     const [showmodal, setshowmodal] = useState(false);
     const { socket } = useSocket();
     const navigate = useNavigate();
     const userId = cookies.getCookie("userId");
+   console.log(MatchuserDetails);
+    if (!matchmodal || !MatchuserDetails) return null;
+ const{withUserIdP,
+    userDetailsP,
+    mediaP,
+    withUserIdU,
+    userDetailsU,
+    mediaU}  = MatchuserDetails
 
-    if (!matchmodal || !userMedia) return null;
 
     // Function to get image URL
     const getImageURL = (type, hash, extension, userId) => {
@@ -27,17 +34,13 @@ const MatchCustomModal = ({ matchmodal, handleClose, userMedia }) => {
         }
     };
 
-    
-
-    const { media, userDetails } = userMedia || {};
-
     // Default to profilepic if no media is available
-    const user1Image = media && media[0]
-        ? getImageURL(media[0].type, media[0].hash, media[0].extension, media[0].user_id)
+    const user2Image =  mediaP && mediaP[0]
+        ? getImageURL(mediaP[0].type, mediaP[0].hash, mediaP[0].extension, withUserIdP)
         : profilepic;
-
-    const user2Image = media && media[1]
-        ? getImageURL(media[1].type, media[1].hash, media[1].extension, userDetails.user_id)
+ 
+    const user1Image = mediaU && mediaU[0]
+        ? getImageURL(mediaU[0].type, mediaU[0].hash, mediaU[0].extension, withUserIdU)
         : profilepic;
 
     async function getRoom() {
@@ -54,7 +57,7 @@ const MatchCustomModal = ({ matchmodal, handleClose, userMedia }) => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    participantId: userDetails.user_id
+                    participantId: withUserIdP
                 })
             });
 
@@ -65,10 +68,10 @@ const MatchCustomModal = ({ matchmodal, handleClose, userMedia }) => {
                     socket?.emit("leave-room", sessionStorage.getItem("conversationId"));
                 }
                 sessionStorage.setItem("conversationId", data.conversationId);
-                navigate(`/user/chat/with/${userDetails.first_name}`, {
+                navigate(`/user/chat/with/${userDetailsP.first_name}`, {
                     state: {
-                        name: userDetails.first_name,
-                        img: user1Image,
+                        name: userDetailsP.first_name,
+                        img: user2Image,
                         recepientId: userId
                     }
                 });
@@ -78,6 +81,10 @@ const MatchCustomModal = ({ matchmodal, handleClose, userMedia }) => {
             console.error(error);
         }
     }
+     
+      
+           
+    
 
     return (
         <div className={styles.modal}>
