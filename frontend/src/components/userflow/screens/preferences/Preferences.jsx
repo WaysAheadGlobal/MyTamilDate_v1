@@ -11,6 +11,7 @@ import './slider.css';
 import { useNavigate } from 'react-router-dom';
 import { useUserProfile } from '../../components/context/UserProfileContext';
 import UpgradeModal from '../../components/upgradenow/upgradenow';
+import { ModalBody } from 'react-bootstrap';
 
 const Forms = {
      Radio : ({ options, value, setValue, firstOption, selected }) => {
@@ -268,6 +269,7 @@ export default function Preferences() {
     const [selectedPreference, setSelectedPreference] = useState({});
     const [selectedPreferenceOptions, setSelectedPreferenceOptions] = useState([]);
     const [show, setShow] = useState(false);
+    const [locationshow, setLocationshow] = useState(false)
     const [value, setValue] = useState();
     const cookies = useCookies();
     const { setRefresh } = useUserProfile();
@@ -441,7 +443,8 @@ export default function Preferences() {
 
     return (
         <Sidebar>
-            <UpgradeModal show={showUpgradeModal} setShow={setShowUpgradeModal} />
+            <UpgradeModal show={showUpgradeModal} setShow={setShowUpgradeModal}  />
+            <LocationModal show={locationshow} setShow={setLocationshow}  locationId={preferences.location_id} setRefresh_={setRefresh_} refresh_={refresh_}/>
             <Modal size='sm' centered show={show}>
                 <Modal.Body>
                     <p style={{
@@ -681,14 +684,15 @@ export default function Preferences() {
                             <p>Location</p>
                             <div style={{ flexGrow: "1" }}></div>
                             <p
-                                onClick={() => handlePreferenceClick({
-                                    title: "Location",
-                                    type: "location",
-                                    optionsApiEndpoint: "locations",
-                                    saveApiEndpoint: "location",
-                                    element: "location"
-                                })}
-                            >{preferences?.location ?? "Any"}</p>
+                            onClick={()=> setLocationshow(true)}
+                                // onClick={() => handlePreferenceClick({
+                                //     title: "Location",
+                                //     type: "location",
+                                //     optionsApiEndpoint: "locations",
+                                //     saveApiEndpoint: "location",
+                                //     element: "location"
+                                // })}
+                            >{preferences?.location ?? "Open to all"}</p>
                         </div>
                         <div className={styles.option}>
                             <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -800,62 +804,227 @@ export default function Preferences() {
     )
 }
 
-// function UpgradeModal({ show, setShow }) {
-//     const navigate = useNavigate();
 
-//     return (
-//         <Modal size='lg' centered show={show}>
-//             <Modal.Body>
-//                 <p style={{
-//                     fontSize: "20px",
-//                     fontWeight: "600",
-//                     margin: "0",
-//                     marginBottom: "1rem",
-//                     color: "#6c6c6c"
-//                 }}>Upgrade to Premium & 
-//                         Unlock Exclusive Features</p>
-//                 <p
-//                     style={{
-//                         fontSize: "16px",
-//                         margin: "0",
-//                         textAlign: "center",
-//                         color: "#6c6c6c"
-//                     }}
-//                 >Premium members can see who liked them, Send unlimited messages & more!</p>
-//                 <div style={{
-//                     marginTop: "4rem",
-//                     display: "flex",
-//                     gap: "1rem",
-//                     marginInline: "auto",
-//                 }}>
-//                     <button
-//                         type='button'
-//                         style={{
-//                             borderRadius: "9999px",
-//                             padding: "0.75rem 1.5rem",
-//                             // border: "2px solid #6c6c6c",
-//                             // color: "#6c6c6c",
-//                             // backgroundColor: "transparent"
-//                         }}
-//                         className='global-cancel-button'
-//                         onClick={() => setShow(false)}
-//                     >
-//                         Close
-//                     </button>
-//                     <Button
-//                         onClick={() => navigate("/selectplan")}
-//                         style={{
-//                             borderRadius: "9999px",
-//                             padding: "0.75rem 1.5rem",
-//                             fontSize: "16px",
-//                             fontWeight: "600"
-//                         }}
-//                     >
-//                         Upgrade Now
-//                     </Button>
-//                 </div>
-//             </Modal.Body>
-//         </Modal>
-//     )
-// }
-
+const LocationModal = ({ show, setShow, locationId, setRefresh_, refresh_ }) => {
+    const [selectedCountry, setSelectedCountry] = useState("");
+    const [selectedCity, setSelectedCity] = useState("");
+    const [selectedPreferenceOptions, setSelectedPreferenceOptions] = useState({});
+    const [loading, setLoading] = useState(false);
+    const { setRefresh } = useUserProfile();
+    const cookies = useCookies();
+  
+    // Fetch user preferences
+    useEffect(() => {
+      if (!show) return; // Fetch only when the modal is shown
+      setLoading(true);
+      (async () => {
+        try {
+          const response = await fetch(`${API_URL}customer/user/preferences/options/locations`, {
+            headers: {
+              Authorization: `Bearer ${cookies.getCookie('token')}`,
+            },
+          });
+  
+          if (!response.ok) {
+            console.error("Failed to fetch preferences locations");
+            setLoading(false);
+            return;
+          }
+  
+          const data = await response.json();
+          if (!data || Object.keys(data).length === 0) {
+            console.log("No location data available.");
+            setLoading(false);
+            return;
+          }
+  
+          setSelectedPreferenceOptions(data);
+          if (!locationId) {
+            setSelectedCountry(""); // Default to "All Country" if no locationId
+            setSelectedCity(""); // No city selected initially
+          } else {
+            // Set default country and city when locationId is available
+            const val = Object.keys(data)
+              .map((option) => data[option])
+              .flat()
+              .find((option) => option.id === locationId);
+            setSelectedCountry(val?.country || "");
+            setSelectedCity(val?.id || "");
+          }
+          setLoading(false);
+          console.log("Preferences fetched successfully");
+        } catch (error) {
+          console.error("Error fetching preferences:", error);
+          setLoading(false);
+        }
+      })();
+    }, [show, locationId]); // Fetch preferences when modal is shown or locationId changes
+  
+    // Handle change in country selection
+    const handleCountryChange = (country) => {
+      setSelectedCountry(country);
+      if (country && selectedPreferenceOptions[country]?.length > 0) {
+        // Automatically select the first city in the selected country
+        setSelectedCity(selectedPreferenceOptions[country][0].id);
+      } else {
+        setSelectedCity(""); // Reset city if no country or no cities available
+      }
+    };
+    
+    // Determine location ID and type based on selections
+    const getLocationData = () => {
+      if (!selectedCountry) {
+        return { location_id: "", type: 0 }; // 'All Country' selected
+      }
+      if (selectedCity) {
+        return { location_id: selectedCity, type: 2 }; // City selected
+      }
+      if (selectedCountry) {
+        return { location_id: selectedPreferenceOptions[selectedCountry][0]?.id, type: 1 }; // Country selected, use first city id
+      }
+      return { location_id: "", type: 0 };
+    };
+  
+    async function handlePreferenceSave(e) {
+      e.preventDefault();
+    
+      const { location_id, type } = getLocationData();
+  
+      const bodyContent = {
+        location_id,
+        type,
+      };
+  
+      try {
+        const response = await fetch(`${API_URL}customer/user/preferences/save/location`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${cookies.getCookie("token")}`,
+          },
+          body: JSON.stringify(bodyContent),
+        });
+  
+        if (response.ok) {
+          setShow(false);
+          setRefresh_(!refresh_);
+          cookies.deleteCookie("wave");
+          setRefresh((prev) => prev + 1);
+          console.log("Preference saved successfully");
+        } else {
+          console.error("Failed to save preferences");
+        }
+      } catch (error) {
+        console.error("Error saving preferences:", error);
+      }
+    }
+  
+    return (
+      <Modal  show={show}  className={styles.modalbody}>
+        <Modal.Body  >
+        
+        
+        <label htmlFor="all-country" className={styles.locationRadio} style={{
+            marginBottom : "15px"
+        }}>
+          <p>Open to all</p>
+          <input
+            type="radio"
+            id="all-country"
+            name="country-option"
+            checked={!selectedCountry}
+            onChange={() => handleCountryChange("")}
+          />
+        </label>
+  
+        {selectedPreferenceOptions && (
+          <>
+            <Select
+              style={{ width: "100%", textAlign: "start" , marginBottom : "15px" }}
+              value={selectedCountry || ""}
+              onChange={(e) => handleCountryChange(e.target.value)}
+              displayEmpty
+              placeholder="Select a country"
+              MenuProps={{
+                PaperProps: {
+                  style: {
+                    width: "9rem",
+                    height: "12rem",
+                    marginBottom : "15px"
+                  },
+                },
+              }}
+            >
+              <MenuItem value="" disabled>
+                Select a country
+              </MenuItem>
+              {Object.keys(selectedPreferenceOptions)?.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+            {selectedCountry && (
+              <Select
+                style={{ width: "100%", textAlign: "start" }}
+                value={selectedCity || ""}
+                displayEmpty
+                onChange={(e) => setSelectedCity(e.target.value)}
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      width: "9rem",
+                      height: "12rem",
+                    },
+                  },
+                }}
+              >
+                <MenuItem value="" disabled>
+                  Select a city
+                </MenuItem>
+                {selectedPreferenceOptions[selectedCountry]
+      ?.filter((option) => option.location_string !== null) // Filter out options where id is null
+      .map((option) => (
+        <MenuItem key={option.id} value={option.id}>
+          {option.location_string}
+        </MenuItem>
+      ))}
+              </Select>
+            )}
+          </>
+        )}
+  
+        <div
+          style={{
+            marginTop: "1rem",
+            display: "flex",
+            gap: "1rem",
+            marginInline: "auto",
+          }}
+        >
+          <button
+            type="button"
+            className="global-cancel-button"
+            onClick={() => {
+              setShow(false);
+              setSelectedCity("");
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="global-save-button"
+            onClick={handlePreferenceSave}
+          >
+            Save
+          </button>
+        </div>
+         </Modal.Body>
+      </Modal>
+    );
+  };
+  
+  
+  
+  

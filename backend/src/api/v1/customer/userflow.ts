@@ -530,7 +530,10 @@ userFlowRouter.get("/preferences", async (req: UserRequest, res) => {
         f.age_from,
         f.age_to,
         (SELECT r.name FROM religions r WHERE f.religion_id = r.id) AS religion,
-        (SELECT CONCAT(l.location_string, ', ', l.country) FROM locations l WHERE fl.location_id = l.id) AS location,
+        (SELECT  CONCAT(
+       l.location_string, 
+       IF(l.location_string != '', ', ', ''), 
+       l.country )  FROM locations l WHERE fl.location_id = l.id) AS location,
         fl.location_id,
         (SELECT s.name FROM studies s WHERE f.education_id = s.id) AS education,
         (SELECT wk.name FROM want_kids wk WHERE f.want_kids_id = wk.id) AS want_kids,
@@ -641,114 +644,177 @@ userFlowRouter.put("/preferences/save/age", (req: UserRequest, res) => {
 
 userFlowRouter.put("/preferences/save/location", async (req: UserRequest, res) => {
     const locationId = req.body.location_id;
-
-    if (!locationId) {
-        res.status(400).send({ message: "Bad request" });
-        return;
+    const type = req.body.type; // Get type from request body dynamically
+  
+    if (typeof locationId === 'undefined' || typeof type === 'undefined') {
+      res.status(400).send({ message: "Bad request" });
+      return;
     }
-
+  
     const isPremium = await new Promise((resolve, reject) => {
-        db.query<RowDataPacket[]>("SELECT id FROM subscriptions WHERE user_id = ? AND stripe_status = 'active';", [req.userId], (err, result) => {
-            if (err) {
-                console.log(err)
+      db.query<RowDataPacket[]>(
+        "SELECT id FROM subscriptions WHERE user_id = ? AND stripe_status = 'active';",
+        [req.userId],
+        (err, result) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+            return;
+          }
+  
+          resolve(result.length > 0);
+        }
+      );
+    });
+  
+    if (!isPremium) {
+      res.status(403).send({ message: "Forbidden" });
+      return;
+    }
+  
+    db.beginTransaction(async (err) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send({ message: "Internal server error" });
+        return;
+      }
+  
+      try {
+        const userFilters: any = await getUserFilters(req.userId as string);
+  
+        let insertedFilter: any;
+  
+        if (!userFilters) {
+          insertedFilter = await new Promise((resolve, reject) => {
+            db.query(
+              `INSERT INTO filters (location_type) VALUES (?);`,
+              [type], // Insert type dynamically
+              (err, result) => {
+                if (err) {
+                  console.log(err);
+                  reject(err);
+                  return;
+                }
+  
+                resolve(result);
+              }
+            );
+          });
+        } else {
+          // Update the type if filters exist
+          await new Promise((resolve, reject) => {
+            db.query(
+              `UPDATE filters SET location_type = ? WHERE id = ?;`,
+              [type, userFilters.filter_id],
+              (err, result) => {
+                if (err) {
+                  console.log(err);
+                  reject(err);
+                  return;
+                }
+                resolve(result);
+              }
+            );
+          });
+        }
+  
+        const userLocationFilter: any = await new Promise((resolve, reject) => {
+          db.query<RowDataPacket[]>(
+            `SELECT * FROM filter_locations WHERE filters_id = ?;`,
+            [userFilters?.filter_id ?? insertedFilter.insertId],
+            (err, result) => {
+              if (err) {
+                console.log(err);
                 reject(err);
                 return;
+              }
+  
+              resolve(result[0]);
             }
-
-            if (result.length === 0) {
-                resolve(false);
-            }
-
-            resolve(true);
+          );
         });
-    });
+  
+        let query;
+        let params;
 
-    if (!isPremium) {
-        res.status(403).send({ message: "Forbidden" });
+        if (type === 0 && !locationId && !userLocationFilter){
         return;
-    }
-
-    db.beginTransaction(async (err) => {
-        if (err) {
-            console.log(err)
-            res.status(500).send({ message: "Internal server error" });
-            return;
         }
-
-        try {
-            const userFilters: any = await getUserFilters(req.userId as string);
-
-            let insertedFilter: any;
-
-            if (!userFilters) {
-                insertedFilter = await new Promise((resolve, reject) => {
-                    db.query(`INSERT INTO filters (location_type) VALUES (?);`, [0], (err, result) => {
-                        if (err) {
-                            console.log(err)
-                            reject(err);
-                            return;
-                        }
-
-                        resolve(result);
-                    });
-                });
-            }
-
-            const userLocationFilter: any = await new Promise((resolve, reject) => {
-                db.query<RowDataPacket[]>(`SELECT * FROM filter_locations WHERE filters_id = ?;`, [userFilters.filter_id ?? insertedFilter.insertId], (err, result) => {
-                    if (err) {
-                        console.log(err)
-                        reject(err);
-                        return;
-                    }
-
-                    resolve(result[0]);
-                });
-            });
-
-            let query;
-            let params;
-
-            if (!userLocationFilter) {
-                query = `INSERT INTO filter_locations (location_id, filters_id) VALUES (?, ?);`;
-                params = [locationId, insertedFilter?.insertId ?? userFilters.id];
-            } else {
-                query = `UPDATE filter_locations SET location_id = ? WHERE filters_id = ?;`;
-                params = [locationId, userLocationFilter.filters_id];
-            }
-
-            db.query(query, params, async (err, result) => {
-                if (err) {
-                    console.log(err)
-                    db.rollback(() => {
-                        res.status(500).send({ message: "Internal server error" });
-                    });
+        
+           // New condition: If type is 0, locationId is null, and userFilters exist, delete from filter_locations
+           if (type === 0 && !locationId && userLocationFilter) {
+            await new Promise((resolve, reject) => {
+              db.query(
+                `DELETE FROM filter_locations WHERE filters_id = ?;`,
+                [userFilters.filter_id],
+                (err, result) => {
+                  if (err) {
+                    console.log(err);
+                    reject(err);
                     return;
+                  }
+    
+                  resolve(result);
                 }
-
-                await deleteAllDiscoverySkip(req.userId as string);
-
-                db.commit((err) => {
-                    if (err) {
-                        console.log(err)
-                        db.rollback(() => {
-                            res.status(500).send({ message: "Internal server error" });
-                        });
-                        return;
-                    }
-
-                    res.status(200).send({ message: "Preferences updated" });
-                });
+              );
             });
-        } catch (err) {
-            console.log(err)
+    
+            // Commit the transaction after deletion
+            db.commit((err) => {
+              if (err) {
+                console.log(err);
+                db.rollback(() => {
+                  res.status(500).send({ message: "Internal server error" });
+                });
+                return;
+              }
+    
+              res.status(200).send({ message: "Location filter deleted" });
+            });
+    
+            return; // Exit after deletion
+          }
+  
+        if (!userLocationFilter) {
+          query = `INSERT INTO filter_locations (location_id, filters_id) VALUES (?, ?);`;
+          params = [locationId, insertedFilter?.insertId ?? userFilters.filter_id];
+        } else {
+          query = `UPDATE filter_locations SET location_id = ? WHERE filters_id = ?;`;
+          params = [locationId, userLocationFilter.filters_id];
+        }
+  
+        db.query(query, params, async (err, result) => {
+          if (err) {
+            console.log(err);
             db.rollback(() => {
-                res.status(500).send({ message: "Internal server error" });
+              res.status(500).send({ message: "Internal server error" });
             });
             return;
-        }
+          }
+  
+          await deleteAllDiscoverySkip(req.userId as string);
+  
+          db.commit((err) => {
+            if (err) {
+              console.log(err);
+              db.rollback(() => {
+                res.status(500).send({ message: "Internal server error" });
+              });
+              return;
+            }
+  
+            res.status(200).send({ message: "Preferences updated" });
+          });
+        });
+      } catch (err) {
+        console.log(err);
+        db.rollback(() => {
+          res.status(500).send({ message: "Internal server error" });
+        });
+      }
     });
-});
+  });
+  
 
 userFlowRouter.put("/preferences/save/:field", async (req: UserRequest, res) => {
     const field = req.params.field;
