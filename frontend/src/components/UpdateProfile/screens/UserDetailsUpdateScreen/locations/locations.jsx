@@ -87,6 +87,8 @@ export const LocatedUpdate = () => {
     })
       .then(response => response.json())
       .then(data => {
+        setSelectedCountry(null);
+        setSelectedCity(null);
         console.log('Location saved:', data);
         navigate("/updateprofile");
       })
@@ -160,51 +162,58 @@ export const LocatedUpdate = () => {
               </div>
             </div>
             {selectedCountry && (
-              <div ref={citySelectRef} style={{
-                width : "270px", marginLeft : "10px"
-              }} className='located-city collasped'>
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }} onClick={() => {
-                  citySelectRef.current.classList.toggle("collasped");
-                }}>
-                  <input type="text" placeholder='Select a city' value={citySearch} onChange={(e) => setCitySearch(e.currentTarget.value)} />
-                  <FaAngleDown size={16} style={{ marginRight: "1rem" }} />
-                </div>
-                <div className='scroll-container-vertical'>
-                  {!citySearch && options[selectedCountry]?.map((city) => (
-                    <div
-                      key={city.id}
-                      className={`scroll-item ${selectedCity === city.id ? 'selected' : ''}`}
-                      onClick={() => {
-                        handleCitySelect(city.id)
-                        setCitySearch(city.location_string)
-                        citySelectRef.current.classList.add("collasped");
-                      }}
-                    >
-                      {city.location_string}
-                    </div>
-                  ))}
-                  {
-                    citySearch && options[selectedCountry].filter(city => city.location_string?.toLowerCase().includes(citySearch.toLowerCase())).map((city) => (
-                      <div
-                        key={city.id}
-                        className={`scroll-item ${selectedCity === city.id ? 'selected' : ''}`}
-                        onClick={() => {
-                          handleCitySelect(city.id)
-                          setCitySearch(city.location_string)
-                          citySelectRef.current.classList.add("collasped");
-                        }}
-                      >
-                        {city.location_string}
-                      </div>
-                    ))
-                  }
-                </div>
-              </div>
-            )}
+  <div ref={citySelectRef} style={{ width: "270px", marginLeft: "10px" }} className="located-city collasped">
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+      onClick={() => {
+        citySelectRef.current.classList.toggle("collasped");
+      }}
+    >
+      <input
+        type="text"
+        placeholder="Select a city"
+        value={citySearch}
+        onChange={(e) => setCitySearch(e.currentTarget.value)}
+      />
+      <FaAngleDown size={16} style={{ marginRight: "1rem" }} />
+    </div>
+    <div className="scroll-container-vertical">
+      {!citySearch && options[selectedCountry] && options[selectedCountry].map((city) => (
+        <div
+          key={city.id}
+          className={`scroll-item ${selectedCity === city.id ? "selected" : ""}`}
+          onClick={() => {
+            handleCitySelect(city.id);
+            setCitySearch(city.location_string);
+            citySelectRef.current.classList.add("collasped");
+          }}
+        >
+          {city.location_string}
+        </div>
+      ))}
+      {citySearch && options[selectedCountry] && options[selectedCountry]
+        .filter((city) => city.location_string?.toLowerCase().includes(citySearch.toLowerCase()))
+        .map((city) => (
+          <div
+            key={city.id}
+            className={`scroll-item ${selectedCity === city.id ? "selected" : ""}`}
+            onClick={() => {
+              handleCitySelect(city.id);
+              setCitySearch(city.location_string);
+              citySelectRef.current.classList.add("collasped");
+            }}
+          >
+            {city.location_string}
+          </div>
+        ))}
+    </div>
+  </div>
+)}
+
           </div>
           {/* <Button variant="primary" type="submit" className='located-nxt-btn' onClick={handleSubmit}>
             Next
