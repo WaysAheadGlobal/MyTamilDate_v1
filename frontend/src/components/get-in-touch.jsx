@@ -57,6 +57,20 @@ export const GetInTouch = () => {
             [name]: value
         });
     };
+      // Prevent invalid characters from being typed
+      const handleNameKeyPress = (e) => {
+        const char = String.fromCharCode(e.which);
+        if (!/^[a-zA-Z\s]*$/.test(char)) {
+            e.preventDefault(); // Prevent non-alphabetic characters
+        }
+    };
+
+    const handlePhoneKeyPress = (e) => {
+        const char = String.fromCharCode(e.which);
+        if (!/^[0-9]*$/.test(char)) {
+            e.preventDefault(); // Prevent non-numeric characters
+        }
+    };
 
  
 
@@ -115,6 +129,7 @@ export const GetInTouch = () => {
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
+                                    onKeyPress={handleNameKeyPress}
                                 />
                             </Form.Group>
 
@@ -135,6 +150,7 @@ export const GetInTouch = () => {
                                     name="phone"
                                     value={formData.phone}
                                     onChange={handleChange}
+                                    onKeyPress={handlePhoneKeyPress}
                                 />
                             </Form.Group>
 

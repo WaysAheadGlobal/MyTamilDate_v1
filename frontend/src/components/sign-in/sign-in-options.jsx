@@ -53,20 +53,20 @@ export const SignInOptions = () => {
               
 
                     if (result.Result[0].approval === 10) {
-                            navigate('/pending');
+                        goToSignsuccessful();
                         } else if (result.Result[0].approval === 30) {
-                            navigate('/not-approved');
-                        } else if (result.Result[0].approval === 20) {
+                            goToSignsuccessful();
+                        } else if (result.Result[0].approval === 20 || result.Result[0].approval === 15) {
                          cookies.setCookie('Name', result.Result[0].first_name, 20);
                             goToSignsuccessful();
                         }
                         
                         else if(result.Result[0].approval === 40){
-                         alertmodal.setModal({
-                             show: true,
-                             title: 'Incomplete Registration',
-                             message: "To access the application's features, please complete your registration process first.",
-                         });
+                        //  alertmodal.setModal({
+                        //      show: true,
+                        //      title: 'Incomplete Registration',
+                        //      message: "To access the application's features, please complete your registration process first.",
+                        //  });
          
                          if(!result.Result[0].email){
                              navigate('/emailverify');
