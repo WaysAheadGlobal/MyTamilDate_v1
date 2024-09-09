@@ -15,7 +15,7 @@ import { ModalBody } from 'react-bootstrap';
 
 const Forms = {
      Radio : ({ options, value, setValue, firstOption, selected }) => {
-        const [currentValue, setCurrentValue] = useState(value || selected || '');
+        const [currentValue, setCurrentValue] = useState(value || selected || firstOption?.value || null);
     
         useEffect(() => {
             // Set initial value from 'selected' when the modal opens
