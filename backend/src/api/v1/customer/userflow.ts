@@ -1002,24 +1002,19 @@ userFlowRouter.get("/preferences/options/:field", (req: UserRequest, res) => {
             res.status(200).send(locations);
         });
     } else {
-        db.query(`SELECT name, id FROM ${field} GROUP BY name ORDER BY id ASC;`, (err, result) => {
+        db.query(`SELECT name, MIN(id) as id FROM ${field} GROUP BY name ORDER BY id ASC;`, (err, result) => {
             if (err) {
-                // Log the error details for debugging purposes
                 console.error('Error occurred:', err);
-            
-                // Send a more descriptive error response if needed
                 res.status(500).send({ 
                     message: "Internal server error", 
-                    error: err.message,  // Include the error message in response (optional)
-                    stack: err.stack     // Include stack trace for more debugging info (optional)
+                    error: err.message,  
+                    stack: err.stack    
                 });
-            
                 return;
             }
-            
-
             res.status(200).send(result);
         });
+        
     }
 });
 
