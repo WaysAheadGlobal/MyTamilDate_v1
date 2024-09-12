@@ -49,7 +49,9 @@ export default function Chat() {
                     }} />
                 }
             </div>
+           
             <ChatBox className={styles.chatBox} />
         </section>
     )
 }
+

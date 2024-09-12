@@ -260,7 +260,9 @@ export default function ChatBox({ className }) {
                                     <React.Fragment key={i}>
                                         <div key={i} className={styles.message}>
                                             <div className={message.sender === "you" ? styles.you : styles.other}>
-                                                <p>{message.message}</p>
+                                                <p style={{
+                                                    fontSize : "16px"
+                                                }} >{message.message}</p>
                                                 <p>{message.time}</p>
                                             </div>
                                         </div>
