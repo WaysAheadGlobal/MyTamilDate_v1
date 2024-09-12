@@ -393,7 +393,7 @@ export default function Preferences() {
             });
             const data = await response.json();
             if (!data) return;
-
+           console.log(data);
             setSelectedPreferenceOptions(data)
             console.log("prefrance called")
         })()

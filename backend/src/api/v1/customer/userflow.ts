@@ -163,7 +163,8 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
             query = `
                 WITH distinct_user_ids AS (
                     SELECT DISTINCT 
-                        up_inner.id 
+                        up_inner.id,
+                         l_inner.continent
                     FROM 
                         user_profiles up_inner 
                     INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
@@ -1003,9 +1004,19 @@ userFlowRouter.get("/preferences/options/:field", (req: UserRequest, res) => {
     } else {
         db.query(`SELECT name, id FROM ${field} GROUP BY name ORDER BY id ASC;`, (err, result) => {
             if (err) {
-                res.status(500).send({ message: "Internal server error" });
+                // Log the error details for debugging purposes
+                console.error('Error occurred:', err);
+            
+                // Send a more descriptive error response if needed
+                res.status(500).send({ 
+                    message: "Internal server error", 
+                    error: err.message,  // Include the error message in response (optional)
+                    stack: err.stack     // Include stack trace for more debugging info (optional)
+                });
+            
                 return;
             }
+            
 
             res.status(200).send(result);
         });
