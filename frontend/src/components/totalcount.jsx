@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import vd3 from '../assets/images/vd3.png'
 import { Image } from 'react-bootstrap';
 import './video.css';
+import { API_URL } from '../api';
 const TotalCount = () => {
   const [totalCount, setTotalCount] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://mytamildate.waysdatalabs.com/api/v1/admin/users/paymentstatu');
+        const response = await fetch(`${API_URL}admin/users/paymentstatu`);
         if (response.ok) {
           const data = await response.json();
           // Assuming the response contains an array and you want to count its length
