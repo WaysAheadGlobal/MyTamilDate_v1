@@ -164,7 +164,8 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
                 WITH distinct_user_ids AS (
                     SELECT DISTINCT 
                         up_inner.id,
-                         l_inner.continent
+                         l_inner.continent,
+                         up_inner.created_at
                     FROM 
                         user_profiles up_inner 
                     INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
