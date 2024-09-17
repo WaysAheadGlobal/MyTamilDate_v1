@@ -6,7 +6,7 @@ import UserApprovalEnum from "./enums/UserApprovalEnum";
 const mailService = new MailService();
 
 export async function sendWeeklyMail(userId: number, email: string, gender: number, want_gender: number) {
-    const getImageURL = (type: number, hash: string, extension: string, userId: string) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}` : `${process.env.API_URL}media/avatar/${hash}.${extension}`;
+    const getImageURL = (type: number, hash: string, extension: string, userId: string) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.jpg` : `${process.env.API_URL}media/avatar/${hash}.jpg`;
 
     try {
         const query = `

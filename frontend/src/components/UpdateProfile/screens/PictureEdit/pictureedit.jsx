@@ -80,16 +80,16 @@ const EditPicture = () => {
           const main = data.filter(image => image.type === 31)[0];
 
           setImages2({
-            main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
-            first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
-            second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
+            main: API_URL + "media/avatar/" + main.hash + ".jpg",
+            first: API_URL + "media/avatar/" + others[0].hash + ".jpg",
+            second: API_URL + "media/avatar/" + others[1].hash + ".jpg",
           })
 
 
           console.log('imges', {
-            main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
-            first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
-            second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
+            main: API_URL + "media/avatar/" + main.hash + ".jpg",
+            first: API_URL + "media/avatar/" + others[0].hash + ".jpg",
+            second: API_URL + "media/avatar/" + others[1].hash + ".jpg",
           })
         }
         else {
@@ -97,15 +97,15 @@ const EditPicture = () => {
           const main = data.filter(image => image.type === 1)[0];
           console.log(others, main)
           setImages2({
-            main: OldImageURL + "/" + id + "/avatar/" + main.hash + "-large" + "." + main.extension,
-            first: OldImageURL + "/" + id + "/photo/" + others[0].hash + "-large" + "." + main.extension,
-            second: OldImageURL + "/" + id + "/photo/" + others[1].hash + "-large" + "." + main.extension,
+            main: OldImageURL + "/" + id + "/avatar/" + main.hash + "-large" + ".jpg",
+            first: OldImageURL + "/" + id + "/photo/" + others[0].hash + "-large" + ".jpg",
+            second: OldImageURL + "/" + id + "/photo/" + others[1].hash + "-large" + ".jpg",
           })
 
           console.log({
-            main: OldImageURL + "/" + id + "/avatar/" + main.hash + "-large" + "." + main.extension,
-            first: OldImageURL + "/" + id + "/photo/" + others[0].hash + "-large" + "." + main.extension,
-            second: OldImageURL + "/" + id + "/photo/" + others[1].hash + "-large" + "." + main.extension,
+            main: OldImageURL + "/" + id + "/avatar/" + main.hash + "-large" + ".jpg",
+            first: OldImageURL + "/" + id + "/photo/" + others[0].hash + "-large" + ".jpg",
+            second: OldImageURL + "/" + id + "/photo/" + others[1].hash + "-large" + ".jpg",
           })
 
         }
@@ -130,7 +130,7 @@ const EditPicture = () => {
       console.log("update medaidata", data);
 
       if (response.ok) {
-        const validImages = data.filter(image => image.hash && image.extension && (image.type === 31 || image.type === 32 || image.type === 1 || image.type === 2));
+        const validImages = data.filter(image => image.hash &&  (image.type === 31 || image.type === 32 || image.type === 1 || image.type === 2));
 
         if (validImages.length > 0) {
           const mainType31 = validImages.find(image => image.type === 31);
@@ -142,25 +142,25 @@ const EditPicture = () => {
 
           if (mainType31 || mainType32) {
             setimagesupdate({
-              main: mainType31 ? API_URL + "media/avatar/" + mainType31.hash + "." + mainType31.extension : null,
-              first: othersType32[0] ? API_URL + "media/avatar/" + othersType32[0].hash + "." + othersType32[0].extension : null,
-              second: othersType32[1] ? API_URL + "media/avatar/" + othersType32[1].hash + "." + othersType32[1].extension : null
+              main: mainType31 ? API_URL + "media/avatar/" + mainType31.hash + ".jpg" : null,
+              first: othersType32[0] ? API_URL + "media/avatar/" + othersType32[0].hash + ".jpg" : null,
+              second: othersType32[1] ? API_URL + "media/avatar/" + othersType32[1].hash + ".jpg" : null
             });
             console.log('updateImages', {
-              main: mainType31 ? API_URL + "media/avatar/" + mainType31.hash + "." + mainType31.extension : null,
-              first: othersType32[0] ? API_URL + "media/avatar/" + othersType32[0].hash + "." + othersType32[0].extension : null,
-              second: othersType32[1] ? API_URL + "media/avatar/" + othersType32[1].hash + "." + othersType32[1].extension : null
+              main: mainType31 ? API_URL + "media/avatar/" + mainType31.hash + ".jpg" : null,
+              first: othersType32[0] ? API_URL + "media/avatar/" + othersType32[0].hash + ".jpg" : null,
+              second: othersType32[1] ? API_URL + "media/avatar/" + othersType32[1].hash + ".jpg" : null
             });
           } else if (mainType1 || mainType2) {
             setimagesupdate({
-              main: mainType1 ? OldImageURL + "/" + id + "/avatar/" + mainType1.hash + "-large" + "." + mainType1.extension : null,
-              first: othersType2[0] ? OldImageURL + "/" + id + "/photo/" + othersType2[0].hash + "-large" + "." + othersType2[0].extension : null,
-              second: othersType2[1] ? OldImageURL + "/" + id + "/photo/" + othersType2[1].hash + "-large" + "." + othersType2[1].extension : null
+              main: mainType1 ? OldImageURL + "/" + id + "/avatar/" + mainType1.hash + "-large" + ".jpg" : null,
+              first: othersType2[0] ? OldImageURL + "/" + id + "/photo/" + othersType2[0].hash + "-large" + ".jpg" : null,
+              second: othersType2[1] ? OldImageURL + "/" + id + "/photo/" + othersType2[1].hash + "-large" + ".jpg" : null
             });
             console.log({
-              main: mainType1 ? OldImageURL + "/" + id + "/avatar/" + mainType1.hash + "-large" + "." + mainType1.extension : null,
-              first: othersType2[0] ? OldImageURL + "/" + id + "/photo/" + othersType2[0].hash + "-large" + "." + othersType2[0].extension : null,
-              second: othersType2[1] ? OldImageURL + "/" + id + "/photo/" + othersType2[1].hash + "-large" + "." + othersType2[1].extension : null
+              main: mainType1 ? OldImageURL + "/" + id + "/avatar/" + mainType1.hash + "-large" + ".jpg" : null,
+              first: othersType2[0] ? OldImageURL + "/" + id + "/photo/" + othersType2[0].hash + "-large" + ".jpg" : null,
+              second: othersType2[1] ? OldImageURL + "/" + id + "/photo/" + othersType2[1].hash + "-large" + ".jpg" : null
             });
           }
         }

@@ -28,9 +28,9 @@ const MatchCustomModal = ({ matchmodal, handleClose, MatchuserDetails }) => {
     const getImageURL = (type, hash, extension, userId) => {
         console.log(type, hash, extension, userId)
         if (type === 1) {
-            return `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}`;
+            return `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.jpg`;
         } else {
-            return `${API_URL}media/avatar/${hash}.${extension}`;
+            return `${API_URL}media/avatar/${hash}.jpg`;
         }
     };
 
