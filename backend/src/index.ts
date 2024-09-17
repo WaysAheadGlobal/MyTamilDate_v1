@@ -54,6 +54,7 @@ io.use((socket, next) => {
 
 io.on('connection', async (socket) => {
     console.log('a user connected', socket.handshake.auth.userId);
+    
     socket.join(socket.handshake.auth.userId);
     await db.promise().query('UPDATE users SET is_online = 1 WHERE id = ?', [socket.handshake.auth.userId]);
 
@@ -74,7 +75,7 @@ io.on('connection', async (socket) => {
 
     socket.on('send-message', async ({ roomId, message, sentAt, type, recepientId }) => {
         const senderId = socket.handshake.auth.userId;
-
+        console.log({ roomId, message, sentAt, type, recepientId });
         db.query('INSERT INTO dncm_messages (type, version, conversation_id, sender_id, body, sent_at, updated_at, deleted_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [type, 1, roomId, senderId, message, Date.now(), Date.now(), 0], (err, results) => {
             if (err) {
                 console.log('Error sending message:', err);
