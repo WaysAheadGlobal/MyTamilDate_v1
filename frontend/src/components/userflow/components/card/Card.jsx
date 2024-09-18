@@ -50,7 +50,10 @@ import UpgradeModal from '../upgradenow/upgradenow';
  */
 export default function Card({ show, ...props }) {
     const navigate = useNavigate();
-    const image = props.type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${props.user_id}/avatar/${props.hash}-large.${props.extension}` : `${API_URL}media/avatar/${props.hash}.${props.extension}`;
+    const image = props.type === 1 
+    ? `https://data.mytamildate.com/storage/public/uploads/user/${props.user_id}/avatar/${props.hash}-large.${props.extension === "png" ? "jpg" : props.extension}` 
+    : `${API_URL}media/avatar/${props.hash}.${props.extension === "png" ? "jpg" : props.extension}`;
+
     const cookies = useCookies();
     const cardRef = useRef(null);
     const pathname = window.location.pathname;

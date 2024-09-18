@@ -35,8 +35,15 @@ export default function Likes() {
         setshowmodal(false);
     };
 
-    const getImageURL = (type, hash, extension, userId) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}` : `${API_URL}media/avatar/${hash}.${extension}`;
-
+    const getImageURL = (type, hash, extension, userId) => {
+        
+        const ext = extension === "png" ? "jpg" : extension;
+      
+        return type === 1 
+          ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${ext}` 
+          : `${API_URL}media/avatar/${hash}.${ext}`;
+      };
+      
     const fetchLikes = useCallback(async () => {
         const path = searchParams[0].get("t") === "s" ? "sent" : "received";
         try {

@@ -41,34 +41,21 @@ const UserDetails = () => {
           const main = data.filter(image => image.type === 31)[0];
           console.log(others, main)
           setImages({
-            main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
-            first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
-            second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
+            main: API_URL + "media/avatar/" + main.hash + "." +  (main.extension === "png" ? "jpg" : main.extension),
+            first: API_URL + "media/avatar/" + others[0].hash + "." + (others[0].extension === "png" ? "jpg" : others[0].extension),
+            second: API_URL + "media/avatar/" + others[1].hash + "." + (others[1].extension === "png" ? "jpg" : others[1].extension),
           })
-
-          console.log({
-            main: API_URL + "media/avatar/" + main.hash + "." + main.extension,
-            first: API_URL + "media/avatar/" + others[0].hash + "." + others[0].extension,
-            second: API_URL + "media/avatar/" + others[1].hash + "." + others[1].extension,
-          })
-
         }
         else {
           const others = data.filter(image => image.type === 2);
           const main = data.filter(image => image.type === 1)[0];
           console.log(others, main)
           setImages({
-            main: OldImageURL + "/" + id + "/avatar/" + main.hash + "-large" + "." + main.extension,
-            first: OldImageURL + "/" + id + "/avatar/" + others[0].hash + "-large" + "." + main.extension,
-            second: OldImageURL + "/" + id + "/avatar/" + others[1].hash + "-large" + "." + main.extension,
-          })
-          console.log({
-            main: OldImageURL + "/" + id + "/avatar/" + main.hash + "." + main.extension,
-            first: OldImageURL + "/" + id + "/photo/" + others[0].hash + "." + main.extension,
-            second: OldImageURL + "/" + id + "/photo/" + others[1].hash + "." + main.extension,
+            main: OldImageURL + "/" + id + "/avatar/" + main.hash + "-large" + "." + (main.extension === "png" ? "jpg" : main.extension),
+            first: OldImageURL + "/" + id + "/avatar/" + others[0].hash + "-large" + "." + (others[0].extension === "png" ? "jpg" : others[0].extension),
+            second: OldImageURL + "/" + id + "/avatar/" + others[1].hash + "-large" + "." +(others[1].extension === "png" ? "jpg" : others[1].extension),
           })
         }
-
       }
     } catch (error) {
       console.error('Error saving images:', error);

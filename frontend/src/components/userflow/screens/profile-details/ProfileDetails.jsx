@@ -15,8 +15,15 @@ export default function ProfileDetails() {
     const cookies = useCookies();
     const [loading, setLoading] = React.useState(false);
 
-    const getPhotoUrl = (userId, hash, extension, type) => `https://data.mytamildate.com/storage/public/uploads/user/${userId}/${type === 1 ? "avatar" : "photo"}/${hash}-large.${extension}`;
-
+    // const getPhotoUrl = (userId, hash, extension, type) => `https://data.mytamildate.com/storage/public/uploads/user/${userId}/${type === 1 ? "avatar" : "photo"}/${hash}-large.${extension}`;
+    const getPhotoUrl = (type, hash, extension, userId) => {
+        
+        const ext = extension === "png" ? "jpg" : extension;
+      
+        return type === 1 
+          ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${ext}` 
+          : `${API_URL}media/avatar/${hash}.${ext}`;
+      };
     /**
      * @typedef {Object} Photo
      * @property {number} id - The unique identifier for the photo.

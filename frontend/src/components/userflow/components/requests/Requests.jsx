@@ -17,8 +17,15 @@ export default function Requests() {
     const observerRef = useRef(null);
     const [currentRequests, setCurrentRequests] = useState([]);
 
-    const getImageURL = (type, hash, extension, userId) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}` : `${API_URL}media/avatar/${hash}.${extension}`;
-
+    const getImageURL = (type, hash, extension, userId) => {
+        
+        const ext = extension === "png" ? "jpg" : extension;
+      
+        return type === 1 
+          ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${ext}` 
+          : `${API_URL}media/avatar/${hash}.${ext}`;
+      };
+      
     async function likeOrSkip(type, personId) {
         const response = await fetch(`${API_URL}customer/matches/${type}`, {
             method: "POST",
