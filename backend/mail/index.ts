@@ -42,12 +42,15 @@ class MailService {
     }
     async sendNewApprovaRequestToadmin(to: string, name: string) {
         await this.sendMail(to, 'Verify your email to access your myTamilDate account', 'newapproval', {
-           name
+           name,
+          
         });
     }
 
     async sendSignUpMail(to: string) {
-        await this.sendMail(to, 'You have successfully signed up for myTamilDate', 'signup', {});
+        await this.sendMail(to, 'You have successfully signed up for myTamilDate', 'signup', {
+             link : `${process.env.URL}/Signinoptions`
+        });
     }
 
     async sendReviewMail(to: string, name: string) {
@@ -61,7 +64,9 @@ class MailService {
             type: 'match!',
             message,
             buttonText,
-            image: `${process.env.IMAGES_URL}/matches.png`
+            image: `${process.env.IMAGES_URL}/matches.png`,
+            link : `${process.env.URL}/user/home`
+
         });
     }
 
@@ -70,14 +75,16 @@ class MailService {
             type: 'message from ' + senderName,
             message: senderName + ' just sent you a message. Don\'t forget to reply!',
             buttonText: "Read Message",
-            image: `${process.env.IMAGES_URL}/message.png`
+            image: `${process.env.IMAGES_URL}/message.png`,
+              link : `${process.env.URL}/user/home`
         });
     }
 
     async sendLikeMail(to: string, name: string, image: string) {
         await this.sendMail(to, 'You have received a new like on myTamilDate', 'likes', {
             name,
-            image
+            image,
+            link : `${process.env.URL}/user/home`
         });
     }
 
@@ -102,25 +109,29 @@ class MailService {
 
     async sendPauseAccountMail(to: string, name: string) {
         await this.sendMail(to, 'Come back! We have a special discount for you.', 'pause', {
-            name
+            name,
+             link : `${process.env.URL}/Signinoptions`
         });
     }
 
     async sendWeeklyMail(to: string, profiles: Profile[]) {
         await this.sendMail(to, 'New members have joined & one might be a perfect match! Check them out', 'week', {
-            profiles: profiles
+            profiles: profiles,
+             link : `${process.env.URL}/Signinoptions`
         });
     }
     
     async sendWeeklyLikesMail(to: string, profiles: Profile[]) {
         await this.sendMail(to, 'You have new likes! Check them out.', 'weeklike', {
-            profiles: profiles
+            profiles: profiles,
+             link : `${process.env.URL}/Signinoptions`
         });
     }
 
     async sendWeeklyMessagesMail(to: string, profiles: Profile[]) {
         await this.sendMail(to, 'You have new messages! Check them out.', 'weekmassage', {
-            profiles: profiles
+            profiles: profiles,
+            link : `${process.env.URL}/Signinoptions`
         });
     }
     
