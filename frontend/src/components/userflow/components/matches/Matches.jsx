@@ -27,7 +27,7 @@ export default function Matches() {
     const dialogRef = useRef(null);
     const [imageURL, setImageURL] = useState("");
 
-    const getImageURL = (type, hash, extension, userId) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.jpg` : `${API_URL}media/avatar/${hash}.jpg`;
+    const getImageURL = (type, hash, extension, userId) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}` : `${API_URL}media/avatar/${hash}.${extension}`;
 const handleClose = ()=> setshowmodal(false)
 const handleupgrade = ()=>{
     setshowmodal(false);

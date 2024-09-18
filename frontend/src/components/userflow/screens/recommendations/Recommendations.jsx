@@ -10,8 +10,15 @@ export default function Recommendations() {
     const { profiles } = useUserProfile();
     const navigate = useNavigate();
 
-    const getImageURL = (type, hash, extension, userId) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.jpg` : `${API_URL}media/avatar/${hash}.jpg`;
-
+    const getImageURL = (type, hash, extension, userId) => {
+        
+        const ext = extension === "png" ? "jpg" : extension;
+      
+        return type === 1 
+          ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${ext}` 
+          : `${API_URL}media/avatar/${hash}.${ext}`;
+      };
+      
     return (
         <Sidebar>
             <div className={styles["children"]}>

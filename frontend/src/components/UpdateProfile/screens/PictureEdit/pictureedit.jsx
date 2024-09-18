@@ -73,41 +73,27 @@ const EditPicture = () => {
       });
       const data = await response.json();
       setData(data);
-      console.log(" Old imgdata data", data);
+
       if (response.ok) {
         if (data[0].type === 31 || data[1].type === 31 || data[2].type === 31) {
           const others = data.filter(image => image.type === 32);
           const main = data.filter(image => image.type === 31)[0];
 
           setImages2({
-            main: API_URL + "media/avatar/" + main.hash + ".jpg",
-            first: API_URL + "media/avatar/" + others[0].hash + ".jpg",
-            second: API_URL + "media/avatar/" + others[1].hash + ".jpg",
-          })
-
-
-          console.log('imges', {
-            main: API_URL + "media/avatar/" + main.hash + ".jpg",
-            first: API_URL + "media/avatar/" + others[0].hash + ".jpg",
-            second: API_URL + "media/avatar/" + others[1].hash + ".jpg",
+            main: API_URL + "media/avatar/" + main.hash + "." + (main.extension === "png" ? "jpg" : main.extension),
+            first: API_URL + "media/avatar/" + others[0].hash + "." + (others[0].extension === "png" ? "jpg" : others[0].extension),
+            second: API_URL + "media/avatar/" + others[1].hash + "." + (others[1].extension === "png" ? "jpg" : others[1].extension),
           })
         }
         else {
           const others = data.filter(image => image.type === 2);
           const main = data.filter(image => image.type === 1)[0];
-          console.log(others, main)
+    
           setImages2({
-            main: OldImageURL + "/" + id + "/avatar/" + main.hash + "-large" + ".jpg",
-            first: OldImageURL + "/" + id + "/photo/" + others[0].hash + "-large" + ".jpg",
-            second: OldImageURL + "/" + id + "/photo/" + others[1].hash + "-large" + ".jpg",
+            main: OldImageURL + "/" + id + "/avatar/" + main.hash + "-large" + "." + (main.extension === "png" ? "jpg" : main.extension),
+            first: OldImageURL + "/" + id + "/photo/" + others[0].hash + "-large" + "." +(others[0].extension === "png" ? "jpg" : main.extension),
+            second: OldImageURL + "/" + id + "/photo/" + others[1].hash + "-large" + "." + (others[1].extension === "png" ? "jpg" : main.extension),
           })
-
-          console.log({
-            main: OldImageURL + "/" + id + "/avatar/" + main.hash + "-large" + ".jpg",
-            first: OldImageURL + "/" + id + "/photo/" + others[0].hash + "-large" + ".jpg",
-            second: OldImageURL + "/" + id + "/photo/" + others[1].hash + "-large" + ".jpg",
-          })
-
         }
 
       }
@@ -130,7 +116,7 @@ const EditPicture = () => {
       console.log("update medaidata", data);
 
       if (response.ok) {
-        const validImages = data.filter(image => image.hash &&  (image.type === 31 || image.type === 32 || image.type === 1 || image.type === 2));
+        const validImages = data.filter(image => image.hash && image.extension && (image.type === 31 || image.type === 32 || image.type === 1 || image.type === 2));
 
         if (validImages.length > 0) {
           const mainType31 = validImages.find(image => image.type === 31);
@@ -142,25 +128,16 @@ const EditPicture = () => {
 
           if (mainType31 || mainType32) {
             setimagesupdate({
-              main: mainType31 ? API_URL + "media/avatar/" + mainType31.hash + ".jpg" : null,
-              first: othersType32[0] ? API_URL + "media/avatar/" + othersType32[0].hash + ".jpg" : null,
-              second: othersType32[1] ? API_URL + "media/avatar/" + othersType32[1].hash + ".jpg" : null
+              main: mainType31 ? API_URL + "media/avatar/" + mainType31.hash + "." +  (mainType31.extension === "png" ? "jpg" : mainType31.extension) : null,
+              first: othersType32[0] ? API_URL + "media/avatar/" + othersType32[0].hash + "." +  (othersType32[0].extension === "png" ? "jpg" : othersType32[0].extension) : null,
+              second: othersType32[1] ? API_URL + "media/avatar/" + othersType32[1].hash + "." +  (othersType32[1].extension === "png" ? "jpg" : othersType32[1].extension) : null
             });
-            console.log('updateImages', {
-              main: mainType31 ? API_URL + "media/avatar/" + mainType31.hash + ".jpg" : null,
-              first: othersType32[0] ? API_URL + "media/avatar/" + othersType32[0].hash + ".jpg" : null,
-              second: othersType32[1] ? API_URL + "media/avatar/" + othersType32[1].hash + ".jpg" : null
-            });
+         
           } else if (mainType1 || mainType2) {
             setimagesupdate({
-              main: mainType1 ? OldImageURL + "/" + id + "/avatar/" + mainType1.hash + "-large" + ".jpg" : null,
-              first: othersType2[0] ? OldImageURL + "/" + id + "/photo/" + othersType2[0].hash + "-large" + ".jpg" : null,
-              second: othersType2[1] ? OldImageURL + "/" + id + "/photo/" + othersType2[1].hash + "-large" + ".jpg" : null
-            });
-            console.log({
-              main: mainType1 ? OldImageURL + "/" + id + "/avatar/" + mainType1.hash + "-large" + ".jpg" : null,
-              first: othersType2[0] ? OldImageURL + "/" + id + "/photo/" + othersType2[0].hash + "-large" + ".jpg" : null,
-              second: othersType2[1] ? OldImageURL + "/" + id + "/photo/" + othersType2[1].hash + "-large" + ".jpg" : null
+              main: mainType1 ? OldImageURL + "/" + id + "/avatar/" + mainType1.hash + "-large" + "." + (mainType1.extension === "png" ? "jpg" : mainType1.extension) : null,
+              first: othersType2[0] ? OldImageURL + "/" + id + "/photo/" + othersType2[0].hash + "-large" + "." + (othersType2[0].extension === "png" ? "jpg" : othersType2[0].extension) : null,
+              second: othersType2[1] ? OldImageURL + "/" + id + "/photo/" + othersType2[1].hash + "-large" + "." + (othersType2[1].extension === "png" ? "jpg" : othersType2[1].extension) : null
             });
           }
         }
@@ -189,19 +166,20 @@ const EditPicture = () => {
   const handleClick = (imageKey) => {
     let mediaId = null;
     if (imageKey === 'main') {
-      mediaId = data.find(image => image.type === 31)?.id;
+      console.log(data);
+      mediaId = data.find(image => image.type === 1 || image.type === 31)?.id;
       fileInputRefMain.current.click();
       setType(31)
       console.log("31 id",mediaId);
     } else if (imageKey === 'first') {
-      mediaId = data.find(image => image.type === 32)?.id;
+      mediaId = data.find(image => image.type === 32 || image.type === 2)?.id;
       fileInputRefFirst.current.click();
       setType(32)
       console.log("32 id",mediaId);
       console.log(mediaId);
     } else if (imageKey === 'second') {
       console.log(data);
-      mediaId = data.filter(image => image.type === 32)[1]?.id;
+      mediaId = data.filter(image => image.type === 32 || image.type === 2 )[1]?.id;
       fileInputRefSecond.current.click();
       setType(32)
       console.log("322 id",mediaId);

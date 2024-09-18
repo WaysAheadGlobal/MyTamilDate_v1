@@ -548,7 +548,7 @@ matches.post("/report", (req: UserRequest, res) => {
     });
 });
 
-const getImageURL = (type: number, hash: string, extension: string, userId: string) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.jpg` : `${process.env.API_URL}media/avatar/${hash}.jpg`;
+const getImageURL = (type: number, hash: string, extension: string, userId: string) => type === 1 ? `https://data.mytamildate.com/storage/public/uploads/user/${userId}/avatar/${hash}-large.${extension}` : `${process.env.API_URL}media/avatar/${hash}.${extension}`;
 
 matches.post("/like", (req: UserRequest, res) => {
     const userId = req.userId;

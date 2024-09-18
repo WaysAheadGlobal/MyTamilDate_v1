@@ -13,7 +13,7 @@ export default function ProfileDetails({ userId, handleIconButtonClick, liked, s
     const navigate = useNavigate();
     const cookies = useCookies();
     const pathname = window.location.pathname;
-    const getPhotoUrl = (userId, hash, extension, type) => `https://data.mytamildate.com/storage/public/uploads/user/${userId}/${type === 1 ? "avatar" : "photo"}/${hash}-large.jpg`;
+    const getPhotoUrl = (userId, hash, extension, type) => `https://data.mytamildate.com/storage/public/uploads/user/${userId}/${type === 1 ? "avatar" : "photo"}/${hash}-large.${extension}`;
 
     /**
      * @typedef {Object} Photo
