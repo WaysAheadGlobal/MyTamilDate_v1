@@ -27,6 +27,7 @@ export default function SocketProvider({ children }) {
             auth: {
                 token: cookies.getCookie('token')
             },
+            path: "/socket"
         });
         setSocket(socket);
 
