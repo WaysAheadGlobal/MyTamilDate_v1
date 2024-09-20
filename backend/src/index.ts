@@ -31,7 +31,8 @@ const httpServer = createServer(app);
 export const io = new Server(httpServer, {
     cors: {
         origin: '*',
-    }
+    },
+    path : "/socket"
 });
 
 io.use((socket, next) => {
