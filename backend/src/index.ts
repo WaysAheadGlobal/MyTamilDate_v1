@@ -112,7 +112,11 @@ io.on('connection', async (socket) => {
     });
 });
 
-httpServer.listen(PORT, () => {
+
+httpServer.listen({
+    port: PORT,
+    host: '0.0.0.0',
+}, () => {
     db.connect((err) => {
         if (err) {
             console.log('Error connecting to DB:', err);
