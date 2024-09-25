@@ -41,23 +41,23 @@ export const io = new Server(httpServer, {
     }
 });
 
-io.use((socket, next) => {
-    const token = socket.handshake.auth.token;
+// io.use((socket, next) => {
+    // const token = socket.handshake.auth.token;
 
     // if (!token) {
     //     return next(new Error('Authentication error'));
     // }
 
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET as string);
+    // const decoded: any = jwt.verify(token, process.env.JWT_SECRET as string);
 
     // if (!decoded) {
     //     return next(new Error('Authentication error'));
     // }
 
-    socket.handshake.auth.userId = decoded.userId;
-    console.log("socket called");
-    next();
-});
+    // socket.handshake.auth.userId = decoded.userId;
+//     console.log("socket called",socket);
+//     next();
+// });
 
 io.on('connection', async (socket) => {
     console.log('a user connected', socket.handshake.auth.userId);
