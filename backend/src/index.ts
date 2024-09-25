@@ -28,6 +28,12 @@ app.use("/mail-check", Sendmail)
 
 const httpServer = createServer(app);
 
+httpServer.listen({
+    port: PORT
+}, () => {
+    console.log("server connected", PORT);
+})
+
 export const io = new Server(httpServer, {
     cors: {
         origin: '*',
@@ -113,15 +119,15 @@ io.on('connection', async (socket) => {
 });
 
 
-httpServer.listen({
-    port: PORT
-}, () => {
-    db.connect((err) => {
-        if (err) {
-            console.log('Error connecting to DB:', err);
-            return;
-        }
-        console.log('Connected to DB!');
-    });
-    console.log(`Server is running at http://localhost:${PORT}`);
-});
+// httpServer.listen({
+//     port: PORT
+// }, () => {
+//     db.connect((err) => {
+//         if (err) {
+//             console.log('Error connecting to DB:', err);
+//             return;
+//         }
+//         console.log('Connected to DB!');
+//     });
+//     console.log(`Server is running at http://localhost:${PORT}`);
+// });
