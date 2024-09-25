@@ -114,8 +114,7 @@ io.on('connection', async (socket) => {
 
 
 httpServer.listen({
-    port: PORT,
-    host: '3.19.39.132',
+    port: PORT
 }, () => {
     db.connect((err) => {
         if (err) {
