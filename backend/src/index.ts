@@ -114,7 +114,8 @@ io.on('connection', async (socket) => {
 
 
 httpServer.listen({
-    port: PORT
+    port: PORT,
+    host : "https://uat.mytamildate.waysdatalabs.com"
 }, () => {
     db.connect((err) => {
         if (err) {
