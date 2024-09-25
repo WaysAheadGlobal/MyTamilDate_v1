@@ -28,9 +28,9 @@ export default function SocketProvider({ children }) {
 
         console.log('Initializing socket connection...');
         const socket = io(process.env.REACT_APP_SOCKET_URL, {
-            auth: {
-                token
-            },
+            // auth: {
+            //     token
+            // },
             path: "/socket"
         });
 
