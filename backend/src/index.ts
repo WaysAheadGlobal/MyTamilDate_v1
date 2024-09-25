@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { response } from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
@@ -15,6 +15,12 @@ const httpServer = createServer(app);
         methods: ['GET', 'POST'],
     },
 });
+
+
+app.get("/hallo",(Request,response)=>{
+console.log("hallo")
+return  response.send("hallo return");
+})
 
 io.on('connection', (socket) => {
     console.log('Client connected:', socket.id);
