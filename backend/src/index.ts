@@ -6,7 +6,7 @@ import cors from 'cors';
 const app = express();
 app.use(cors());
 
-const PORT = process.env.PORT; // Make sure this matches the client's port
+const PORT = 9045; // Make sure this matches the client's port
 
 const httpServer = createServer(app);
  export const io = new Server(httpServer, {
