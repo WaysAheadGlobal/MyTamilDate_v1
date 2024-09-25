@@ -9,7 +9,7 @@ app.use(cors());
 const PORT = 9000; // Make sure this matches the client's port
 
 const httpServer = createServer(app);
-const io = new Server(httpServer, {
+ export const io = new Server(httpServer, {
     cors: {
         origin: '*', // Allow all origins, or specify your client origin
         methods: ['GET', 'POST'],
