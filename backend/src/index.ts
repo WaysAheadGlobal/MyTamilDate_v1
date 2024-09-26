@@ -33,6 +33,10 @@ export const io = new Server(httpServer, {
     }
 });
 
+app.get("/hallo", (req, res)=>{
+  return res.send("api called")
+})
+
 // io.use((socket, next) => {
 //     const token = socket.handshake.auth.token;
 
