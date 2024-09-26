@@ -19,50 +19,25 @@ export default function SocketProvider({ children }) {
     const cookies = useCookies();
 
     useEffect(() => {
-        const token = cookies.getCookie('token');
-
-        if (!token) {
-            console.warn('No token found, socket will not be initialized.');
+        if (!cookies.getCookie('token')) {
             return;
         }
 
-        console.log('Initializing socket connection...');
         const socket = io(process.env.REACT_APP_SOCKET_URL, {
-            // auth: {
-            //     token
-            // },
-            path: "/socket"
+            auth: {
+                token: cookies.getCookie('token')
+            },
         });
-
-        // Log when the socket connects
-        socket.on('connect', () => {
-            console.log('Socket connected:', socket.id);
-        });
-
-        // Log when the socket disconnects
-        socket.on('disconnect', (reason) => {
-            console.warn('Socket disconnected:', reason);
-        });
-
-        // Log any socket errors
-        socket.on('connect_error', (error) => {
-            console.error('Socket connection error:', error.message);
-        });
-
         setSocket(socket);
 
-        // Cleanup socket connection when the component unmounts or the pathname changes
         return () => {
-            console.log('Disconnecting socket...');
             socket.disconnect();
-        };
-    }, [cookies, window.location.pathname]);
+        }
+    }, [window.location.pathname]);
 
     const value = useMemo(() => ({ socket }), [socket]);
 
     return (
-        <SocketContext.Provider value={value}>
-            {children}
-        </SocketContext.Provider>
-    );
+        <SocketContext.Provider value={value}>{children}</SocketContext.Provider>
+    )
 }
