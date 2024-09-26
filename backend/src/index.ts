@@ -33,26 +33,26 @@ export const io = new Server(httpServer, {
     }
 });
 
-io.use((socket, next) => {
-    const token = socket.handshake.auth.token;
+// io.use((socket, next) => {
+//     const token = socket.handshake.auth.token;
 
-    if (!token) {
-        return next(new Error('Authentication error'));
-    }
+//     if (!token) {
+//         return next(new Error('Authentication error'));
+//     }
 
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET as string);
+//     const decoded: any = jwt.verify(token, process.env.JWT_SECRET as string);
 
-    if (!decoded) {
-        return next(new Error('Authentication error'));
-    }
+//     if (!decoded) {
+//         return next(new Error('Authentication error'));
+//     }
 
-    socket.handshake.auth.userId = decoded.userId;
+//     socket.handshake.auth.userId = decoded.userId;
 
-    next();
-});
-
+//     next();
+// });
 
 io.on('connection', async (socket) => {
+  console.log("connect to the socket2");
     console.log('a user connected', socket.handshake.auth.userId);
     socket.join(socket.handshake.auth.userId);
     await db.promise().query('UPDATE users SET is_online = 1 WHERE id = ?', [socket.handshake.auth.userId]);
