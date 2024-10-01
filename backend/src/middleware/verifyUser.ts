@@ -16,7 +16,8 @@ export const verifyUser = (req: UserRequest, res: Response, next: NextFunction) 
 
     try {
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET as string);
-        console.log(decoded.userId);
+        
+        console.log("user id", decoded.userId);
         if (!decoded) {
             return res.status(401).json({ message: "Unauthorized" });
         }
