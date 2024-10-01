@@ -4,6 +4,6 @@
 // export const API_URL = 'https://uat.mytamildate.waysdatalabs.com/api/v1/';
 // export const WEB_URL = 'http://localhost:3000/'
 // export const API_URL = 'http://localhost:3001/api/v1/'
-export const WEB_URL =  'https://mtd.aamiru.com/'
-export const API_URL = 'https://mtd.aamiru.com/api/v1/';
+export const WEB_URL =  'http://mtd.aamiru.com/'
+export const API_URL = 'http://mtd.aamiru.com/api/v1/';
 
