@@ -17,10 +17,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 1024 * 1024 * 25 // 5MB 
-  }
+  storage: storage
 });
 
 const profile = express.Router();
