@@ -95,7 +95,7 @@ const PricingCard = ({ currency }) => {
       EUR: 0.67,
       AUD: 1.08,
     };
-console.log("hallo");
+
 
     let convertedPrice = basePrice * rates[currency];
     if (percentOff && product === productId) {
