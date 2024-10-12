@@ -44,6 +44,7 @@ const Paymentfinal = () => {
     const elements = useElements();
     const searchParams = useSearchParams();
     const [carderror, setCarderror] = useState("");
+    const[simble, setSimble] = useState("C$")
 
     const [showpaymentsuccess, setShowshowpaymentsuccess] = useState(false);
     const Gotohomepage = ()=>{
@@ -51,6 +52,14 @@ const Paymentfinal = () => {
         window.location.href = '/user/home';
     }
 
+    const currencySymbols = {
+        CAD: "CAD",
+        USD: "$",
+        GBP: "£",
+        EUR: "€",
+        AUD: "AUD",
+    };
+    
     const rates = [
         "CAD",
         "USD",
@@ -178,15 +187,16 @@ const Paymentfinal = () => {
         console.log(selectedCard)
         console.log(price)
     };
-
+   
+    
     const getPrice = (basePrice, productId) => {
         // Example conversion rates
         const rates = {
             CAD: 1,
             USD: 0.73,
             GBP: 0.56,
-            EUR: 0.67,
-            AUD: 1.1,
+            EUR: 0.66,
+            AUD: 1.08,
         };
 
         let convertedPrice = basePrice * rates[selectedCurrency];
@@ -203,6 +213,7 @@ const Paymentfinal = () => {
     };
 
     useEffect(() => {
+        setSimble(currencySymbols[selectedCurrency]);
         setPrice({
             m1: {
                 monthly: getPrice(49.99, process.env.REACT_APP_STRIPE_PRODUCT_ID_1_MONTHS),
@@ -427,7 +438,7 @@ const Paymentfinal = () => {
                                 >
                                     <div className={pay.cardBody}>
                                         <h5 className={pay.cardTitle}>1 month</h5>
-                                        <h2 className={pay.cardPrice}>${/* getPrice(49.99, process.env.REACT_APP_STRIPE_PRODUCT_ID_1_MONTHS) */ price.m1.monthly}  </h2>
+                                        <h2 className={pay.cardPrice}>{simble} {/* getPrice(49.99, process.env.REACT_APP_STRIPE_PRODUCT_ID_1_MONTHS) */ price.m1.monthly}  </h2>
 
                                     </div>
                                 </div>
@@ -444,7 +455,7 @@ const Paymentfinal = () => {
                                             style={{
                                                 marginBottom: "-10px"
                                             }}
-                                        > ${/* getPrice(33.99, process.env.REACT_APP_STRIPE_PRODUCT_ID_3_MONTHS) */ price.m3.monthly} <span
+                                        > {simble} {/* getPrice(33.99, process.env.REACT_APP_STRIPE_PRODUCT_ID_3_MONTHS) */ price.m3.monthly} <span
                                             style={
                                                 {
                                                     fontSize: "16px",
@@ -482,10 +493,10 @@ const Paymentfinal = () => {
                                             </svg>
                                         </div>
                                         <h5 style={{ marginTop: "-1px" }} className={pay.cardTitle}>6 months</h5>
-                                        <h2 style={{ marginTop: "-6px" }} className={pay.cardPrice}>${/* getPrice(24.99) */ price.m6.monthly}
+                                        <h2 style={{ marginTop: "-6px" }} className={pay.cardPrice}>{simble} {/* getPrice(24.99) */ price.m6.monthly}
                                             <span style={{ fontSize: "16px", color: "#6C6C6C", lineHeight: "24px" }}>/month</span>
                                         </h2>
-                                        <p className={pay.cardText}  >
+                                        <p className={pay.cardText} >
                                             <span className={pay.savepercentage}>
                                                 Save 50%
                                             </span>
@@ -524,12 +535,12 @@ const Paymentfinal = () => {
 
 
                                     <p>
-                                        Subtotal : ${selectedCard === 0 ? `${price.m1.total}` : selectedCard === 2 ? `${price.m3.total}` : `${price.m6.total}`} {selectedCurrency}
+                                        Subtotal : {simble} {selectedCard === 0 ? `${price.m1.total}` : selectedCard === 2 ? `${price.m3.total}` : `${price.m6.total}`} {selectedCurrency}
                                     </p>
                                     <p style={{
                                         marginLeft: "27px"
                                     }}>
-                                        Total : ${selectedCard === 0 ? `${price.m1.total}` : selectedCard === 2 ? `${price.m3.total}` : `${price.m6.total}`} {selectedCurrency}
+                                        Total : {simble} {selectedCard === 0 ? `${price.m1.total}` : selectedCard === 2 ? `${price.m3.total}` : `${price.m6.total}`} {selectedCurrency}
                                     </p>
                                 </div>
                             </div>

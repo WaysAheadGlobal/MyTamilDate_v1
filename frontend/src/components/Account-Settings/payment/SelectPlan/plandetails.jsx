@@ -21,7 +21,15 @@ const PricingCard = ({ currency }) => {
   const [amountOff, setAmountOff] = useState(0);
   const [product, setProduct] = useState(process.env.REACT_APP_STRIPE_PRODUCT_ID_6_MONTHS);
   const [paymentMethods, setPaymentMethods] = useState([]);
-  
+  const[simble, setSimble] = useState("CAD");
+
+  const currencySymbols = {
+    CAD: "CAD",
+    USD: "$",
+    GBP: "£",
+    EUR: "€",
+    AUD: "AUD",
+};
  
   useEffect(() => {
     (async () => {
@@ -85,7 +93,7 @@ const PricingCard = ({ currency }) => {
       USD: 0.73,
       GBP: 0.56,
       EUR: 0.67,
-      AUD: 1.1,
+      AUD: 1.08,
     };
 
     let convertedPrice = basePrice * rates[currency];
@@ -102,6 +110,8 @@ const PricingCard = ({ currency }) => {
   };
 
   useEffect(() => {
+    setSimble(currencySymbols[currency]);
+     console.log("hllo");
     setPrice({
       m1: {
         monthly: getPrice(49.99, process.env.REACT_APP_STRIPE_PRODUCT_ID_1_MONTHS),
@@ -136,7 +146,7 @@ const PricingCard = ({ currency }) => {
           >
             <div className={styles.cardBody}>
               <h5 className={styles.cardTitle}>1 month</h5>
-              <h2 className={styles.cardPrice}>${/* getPrice(49.99, process.env.REACT_APP_STRIPE_PRODUCT_ID_1_MONTHS) */ price.m1.monthly} </h2>
+              <h2 className={styles.cardPrice}>{simble} {/* getPrice(49.99, process.env.REACT_APP_STRIPE_PRODUCT_ID_1_MONTHS) */ price.m1.monthly} </h2>
               {/* <p className={styles.cardText}>per month</p> */}
             </div>
           </div>
@@ -161,7 +171,7 @@ const PricingCard = ({ currency }) => {
 
                </div>
               <h5 style={{ marginTop: "-4px" }} className={styles.cardTitle}>6 months</h5>
-              <h2 style={{ marginTop: "-10px" }} className={styles.cardPrice}>${/* getPrice(24.99) */ price.m6.monthly} <span>/month</span></h2>
+              <h2 style={{ marginTop: "-10px" }} className={styles.cardPrice}>{simble} {/* getPrice(24.99) */ price.m6.monthly} <span>/month</span></h2>
               <p  className={styles.cardsave} style={{marginTop : "-10px"}} >Save 50%</p>
               <p style={{ marginTop: "-1px" }} className={styles.cardText}>({/* getPrice(149.99, process.env.REACT_APP_STRIPE_PRODUCT_ID_6_MONTHS) */ price.m6.total} total)</p>
             </div>
@@ -175,7 +185,7 @@ const PricingCard = ({ currency }) => {
           >
             <div className={styles.cardBody}>
               <h5 className={styles.cardTitle}>3 months</h5>
-              <h2 className={styles.cardPrice}>${/* getPrice(33.99, process.env.REACT_APP_STRIPE_PRODUCT_ID_3_MONTHS) */ price.m3.monthly} <span>/month</span></h2>
+              <h2 className={styles.cardPrice}>{simble} {/* getPrice(33.99, process.env.REACT_APP_STRIPE_PRODUCT_ID_3_MONTHS) */ price.m3.monthly} <span>/month</span></h2>
               <p  className={styles.cardsave}>Save 33%</p>
               <p className={styles.cardText}>({/* getPrice(99.99) */price.m3.total} total)</p>
             </div>
