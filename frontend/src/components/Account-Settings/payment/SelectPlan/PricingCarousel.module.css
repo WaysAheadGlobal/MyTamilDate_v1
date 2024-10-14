@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  column-gap: 1rem;
   /* margin-top: -20px; */
 }
 
@@ -116,9 +117,18 @@ letter-spacing: 0.04em;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 50px;
+  margin-top: 60px;
 }
-
+.textContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
+  font-size: 14px;
+  color: #6C6C6C;
+  line-height: 24px;
+  font-weight: 600;
+}
 .dot {
   width: 10px;
   height: 10px;
