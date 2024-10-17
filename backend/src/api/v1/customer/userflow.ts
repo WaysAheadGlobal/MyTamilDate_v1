@@ -10,20 +10,25 @@ const userFlowRouter = Router();
 userFlowRouter.use(verifyUser);
 
 async function getUserFilters(userId: string) {
-    return new Promise((resolve, reject) => {
-        db.query<RowDataPacket[]>("SELECT uf.filter_id, f.* FROM user_filters uf INNER JOIN filters f WHERE uf.filter_id = f.id AND uf.user_id = ?;", [userId], (err, result) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            resolve(result[0]);
-        });
-    });
+  return new Promise((resolve, reject) => {
+    db.query<RowDataPacket[]>(
+      "SELECT uf.filter_id, f.* FROM user_filters uf INNER JOIN filters f WHERE uf.filter_id = f.id AND uf.user_id = ?;",
+      [userId],
+      (err, result) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(result[0]);
+      }
+    );
+  });
 }
 
 async function getUserPreferences(userId: string) {
-    return new Promise((resolve, reject) => {
-        db.query<RowDataPacket[]>(`
+  return new Promise((resolve, reject) => {
+    db.query<RowDataPacket[]>(
+      `
             SELECT
             COALESCE(f.gender_id, up.want_gender) AS gender,
             COALESCE(f.age_from, (FLOOR(DATEDIFF(NOW(), up.birthday) / 365) - 5)) AS age_from,
@@ -40,321 +45,702 @@ async function getUserPreferences(userId: string) {
             LEFT JOIN filters f ON f.id = uf.filter_id
             LEFT JOIN filter_locations fl ON fl.filters_id = uf.filter_id
             WHERE up.user_id =  ?;
-        `, [userId], (err, result) => {
-            if (err) {
-                reject(err);
-                return;
-            }
+        `,
+      [userId],
+      (err, result) => {
+        if (err) {
+          reject(err);
+          return;
+        }
 
-            resolve(result[0]);
-        });
-    });
+        resolve(result[0]);
+      }
+    );
+  });
 }
 
 function getLocationOrder(userLocation: string) {
-    switch (userLocation) {
-        case 'North America':
-            return ['North America', 'Europe', 'Oceania', 'Africa', 'Asia'];
-        case 'Europe':
-            return ['Europe', 'North America', 'Oceania', 'Africa', 'Asia'];
-        case 'Oceania':
-            return ['Oceania', 'Europe', 'North America', 'Africa', 'Asia'];
-        case 'Africa':
-            return ['Africa', 'Europe', 'North America', 'Oceania', 'Asia'];
-        case 'Asia':
-            return ['Asia', 'Oceania', 'Europe', 'North America', 'Africa'];
-        default:
-            return [];
-    }
-};
+  switch (userLocation) {
+    case "North America":
+      return ["North America", "Europe", "Oceania", "Africa", "Asia"];
+    case "Europe":
+      return ["Europe", "North America", "Oceania", "Africa", "Asia"];
+    case "Oceania":
+      return ["Oceania", "Europe", "North America", "Africa", "Asia"];
+    case "Africa":
+      return ["Africa", "Europe", "North America", "Oceania", "Asia"];
+    case "Asia":
+      return ["Asia", "Oceania", "Europe", "North America", "Africa"];
+    default:
+      return [];
+  }
+}
 
 async function deleteAllDiscoverySkip(userId: string) {
-    return new Promise((resolve, reject) => {
-        db.query("DELETE FROM discovery_skip WHERE user_id = ?", [userId], (err, result) => {
-            if (err) {
-                reject(err);
-                return;
-            }
+  return new Promise((resolve, reject) => {
+    db.query(
+      "DELETE FROM discovery_skip WHERE user_id = ?",
+      [userId],
+      (err, result) => {
+        if (err) {
+          reject(err);
+          return;
+        }
 
-            resolve(result);
-        });
-    });
+        resolve(result);
+      }
+    );
+  });
 }
 
 userFlowRouter.get("/email", (req: UserRequest, res) => {
-    res.json({ email: req.user.email });
+  res.json({ email: req.user.email });
 });
 
 userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
-    const wave = req.query.wave ? Number(req.query.wave) : 1;
-    const pageNo = req.query.page ? Number(req.query.page) : 1;
-    const limit = 20;
+  console.log("profiles");
+  const wave = req.query.wave ? Number(req.query.wave) : 1;
+  console.log(wave);
+  const pageNo = req.query.page ? Number(req.query.page) : 1;
+  console.log(pageNo);
+  const limit = 20;
 
-    if (!req.userId) {
-        res.status(401).send({ message: "Unauthorized" });
-        return;
-    }
+  if (!req.userId) {
+    res.status(401).send({ message: "Unauthorized" });
+    return;
+  }
 
-    if (req.user.active === 0) {
-        res.status(200).json([]);
-        return;
-    }
+  if (req.user.active === 0) {
+    res.status(200).json([]);
+    return;
+  }
 
-    let query = "";
-    let params;
+  let query = "";
+  let params: any[] = [];
 
-    const currentUserFilters: any = await getUserFilters(req.userId);
-    const userPreferences: any = await getUserPreferences(req.userId);
+  const currentUserFilters: any = await getUserFilters(req.userId);
+  console.log("currentUserFilters", currentUserFilters);
+  const userPreferences: any = await getUserPreferences(req.userId);
+  console.log("userPreferences", userPreferences);
+  const userLocationPreferenceOrder = getLocationOrder(
+    userPreferences.location
+  );
+  console.log("userLocationPreferenceOrder", userLocationPreferenceOrder);
+  if (currentUserFilters) {
+    //* preferences on flow
+    //* 1st Wave - Without age extension and all the preferences (perfect match)
 
-    const userLocationPreferenceOrder = getLocationOrder(userPreferences.location);
+    let whereClauses = [];
+    let queryParams = [];
 
-    if (currentUserFilters) {
-        //* preferences on flow
-        //* 1st Wave - Without age extension and all the preferences (perfect match)
+    // if (wave === 1) {
+    //   console.log("first wave");
 
+    //   if (currentUserFilters.age_from && currentUserFilters.age_to) {
+    //     whereClauses.push(
+    //       "FLOOR(DATEDIFF(NOW(), up_inner.birthday) / 365) BETWEEN ? AND ?"
+    //     );
+    //     queryParams.push(currentUserFilters.age_from);
+    //     queryParams.push(currentUserFilters.age_to);
+    //   }
+    //   if(currentUserFilters.gender_id == "1") {
+    //     whereClauses.push("up_inner.gender = ?");
+    //     queryParams.push('1');
+    //   }
+    //   if (currentUserFilters.gender_id == "2") {
+    //     whereClauses.push("up_inner.gender = ?");
+    //     queryParams.push('2');
+    //   }
+    //   if (currentUserFilters.gender_id == "3"){
+    //     whereClauses.push("up_inner.gender = ? OR up_inner.gender = ?");
+    //     queryParams.push("1");
+    //     queryParams
+    //   }
+    //   if (currentUserFilters.religion_id) {
+    //     whereClauses.push("up_inner.religion_id = ?");
+    //     queryParams.push(currentUserFilters.religion_id);
+    //   }
 
-        let whereClauses = [];
-        let queryParams = [];
+    //   if (currentUserFilters.education_id) {
+    //     whereClauses.push("up_inner.study_id = ?");
+    //     queryParams.push(currentUserFilters.education_id);
+    //   }
 
-        if (wave === 1) {
-            console.log("first wave")
+    //   if (currentUserFilters.want_kids_id) {
+    //     whereClauses.push("up_inner.want_kid_id = ?");
+    //     queryParams.push(currentUserFilters.want_kids_id);
+    //   }
 
-            if (currentUserFilters.age_from && currentUserFilters.age_to) {
-                whereClauses.push("FLOOR(DATEDIFF(NOW(), up_inner.birthday) / 365) BETWEEN ? AND ?");
-                queryParams.push(currentUserFilters.age_from);
-                queryParams.push(currentUserFilters.age_to);
-            }
+    //   if (currentUserFilters.have_kids_id) {
+    //     whereClauses.push("up_inner.have_kid_id = ?");
+    //     queryParams.push(currentUserFilters.have_kids_id);
+    //   }
 
-            if (currentUserFilters.gender_id) {
-                whereClauses.push("up_inner.gender = ?");
-                queryParams.push(currentUserFilters.gender_id);
-            }
+    //   if (currentUserFilters.smoking_id) {
+    //     whereClauses.push("up_inner.smoke_id = ?");
+    //     queryParams.push(currentUserFilters.smoking_id);
+    //   }
 
-            if (currentUserFilters.religion_id) {
-                whereClauses.push("up_inner.religion_id = ?");
-                queryParams.push(currentUserFilters.religion_id);
-            }
+    //   if (currentUserFilters.drinks_id) {
+    //     whereClauses.push("up_inner.drink_id = ?");
+    //     queryParams.push(currentUserFilters.drinks_id);
+    //   }
 
-            if (currentUserFilters.education_id) {
-                whereClauses.push("up_inner.study_id = ?");
-                queryParams.push(currentUserFilters.education_id);
-            }
+    //   query = `
+    //             WITH distinct_user_ids AS (
+    //                 SELECT DISTINCT
+    //                     up_inner.id,
+    //                      l_inner.continent,
+    //                      up_inner.created_at
+    //                 FROM
+    //                     user_profiles up_inner
+    //                 INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
+    //                 INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
+    //                 WHERE
+    //                     up_inner.user_id != ?
+    //                     AND l_inner.continent IS NOT NULL
+    //                     AND up_inner.want_gender = ${
+    //                       currentUserFilters.gender_id
+    //                     }
+    //                     AND u_inner.approval = ${UserApprovalEnum.APPROVED}
+    //                     AND u_inner.active = 1
+    //                     AND u_inner.deleted_at IS NULL
+    //                     ${
+    //                       whereClauses.length > 0
+    //                         ? " AND " + whereClauses.join(" AND ")
+    //                         : ""
+    //                     }
+    //                     AND l_inner.continent IN (?)
+    //                     AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
+    //                 ORDER BY
+    //                     FIELD(l_inner.continent, ?),
+    //                     up_inner.created_at DESC,
+    //                     up_inner.id DESC
+    //                 LIMIT ? OFFSET ?
+    //             )
+    //             SELECT
+    //                 up.id,
+    //                 up.user_id,
+    //                 up.first_name,
+    //                 up.last_name,
+    //                 up.birthday,
+    //                 m.hash,
+    //                 m.extension,
+    //                 m.type,
+    //                 up.location_id,
+    //                 up.job_id,
+    //                 up.created_at,
+    //                 l.country,
+    //                 l.continent,
+    //                 l.location_string,
+    //                 j.name as job,
+    //                 (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
+    //             FROM distinct_user_ids dup
+    //             JOIN user_profiles up ON dup.id = up.id
+    //             JOIN media m ON up.user_id = m.user_id
+    //             JOIN locations l ON up.location_id = l.id
+    //             JOIN jobs j ON j.id = up.job_id
+    //             WHERE m.type IN (1, 31)
+    //         `;
 
-            if (currentUserFilters.want_kids_id) {
-                whereClauses.push("up_inner.want_kid_id = ?");
-                queryParams.push(currentUserFilters.want_kids_id);
-            }
+    //   params = [
+    //     req.userId,
+    //     ...queryParams,
+    //     userLocationPreferenceOrder,
+    //     req.userId,
+    //     userLocationPreferenceOrder,
+    //     limit,
+    //     (pageNo - 1) * limit,
+    //     req.userId,
+    //   ];
+    // }
+    if (wave === 1) {
+      console.log("first wave");
 
-            if (currentUserFilters.have_kids_id) {
-                whereClauses.push("up_inner.have_kid_id = ?");
-                queryParams.push(currentUserFilters.have_kids_id);
-            }
+      if (currentUserFilters.age_from && currentUserFilters.age_to) {
+        whereClauses.push(
+          "FLOOR(DATEDIFF(NOW(), up_inner.birthday) / 365) BETWEEN ? AND ?"
+        );
+        queryParams.push(currentUserFilters.age_from);
+        queryParams.push(currentUserFilters.age_to);
+      }
 
-            if (currentUserFilters.smoking_id) {
-                whereClauses.push("up_inner.smoke_id = ?");
-                queryParams.push(currentUserFilters.smoking_id);
-            }
+      // Gender preference logic
+      if (currentUserFilters.gender_id == "1") {
+        // Male looking for female
+        whereClauses.push("(up_inner.gender = 2 AND up_inner.want_gender = 1)");
+      } else if (currentUserFilters.gender_id == "2") {
+        // Female looking for male
+        whereClauses.push("(up_inner.gender = 1 AND up_inner.want_gender = 2)");
+      } else if (currentUserFilters.gender_id == "3") {
+        // Interested in everyone, match males and females reciprocally
+        whereClauses.push(
+          "(up_inner.gender IN (1, 2) AND (up_inner.want_gender = ? OR up_inner.want_gender = 3))"
+        );
+        queryParams.push(currentUserFilters.gender_id);
+      }
 
-            if (currentUserFilters.drinks_id) {
-                whereClauses.push("up_inner.drink_id = ?");
-                queryParams.push(currentUserFilters.drinks_id);
-            }
+      if (currentUserFilters.religion_id) {
+        whereClauses.push("up_inner.religion_id = ?");
+        queryParams.push(currentUserFilters.religion_id);
+      }
 
-            query = `
-                WITH distinct_user_ids AS (
-                    SELECT DISTINCT 
-                        up_inner.id,
-                         l_inner.continent,
-                         up_inner.created_at
-                    FROM 
-                        user_profiles up_inner 
-                    INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
-                    INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
-                    WHERE 
-                        up_inner.user_id != ? 
-                        AND l_inner.continent IS NOT NULL
-                        AND up_inner.want_gender = ${req.user.gender}
-                        AND u_inner.approval = ${UserApprovalEnum.APPROVED}
-                        AND u_inner.active = 1
-                        AND u_inner.deleted_at IS NULL
-                        ${whereClauses.length > 0 ? " AND " + whereClauses.join(" AND ") : ""}
-                        AND l_inner.continent IN (?)
-                        AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
-                    ORDER BY 
-                        FIELD(l_inner.continent, ?),
-                        up_inner.created_at DESC, 
-                        up_inner.id DESC 
-                    LIMIT ? OFFSET ?
-                )
-                SELECT 
-                    up.id, 
-                    up.user_id, 
-                    up.first_name, 
-                    up.last_name, 
-                    up.birthday, 
-                    m.hash, 
-                    m.extension, 
-                    m.type, 
-                    up.location_id, 
-                    up.job_id, 
-                    up.created_at,
-                    l.country,
-                    l.continent,
-                    l.location_string,
-                    j.name as job,
-                    (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
-                FROM distinct_user_ids dup
-                JOIN user_profiles up ON dup.id = up.id 
-                JOIN media m ON up.user_id = m.user_id 
-                JOIN locations l ON up.location_id = l.id
-                JOIN jobs j ON j.id = up.job_id
-                WHERE m.type IN (1, 31)
-            `;
+      if (currentUserFilters.education_id) {
+        whereClauses.push("up_inner.study_id = ?");
+        queryParams.push(currentUserFilters.education_id);
+      }
 
-            params = [
-                req.userId,
-                ...queryParams,
-                userLocationPreferenceOrder,
-                req.userId,
-                userLocationPreferenceOrder,
-                limit,
-                (pageNo - 1) * limit,
-                req.userId
-            ];
-        } else if (wave === 2) {
-            console.log("second wave")
-            query = `
-                WITH distinct_user_ids AS (
-                    SELECT DISTINCT 
-                        up_inner.id,
-                        l_inner.continent,
-                         up_inner.created_at
-                    FROM 
-                        user_profiles up_inner 
-                    INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
-                    INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
-                    WHERE 
-                        up_inner.user_id != ?
-                        AND u_inner.active = 1
-                        AND u_inner.deleted_at IS NULL
-                        AND DATEDIFF(NOW(), up_inner.birthday) BETWEEN (DATEDIFF(NOW(), ?) - (5 * 365)) AND (DATEDIFF(NOW(), ?) + (10 * 365))
-                        AND up_inner.gender = ?
-                        AND up_inner.want_gender = ?
-                        AND l_inner.continent IS NOT NULL
-                        AND u_inner.approval = ${UserApprovalEnum.APPROVED}
-                        AND l_inner.continent IN (?)
-                        AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
-                    ORDER BY 
-                        FIELD(l_inner.continent, ?),
-                        up_inner.created_at DESC, 
-                        up_inner.id DESC 
-                    LIMIT ? OFFSET ?
-                )
-                SELECT 
-                    up.id, 
-                    up.user_id, 
-                    up.first_name, 
-                    up.last_name, 
-                    up.birthday, 
-                    m.hash, 
-                    m.extension, 
-                    m.type, 
-                    up.location_id, 
-                    up.job_id, 
-                    up.created_at,
-                    l.country,
-                    l.continent,
-                    l.location_string,
-                    j.name as job,
-                    (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
-                FROM distinct_user_ids dup
-                JOIN user_profiles up ON dup.id = up.id 
-                JOIN media m ON up.user_id = m.user_id 
-                JOIN locations l ON up.location_id = l.id
-                JOIN jobs j ON j.id = up.job_id
-                WHERE m.type IN (1, 31)
-            `;
+      if (currentUserFilters.want_kids_id) {
+        whereClauses.push("up_inner.want_kid_id = ?");
+        queryParams.push(currentUserFilters.want_kids_id);
+      }
 
-            params = [
-                req.userId,
-                req.user.birthday,
-                req.user.birthday,
-                req.user.want_gender,
-                req.user.gender,
-                userLocationPreferenceOrder,
-                req.userId,
-                userLocationPreferenceOrder,
-                limit,
-                (pageNo - 1) * limit,
-                req.userId
-            ];
-        } else {
-            console.log("Third wave");
+      if (currentUserFilters.have_kids_id) {
+        whereClauses.push("up_inner.have_kid_id = ?");
+        queryParams.push(currentUserFilters.have_kids_id);
+      }
 
-            query = `
-                WITH distinct_user_ids AS (
-                    SELECT DISTINCT 
-                        up_inner.id ,
-                         l_inner.continent,
-                         up_inner.created_at
-                    FROM 
-                        user_profiles up_inner 
-                    INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
-                    INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
-                    WHERE 
-                        up_inner.user_id != ?
-                        AND u_inner.active = 1
-                        AND u_inner.deleted_at IS NULL
-                        AND up_inner.gender = ?
-                        AND up_inner.want_gender = ?
-                        AND u_inner.approval = ${UserApprovalEnum.APPROVED}
-                        AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
-                    ORDER BY 
-                        up_inner.created_at DESC, 
-                        up_inner.id DESC 
-                    LIMIT ? OFFSET ?
-                )
-                SELECT 
-                    up.id, 
-                    up.user_id, 
-                    up.first_name, 
-                    up.last_name, 
-                    up.birthday, 
-                    m.hash, 
-                    m.extension, 
-                    m.type, 
-                    up.location_id, 
-                    up.job_id, 
-                    up.created_at,
-                    l.country,
-                    l.continent,
-                    l.location_string,
-                    j.name as job,
-                    (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
-                FROM distinct_user_ids dup
-                JOIN user_profiles up ON dup.id = up.id 
-                JOIN media m ON up.user_id = m.user_id 
-                JOIN locations l ON up.location_id = l.id
-                JOIN jobs j ON j.id = up.job_id
-                WHERE m.type IN (1, 31)
-            `;
+      if (currentUserFilters.smoking_id) {
+        whereClauses.push("up_inner.smoke_id = ?");
+        queryParams.push(currentUserFilters.smoking_id);
+      }
 
-            params = [
-                req.userId,
-                req.user.want_gender,
-                req.user.gender,
-                req.userId,
-                limit,
-                (pageNo - 1) * limit,
-                req.userId
-            ];
-        }
+      if (currentUserFilters.drinks_id) {
+        whereClauses.push("up_inner.drink_id = ?");
+        queryParams.push(currentUserFilters.drinks_id);
+      }
 
+      query = `
+          WITH distinct_user_ids AS (
+            SELECT DISTINCT 
+              up_inner.id,
+              l_inner.continent,
+              up_inner.created_at
+            FROM 
+              user_profiles up_inner 
+            INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
+            INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
+            WHERE 
+              up_inner.user_id != ? 
+              AND l_inner.continent IS NOT NULL
+              AND u_inner.approval = ${UserApprovalEnum.APPROVED}
+              AND u_inner.active = 1
+              AND u_inner.deleted_at IS NULL
+              ${
+                whereClauses.length > 0
+                  ? " AND " + whereClauses.join(" AND ")
+                  : ""
+              }
+              AND l_inner.continent IN (?)
+              AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
+            ORDER BY 
+              FIELD(l_inner.continent, ?),
+              up_inner.created_at DESC, 
+              up_inner.id DESC 
+            LIMIT ? OFFSET ?
+          )
+          SELECT 
+            up.id, 
+            up.user_id, 
+            up.first_name, 
+            up.last_name, 
+            up.birthday, 
+            m.hash, 
+            m.extension, 
+            m.type, 
+            up.location_id, 
+            up.job_id, 
+            up.created_at,
+            l.country,
+            l.continent,
+            l.location_string,
+            j.name as job,
+            (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
+          FROM distinct_user_ids dup
+          JOIN user_profiles up ON dup.id = up.id 
+          JOIN media m ON up.user_id = m.user_id 
+          JOIN locations l ON up.location_id = l.id
+          JOIN jobs j ON j.id = up.job_id
+          WHERE m.type IN (1, 31)
+        `;
+
+      params = [
+        req.userId,
+        ...queryParams,
+        userLocationPreferenceOrder,
+        req.userId,
+        userLocationPreferenceOrder,
+        limit,
+        (pageNo - 1) * limit,
+        req.userId,
+      ];
+    } else if (wave === 2) {
+      // console.log("second wave")
+      // query = `
+      //     WITH distinct_user_ids AS (
+      //         SELECT DISTINCT
+      //             up_inner.id,
+      //             l_inner.continent,
+      //              up_inner.created_at
+      //         FROM
+      //             user_profiles up_inner
+      //         INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
+      //         INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
+      //         WHERE
+      //             up_inner.user_id != ?
+      //             AND u_inner.active = 1
+      //             AND u_inner.deleted_at IS NULL
+      //             AND DATEDIFF(NOW(), up_inner.birthday) BETWEEN (DATEDIFF(NOW(), ?) - (5 * 365)) AND (DATEDIFF(NOW(), ?) + (10 * 365))
+      //             AND up_inner.gender = ?
+      //             AND up_inner.want_gender = ?
+      //             AND l_inner.continent IS NOT NULL
+      //             AND u_inner.approval = ${UserApprovalEnum.APPROVED}
+      //             AND l_inner.continent IN (?)
+      //             AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
+      //         ORDER BY
+      //             FIELD(l_inner.continent, ?),
+      //             up_inner.created_at DESC,
+      //             up_inner.id DESC
+      //         LIMIT ? OFFSET ?
+      //     )
+      //     SELECT
+      //         up.id,
+      //         up.user_id,
+      //         up.first_name,
+      //         up.last_name,
+      //         up.birthday,
+      //         m.hash,
+      //         m.extension,
+      //         m.type,
+      //         up.location_id,
+      //         up.job_id,
+      //         up.created_at,
+      //         l.country,
+      //         l.continent,
+      //         l.location_string,
+      //         j.name as job,
+      //         (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
+      //     FROM distinct_user_ids dup
+      //     JOIN user_profiles up ON dup.id = up.id
+      //     JOIN media m ON up.user_id = m.user_id
+      //     JOIN locations l ON up.location_id = l.id
+      //     JOIN jobs j ON j.id = up.job_id
+      //     WHERE m.type IN (1, 31)
+      // `;
+      // params = [
+      //     req.userId,
+      //     req.user.birthday,
+      //     req.user.birthday,
+      //     req.user.want_gender,
+      //     req.user.gender,
+      //     userLocationPreferenceOrder,
+      //     req.userId,
+      //     userLocationPreferenceOrder,
+      //     limit,
+      //     (pageNo - 1) * limit,
+      //     req.userId
+      // ];
+      console.log("first wave");
+
+      if (currentUserFilters.age_from && currentUserFilters.age_to) {
+        whereClauses.push(
+          "FLOOR(DATEDIFF(NOW(), up_inner.birthday) / 365) BETWEEN ? AND ?"
+        );
+        queryParams.push(currentUserFilters.age_from);
+        queryParams.push(currentUserFilters.age_to);
+      }
+
+      // Gender preference logic
+      if (currentUserFilters.gender_id == "1") {
+        // Male looking for female
+        whereClauses.push("(up_inner.gender = 2 AND up_inner.want_gender = 1)");
+      } else if (currentUserFilters.gender_id == "2") {
+        // Female looking for male
+        whereClauses.push("(up_inner.gender = 1 AND up_inner.want_gender = 2)");
+      } else if (currentUserFilters.gender_id == "3") {
+        // Interested in everyone, match males and females reciprocally
+        whereClauses.push(
+          "(up_inner.gender IN (1, 2) AND (up_inner.want_gender = ? OR up_inner.want_gender = 3))"
+        );
+        queryParams.push(currentUserFilters.gender_id);
+      }
+
+      if (currentUserFilters.religion_id) {
+        whereClauses.push("up_inner.religion_id = ?");
+        queryParams.push(currentUserFilters.religion_id);
+      }
+
+      if (currentUserFilters.education_id) {
+        whereClauses.push("up_inner.study_id = ?");
+        queryParams.push(currentUserFilters.education_id);
+      }
+
+      if (currentUserFilters.want_kids_id) {
+        whereClauses.push("up_inner.want_kid_id = ?");
+        queryParams.push(currentUserFilters.want_kids_id);
+      }
+
+      if (currentUserFilters.have_kids_id) {
+        whereClauses.push("up_inner.have_kid_id = ?");
+        queryParams.push(currentUserFilters.have_kids_id);
+      }
+
+      if (currentUserFilters.smoking_id) {
+        whereClauses.push("up_inner.smoke_id = ?");
+        queryParams.push(currentUserFilters.smoking_id);
+      }
+
+      if (currentUserFilters.drinks_id) {
+        whereClauses.push("up_inner.drink_id = ?");
+        queryParams.push(currentUserFilters.drinks_id);
+      }
+
+      query = `
+          WITH distinct_user_ids AS (
+            SELECT DISTINCT 
+              up_inner.id,
+              l_inner.continent,
+              up_inner.created_at
+            FROM 
+              user_profiles up_inner 
+            INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
+            INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
+            WHERE 
+              up_inner.user_id != ? 
+              AND l_inner.continent IS NOT NULL
+              AND u_inner.approval = ${UserApprovalEnum.APPROVED}
+              AND u_inner.active = 1
+              AND u_inner.deleted_at IS NULL
+              ${
+                whereClauses.length > 0
+                  ? " AND " + whereClauses.join(" AND ")
+                  : ""
+              }
+              AND l_inner.continent IN (?)
+              AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
+            ORDER BY 
+              FIELD(l_inner.continent, ?),
+              up_inner.created_at DESC, 
+              up_inner.id DESC 
+            LIMIT ? OFFSET ?
+          )
+          SELECT 
+            up.id, 
+            up.user_id, 
+            up.first_name, 
+            up.last_name, 
+            up.birthday, 
+            m.hash, 
+            m.extension, 
+            m.type, 
+            up.location_id, 
+            up.job_id, 
+            up.created_at,
+            l.country,
+            l.continent,
+            l.location_string,
+            j.name as job,
+            (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
+          FROM distinct_user_ids dup
+          JOIN user_profiles up ON dup.id = up.id 
+          JOIN media m ON up.user_id = m.user_id 
+          JOIN locations l ON up.location_id = l.id
+          JOIN jobs j ON j.id = up.job_id
+          WHERE m.type IN (1, 31)
+        `;
+
+      params = [
+        req.userId,
+        ...queryParams,
+        userLocationPreferenceOrder,
+        req.userId,
+        userLocationPreferenceOrder,
+        limit,
+        (pageNo - 1) * limit,
+        req.userId,
+      ];
     } else {
+      console.log("Third wave");
 
-        //* preferences off flow
+      // query = `
+      //     WITH distinct_user_ids AS (
+      //         SELECT DISTINCT
+      //             up_inner.id ,
+      //              l_inner.continent,
+      //              up_inner.created_at
+      //         FROM
+      //             user_profiles up_inner
+      //         INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
+      //         INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
+      //         WHERE
+      //             up_inner.user_id != ?
+      //             AND u_inner.active = 1
+      //             AND u_inner.deleted_at IS NULL
+      //             AND up_inner.gender = ?
+      //             AND up_inner.want_gender = ?
+      //             AND u_inner.approval = ${UserApprovalEnum.APPROVED}
+      //             AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
+      //         ORDER BY
+      //             up_inner.created_at DESC,
+      //             up_inner.id DESC
+      //         LIMIT ? OFFSET ?
+      //     )
+      //     SELECT
+      //         up.id,
+      //         up.user_id,
+      //         up.first_name,
+      //         up.last_name,
+      //         up.birthday,
+      //         m.hash,
+      //         m.extension,
+      //         m.type,
+      //         up.location_id,
+      //         up.job_id,
+      //         up.created_at,
+      //         l.country,
+      //         l.continent,
+      //         l.location_string,
+      //         j.name as job,
+      //         (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
+      //     FROM distinct_user_ids dup
+      //     JOIN user_profiles up ON dup.id = up.id
+      //     JOIN media m ON up.user_id = m.user_id
+      //     JOIN locations l ON up.location_id = l.id
+      //     JOIN jobs j ON j.id = up.job_id
+      //     WHERE m.type IN (1, 31)
+      // `;
 
-        query = `
+      // params = [
+      //     req.userId,
+      //     req.user.want_gender,
+      //     req.user.gender,
+      //     req.userId,
+      //     limit,
+      //     (pageNo - 1) * limit,
+      //     req.userId
+      // ];
+    }
+    console.log("first wave");
+
+      if (currentUserFilters.age_from && currentUserFilters.age_to) {
+        whereClauses.push(
+          "FLOOR(DATEDIFF(NOW(), up_inner.birthday) / 365) BETWEEN ? AND ?"
+        );
+        queryParams.push(currentUserFilters.age_from);
+        queryParams.push(currentUserFilters.age_to);
+      }
+
+      // Gender preference logic
+      if (currentUserFilters.gender_id == "1") {
+        // Male looking for female
+        whereClauses.push("(up_inner.gender = 2 AND up_inner.want_gender = 1)");
+      } else if (currentUserFilters.gender_id == "2") {
+        // Female looking for male
+        whereClauses.push("(up_inner.gender = 1 AND up_inner.want_gender = 2)");
+      } else if (currentUserFilters.gender_id == "3") {
+        // Interested in everyone, match males and females reciprocally
+        whereClauses.push(
+          "(up_inner.gender IN (1, 2) AND (up_inner.want_gender = ? OR up_inner.want_gender = 3))"
+        );
+        queryParams.push(currentUserFilters.gender_id);
+      }
+
+      if (currentUserFilters.religion_id) {
+        whereClauses.push("up_inner.religion_id = ?");
+        queryParams.push(currentUserFilters.religion_id);
+      }
+
+      if (currentUserFilters.education_id) {
+        whereClauses.push("up_inner.study_id = ?");
+        queryParams.push(currentUserFilters.education_id);
+      }
+
+      if (currentUserFilters.want_kids_id) {
+        whereClauses.push("up_inner.want_kid_id = ?");
+        queryParams.push(currentUserFilters.want_kids_id);
+      }
+
+      if (currentUserFilters.have_kids_id) {
+        whereClauses.push("up_inner.have_kid_id = ?");
+        queryParams.push(currentUserFilters.have_kids_id);
+      }
+
+      if (currentUserFilters.smoking_id) {
+        whereClauses.push("up_inner.smoke_id = ?");
+        queryParams.push(currentUserFilters.smoking_id);
+      }
+
+      if (currentUserFilters.drinks_id) {
+        whereClauses.push("up_inner.drink_id = ?");
+        queryParams.push(currentUserFilters.drinks_id);
+      }
+
+      query = `
+          WITH distinct_user_ids AS (
+            SELECT DISTINCT 
+              up_inner.id,
+              l_inner.continent,
+              up_inner.created_at
+            FROM 
+              user_profiles up_inner 
+            INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
+            INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
+            WHERE 
+              up_inner.user_id != ? 
+              AND l_inner.continent IS NOT NULL
+              AND u_inner.approval = ${UserApprovalEnum.APPROVED}
+              AND u_inner.active = 1
+              AND u_inner.deleted_at IS NULL
+              ${
+                whereClauses.length > 0
+                  ? " AND " + whereClauses.join(" AND ")
+                  : ""
+              }
+              AND l_inner.continent IN (?)
+              AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
+            ORDER BY 
+              FIELD(l_inner.continent, ?),
+              up_inner.created_at DESC, 
+              up_inner.id DESC 
+            LIMIT ? OFFSET ?
+          )
+          SELECT 
+            up.id, 
+            up.user_id, 
+            up.first_name, 
+            up.last_name, 
+            up.birthday, 
+            m.hash, 
+            m.extension, 
+            m.type, 
+            up.location_id, 
+            up.job_id, 
+            up.created_at,
+            l.country,
+            l.continent,
+            l.location_string,
+            j.name as job,
+            (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
+          FROM distinct_user_ids dup
+          JOIN user_profiles up ON dup.id = up.id 
+          JOIN media m ON up.user_id = m.user_id 
+          JOIN locations l ON up.location_id = l.id
+          JOIN jobs j ON j.id = up.job_id
+          WHERE m.type IN (1, 31)
+        `;
+
+      params = [
+        req.userId,
+        ...queryParams,
+        userLocationPreferenceOrder,
+        req.userId,
+        userLocationPreferenceOrder,
+        limit,
+        (pageNo - 1) * limit,
+        req.userId,
+      ];
+  } else {
+    query = `
             WITH distinct_user_ids AS (
                 SELECT
                     up_inner.id,
@@ -407,45 +793,45 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
             WHERE m.type IN (1, 31)
         `;
 
-        params = [
-            req.userId,
-            req.user.want_gender,
-            req.user.gender,
-            req.user.birthday,
-            req.user.birthday,
-            userLocationPreferenceOrder,
-            req.userId,
-            userLocationPreferenceOrder,
-            limit,
-            (pageNo - 1) * limit,
-            req.userId
-        ];
-    }
+    params = [
+      req.userId,
+      req.user.want_gender,
+      req.user.gender,
+      req.user.birthday,
+      req.user.birthday,
+      userLocationPreferenceOrder,
+      req.userId,
+      userLocationPreferenceOrder,
+      limit,
+      (pageNo - 1) * limit,
+      req.userId,
+    ];
+  }
 
-    query = query.concat(` 
+  query = query.concat(` 
         AND up.user_id NOT IN (SELECT b.person_id FROM blocks b WHERE b.user_id = ?) 
         AND up.user_id NOT IN (SELECT r.person_id FROM reports r WHERE r.user_id = ?) 
         AND up.user_id NOT IN (SELECT b.user_id FROM blocks b WHERE b.person_id = ?) 
         AND up.user_id NOT IN (SELECT r.user_id FROM reports r WHERE r.person_id = ?);
     `);
 
-    params.push(req.userId, req.userId, req.userId, req.userId);
+  params.push(req.userId, req.userId, req.userId, req.userId);
 
-    db.query<RowDataPacket[]>(query, params, (err, result) => {
-        if (err) {
-            console.log(err)
-            res.status(500).send({ message: "Internal server error" });
-            return;
-        }
+  db.query<RowDataPacket[]>(query, params, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send({ message: "Internal server error" });
+      return;
+    }
 
-        const users = result.filter((user: any) => user.like !== 1);
+    const users = result.filter((user: any) => user.like !== 1);
 
-        res.status(200).send(users);
-    });
+    res.status(200).send(users);
+  });
 });
 
 userFlowRouter.get("/profile/:id", (req: UserRequest, res) => {
-    const query = `
+  const query = `
         SELECT
             up.id,
             up.user_id,
@@ -482,57 +868,70 @@ userFlowRouter.get("/profile/:id", (req: UserRequest, res) => {
         WHERE up.user_id = ?;
         `;
 
-    db.query<RowDataPacket[]>(query, [req.params.id], (err, result) => {
+  db.query<RowDataPacket[]>(query, [req.params.id], (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send({ message: "Internal server error" });
+      return;
+    }
+
+    db.query<RowDataPacket[]>(
+      "SELECT m.id, m.hash, m.extension, m.type FROM media m WHERE m.user_id = ?",
+      [req.params.id],
+      (err, mediaResult) => {
         if (err) {
-            console.log(err)
-            res.status(500).send({ message: "Internal server error" });
-            return;
+          console.log(err);
+          res.status(500).send({ message: "Internal server error" });
+          return;
         }
 
-        db.query<RowDataPacket[]>("SELECT m.id, m.hash, m.extension, m.type FROM media m WHERE m.user_id = ?", [req.params.id], (err, mediaResult) => {
+        if (mediaResult.length !== 0) {
+          result[0].photos = mediaResult;
+        }
+
+        db.query<RowDataPacket[]>(
+          "SELECT p.name FROM user_personalities as up INNER JOIN personalities as p WHERE up.personality_id = p.id AND up.user_id = ?",
+          [req.params.id],
+          (err, personalityResult) => {
             if (err) {
-                console.log(err)
-                res.status(500).send({ message: "Internal server error" });
-                return;
+              console.log(err);
+              res.status(500).send({ message: "Internal server error" });
+              return;
             }
 
-            if (mediaResult.length !== 0) {
-                result[0].photos = mediaResult;
+            if (personalityResult.length !== 0) {
+              result[0].personalities = personalityResult.map(
+                (personality: any) => personality.name
+              );
             }
 
-
-            db.query<RowDataPacket[]>("SELECT p.name FROM user_personalities as up INNER JOIN personalities as p WHERE up.personality_id = p.id AND up.user_id = ?", [req.params.id], (err, personalityResult) => {
-
+            db.query<RowDataPacket[]>(
+              "SELECT a.id, a.answer, q.text as question FROM question_answers a INNER JOIN questions q ON q.id = a.question_id WHERE user_id = ?;",
+              [req.params.id],
+              (err, answersResult) => {
                 if (err) {
-                    console.log(err)
-                    res.status(500).send({ message: "Internal server error" });
-                    return;
+                  console.log(err);
+                  res.status(500).send({ message: "Internal server error" });
+                  return;
                 }
 
-                if (personalityResult.length !== 0) {
-                    result[0].personalities = personalityResult.map((personality: any) => personality.name);
+                if (answersResult.length !== 0) {
+                  result[0].answers = answersResult;
                 }
 
-                db.query<RowDataPacket[]>('SELECT a.id, a.answer, q.text as question FROM question_answers a INNER JOIN questions q ON q.id = a.question_id WHERE user_id = ?;', [req.params.id], (err, answersResult) => {
-                    if (err) {
-                        console.log(err)
-                        res.status(500).send({ message: "Internal server error" });
-                        return;
-                    }
-
-                    if (answersResult.length !== 0) {
-                        result[0].answers = answersResult;
-                    }
-
-                    res.status(200).send(result[0]);
-                });
-            });
-        });
-    });
+                res.status(200).send(result[0]);
+              }
+            );
+          }
+        );
+      }
+    );
+  });
 });
 
 userFlowRouter.get("/preferences", async (req: UserRequest, res) => {
-    db.query<RowDataPacket[]>(`
+  db.query<RowDataPacket[]>(
+    `
         SELECT
         (SELECT g.name FROM genders g WHERE f.gender_id = g.id) AS gender,
         f.age_from,
@@ -553,112 +952,118 @@ userFlowRouter.get("/preferences", async (req: UserRequest, res) => {
         INNER JOIN user_profiles up ON up.user_id = uf.user_id
         LEFT JOIN filter_locations fl ON fl.filters_id = uf.filter_id
         WHERE uf.user_id = ?;
-    `, [req.userId], (err, result) => {
-        if (err) {
-            console.log(err)
-            res.status(500).send({ message: "Internal server error" });
-            return;
-        }
+    `,
+    [req.userId],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send({ message: "Internal server error" });
+        return;
+      }
 
-        res.status(200).send(result[0] ?? {});
-    });
+      res.status(200).send(result[0] ?? {});
+    }
+  );
 });
 
 userFlowRouter.put("/preferences/save/age", (req: UserRequest, res) => {
-    const { age_from, age_to } = req.body;
+  const { age_from, age_to } = req.body;
 
-    if (!age_from || !age_to) {
-        res.status(400).send({ message: "Bad request" });
-        return;
+  if (!age_from || !age_to) {
+    res.status(400).send({ message: "Bad request" });
+    return;
+  }
+
+  db.beginTransaction(async (err) => {
+    if (err) {
+      res.status(500).send({ message: "Internal server error" });
+      return;
     }
 
-    db.beginTransaction(async (err) => {
+    try {
+      const userFilters: any = await getUserFilters(req.userId as string);
+
+      let query = "";
+      let params: any;
+
+      if (!userFilters) {
+        query = `INSERT INTO filters (age_from, age_to) VALUES (?, ?);`;
+        params = [age_from, age_to];
+      } else {
+        query = `UPDATE filters SET age_from = ?, age_to = ? WHERE id = ?;`;
+        params = [age_from, age_to, userFilters.filter_id];
+      }
+
+      db.query<ResultSetHeader>(query, params, async (err, result) => {
         if (err) {
+          console.log(err);
+          db.rollback(() => {
             res.status(500).send({ message: "Internal server error" });
-            return;
+          });
+          return;
         }
 
-        try {
-            const userFilters: any = await getUserFilters(req.userId as string);
-
-            let query = "";
-            let params: any;
-
-            if (!userFilters) {
-                query = `INSERT INTO filters (age_from, age_to) VALUES (?, ?);`;
-                params = [age_from, age_to];
-            } else {
-                query = `UPDATE filters SET age_from = ?, age_to = ? WHERE id = ?;`;
-                params = [age_from, age_to, userFilters.filter_id];
-            }
-
-            db.query<ResultSetHeader>(query, params, async (err, result) => {
-                if (err) {
-                    console.log(err)
-                    db.rollback(() => {
-                        res.status(500).send({ message: "Internal server error" });
-                    });
+        if (!userFilters) {
+          const addFilterIdInUserFiltersQuery = `INSERT INTO user_filters (user_id, filter_id) VALUES (?, ?);`;
+          try {
+            await new Promise((resolve, reject) => {
+              db.query<ResultSetHeader>(
+                addFilterIdInUserFiltersQuery,
+                [req.userId, result.insertId],
+                (err, result) => {
+                  if (err) {
+                    console.log(err);
+                    reject(err);
                     return;
+                  }
+
+                  resolve(result);
                 }
-
-                if (!userFilters) {
-                    const addFilterIdInUserFiltersQuery = `INSERT INTO user_filters (user_id, filter_id) VALUES (?, ?);`;
-                    try {
-                        await new Promise((resolve, reject) => {
-                            db.query<ResultSetHeader>(addFilterIdInUserFiltersQuery, [req.userId, result.insertId], (err, result) => {
-                                if (err) {
-                                    console.log(err)
-                                    reject(err);
-                                    return;
-                                }
-
-                                resolve(result);
-                            });
-                        });
-
-                    } catch (err) {
-                        db.rollback(() => {
-                            res.status(500).send({ message: "Internal server error" });
-                        });
-                        return;
-                    }
-                }
-
-                await deleteAllDiscoverySkip(req.userId as string);
-
-                db.commit((err) => {
-                    if (err) {
-                        console.log(err)
-                        db.rollback(() => {
-                            res.status(500).send({ message: "Internal server error" });
-                        });
-                        return;
-                    }
-
-                    res.status(200).send({ message: "Preferences updated" });
-                });
+              );
             });
-        } catch (err) {
-            console.log(err)
+          } catch (err) {
             db.rollback(() => {
-                res.status(500).send({ message: "Internal server error" });
+              res.status(500).send({ message: "Internal server error" });
             });
             return;
+          }
         }
-    });
 
+        await deleteAllDiscoverySkip(req.userId as string);
 
+        db.commit((err) => {
+          if (err) {
+            console.log(err);
+            db.rollback(() => {
+              res.status(500).send({ message: "Internal server error" });
+            });
+            return;
+          }
+
+          res.status(200).send({ message: "Preferences updated" });
+        });
+      });
+    } catch (err) {
+      console.log(err);
+      db.rollback(() => {
+        res.status(500).send({ message: "Internal server error" });
+      });
+      return;
+    }
+  });
 });
 
-userFlowRouter.put("/preferences/save/location", async (req: UserRequest, res) => {
+userFlowRouter.put(
+  "/preferences/save/location",
+  async (req: UserRequest, res) => {
     const locationId = req.body.location_id;
     const type = req.body.type; // Get type from request body dynamically
-  
-    if (typeof locationId === 'undefined' || typeof type === 'undefined') {
+
+    if (typeof locationId === "undefined" || typeof type === "undefined") {
       res.status(400).send({ message: "Bad request" });
       return;
     }
-  
+
     const isPremium = await new Promise((resolve, reject) => {
       db.query<RowDataPacket[]>(
         "SELECT id FROM subscriptions WHERE user_id = ? AND stripe_status = 'active';",
@@ -669,29 +1074,29 @@ userFlowRouter.put("/preferences/save/location", async (req: UserRequest, res) =
             reject(err);
             return;
           }
-  
+
           resolve(result.length > 0);
         }
       );
     });
-  
+
     if (!isPremium) {
       res.status(403).send({ message: "Forbidden" });
       return;
     }
-  
+
     db.beginTransaction(async (err) => {
       if (err) {
         console.log(err);
         res.status(500).send({ message: "Internal server error" });
         return;
       }
-  
+
       try {
         const userFilters: any = await getUserFilters(req.userId as string);
-  
+
         let insertedFilter: any;
-  
+
         if (!userFilters) {
           insertedFilter = await new Promise((resolve, reject) => {
             db.query(
@@ -703,7 +1108,7 @@ userFlowRouter.put("/preferences/save/location", async (req: UserRequest, res) =
                   reject(err);
                   return;
                 }
-  
+
                 resolve(result);
               }
             );
@@ -725,7 +1130,7 @@ userFlowRouter.put("/preferences/save/location", async (req: UserRequest, res) =
             );
           });
         }
-  
+
         const userLocationFilter: any = await new Promise((resolve, reject) => {
           db.query<RowDataPacket[]>(
             `SELECT * FROM filter_locations WHERE filters_id = ?;`,
@@ -736,72 +1141,38 @@ userFlowRouter.put("/preferences/save/location", async (req: UserRequest, res) =
                 reject(err);
                 return;
               }
-  
+
               resolve(result[0]);
             }
           );
         });
-  
+
         let query;
         let params;
 
-        if (type === 0 && !locationId && !userLocationFilter){
-        return;
+        if (type === 0 && !locationId && !userLocationFilter) {
+          return;
         }
-        
-           // New condition: If type is 0, locationId is null, and userFilters exist, delete from filter_locations
-           if (type === 0 && !locationId && userLocationFilter) {
-            await new Promise((resolve, reject) => {
-              db.query(
-                `DELETE FROM filter_locations WHERE filters_id = ?;`,
-                [userFilters.filter_id],
-                (err, result) => {
-                  if (err) {
-                    console.log(err);
-                    reject(err);
-                    return;
-                  }
-    
-                  resolve(result);
+
+        // New condition: If type is 0, locationId is null, and userFilters exist, delete from filter_locations
+        if (type === 0 && !locationId && userLocationFilter) {
+          await new Promise((resolve, reject) => {
+            db.query(
+              `DELETE FROM filter_locations WHERE filters_id = ?;`,
+              [userFilters.filter_id],
+              (err, result) => {
+                if (err) {
+                  console.log(err);
+                  reject(err);
+                  return;
                 }
-              );
-            });
-    
-            // Commit the transaction after deletion
-            db.commit((err) => {
-              if (err) {
-                console.log(err);
-                db.rollback(() => {
-                  res.status(500).send({ message: "Internal server error" });
-                });
-                return;
+
+                resolve(result);
               }
-    
-              res.status(200).send({ message: "Location filter deleted" });
-            });
-    
-            return; // Exit after deletion
-          }
-  
-        if (!userLocationFilter) {
-          query = `INSERT INTO filter_locations (location_id, filters_id) VALUES (?, ?);`;
-          params = [locationId, insertedFilter?.insertId ?? userFilters.filter_id];
-        } else {
-          query = `UPDATE filter_locations SET location_id = ? WHERE filters_id = ?;`;
-          params = [locationId, userLocationFilter.filters_id];
-        }
-  
-        db.query(query, params, async (err, result) => {
-          if (err) {
-            console.log(err);
-            db.rollback(() => {
-              res.status(500).send({ message: "Internal server error" });
-            });
-            return;
-          }
-  
-          await deleteAllDiscoverySkip(req.userId as string);
-  
+            );
+          });
+
+          // Commit the transaction after deletion
           db.commit((err) => {
             if (err) {
               console.log(err);
@@ -810,7 +1181,44 @@ userFlowRouter.put("/preferences/save/location", async (req: UserRequest, res) =
               });
               return;
             }
-  
+
+            res.status(200).send({ message: "Location filter deleted" });
+          });
+
+          return; // Exit after deletion
+        }
+
+        if (!userLocationFilter) {
+          query = `INSERT INTO filter_locations (location_id, filters_id) VALUES (?, ?);`;
+          params = [
+            locationId,
+            insertedFilter?.insertId ?? userFilters.filter_id,
+          ];
+        } else {
+          query = `UPDATE filter_locations SET location_id = ? WHERE filters_id = ?;`;
+          params = [locationId, userLocationFilter.filters_id];
+        }
+
+        db.query(query, params, async (err, result) => {
+          if (err) {
+            console.log(err);
+            db.rollback(() => {
+              res.status(500).send({ message: "Internal server error" });
+            });
+            return;
+          }
+
+          await deleteAllDiscoverySkip(req.userId as string);
+
+          db.commit((err) => {
+            if (err) {
+              console.log(err);
+              db.rollback(() => {
+                res.status(500).send({ message: "Internal server error" });
+              });
+              return;
+            }
+
             res.status(200).send({ message: "Preferences updated" });
           });
         });
@@ -821,21 +1229,24 @@ userFlowRouter.put("/preferences/save/location", async (req: UserRequest, res) =
         });
       }
     });
-  });
-  
+  }
+);
 
-userFlowRouter.put("/preferences/save/:field", async (req: UserRequest, res) => {
+userFlowRouter.put(
+  "/preferences/save/:field",
+  async (req: UserRequest, res) => {
     const field = req.params.field;
-    const value = req.body.value;
-
+    let value = req.body.value;
+    console.log("field", field);
+    console.log("value", value);
     const fields = [
-        "gender_id",
-        "religion_id",
-        "education_id",
-        "smoking_id",
-        "want_kids_id",
-        "have_kids_id",
-        "drinks_id",
+      "gender_id",
+      "religion_id",
+      "education_id",
+      "smoking_id",
+      "want_kids_id",
+      "have_kids_id",
+      "drinks_id",
     ];
 
     // if (!field || !value) {
@@ -844,186 +1255,203 @@ userFlowRouter.put("/preferences/save/:field", async (req: UserRequest, res) => 
     // }
 
     if (!fields.includes(field)) {
-        res.status(400).send({ message: "Bad request" });
-        return;
+      res.status(400).send({ message: "Bad request" });
+      return;
     }
 
     const isPremium = await new Promise((resolve, reject) => {
-        db.query<RowDataPacket[]>("SELECT id FROM subscriptions WHERE user_id = ? AND stripe_status = 'active';", [req.userId], (err, result) => {
-            if (err) {
-                console.log(err)
-                reject(err);
-                return;
-            }
+      db.query<RowDataPacket[]>(
+        "SELECT id FROM subscriptions WHERE user_id = ? AND stripe_status = 'active';",
+        [req.userId],
+        (err, result) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+            return;
+          }
 
-            if (result.length === 0) {
-                resolve(false);
-            }
+          if (result.length === 0) {
+            resolve(false);
+          }
 
-            resolve(true);
-        });
+          resolve(true);
+        }
+      );
     });
 
     if (field !== "religion_id" && field !== "gender_id" && !isPremium) {
-        res.status(403).send({ message: "Forbidden" });
-        return;
+      res.status(403).send({ message: "Forbidden" });
+      return;
     }
 
     db.beginTransaction(async (err) => {
-        if (err) {
-            console.log(err);
-            res.status(500).send({ message: "Internal server error" });
-            return;
+      if (err) {
+        console.log(err);
+        res.status(500).send({ message: "Internal server error" });
+        return;
+      }
+
+      try {
+        const userFilters: any = await getUserFilters(req.userId as string);
+
+        let query = "";
+        let params: any;
+
+        if (!userFilters) {
+          query = `INSERT INTO filters (${field}) VALUES (?);`;
+          params = [value === null ? "3" : value];
+        } else {
+          query = `UPDATE filters SET ${field} = ? WHERE id = ?;`;
+          params = [value === null ? "3" : value, userFilters.filter_id];
         }
 
-        try {
-            const userFilters: any = await getUserFilters(req.userId as string);
+        db.query<ResultSetHeader>(query, params, async (err, result) => {
+          if (err) {
+            console.log(err);
+            db.rollback(() => {
+              res.status(500).send({ message: "Internal server error" });
+            });
+            return;
+          }
 
-            let query = "";
-            let params: any;
-
-            if (!userFilters) {
-                query = `INSERT INTO filters (${field}) VALUES (?);`;
-                params = [value === "any" ? null : value];
-            } else {
-                query = `UPDATE filters SET ${field} = ? WHERE id = ?;`;
-                params = [value === "any" ? null : value, userFilters.filter_id];
-            }
-
-            db.query<ResultSetHeader>(query, params, async (err, result) => {
-                if (err) {
-                    console.log(err);
-                    db.rollback(() => {
-                        res.status(500).send({ message: "Internal server error" });
-                    });
-                    return;
-                }
-
-                 // Additional step: Update gender in user_profiles if field is gender_id
-                 if (field === "gender_id") {
-                    const updateGenderQuery = `
+          // Additional step: Update gender in user_profiles if field is gender_id
+          if (field === "gender_id") {
+            const updateGenderQuery = `
                         UPDATE user_profiles
                         SET want_gender = ?, updated_at = NOW()
                         WHERE user_id = ?
                     `;
 
-                    db.query<ResultSetHeader>(updateGenderQuery, [value, req.userId], (err, result) => {
-                        if (err) {
-                            console.log(err);
-                            db.rollback(() => {
-                                res.status(500).send({ message: "Internal server error" });
-                            });
-                            return;
-                        }
-
-                        if (result.affectedRows === 0) {
-                            db.rollback(() => {
-                                res.status(404).json({ message: 'User profile not found' });
-                            });
-                            return;
-                        }
-                    });
+            db.query<ResultSetHeader>(
+              updateGenderQuery,
+              [value == null ? "3" : value, req.userId],
+              (err, result) => {
+                if (err) {
+                  console.log(err);
+                  db.rollback(() => {
+                    res.status(500).send({ message: "Internal server error" });
+                  });
+                  return;
                 }
 
-                if (!userFilters) {
-                    const addFilterIdInUserFiltersQuery = `INSERT INTO user_filters (user_id, filter_id) VALUES (?, ?);`;
-                    try {
-                        await new Promise((resolve, reject) => {
-                            db.query<ResultSetHeader>(addFilterIdInUserFiltersQuery, [req.userId, result.insertId], (err, result) => {
-                                if (err) {
-                                    console.log(err);
-                                    reject(err);
-                                    return;
-                                }
-
-                                resolve(result);
-                            });
-                        });
-                    } catch (err) {
-                        console.log(err);
-                        db.rollback(() => {
-                            res.status(500).send({ message: "Internal server error" });
-                        });
-                        return;
-                    }
+                if (result.affectedRows === 0) {
+                  db.rollback(() => {
+                    res.status(404).json({ message: "User profile not found" });
+                  });
+                  return;
                 }
+              }
+            );
+          }
 
-                await deleteAllDiscoverySkip(req.userId as string);
-
-                db.commit((err) => {
+          if (!userFilters) {
+            const addFilterIdInUserFiltersQuery = `INSERT INTO user_filters (user_id, filter_id) VALUES (?, ?);`;
+            try {
+              await new Promise((resolve, reject) => {
+                db.query<ResultSetHeader>(
+                  addFilterIdInUserFiltersQuery,
+                  [req.userId, result.insertId],
+                  (err, result) => {
                     if (err) {
-                        db.rollback(() => {
-                            res.status(500).send({ message: "Internal server error" });
-                        });
-                        return;
+                      console.log(err);
+                      reject(err);
+                      return;
                     }
-                    res.status(200).send({ message: "Preferences updated" });
-                });
-            });
-        } catch (err) {
-            console.log(err);
-            db.rollback(() => {
+
+                    resolve(result);
+                  }
+                );
+              });
+            } catch (err) {
+              console.log(err);
+              db.rollback(() => {
                 res.status(500).send({ message: "Internal server error" });
-            });
-            return;
-        }
+              });
+              return;
+            }
+          }
+
+          await deleteAllDiscoverySkip(req.userId as string);
+
+          db.commit((err) => {
+            if (err) {
+              db.rollback(() => {
+                res.status(500).send({ message: "Internal server error" });
+              });
+              return;
+            }
+            res.status(200).send({ message: "Preferences updated" });
+          });
+        });
+      } catch (err) {
+        console.log(err);
+        db.rollback(() => {
+          res.status(500).send({ message: "Internal server error" });
+        });
+        return;
+      }
     });
-});
+  }
+);
 
 userFlowRouter.get("/preferences/options/:field", (req: UserRequest, res) => {
-    const field = req.params.field;
+  const field = req.params.field;
 
-    const fields = [
-        "genders",
-        "religions",
-        "studies",
-        "locations",
-        "want_kids",
-        "have_kids",
-        "smokes",
-        "drinks",
-    ]
+  const fields = [
+    "genders",
+    "religions",
+    "studies",
+    "locations",
+    "want_kids",
+    "have_kids",
+    "smokes",
+    "drinks",
+  ];
 
-    if (!fields.includes(field)) {
-        res.status(400).send({ message: "Bad request" });
-        return;
-    }
+  if (!fields.includes(field)) {
+    res.status(400).send({ message: "Bad request" });
+    return;
+  }
 
-    if (field === "locations") {
-        db.query<RowDataPacket[]>("SELECT id, country, location_string FROM locations GROUP BY country, location_string;", (err, result) => {
-            if (err) {
-                res.status(500).send({ message: "Internal server error" });
-                return;
-            }
+  if (field === "locations") {
+    db.query<RowDataPacket[]>(
+      "SELECT id, country, location_string FROM locations GROUP BY country, location_string;",
+      (err, result) => {
+        if (err) {
+          res.status(500).send({ message: "Internal server error" });
+          return;
+        }
 
-            const locations = result.reduce((acc: any, location: any) => {
-                if (!acc[location.country]) {
-                    acc[location.country] = [];
-                }
+        const locations = result.reduce((acc: any, location: any) => {
+          if (!acc[location.country]) {
+            acc[location.country] = [];
+          }
 
-                acc[location.country].push(location);
+          acc[location.country].push(location);
 
-                return acc;
-            }, {});
+          return acc;
+        }, {});
 
-            res.status(200).send(locations);
-        });
-    } else {
-        db.query(`SELECT name, MIN(id) as id FROM ${field} GROUP BY name ORDER BY id ASC;`, (err, result) => {
-            if (err) {
-                console.error('Error occurred:', err);
-                res.status(500).send({ 
-                    message: "Internal server error", 
-                    error: err.message,  
-                    stack: err.stack    
-                });
-                return;
-            }
-            res.status(200).send(result);
-        });
-        
-    }
+        res.status(200).send(locations);
+      }
+    );
+  } else {
+    db.query(
+      `SELECT name, MIN(id) as id FROM ${field} GROUP BY name ORDER BY id ASC;`,
+      (err, result) => {
+        if (err) {
+          console.error("Error occurred:", err);
+          res.status(500).send({
+            message: "Internal server error",
+            error: err.message,
+            stack: err.stack,
+          });
+          return;
+        }
+        res.status(200).send(result);
+      }
+    );
+  }
 });
-
 
 export default userFlowRouter;
