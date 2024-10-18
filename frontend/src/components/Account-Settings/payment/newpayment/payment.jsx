@@ -678,7 +678,16 @@ const Paymentfinal = () => {
                                                      {" "}terms of service
                                                 </a>.
                                             </p>
-
+                                            <p
+                style={{
+                  color: "#515151",
+                  fontSize: "18px",
+                  fontWeight: "500",
+                  textAlign:"center"
+                }}
+              >
+                We like commitments. No refunds.
+              </p>
                                             <div className={pay.subscribeButtonContainer}>
                                                 {
                                                     paymentMethods.length >= 1 ? <button className="global-next-btn" onClick={handlePayment}> {loading ? 'Processing...' : 'Continue'}</button> : <button type="submit" className="global-next-btn">  {loading ? 'Processing...' : 'Submit'}</button>

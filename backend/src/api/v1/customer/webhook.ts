@@ -15,7 +15,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 webhookRouter.post('/', async (request, response) => {
     const sig = request.headers['stripe-signature']!;
-
     let event;
 
     try {
