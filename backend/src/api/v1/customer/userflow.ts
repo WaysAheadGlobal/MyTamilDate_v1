@@ -1415,13 +1415,14 @@ userFlowRouter.get("/preferences/options/:field", (req: UserRequest, res) => {
 
   if (field === "locations") {
     db.query<RowDataPacket[]>(
-      "SELECT id, country, location_string FROM locations GROUP BY country, location_string;",
+      "SELECT id, country, location_string FROM MTD_UAT.locations GROUP BY id, country, location_string",
       (err, result) => {
         if (err) {
+          console.log(err);
           res.status(500).send({ message: "Internal server error" });
           return;
         }
-
+        console.log(result);
         const locations = result.reduce((acc: any, location: any) => {
           if (!acc[location.country]) {
             acc[location.country] = [];
