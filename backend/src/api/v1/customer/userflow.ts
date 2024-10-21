@@ -28,24 +28,36 @@ async function getUserFilters(userId: string) {
 async function getUserPreferences(userId: string) {
   return new Promise((resolve, reject) => {
     db.query<RowDataPacket[]>(
-      `
-            SELECT
-            COALESCE(f.gender_id, up.want_gender) AS gender,
-            COALESCE(f.age_from, (FLOOR(DATEDIFF(NOW(), up.birthday) / 365) - 5)) AS age_from,
-            COALESCE(f.age_to, (FLOOR(DATEDIFF(NOW(), up.birthday) / 365) + 10)) AS age_to,
-            COALESCE(f.religion_id, up.religion_id) AS religion,
-            COALESCE((SELECT l.continent FROM locations l WHERE fl.location_id = l.id), (SELECT l.continent FROM locations l WHERE up.location_id = l.id), 'North America') AS location,
-            COALESCE(f.education_id, up.study_id) AS education,
-            COALESCE(f.want_kids_id, up.want_kid_id) AS want_kids,
-            COALESCE(f.have_kids_id, up.have_kid_id) AS have_kids,
-            COALESCE(f.smoking_id, up.smoke_id) AS smoking,
-            COALESCE(f.drinks_id, up.drink_id) AS drinking
-            FROM user_profiles up
-            LEFT JOIN user_filters uf ON up.user_id = uf.user_id
-            LEFT JOIN filters f ON f.id = uf.filter_id
-            LEFT JOIN filter_locations fl ON fl.filters_id = uf.filter_id
-            WHERE up.user_id =  ?;
-        `,
+      `SELECT
+    COALESCE(f.gender_id, up.want_gender) AS gender,
+    COALESCE(f.age_from, (FLOOR(DATEDIFF(NOW(), up.birthday) / 365) - 5)) AS age_from,
+    COALESCE(f.age_to, (FLOOR(DATEDIFF(NOW(), up.birthday) / 365) + 10)) AS age_to,
+    COALESCE(f.religion_id, up.religion_id) AS religion,
+    CASE
+        WHEN (SELECT location_type FROM filters WHERE id = uf.filter_id) = 1 THEN
+            COALESCE((SELECT l.country FROM locations l WHERE fl.location_id = l.id), 
+                     (SELECT l.country FROM locations l WHERE up.location_id = l.id), 
+                     'North America') -- COUNTRY
+        WHEN (SELECT location_type FROM filters WHERE id = uf.filter_id) = 2 THEN
+            COALESCE((SELECT CONCAT(l.location_string, IF(l.location_string != '', ', ', ''), l.country) FROM locations l WHERE fl.location_id = l.id),
+                     (SELECT CONCAT(l.location_string, IF(l.location_string != '', ', ', ''), l.country) FROM locations l WHERE up.location_id = l.id),
+                     'North America') -- CITY
+        WHEN (SELECT location_type FROM filters WHERE id = uf.filter_id) = 0 THEN
+            'Any' -- ANY
+        ELSE
+            NULL
+    END AS location,
+    COALESCE(f.education_id, up.study_id) AS education,
+    COALESCE(f.want_kids_id, up.want_kid_id) AS want_kids,
+    COALESCE(f.have_kids_id, up.have_kid_id) AS have_kids,
+    COALESCE(f.smoking_id, up.smoke_id) AS smoking,
+    COALESCE(f.drinks_id, up.drink_id) AS drinking
+FROM user_profiles up
+LEFT JOIN user_filters uf ON up.user_id = uf.user_id
+LEFT JOIN filters f ON f.id = uf.filter_id
+LEFT JOIN filter_locations fl ON fl.filters_id = uf.filter_id
+WHERE up.user_id = ?;
+`,
       [userId],
       (err, result) => {
         if (err) {
@@ -100,9 +112,7 @@ userFlowRouter.get("/email", (req: UserRequest, res) => {
 userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
   console.log("profiles");
   const wave = req.query.wave ? Number(req.query.wave) : 1;
-  console.log(wave);
   const pageNo = req.query.page ? Number(req.query.page) : 1;
-  console.log(pageNo);
   const limit = 20;
 
   if (!req.userId) {
@@ -122,712 +132,202 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
   console.log("currentUserFilters", currentUserFilters);
   const userPreferences: any = await getUserPreferences(req.userId);
   console.log("userPreferences", userPreferences);
+  const userLocationFilter = await new Promise((resolve, reject) => {
+    db.query<RowDataPacket[]>(
+      `SELECT * FROM filter_locations WHERE filters_id = ?;`,
+      [currentUserFilters.filter_id],
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          reject(err);
+          return;
+        }
+
+        resolve(result[0]);
+      }
+    );
+  });
+  console.log("userLocationFilter", userLocationFilter);
+  const userLocation = await new Promise((resolve, reject) => {
+    db.query<RowDataPacket[]>(
+      `SELECT * FROM locations l WHERE id = ?;`,
+      [(userLocationFilter as any).location_id],
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          reject(err);
+          return;
+        }
+
+        resolve(result[0]);
+      }
+    );
+  });
+  console.log("userLocation", userLocation);
+  // Get location preference order (city/country/any)
   const userLocationPreferenceOrder = getLocationOrder(
     userPreferences.location
   );
   console.log("userLocationPreferenceOrder", userLocationPreferenceOrder);
-  if (currentUserFilters) {
-    //* preferences on flow
-    //* 1st Wave - Without age extension and all the preferences (perfect match)
 
+  if (currentUserFilters) {
     let whereClauses = [];
     let queryParams = [];
 
-    // if (wave === 1) {
-    //   console.log("first wave");
-
-    //   if (currentUserFilters.age_from && currentUserFilters.age_to) {
-    //     whereClauses.push(
-    //       "FLOOR(DATEDIFF(NOW(), up_inner.birthday) / 365) BETWEEN ? AND ?"
-    //     );
-    //     queryParams.push(currentUserFilters.age_from);
-    //     queryParams.push(currentUserFilters.age_to);
-    //   }
-    //   if(currentUserFilters.gender_id == "1") {
-    //     whereClauses.push("up_inner.gender = ?");
-    //     queryParams.push('1');
-    //   }
-    //   if (currentUserFilters.gender_id == "2") {
-    //     whereClauses.push("up_inner.gender = ?");
-    //     queryParams.push('2');
-    //   }
-    //   if (currentUserFilters.gender_id == "3"){
-    //     whereClauses.push("up_inner.gender = ? OR up_inner.gender = ?");
-    //     queryParams.push("1");
-    //     queryParams
-    //   }
-    //   if (currentUserFilters.religion_id) {
-    //     whereClauses.push("up_inner.religion_id = ?");
-    //     queryParams.push(currentUserFilters.religion_id);
-    //   }
-
-    //   if (currentUserFilters.education_id) {
-    //     whereClauses.push("up_inner.study_id = ?");
-    //     queryParams.push(currentUserFilters.education_id);
-    //   }
-
-    //   if (currentUserFilters.want_kids_id) {
-    //     whereClauses.push("up_inner.want_kid_id = ?");
-    //     queryParams.push(currentUserFilters.want_kids_id);
-    //   }
-
-    //   if (currentUserFilters.have_kids_id) {
-    //     whereClauses.push("up_inner.have_kid_id = ?");
-    //     queryParams.push(currentUserFilters.have_kids_id);
-    //   }
-
-    //   if (currentUserFilters.smoking_id) {
-    //     whereClauses.push("up_inner.smoke_id = ?");
-    //     queryParams.push(currentUserFilters.smoking_id);
-    //   }
-
-    //   if (currentUserFilters.drinks_id) {
-    //     whereClauses.push("up_inner.drink_id = ?");
-    //     queryParams.push(currentUserFilters.drinks_id);
-    //   }
-
-    //   query = `
-    //             WITH distinct_user_ids AS (
-    //                 SELECT DISTINCT
-    //                     up_inner.id,
-    //                      l_inner.continent,
-    //                      up_inner.created_at
-    //                 FROM
-    //                     user_profiles up_inner
-    //                 INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
-    //                 INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
-    //                 WHERE
-    //                     up_inner.user_id != ?
-    //                     AND l_inner.continent IS NOT NULL
-    //                     AND up_inner.want_gender = ${
-    //                       currentUserFilters.gender_id
-    //                     }
-    //                     AND u_inner.approval = ${UserApprovalEnum.APPROVED}
-    //                     AND u_inner.active = 1
-    //                     AND u_inner.deleted_at IS NULL
-    //                     ${
-    //                       whereClauses.length > 0
-    //                         ? " AND " + whereClauses.join(" AND ")
-    //                         : ""
-    //                     }
-    //                     AND l_inner.continent IN (?)
-    //                     AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
-    //                 ORDER BY
-    //                     FIELD(l_inner.continent, ?),
-    //                     up_inner.created_at DESC,
-    //                     up_inner.id DESC
-    //                 LIMIT ? OFFSET ?
-    //             )
-    //             SELECT
-    //                 up.id,
-    //                 up.user_id,
-    //                 up.first_name,
-    //                 up.last_name,
-    //                 up.birthday,
-    //                 m.hash,
-    //                 m.extension,
-    //                 m.type,
-    //                 up.location_id,
-    //                 up.job_id,
-    //                 up.created_at,
-    //                 l.country,
-    //                 l.continent,
-    //                 l.location_string,
-    //                 j.name as job,
-    //                 (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
-    //             FROM distinct_user_ids dup
-    //             JOIN user_profiles up ON dup.id = up.id
-    //             JOIN media m ON up.user_id = m.user_id
-    //             JOIN locations l ON up.location_id = l.id
-    //             JOIN jobs j ON j.id = up.job_id
-    //             WHERE m.type IN (1, 31)
-    //         `;
-
-    //   params = [
-    //     req.userId,
-    //     ...queryParams,
-    //     userLocationPreferenceOrder,
-    //     req.userId,
-    //     userLocationPreferenceOrder,
-    //     limit,
-    //     (pageNo - 1) * limit,
-    //     req.userId,
-    //   ];
-    // }
     if (wave === 1) {
       console.log("first wave");
 
+      // Age filter
       if (currentUserFilters.age_from && currentUserFilters.age_to) {
         whereClauses.push(
           "FLOOR(DATEDIFF(NOW(), up_inner.birthday) / 365) BETWEEN ? AND ?"
         );
-        queryParams.push(currentUserFilters.age_from);
-        queryParams.push(currentUserFilters.age_to);
+        queryParams.push(
+          currentUserFilters.age_from,
+          currentUserFilters.age_to
+        );
       }
 
       // Gender preference logic
       if (currentUserFilters.gender_id == "1") {
-        // Male looking for female
         whereClauses.push("(up_inner.gender = 2 AND up_inner.want_gender = 1)");
       } else if (currentUserFilters.gender_id == "2") {
-        // Female looking for male
         whereClauses.push("(up_inner.gender = 1 AND up_inner.want_gender = 2)");
       } else if (currentUserFilters.gender_id == "3") {
-        // Interested in everyone, match males and females reciprocally
         whereClauses.push(
           "(up_inner.gender IN (1, 2) AND (up_inner.want_gender = ? OR up_inner.want_gender = 3))"
         );
         queryParams.push(currentUserFilters.gender_id);
       }
 
+      // Additional filters
       if (currentUserFilters.religion_id) {
         whereClauses.push("up_inner.religion_id = ?");
         queryParams.push(currentUserFilters.religion_id);
       }
-
       if (currentUserFilters.education_id) {
         whereClauses.push("up_inner.study_id = ?");
         queryParams.push(currentUserFilters.education_id);
       }
-
       if (currentUserFilters.want_kids_id) {
         whereClauses.push("up_inner.want_kid_id = ?");
         queryParams.push(currentUserFilters.want_kids_id);
       }
-
       if (currentUserFilters.have_kids_id) {
         whereClauses.push("up_inner.have_kid_id = ?");
         queryParams.push(currentUserFilters.have_kids_id);
       }
-
       if (currentUserFilters.smoking_id) {
         whereClauses.push("up_inner.smoke_id = ?");
         queryParams.push(currentUserFilters.smoking_id);
       }
-
       if (currentUserFilters.drinks_id) {
         whereClauses.push("up_inner.drink_id = ?");
         queryParams.push(currentUserFilters.drinks_id);
       }
 
+      console.log(
+        "currentUserFilters.location_type",
+        currentUserFilters.location_type
+      );
+
+      // New location-based filtering logic (according to location_type)
+      if (currentUserFilters.location_type == "1") {
+        // COUNTRY only matching
+        whereClauses.push("l_inner.country = ? ");
+        console.log("userLocationcountry", (userLocation as any).country);
+        queryParams.push((userLocation as any).country);
+      } else if (currentUserFilters.location_type == "2") {
+        // CITY and COUNTRY matching
+        whereClauses.push("l_inner.country = ? AND l_inner.location_string = ?");
+        queryParams.push((userLocation as any).country);
+        queryParams.push((userLocation as any).location_string);
+
+      } else {
+        // ANY location (location_type = 0), no location filters applied
+        console.log("Matching without location restrictions");
+      }
+
       query = `
-          WITH distinct_user_ids AS (
-            SELECT DISTINCT 
-              up_inner.id,
-              l_inner.continent,
-              up_inner.created_at
-            FROM 
-              user_profiles up_inner 
-            INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
-            INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
-            WHERE 
-              up_inner.user_id != ? 
-              AND l_inner.continent IS NOT NULL
-              AND u_inner.approval = ${UserApprovalEnum.APPROVED}
-              AND u_inner.active = 1
-              AND u_inner.deleted_at IS NULL
-              ${
-                whereClauses.length > 0
-                  ? " AND " + whereClauses.join(" AND ")
-                  : ""
-              }
-              AND l_inner.continent IN (?)
-              AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
-            ORDER BY 
-              FIELD(l_inner.continent, ?),
-              up_inner.created_at DESC, 
-              up_inner.id DESC 
-            LIMIT ? OFFSET ?
-          )
-          SELECT 
-            up.id, 
-            up.user_id, 
-            up.first_name, 
-            up.last_name, 
-            up.birthday, 
-            m.hash, 
-            m.extension, 
-            m.type, 
-            up.location_id, 
-            up.job_id, 
-            up.created_at,
-            l.country,
-            l.continent,
-            l.location_string,
-            j.name as job,
-            (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
-          FROM distinct_user_ids dup
-          JOIN user_profiles up ON dup.id = up.id 
-          JOIN media m ON up.user_id = m.user_id 
-          JOIN locations l ON up.location_id = l.id
-          JOIN jobs j ON j.id = up.job_id
-          WHERE m.type IN (1, 31)
-        `;
+        WITH distinct_user_ids AS (
+    SELECT DISTINCT 
+      up_inner.id,
+      l_inner.country,           -- Use 'country' column
+      l_inner.location_string,   -- Assuming 'location_string' stores city-related info
+      up_inner.created_at
+    FROM 
+      user_profiles up_inner 
+    INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
+    INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
+    WHERE 
+      up_inner.user_id != ? 
+      AND u_inner.approval = ${UserApprovalEnum.APPROVED}
+      AND u_inner.active = 1
+      AND u_inner.deleted_at IS NULL
+      ${whereClauses.length > 0 ? " AND " + whereClauses.join(" AND ") : ""}
+      AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
+    ORDER BY 
+      up_inner.created_at DESC, 
+      up_inner.id DESC 
+    LIMIT ? OFFSET ?
+  )
+  SELECT 
+    up.id, 
+    up.user_id, 
+    up.first_name, 
+    up.last_name, 
+    up.birthday, 
+    m.hash, 
+    m.extension, 
+    m.type, 
+    up.location_id, 
+    up.job_id, 
+    up.created_at,
+    l.country,                  -- 'country' column
+    l.location_string,          -- Assuming this for 'city'
+    l.continent,
+    j.name as job,
+    (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
+  FROM distinct_user_ids dup
+  JOIN user_profiles up ON dup.id = up.id 
+  JOIN media m ON up.user_id = m.user_id 
+  JOIN locations l ON up.location_id = l.id
+  JOIN jobs j ON j.id = up.job_id
+  WHERE m.type IN (1, 31)
+
+      `;
 
       params = [
         req.userId,
         ...queryParams,
-        userLocationPreferenceOrder,
         req.userId,
-        userLocationPreferenceOrder,
         limit,
         (pageNo - 1) * limit,
         req.userId,
       ];
-    } else if (wave === 2) {
-      // console.log("second wave")
-      // query = `
-      //     WITH distinct_user_ids AS (
-      //         SELECT DISTINCT
-      //             up_inner.id,
-      //             l_inner.continent,
-      //              up_inner.created_at
-      //         FROM
-      //             user_profiles up_inner
-      //         INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
-      //         INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
-      //         WHERE
-      //             up_inner.user_id != ?
-      //             AND u_inner.active = 1
-      //             AND u_inner.deleted_at IS NULL
-      //             AND DATEDIFF(NOW(), up_inner.birthday) BETWEEN (DATEDIFF(NOW(), ?) - (5 * 365)) AND (DATEDIFF(NOW(), ?) + (10 * 365))
-      //             AND up_inner.gender = ?
-      //             AND up_inner.want_gender = ?
-      //             AND l_inner.continent IS NOT NULL
-      //             AND u_inner.approval = ${UserApprovalEnum.APPROVED}
-      //             AND l_inner.continent IN (?)
-      //             AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
-      //         ORDER BY
-      //             FIELD(l_inner.continent, ?),
-      //             up_inner.created_at DESC,
-      //             up_inner.id DESC
-      //         LIMIT ? OFFSET ?
-      //     )
-      //     SELECT
-      //         up.id,
-      //         up.user_id,
-      //         up.first_name,
-      //         up.last_name,
-      //         up.birthday,
-      //         m.hash,
-      //         m.extension,
-      //         m.type,
-      //         up.location_id,
-      //         up.job_id,
-      //         up.created_at,
-      //         l.country,
-      //         l.continent,
-      //         l.location_string,
-      //         j.name as job,
-      //         (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
-      //     FROM distinct_user_ids dup
-      //     JOIN user_profiles up ON dup.id = up.id
-      //     JOIN media m ON up.user_id = m.user_id
-      //     JOIN locations l ON up.location_id = l.id
-      //     JOIN jobs j ON j.id = up.job_id
-      //     WHERE m.type IN (1, 31)
-      // `;
-      // params = [
-      //     req.userId,
-      //     req.user.birthday,
-      //     req.user.birthday,
-      //     req.user.want_gender,
-      //     req.user.gender,
-      //     userLocationPreferenceOrder,
-      //     req.userId,
-      //     userLocationPreferenceOrder,
-      //     limit,
-      //     (pageNo - 1) * limit,
-      //     req.userId
-      // ];
-      console.log("first wave");
-
-      if (currentUserFilters.age_from && currentUserFilters.age_to) {
-        whereClauses.push(
-          "FLOOR(DATEDIFF(NOW(), up_inner.birthday) / 365) BETWEEN ? AND ?"
-        );
-        queryParams.push(currentUserFilters.age_from);
-        queryParams.push(currentUserFilters.age_to);
-      }
-
-      // Gender preference logic
-      if (currentUserFilters.gender_id == "1") {
-        // Male looking for female
-        whereClauses.push("(up_inner.gender = 2 AND up_inner.want_gender = 1)");
-      } else if (currentUserFilters.gender_id == "2") {
-        // Female looking for male
-        whereClauses.push("(up_inner.gender = 1 AND up_inner.want_gender = 2)");
-      } else if (currentUserFilters.gender_id == "3") {
-        // Interested in everyone, match males and females reciprocally
-        whereClauses.push(
-          "(up_inner.gender IN (1, 2) AND (up_inner.want_gender = ? OR up_inner.want_gender = 3))"
-        );
-        queryParams.push(currentUserFilters.gender_id);
-      }
-
-      if (currentUserFilters.religion_id) {
-        whereClauses.push("up_inner.religion_id = ?");
-        queryParams.push(currentUserFilters.religion_id);
-      }
-
-      if (currentUserFilters.education_id) {
-        whereClauses.push("up_inner.study_id = ?");
-        queryParams.push(currentUserFilters.education_id);
-      }
-
-      if (currentUserFilters.want_kids_id) {
-        whereClauses.push("up_inner.want_kid_id = ?");
-        queryParams.push(currentUserFilters.want_kids_id);
-      }
-
-      if (currentUserFilters.have_kids_id) {
-        whereClauses.push("up_inner.have_kid_id = ?");
-        queryParams.push(currentUserFilters.have_kids_id);
-      }
-
-      if (currentUserFilters.smoking_id) {
-        whereClauses.push("up_inner.smoke_id = ?");
-        queryParams.push(currentUserFilters.smoking_id);
-      }
-
-      if (currentUserFilters.drinks_id) {
-        whereClauses.push("up_inner.drink_id = ?");
-        queryParams.push(currentUserFilters.drinks_id);
-      }
-
-      query = `
-          WITH distinct_user_ids AS (
-            SELECT DISTINCT 
-              up_inner.id,
-              l_inner.continent,
-              up_inner.created_at
-            FROM 
-              user_profiles up_inner 
-            INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
-            INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
-            WHERE 
-              up_inner.user_id != ? 
-              AND l_inner.continent IS NOT NULL
-              AND u_inner.approval = ${UserApprovalEnum.APPROVED}
-              AND u_inner.active = 1
-              AND u_inner.deleted_at IS NULL
-              ${
-                whereClauses.length > 0
-                  ? " AND " + whereClauses.join(" AND ")
-                  : ""
-              }
-              AND l_inner.continent IN (?)
-              AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
-            ORDER BY 
-              FIELD(l_inner.continent, ?),
-              up_inner.created_at DESC, 
-              up_inner.id DESC 
-            LIMIT ? OFFSET ?
-          )
-          SELECT 
-            up.id, 
-            up.user_id, 
-            up.first_name, 
-            up.last_name, 
-            up.birthday, 
-            m.hash, 
-            m.extension, 
-            m.type, 
-            up.location_id, 
-            up.job_id, 
-            up.created_at,
-            l.country,
-            l.continent,
-            l.location_string,
-            j.name as job,
-            (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
-          FROM distinct_user_ids dup
-          JOIN user_profiles up ON dup.id = up.id 
-          JOIN media m ON up.user_id = m.user_id 
-          JOIN locations l ON up.location_id = l.id
-          JOIN jobs j ON j.id = up.job_id
-          WHERE m.type IN (1, 31)
-        `;
-
-      params = [
-        req.userId,
-        ...queryParams,
-        userLocationPreferenceOrder,
-        req.userId,
-        userLocationPreferenceOrder,
-        limit,
-        (pageNo - 1) * limit,
-        req.userId,
-      ];
-    } else {
-      console.log("Third wave");
-
-      // query = `
-      //     WITH distinct_user_ids AS (
-      //         SELECT DISTINCT
-      //             up_inner.id ,
-      //              l_inner.continent,
-      //              up_inner.created_at
-      //         FROM
-      //             user_profiles up_inner
-      //         INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
-      //         INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
-      //         WHERE
-      //             up_inner.user_id != ?
-      //             AND u_inner.active = 1
-      //             AND u_inner.deleted_at IS NULL
-      //             AND up_inner.gender = ?
-      //             AND up_inner.want_gender = ?
-      //             AND u_inner.approval = ${UserApprovalEnum.APPROVED}
-      //             AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
-      //         ORDER BY
-      //             up_inner.created_at DESC,
-      //             up_inner.id DESC
-      //         LIMIT ? OFFSET ?
-      //     )
-      //     SELECT
-      //         up.id,
-      //         up.user_id,
-      //         up.first_name,
-      //         up.last_name,
-      //         up.birthday,
-      //         m.hash,
-      //         m.extension,
-      //         m.type,
-      //         up.location_id,
-      //         up.job_id,
-      //         up.created_at,
-      //         l.country,
-      //         l.continent,
-      //         l.location_string,
-      //         j.name as job,
-      //         (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
-      //     FROM distinct_user_ids dup
-      //     JOIN user_profiles up ON dup.id = up.id
-      //     JOIN media m ON up.user_id = m.user_id
-      //     JOIN locations l ON up.location_id = l.id
-      //     JOIN jobs j ON j.id = up.job_id
-      //     WHERE m.type IN (1, 31)
-      // `;
-
-      // params = [
-      //     req.userId,
-      //     req.user.want_gender,
-      //     req.user.gender,
-      //     req.userId,
-      //     limit,
-      //     (pageNo - 1) * limit,
-      //     req.userId
-      // ];
     }
-    console.log("first wave");
 
-      if (currentUserFilters.age_from && currentUserFilters.age_to) {
-        whereClauses.push(
-          "FLOOR(DATEDIFF(NOW(), up_inner.birthday) / 365) BETWEEN ? AND ?"
-        );
-        queryParams.push(currentUserFilters.age_from);
-        queryParams.push(currentUserFilters.age_to);
-      }
-
-      // Gender preference logic
-      if (currentUserFilters.gender_id == "1") {
-        // Male looking for female
-        whereClauses.push("(up_inner.gender = 2 AND up_inner.want_gender = 1)");
-      } else if (currentUserFilters.gender_id == "2") {
-        // Female looking for male
-        whereClauses.push("(up_inner.gender = 1 AND up_inner.want_gender = 2)");
-      } else if (currentUserFilters.gender_id == "3") {
-        // Interested in everyone, match males and females reciprocally
-        whereClauses.push(
-          "(up_inner.gender IN (1, 2) AND (up_inner.want_gender = ? OR up_inner.want_gender = 3))"
-        );
-        queryParams.push(currentUserFilters.gender_id);
-      }
-
-      if (currentUserFilters.religion_id) {
-        whereClauses.push("up_inner.religion_id = ?");
-        queryParams.push(currentUserFilters.religion_id);
-      }
-
-      if (currentUserFilters.education_id) {
-        whereClauses.push("up_inner.study_id = ?");
-        queryParams.push(currentUserFilters.education_id);
-      }
-
-      if (currentUserFilters.want_kids_id) {
-        whereClauses.push("up_inner.want_kid_id = ?");
-        queryParams.push(currentUserFilters.want_kids_id);
-      }
-
-      if (currentUserFilters.have_kids_id) {
-        whereClauses.push("up_inner.have_kid_id = ?");
-        queryParams.push(currentUserFilters.have_kids_id);
-      }
-
-      if (currentUserFilters.smoking_id) {
-        whereClauses.push("up_inner.smoke_id = ?");
-        queryParams.push(currentUserFilters.smoking_id);
-      }
-
-      if (currentUserFilters.drinks_id) {
-        whereClauses.push("up_inner.drink_id = ?");
-        queryParams.push(currentUserFilters.drinks_id);
-      }
-
-      query = `
-          WITH distinct_user_ids AS (
-            SELECT DISTINCT 
-              up_inner.id,
-              l_inner.continent,
-              up_inner.created_at
-            FROM 
-              user_profiles up_inner 
-            INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
-            INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
-            WHERE 
-              up_inner.user_id != ? 
-              AND l_inner.continent IS NOT NULL
-              AND u_inner.approval = ${UserApprovalEnum.APPROVED}
-              AND u_inner.active = 1
-              AND u_inner.deleted_at IS NULL
-              ${
-                whereClauses.length > 0
-                  ? " AND " + whereClauses.join(" AND ")
-                  : ""
-              }
-              AND l_inner.continent IN (?)
-              AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
-            ORDER BY 
-              FIELD(l_inner.continent, ?),
-              up_inner.created_at DESC, 
-              up_inner.id DESC 
-            LIMIT ? OFFSET ?
-          )
-          SELECT 
-            up.id, 
-            up.user_id, 
-            up.first_name, 
-            up.last_name, 
-            up.birthday, 
-            m.hash, 
-            m.extension, 
-            m.type, 
-            up.location_id, 
-            up.job_id, 
-            up.created_at,
-            l.country,
-            l.continent,
-            l.location_string,
-            j.name as job,
-            (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
-          FROM distinct_user_ids dup
-          JOIN user_profiles up ON dup.id = up.id 
-          JOIN media m ON up.user_id = m.user_id 
-          JOIN locations l ON up.location_id = l.id
-          JOIN jobs j ON j.id = up.job_id
-          WHERE m.type IN (1, 31)
-        `;
-
-      params = [
-        req.userId,
-        ...queryParams,
-        userLocationPreferenceOrder,
-        req.userId,
-        userLocationPreferenceOrder,
-        limit,
-        (pageNo - 1) * limit,
-        req.userId,
-      ];
-  } else {
-    query = `
-            WITH distinct_user_ids AS (
-                SELECT
-                    up_inner.id,
-                    l_inner.continent,
-                         up_inner.created_at
-                FROM 
-                    user_profiles up_inner 
-                INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
-                INNER JOIN media m_inner ON up_inner.user_id = m_inner.user_id 
-                INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
-                WHERE 
-                    m_inner.type IN (1, 31) AND m_inner.hash IS NOT NULL
-                    AND u_inner.active = 1
-                    AND u_inner.deleted_at IS NULL
-                    AND up_inner.user_id != ?
-                    AND up_inner.gender = ?
-                    AND up_inner.want_gender = ?
-                     AND u_inner.approval = ${UserApprovalEnum.APPROVED}
-                    AND DATEDIFF(NOW(), up_inner.birthday) BETWEEN (DATEDIFF(NOW(), ?) - (5 * 365)) AND (DATEDIFF(NOW(), ?) + (10 * 365))
-                    AND l_inner.continent IN (?)
-                    AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
-                ORDER BY 
-                    FIELD(l_inner.continent, ?),
-                    up_inner.created_at DESC, 
-                    up_inner.id DESC 
-                LIMIT ? OFFSET ?
-            )
-            SELECT 
-                up.id, 
-                up.user_id, 
-                up.first_name, 
-                up.last_name, 
-                up.birthday, 
-                m.hash, 
-                m.extension, 
-                m.type, 
-                up.location_id, 
-                up.job_id, 
-                up.created_at,
-                l.country,
-                l.continent,
-                l.location_string,
-                j.name as job,
-                (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
-            FROM distinct_user_ids dup
-            JOIN user_profiles up ON dup.id = up.id 
-            JOIN media m ON up.user_id = m.user_id 
-            JOIN locations l ON up.location_id = l.id
-            JOIN jobs j ON j.id = up.job_id
-            WHERE m.type IN (1, 31)
-        `;
-
-    params = [
-      req.userId,
-      req.user.want_gender,
-      req.user.gender,
-      req.user.birthday,
-      req.user.birthday,
-      userLocationPreferenceOrder,
-      req.userId,
-      userLocationPreferenceOrder,
-      limit,
-      (pageNo - 1) * limit,
-      req.userId,
-    ];
-  }
-
-  query = query.concat(` 
-        AND up.user_id NOT IN (SELECT b.person_id FROM blocks b WHERE b.user_id = ?) 
-        AND up.user_id NOT IN (SELECT r.person_id FROM reports r WHERE r.user_id = ?) 
-        AND up.user_id NOT IN (SELECT b.user_id FROM blocks b WHERE b.person_id = ?) 
-        AND up.user_id NOT IN (SELECT r.user_id FROM reports r WHERE r.person_id = ?);
+    // Add filters for blocks, reports, etc.
+    query = query.concat(`
+      AND up.user_id NOT IN (SELECT b.person_id FROM blocks b WHERE b.user_id = ?) 
+      AND up.user_id NOT IN (SELECT r.person_id FROM reports r WHERE r.user_id = ?) 
+      AND up.user_id NOT IN (SELECT b.user_id FROM blocks b WHERE b.person_id = ?) 
+      AND up.user_id NOT IN (SELECT r.user_id FROM reports r WHERE r.person_id = ?);
     `);
 
-  params.push(req.userId, req.userId, req.userId, req.userId);
+    params.push(req.userId, req.userId, req.userId, req.userId);
+    // Execute query
+    db.query<RowDataPacket[]>(query, params, (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send({ message: "Internal server error" });
+        return;
+      }
 
-  db.query<RowDataPacket[]>(query, params, (err, result) => {
-    if (err) {
-      console.log(err);
-      res.status(500).send({ message: "Internal server error" });
-      return;
-    }
-
-    const users = result.filter((user: any) => user.like !== 1);
-
-    res.status(200).send(users);
-  });
+      const users = result.filter((user: any) => user.like !== 1);
+      res.status(200).send(users);
+    });
+  }
 });
 
 userFlowRouter.get("/profile/:id", (req: UserRequest, res) => {
@@ -931,28 +431,34 @@ userFlowRouter.get("/profile/:id", (req: UserRequest, res) => {
 
 userFlowRouter.get("/preferences", async (req: UserRequest, res) => {
   db.query<RowDataPacket[]>(
-    `
-        SELECT
-        (SELECT g.name FROM genders g WHERE f.gender_id = g.id) AS gender,
-        f.age_from,
-        f.age_to,
-        (SELECT r.name FROM religions r WHERE f.religion_id = r.id) AS religion,
-        (SELECT  CONCAT(
-       l.location_string, 
-       IF(l.location_string != '', ', ', ''), 
-       l.country )  FROM locations l WHERE fl.location_id = l.id) AS location,
-        fl.location_id,
-        (SELECT s.name FROM studies s WHERE f.education_id = s.id) AS education,
-        (SELECT wk.name FROM want_kids wk WHERE f.want_kids_id = wk.id) AS want_kids,
-        (SELECT hk.name FROM have_kids hk WHERE f.have_kids_id = hk.id) AS have_kids,
-        (SELECT sm.name FROM smokes sm WHERE f.smoking_id = sm.id) AS smoking,
-        (SELECT d.name FROM drinks d WHERE f.drinks_id = d.id) AS drinking
-        FROM user_filters uf
-        INNER JOIN filters f ON f.id = uf.filter_id
-        INNER JOIN user_profiles up ON up.user_id = uf.user_id
-        LEFT JOIN filter_locations fl ON fl.filters_id = uf.filter_id
-        WHERE uf.user_id = ?;
-    `,
+    `SELECT
+    (SELECT g.name FROM genders g WHERE f.gender_id = g.id) AS gender,
+    f.age_from,
+    f.age_to,
+    (SELECT r.name FROM religions r WHERE f.religion_id = r.id) AS religion,
+    CASE
+        WHEN (SELECT location_type FROM filters WHERE id = uf.filter_id) = 1 THEN
+            (SELECT l.country FROM locations l WHERE fl.location_id = l.id) -- COUNTRY
+        WHEN (SELECT location_type FROM filters WHERE id = uf.filter_id) = 2 THEN
+            (SELECT CONCAT(l.location_string, IF(l.location_string != '', ', ', ''), l.country) FROM locations l WHERE fl.location_id = l.id) -- CITY
+        WHEN (SELECT location_type FROM filters WHERE id = uf.filter_id) = 0 THEN
+            'Any' -- ANY
+        ELSE
+            NULL
+    END AS location,
+    fl.location_id,
+    (SELECT s.name FROM studies s WHERE f.education_id = s.id) AS education,
+    (SELECT wk.name FROM want_kids wk WHERE f.want_kids_id = wk.id) AS want_kids,
+    (SELECT hk.name FROM have_kids hk WHERE f.have_kids_id = hk.id) AS have_kids,
+    (SELECT sm.name FROM smokes sm WHERE f.smoking_id = sm.id) AS smoking,
+    (SELECT d.name FROM drinks d WHERE f.drinks_id = d.id) AS drinking,
+    (SELECT location_type FROM filters WHERE id = uf.filter_id) AS location_type
+FROM user_filters uf
+INNER JOIN filters f ON f.id = uf.filter_id
+INNER JOIN user_profiles up ON up.user_id = uf.user_id
+LEFT JOIN filter_locations fl ON fl.filters_id = uf.filter_id
+WHERE uf.user_id = ?;
+`,
     [req.userId],
     (err, result) => {
       if (err) {
@@ -1058,7 +564,8 @@ userFlowRouter.put(
   async (req: UserRequest, res) => {
     const locationId = req.body.location_id;
     const type = req.body.type; // Get type from request body dynamically
-
+    console.log("locationId", locationId);
+    console.log("type", type);
     if (typeof locationId === "undefined" || typeof type === "undefined") {
       res.status(400).send({ message: "Bad request" });
       return;
