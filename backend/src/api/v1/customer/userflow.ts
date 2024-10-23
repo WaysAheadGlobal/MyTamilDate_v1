@@ -109,6 +109,299 @@ userFlowRouter.get("/email", (req: UserRequest, res) => {
   res.json({ email: req.user.email });
 });
 
+// userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
+//   console.log("profiles");
+//   const wave = req.query.wave ? Number(req.query.wave) : 1;
+//   const pageNo = req.query.page ? Number(req.query.page) : 1;
+//   const limit = 20;
+
+//   if (!req.userId) {
+//     res.status(401).send({ message: "Unauthorized" });
+//     return;
+//   }
+
+//   if (req.user.active === 0) {
+//     res.status(200).json([]);
+//     return;
+//   }
+
+//   let query = "";
+//   let params: any[] = [];
+
+//   const currentUserFilters: any = await getUserFilters(req.userId);
+//   console.log("currentUserFilters", currentUserFilters);
+//   const userPreferences: any = await getUserPreferences(req.userId);
+//   console.log("userPreferences", userPreferences);
+//   const user_profiles = await new Promise((resolve, reject) => {
+//     db.query<RowDataPacket[]>(
+//       `SELECT * FROM user_profiles WHERE user_id = ?;`,
+//       [req.userId],
+//       (err, result) => {
+//         if (err) {
+//           console.log(err);
+//           reject(err);
+//           return;
+//         }
+
+//         resolve(result[0]);
+//       }
+//     );
+//   });
+//   console.log("user_profiles", user_profiles);
+//   const userLocationFilter = await new Promise((resolve, reject) => {
+//     db.query<RowDataPacket[]>(
+//       `SELECT * FROM filter_locations WHERE filters_id = ?;`,
+//       [currentUserFilters.filter_id],
+//       (err, result) => {
+//         if (err) {
+//           console.log(err);
+//           reject(err);
+//           return;
+//         }
+
+//         resolve(result[0]);
+//       }
+//     );
+//   });
+//   console.log("userLocationFilter", userLocationFilter);
+//   const userLocation = await new Promise((resolve, reject) => {
+//     db.query<RowDataPacket[]>(
+//       `SELECT * FROM locations l WHERE id = ?;`,
+//       [(userLocationFilter as any).location_id],
+//       (err, result) => {
+//         if (err) {
+//           console.log(err);
+//           reject(err);
+//           return;
+//         }
+
+//         resolve(result[0]);
+//       }
+//     );
+//   });
+//   console.log("userLocation", userLocation);
+//   // Get location preference order (city/country/any)
+//   const userLocationPreferenceOrder = getLocationOrder(
+//     userPreferences.location
+//   );
+//   console.log("userLocationPreferenceOrder", userLocationPreferenceOrder);
+
+//   if (currentUserFilters) {
+//     let whereClauses = [];
+//     let queryParams = [];
+
+//     if (wave === 1) {
+//       console.log("first wave");
+
+//       // Age filter
+//       if (currentUserFilters.age_from && currentUserFilters.age_to) {
+//         whereClauses.push(
+//           "FLOOR(DATEDIFF(NOW(), up_inner.birthday) / 365) BETWEEN ? AND ?"
+//         );
+//         queryParams.push(
+//           currentUserFilters.age_from,
+//           currentUserFilters.age_to
+//         );
+//       }
+
+//       if ((user_profiles as any).gender === 1) {
+//         // if current user is Male and looking for female
+//         if (userPreferences.gender === 2) {
+//           whereClauses.push(
+//             "(up_inner.gender = 2 AND up_inner.want_gender = 1)"
+//           );
+//         }
+//         // if current user is Male and looking for male
+//         else if (userPreferences.gender === 1) {
+//           whereClauses.push(
+//             "(up_inner.gender = 1 AND up_inner.want_gender = 1)"
+//           );
+//         }
+//         // if current user is Male and looking for both
+//         else if (userPreferences.gender === 3) {
+//           whereClauses.push(
+//             "(up_inner.gender = 1 AND up_inner.want_gender = 3)"
+//           );
+//           whereClauses.push(
+//             "(up_inner.gender = 2 AND up_inner.want_gender = 3)"
+//           );
+//         }
+//       } else if ((user_profiles as any).gender === 2) {
+//         // if current user is Female and looking for male
+//         if (userPreferences.gender === 1) {
+//           whereClauses.push(
+//             "(up_inner.gender = 1 AND up_inner.want_gender = 2)"
+//           );
+//         }
+//         // if current user is Female and looking for female
+//         else if (userPreferences.gender === 2) {
+//           whereClauses.push(
+//             "(up_inner.gender = 2 AND up_inner.want_gender = 2)"
+//           );
+//         }
+//         // if current user is Female and looking for both
+//         else if (userPreferences.gender === 3) {
+//           whereClauses.push(
+//             "(up_inner.gender = 1 AND up_inner.want_gender = 3)"
+//           );
+//           whereClauses.push(
+//             "(up_inner.gender = 2 AND up_inner.want_gender = 3)"
+//           );
+//         }
+//       } else if ((user_profiles as any).gender === 3) {
+//         // if current user is Non-binary and looking for male
+//         if (userPreferences.gender === 1) {
+//           whereClauses.push(
+//             "(up_inner.gender = 1 AND up_inner.want_gender = 3)"
+//           );
+//         }
+//         // if current user is Non-binary and looking for female
+//         else if (userPreferences.gender === 2) {
+//           whereClauses.push(
+//             "(up_inner.gender = 2 AND up_inner.want_gender = 3)"
+//           );
+//         }
+//         // if current user is Non-binary and looking for both
+//         else if (userPreferences.gender === 3) {
+//           whereClauses.push(
+//             "(up_inner.gender = 1 AND up_inner.want_gender = 3)"
+//           );
+//           whereClauses.push(
+//             "(up_inner.gender = 2 AND up_inner.want_gender = 3)"
+//           );
+//         }
+//       }
+//       // Additional filters
+//       if (currentUserFilters.religion_id) {
+//         whereClauses.push("up_inner.religion_id = ?");
+//         queryParams.push(currentUserFilters.religion_id);
+//       }
+//       if (currentUserFilters.education_id) {
+//         whereClauses.push("up_inner.study_id = ?");
+//         queryParams.push(currentUserFilters.education_id);
+//       }
+//       if (currentUserFilters.want_kids_id) {
+//         whereClauses.push("up_inner.want_kid_id = ?");
+//         queryParams.push(currentUserFilters.want_kids_id);
+//       }
+//       if (currentUserFilters.have_kids_id) {
+//         whereClauses.push("up_inner.have_kid_id = ?");
+//         queryParams.push(currentUserFilters.have_kids_id);
+//       }
+//       if (currentUserFilters.smoking_id) {
+//         whereClauses.push("up_inner.smoke_id = ?");
+//         queryParams.push(currentUserFilters.smoking_id);
+//       }
+//       if (currentUserFilters.drinks_id) {
+//         whereClauses.push("up_inner.drink_id = ?");
+//         queryParams.push(currentUserFilters.drinks_id);
+//       }
+
+//       console.log(
+//         "currentUserFilters.location_type",
+//         currentUserFilters.location_type
+//       );
+
+//       // New location-based filtering logic (according to location_type)
+//       if (currentUserFilters.location_type == "1") {
+//         // COUNTRY only matching
+//         whereClauses.push("l_inner.country = ? ");
+//         console.log("userLocationcountry", (userLocation as any).country);
+//         queryParams.push((userLocation as any).country);
+//       } else if (currentUserFilters.location_type == "2") {
+//         // CITY and COUNTRY matching
+//         whereClauses.push(
+//           "l_inner.country = ? AND l_inner.location_string = ?"
+//         );
+//         queryParams.push((userLocation as any).country);
+//         queryParams.push((userLocation as any).location_string);
+//       } else {
+//         // ANY location (location_type = 0), no location filters applied
+//         console.log("Matching without location restrictions");
+//       }
+
+//       query = `
+//         WITH distinct_user_ids AS (
+//     SELECT DISTINCT
+//       up_inner.id,
+//       l_inner.country,           -- Use 'country' column
+//       l_inner.location_string,   -- Assuming 'location_string' stores city-related info
+//       up_inner.created_at
+//     FROM
+//       user_profiles up_inner
+//     INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
+//     INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
+//     WHERE
+//       up_inner.user_id != ?
+//       AND u_inner.approval = ${UserApprovalEnum.APPROVED}
+//       AND u_inner.active = 1
+//       AND u_inner.deleted_at IS NULL
+//       ${whereClauses.length > 0 ? " AND " + whereClauses.join(" AND ") : ""}
+//       AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
+//     ORDER BY
+//       up_inner.created_at DESC,
+//       up_inner.id DESC
+//     LIMIT ? OFFSET ?
+//   )
+//   SELECT
+//     up.id,
+//     up.user_id,
+//     up.first_name,
+//     up.last_name,
+//     up.birthday,
+//     m.hash,
+//     m.extension,
+//     m.type,
+//     up.location_id,
+//     up.job_id,
+//     up.created_at,
+//     l.country,                  -- 'country' column
+//     l.location_string,          -- Assuming this for 'city'
+//     l.continent,
+//     j.name as job,
+//     (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
+//   FROM distinct_user_ids dup
+//   JOIN user_profiles up ON dup.id = up.id
+//   JOIN media m ON up.user_id = m.user_id
+//   JOIN locations l ON up.location_id = l.id
+//   JOIN jobs j ON j.id = up.job_id
+//   WHERE m.type IN (1, 31)
+
+//       `;
+
+//       params = [
+//         req.userId,
+//         ...queryParams,
+//         req.userId,
+//         limit,
+//         (pageNo - 1) * limit,
+//         req.userId,
+//       ];
+//     }
+
+//     // Add filters for blocks, reports, etc.
+//     query = query.concat(`
+//       AND up.user_id NOT IN (SELECT b.person_id FROM blocks b WHERE b.user_id = ?)
+//       AND up.user_id NOT IN (SELECT r.person_id FROM reports r WHERE r.user_id = ?)
+//       AND up.user_id NOT IN (SELECT b.user_id FROM blocks b WHERE b.person_id = ?)
+//       AND up.user_id NOT IN (SELECT r.user_id FROM reports r WHERE r.person_id = ?);
+//     `);
+
+//     params.push(req.userId, req.userId, req.userId, req.userId);
+//     // Execute query
+//     db.query<RowDataPacket[]>(query, params, (err, result) => {
+//       if (err) {
+//         console.log(err);
+//         res.status(500).send({ message: "Internal server error" });
+//         return;
+//       }
+
+//       const users = result.filter((user: any) => user.like !== 1);
+//       res.status(200).send(users);
+//     });
+//   }
+// });
+
 userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
   console.log("profiles");
   const wave = req.query.wave ? Number(req.query.wave) : 1;
@@ -128,205 +421,271 @@ userFlowRouter.get("/profiles", async (req: UserRequest, res) => {
   let query = "";
   let params: any[] = [];
 
-  const currentUserFilters: any = await getUserFilters(req.userId);
-  console.log("currentUserFilters", currentUserFilters);
-  const userPreferences: any = await getUserPreferences(req.userId);
-  console.log("userPreferences", userPreferences);
-  const userLocationFilter = await new Promise((resolve, reject) => {
-    db.query<RowDataPacket[]>(
-      `SELECT * FROM filter_locations WHERE filters_id = ?;`,
-      [currentUserFilters.filter_id],
-      (err, result) => {
-        if (err) {
-          console.log(err);
-          reject(err);
-          return;
-        }
-
-        resolve(result[0]);
-      }
-    );
-  });
-  console.log("userLocationFilter", userLocationFilter);
-  const userLocation = await new Promise((resolve, reject) => {
-    db.query<RowDataPacket[]>(
-      `SELECT * FROM locations l WHERE id = ?;`,
-      [(userLocationFilter as any).location_id],
-      (err, result) => {
-        if (err) {
-          console.log(err);
-          reject(err);
-          return;
-        }
-
-        resolve(result[0]);
-      }
-    );
-  });
-  console.log("userLocation", userLocation);
-  // Get location preference order (city/country/any)
-  const userLocationPreferenceOrder = getLocationOrder(
-    userPreferences.location
-  );
-  console.log("userLocationPreferenceOrder", userLocationPreferenceOrder);
-
-  if (currentUserFilters) {
-    let whereClauses = [];
-    let queryParams = [];
-
-    if (wave === 1) {
-      console.log("first wave");
-
-      // Age filter
-      if (currentUserFilters.age_from && currentUserFilters.age_to) {
-        whereClauses.push(
-          "FLOOR(DATEDIFF(NOW(), up_inner.birthday) / 365) BETWEEN ? AND ?"
-        );
-        queryParams.push(
-          currentUserFilters.age_from,
-          currentUserFilters.age_to
-        );
-      }
-
-      // Gender preference logic
-      if (currentUserFilters.gender_id == "1") {
-        whereClauses.push("(up_inner.gender = 2 AND up_inner.want_gender = 1)");
-      } else if (currentUserFilters.gender_id == "2") {
-        whereClauses.push("(up_inner.gender = 1 AND up_inner.want_gender = 2)");
-      } else if (currentUserFilters.gender_id == "3") {
-        whereClauses.push(
-          "(up_inner.gender IN (1, 2) AND (up_inner.want_gender = ? OR up_inner.want_gender = 3))"
-        );
-        queryParams.push(currentUserFilters.gender_id);
-      }
-
-      // Additional filters
-      if (currentUserFilters.religion_id) {
-        whereClauses.push("up_inner.religion_id = ?");
-        queryParams.push(currentUserFilters.religion_id);
-      }
-      if (currentUserFilters.education_id) {
-        whereClauses.push("up_inner.study_id = ?");
-        queryParams.push(currentUserFilters.education_id);
-      }
-      if (currentUserFilters.want_kids_id) {
-        whereClauses.push("up_inner.want_kid_id = ?");
-        queryParams.push(currentUserFilters.want_kids_id);
-      }
-      if (currentUserFilters.have_kids_id) {
-        whereClauses.push("up_inner.have_kid_id = ?");
-        queryParams.push(currentUserFilters.have_kids_id);
-      }
-      if (currentUserFilters.smoking_id) {
-        whereClauses.push("up_inner.smoke_id = ?");
-        queryParams.push(currentUserFilters.smoking_id);
-      }
-      if (currentUserFilters.drinks_id) {
-        whereClauses.push("up_inner.drink_id = ?");
-        queryParams.push(currentUserFilters.drinks_id);
-      }
-
-      console.log(
-        "currentUserFilters.location_type",
-        currentUserFilters.location_type
-      );
-
-      // New location-based filtering logic (according to location_type)
-      if (currentUserFilters.location_type == "1") {
-        // COUNTRY only matching
-        whereClauses.push("l_inner.country = ? ");
-        console.log("userLocationcountry", (userLocation as any).country);
-        queryParams.push((userLocation as any).country);
-      } else if (currentUserFilters.location_type == "2") {
-        // CITY and COUNTRY matching
-        whereClauses.push("l_inner.country = ? AND l_inner.location_string = ?");
-        queryParams.push((userLocation as any).country);
-        queryParams.push((userLocation as any).location_string);
-
-      } else {
-        // ANY location (location_type = 0), no location filters applied
-        console.log("Matching without location restrictions");
-      }
-
-      query = `
-        WITH distinct_user_ids AS (
-    SELECT DISTINCT 
-      up_inner.id,
-      l_inner.country,           -- Use 'country' column
-      l_inner.location_string,   -- Assuming 'location_string' stores city-related info
-      up_inner.created_at
-    FROM 
-      user_profiles up_inner 
-    INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
-    INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
-    WHERE 
-      up_inner.user_id != ? 
-      AND u_inner.approval = ${UserApprovalEnum.APPROVED}
-      AND u_inner.active = 1
-      AND u_inner.deleted_at IS NULL
-      ${whereClauses.length > 0 ? " AND " + whereClauses.join(" AND ") : ""}
-      AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
-    ORDER BY 
-      up_inner.created_at DESC, 
-      up_inner.id DESC 
-    LIMIT ? OFFSET ?
-  )
-  SELECT 
-    up.id, 
-    up.user_id, 
-    up.first_name, 
-    up.last_name, 
-    up.birthday, 
-    m.hash, 
-    m.extension, 
-    m.type, 
-    up.location_id, 
-    up.job_id, 
-    up.created_at,
-    l.country,                  -- 'country' column
-    l.location_string,          -- Assuming this for 'city'
-    l.continent,
-    j.name as job,
-    (SELECT \`like\` FROM matches ma WHERE ma.person_id = up.user_id AND ma.user_id = ? AND ma.\`like\` = 1 and ma.skip = 0) as \`like\`
-  FROM distinct_user_ids dup
-  JOIN user_profiles up ON dup.id = up.id 
-  JOIN media m ON up.user_id = m.user_id 
-  JOIN locations l ON up.location_id = l.id
-  JOIN jobs j ON j.id = up.job_id
-  WHERE m.type IN (1, 31)
-
-      `;
-
-      params = [
-        req.userId,
-        ...queryParams,
-        req.userId,
-        limit,
-        (pageNo - 1) * limit,
-        req.userId,
-      ];
+  try {
+    const currentUserFilters: any = await getUserFilters(req.userId);
+    if (!currentUserFilters) {
+      res.status(400).send({ message: "User filters not found." });
+      return;
     }
+    console.log("currentUserFilters", currentUserFilters);
 
-    // Add filters for blocks, reports, etc.
-    query = query.concat(`
-      AND up.user_id NOT IN (SELECT b.person_id FROM blocks b WHERE b.user_id = ?) 
-      AND up.user_id NOT IN (SELECT r.person_id FROM reports r WHERE r.user_id = ?) 
-      AND up.user_id NOT IN (SELECT b.user_id FROM blocks b WHERE b.person_id = ?) 
-      AND up.user_id NOT IN (SELECT r.user_id FROM reports r WHERE r.person_id = ?);
-    `);
+    const userPreferences: any = await getUserPreferences(req.userId);
+    if (!userPreferences) {
+      res.status(400).send({ message: "User preferences not found." });
+      return;
+    }
+    console.log("userPreferences", userPreferences);
 
-    params.push(req.userId, req.userId, req.userId, req.userId);
-    // Execute query
-    db.query<RowDataPacket[]>(query, params, (err, result) => {
-      if (err) {
-        console.log(err);
-        res.status(500).send({ message: "Internal server error" });
-        return;
+    const user_profiles = await new Promise((resolve, reject) => {
+      db.query<RowDataPacket[]>(
+        `SELECT * FROM user_profiles WHERE user_id = ?;`,
+        [req.userId],
+        (err, result) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+            return;
+          }
+
+          if (!result.length) {
+            reject(new Error("User profile not found"));
+            return;
+          }
+          resolve(result[0]);
+        }
+      );
+    });
+    console.log("user_profiles", user_profiles);
+
+    const userLocationFilter = await new Promise((resolve, reject) => {
+      db.query<RowDataPacket[]>(
+        `SELECT * FROM filter_locations WHERE filters_id = ?;`,
+        [currentUserFilters.filter_id],
+        (err, result) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+            return;
+          }
+
+          if (!result.length) {
+            reject(new Error("User location filter not found"));
+            return;
+          }
+          resolve(result[0]);
+        }
+      );
+    });
+    console.log("userLocationFilter", userLocationFilter);
+
+    const userLocation = await new Promise((resolve, reject) => {
+      db.query<RowDataPacket[]>(
+        `SELECT * FROM locations l WHERE id = ?;`,
+        [(userLocationFilter as any).location_id],
+        (err, result) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+            return;
+          }
+
+          if (!result.length) {
+            reject(new Error("User location not found"));
+            return;
+          }
+          resolve(result[0]);
+        }
+      );
+    });
+    console.log("userLocation", userLocation);
+
+    const userLocationPreferenceOrder = getLocationOrder(
+      userPreferences.location
+    );
+    console.log("userLocationPreferenceOrder", userLocationPreferenceOrder);
+
+    if (currentUserFilters) {
+      let whereClauses = [];
+      let queryParams = [];
+
+      if (wave === 1) {
+        console.log("first wave");
+
+        // Age filter
+        if (currentUserFilters.age_from && currentUserFilters.age_to) {
+          whereClauses.push(
+            "FLOOR(DATEDIFF(NOW(), up_inner.birthday) / 365) BETWEEN ? AND ?"
+          );
+          queryParams.push(
+            currentUserFilters.age_from,
+            currentUserFilters.age_to
+          );
+        }
+
+        // Gender matching logic (based on gender and preferences)
+        if ((user_profiles as any).gender === 1) {
+          if (userPreferences.gender === 2) {
+            whereClauses.push(
+              "(up_inner.gender = 2 AND up_inner.want_gender = 1)"
+            );
+          } else if (userPreferences.gender === 1) {
+            whereClauses.push(
+              "(up_inner.gender = 1 AND up_inner.want_gender = 1)"
+            );
+          } else if (userPreferences.gender === 3) {
+            whereClauses.push(
+              "(up_inner.gender = 1 AND up_inner.want_gender = 3)"
+            );
+            whereClauses.push(
+              "(up_inner.gender = 2 AND up_inner.want_gender = 3)"
+            );
+          }
+        } else if ((user_profiles as any).gender === 2) {
+          if (userPreferences.gender === 1) {
+            whereClauses.push(
+              "(up_inner.gender = 1 AND up_inner.want_gender = 2)"
+            );
+          } else if (userPreferences.gender === 2) {
+            whereClauses.push(
+              "(up_inner.gender = 2 AND up_inner.want_gender = 2)"
+            );
+          } else if (userPreferences.gender === 3) {
+            whereClauses.push(
+              "(up_inner.gender = 1 AND up_inner.want_gender = 3)"
+            );
+            whereClauses.push(
+              "(up_inner.gender = 2 AND up_inner.want_gender = 3)"
+            );
+          }
+        } else if ((user_profiles as any).gender === 3) {
+          if (userPreferences.gender === 1) {
+            whereClauses.push(
+              "(up_inner.gender = 1 AND up_inner.want_gender = 3)"
+            );
+          } else if (userPreferences.gender === 2) {
+            whereClauses.push(
+              "(up_inner.gender = 2 AND up_inner.want_gender = 3)"
+            );
+          } else if (userPreferences.gender === 3) {
+            whereClauses.push(
+              "(up_inner.gender = 1 AND up_inner.want_gender = 3)"
+            );
+            whereClauses.push(
+              "(up_inner.gender = 2 AND up_inner.want_gender = 3)"
+            );
+          }
+        }
+
+        // Additional filters (Religion, education, etc.)
+        if (currentUserFilters.religion_id) {
+          whereClauses.push("up_inner.religion_id = ?");
+          queryParams.push(currentUserFilters.religion_id);
+        }
+        if (currentUserFilters.education_id) {
+          whereClauses.push("up_inner.study_id = ?");
+          queryParams.push(currentUserFilters.education_id);
+        }
+        if (currentUserFilters.want_kids_id) {
+          whereClauses.push("up_inner.want_kid_id = ?");
+          queryParams.push(currentUserFilters.want_kids_id);
+        }
+        if (currentUserFilters.have_kids_id) {
+          whereClauses.push("up_inner.have_kid_id = ?");
+          queryParams.push(currentUserFilters.have_kids_id);
+        }
+        if (currentUserFilters.smoking_id) {
+          whereClauses.push("up_inner.smoke_id = ?");
+          queryParams.push(currentUserFilters.smoking_id);
+        }
+        if (currentUserFilters.drinks_id) {
+          whereClauses.push("up_inner.drink_id = ?");
+          queryParams.push(currentUserFilters.drinks_id);
+        }
+
+        // Location-based filtering logic
+        if (currentUserFilters.location_type == "1") {
+          whereClauses.push("l_inner.country = ?");
+          queryParams.push((userLocation as any).country);
+        } else if (currentUserFilters.location_type == "2") {
+          whereClauses.push(
+            "l_inner.country = ? AND l_inner.location_string = ?"
+          );
+          queryParams.push(
+            (userLocation as any).country,
+            (userLocation as any).location_string
+          );
+        }
+
+        query = `
+          WITH distinct_user_ids AS (
+            SELECT DISTINCT 
+              up_inner.id,
+              l_inner.country,
+              l_inner.location_string,
+              up_inner.created_at
+            FROM 
+              user_profiles up_inner 
+            INNER JOIN locations l_inner ON l_inner.id = up_inner.location_id
+            INNER JOIN users u_inner ON u_inner.id = up_inner.user_id
+            WHERE 
+              up_inner.user_id != ? 
+              AND u_inner.approval = ${UserApprovalEnum.APPROVED}
+              AND u_inner.active = 1
+              AND u_inner.deleted_at IS NULL
+              ${
+                whereClauses.length > 0
+                  ? " AND " + whereClauses.join(" AND ")
+                  : ""
+              }
+              AND up_inner.user_id NOT IN (SELECT ds.person_id FROM discovery_skip ds WHERE ds.user_id = ?)
+            ORDER BY up_inner.created_at DESC
+            LIMIT ? OFFSET ?
+          )
+          SELECT up.*, l.country, l.location_string
+          FROM distinct_user_ids dup
+          JOIN user_profiles up ON dup.id = up.id
+          JOIN locations l ON up.location_id = l.id
+        `;
+
+        params = [
+          req.userId,
+          ...queryParams,
+          req.userId,
+          limit,
+          (pageNo - 1) * limit,
+        ];
       }
 
-      const users = result.filter((user: any) => user.like !== 1);
-      res.status(200).send(users);
-    });
+      // Additional filters for blocks, reports, etc.
+      query = query.concat(`
+        AND up.user_id NOT IN (SELECT b.person_id FROM blocks b WHERE b.user_id = ?) 
+        AND up.user_id NOT IN (SELECT r.person_id FROM reports r WHERE r.user_id = ?) 
+        AND up.user_id NOT IN (SELECT b.user_id FROM blocks b WHERE b.person_id = ?) 
+        AND up.user_id NOT IN (SELECT r.user_id FROM reports r WHERE r.person_id = ?);
+      `);
+
+      params.push(req.userId, req.userId, req.userId, req.userId);
+
+      // Execute query
+      db.query<RowDataPacket[]>(query, params, (err, result) => {
+        if (err) {
+          console.log(err);
+          res.status(500).send({ message: "Internal server error" });
+          return;
+        }
+
+        if (!result.length) {
+          res.status(200).send({ message: "No matching profiles found." });
+          return;
+        }
+
+        const users = result.filter((user: any) => user.id !== req.userId);
+        res.json(users);
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "Internal server error" });
   }
 });
 
